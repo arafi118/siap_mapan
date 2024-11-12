@@ -19,7 +19,7 @@
                     <thead class="thead-light">
                         <div style="display: flex; align-items: center;">
                             <i class="fas fa-users" style="font-size: 30px; margin-right: 13px;"></i>
-                            <b> Data Pelanggan</b>
+                            <b> Data Pengguna</b>
                         </div>
                         <div>&nbsp;</div>
                         <tr>
@@ -32,9 +32,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($customers as $customer)
                         <tr>
-                            <td>{{ $customer->nama }}</td>
+                            <td></td>
                             <td>System Architect</td>
                             <td>Edinburgh</td>
                             <td>61</td>
@@ -44,7 +43,6 @@
                                 <a href="" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
                               </td>
                         </tr>
-                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -76,57 +74,4 @@
         </div>
     </div>
 </div>
-@endsection
-@section('script')
-<script>
-    var table = $('.table-hover').DataTable({
-        language: {
-            paginate: {
-                previous: "&laquo;",
-                next: "&raquo;"
-            }
-        },
-        processing: true,
-        serverSide: true,
-        ajax: "/database/pelanggan",
-        columns: [{
-                data: 'id',
-                name: 'id',
-                visible: false,
-                searchable: false
-            }, 
-            {
-                data: 'nik',
-                name: 'nik'
-            },
-            {
-                data: 'nama',
-                name: 'nama'
-            },
-            {
-                data: 'alamat',
-                name: 'alamat'
-            },
-            {
-                data: 'hp',
-                name: 'hp'
-            },
-            {
-                data: 'status',
-                name: 'status',
-                orderable: false,
-                searchable: false,
-            }
-        ],
-        order: [
-            [0, 'desc']
-        ]
-    });
-
-    $('.table').on('click', 'tbody tr', function (e) {
-        var data = table.row(this).data();
-        window.location.href = '/database/pelanggan/' + data.nik;
-    });
-</script>
-
 @endsection

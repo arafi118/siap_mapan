@@ -12,16 +12,23 @@ class InstallationController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $installations = Installation::all();
+
+        $title = 'Instalasi';
+        return view('perguliran.index')->with(compact('title','installations'));   
+     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
-    }
+        $desa = Village::all();
+        $hubungan = Family::orderBy('id', 'ASC')->get();
+
+        $title = 'Register Proposal';
+        return view('pelanggan.create')->with(compact('desa', 'hubungan','title'));
+    }    }
 
     /**
      * Store a newly created resource in storage.

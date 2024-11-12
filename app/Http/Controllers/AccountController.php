@@ -17,7 +17,8 @@ class AccountController extends Controller
         $business_id = request()->session()->get('business_id');
         $rekening = Account::where('business_id', $business_id)->get();
 
-        return view('index');
+        $title = 'Rekening';
+        return view('rekening.index')->with(compact('title','business_id','rekening'));
 
     }
 

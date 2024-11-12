@@ -12,7 +12,10 @@ class UsageController extends Controller
      */
     public function index()
     {
-        //
+        $usages = Usage::all();
+
+        $title = 'Data Paket';
+        return view('penggunaan.index')->with(compact('title','usages'));
     }
 
     /**

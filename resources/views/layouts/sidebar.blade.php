@@ -6,7 +6,7 @@
         </a>
         <hr class="sidebar-divider my-0">
         <li class="nav-item active">
-          <a class="nav-link" href="/welcome.blade.php">
+          <a class="nav-link" href=".. /welcome">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
         </li>
@@ -37,8 +37,8 @@
             <div class="bg-white py-2 collapse-inner rounded">
               <a class="collapse-item" href="/customers/create">Register Nasabah</a>
               <a class="collapse-item" href="/customers">Data Nasabah</a>
-              <a class="collapse-item" href="rekening.blade.php">Rekening</a>
-              <a class="collapse-item" href="paket.blade.php">Paket</a>
+              <a class="collapse-item" href="/accounts">Rekening</a>
+              <a class="collapse-item" href="/packages">Paket</a>
             </div>
           </div>
         </li>
@@ -51,8 +51,8 @@
           <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">  
               <a class="collapse-item" href="../pdm/register.blade.php">Register Instalasi</a>
-              <a class="collapse-item" href="../pdm/instalasi.blade.php">Status Instalasi</a>
-              <a class="collapse-item" href="../pdm/penggunaan.blade.php">Penggunaan</a>
+              <a class="collapse-item" href="/installations">Status Instalasi</a>
+              <a class="collapse-item" href="/usages">Penggunaan</a>
             </div>
           </div>
         </li>
@@ -64,8 +64,8 @@
           </a>
           <div id="collapseTable" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="simple-tables.html">Simple Tables</a>
-              <a class="collapse-item" href="datatables.html">DataTables</a>
+              <a class="collapse-item" href="/transactions">Jurnal Umum</a>
+              <a class="collapse-item" href="datatables.html">Angsuran</a>
             </div>
           </div>
         </li>

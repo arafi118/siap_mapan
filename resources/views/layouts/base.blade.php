@@ -16,7 +16,13 @@
     <link href="vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" >
 
 </head>
+<style>
+    .button-group .btn {
+      margin: 10px; /* Atur jarak antar tombol */
+      width: 170px; /* Atur lebar tombol */
+    }
 
+  </style>
 <body id="page-top">
     <div id="wrapper">
         <!-- Sidebar -->

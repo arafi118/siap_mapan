@@ -46,7 +46,7 @@
                 <div>
                     &nbsp;
                 </div>
-                <form action="" method="post" id="Penduduk">
+                <form action="/database/pelanggan" method="post" id="Penduduk">
                     @csrf
 
                     <div class="row">
@@ -269,39 +269,75 @@
                     <button type="submit" class="btn btn-github btn-sm float-end btn-dark mb-0"
                         id="SimpanPenduduk">Simpan Penduduk</button>
                 </form>
-
-                <script>
-                    $('.js-select-2').select2({
-                        theme: 'bootstrap-5'
-                    });
-
-                    // Function to set font size
-                    function setFontSize(size) {
-                        $('.select2-container .select2-selection--single .select2-selection__rendered').css('font-size',
-                            size + 'px');
-                    }
-
-                    $('.date').datepicker({
-                        dateFormat: 'dd/mm/yy'
-                    });
-                    // Bootstrap Date Picker
-                    $('#simple-date1 .input-group.date').datepicker({
-                        format: 'dd/mm/yyyy',
-                        todayBtn: 'linked',
-                        todayHighlight: true,
-                        autoclose: true,
-                    });
-
-                </script>
-                <script>
-                    // Mendapatkan tanggal saat ini
-                    const today = new Date().toISOString().split('T')[0];
-                    
-                    // Mengatur tanggal hari ini sebagai nilai default
-                    document.getElementById("simpleDataInput").value = today;
-                </script>
             </div>
         </div>
     </div>
 </div>
+<script>
+    $('.js-select-2').select2({
+        theme: 'bootstrap-5'
+    });
+
+    // Function to set font size
+    function setFontSize(size) {
+        $('.select2-container .select2-selection--single .select2-selection__rendered').css('font-size',
+            size + 'px');
+    }
+
+    $('.date').datepicker({
+        dateFormat: 'dd/mm/yy'
+    });
+    // Bootstrap Date Picker
+    $('#simple-date1 .input-group.date').datepicker({
+        format: 'dd/mm/yyyy',
+        todayBtn: 'linked',
+        todayHighlight: true,
+        autoclose: true,
+    });
+
+</script>
+<script>
+    // Mendapatkan tanggal saat ini
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Mengatur tanggal hari ini sebagai nilai default
+    document.getElementById("simpleDataInput").value = today;
+</script>
+@section('script')
+<script>
+    $(document).on('click', '#SimpanPenduduk', function(e) {
+            e.preventDefault()
+            $('small').html('')
+
+            var form = $('#Penduduk')
+            $.ajax({
+                type: 'post',
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(result) {
+                    Swal.fire('Berhasil', result.msg, 'success').then(() => {
+                        Swal.fire({
+                            title: 'Tambah Penduduk Baru?',
+                            text: "",
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Ya',
+                            cancelButtonText: 'Tidak'
+                            window.location.href = '/database/pelanggan'
+                    })
+                },
+                error: function(result) {
+                    const respons = result.responseJSON;
+
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error')
+                    $.map(respons, function(res, key) {
+                        $('#' + key).parent('.input-group.input-group-static').addClass(
+                            'is-invalid')
+                        $('#msg_' + key).html(res)
+                    })
+                }
+            })
+        })
+</script>
 @endsection
+

@@ -12,7 +12,10 @@ class PackageController extends Controller
      */
     public function index()
     {
-        //
+        $packages = Package::all();
+
+        $title = 'Paket Pelanggan';
+        return view('paket.index')->with(compact('title','packages'));
     }
 
     /**

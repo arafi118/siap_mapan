@@ -12,7 +12,10 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = Transaction::all();
+
+        $title = ' Transaksi';
+        return view('transaksi.index')->with(compact('title','transactions'));
     }
 
     /**

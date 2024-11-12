@@ -17,7 +17,7 @@ class CustomerController extends Controller
     {
         $customers = Customer::all();
 
-        $title = 'Data Pelanggan';
+        $title = 'Data penduduk';
         return view('pelanggan.index')->with(compact('title','customers'));
     }
 
@@ -29,7 +29,7 @@ class CustomerController extends Controller
         $desa = Village::all();
         $hubungan = Family::orderBy('id', 'ASC')->get();
 
-        $title = 'Register Pelanggan';
+        $title = 'Register Penduduk';
         return view('pelanggan.create')->with(compact('desa', 'hubungan','title'));
     }
 
