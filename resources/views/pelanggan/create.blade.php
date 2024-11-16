@@ -1,38 +1,12 @@
 @extends('layouts.base')
 
 @section('content')
-
-
-<style>
-    /* Target form labels */
-    form#Penduduk label {
-        font-size: 0.85rem;
-        /* Adjust as needed */
-    }
-
-    /* Target form input fields and select dropdowns */
-    form#Penduduk input,
-    form#Penduduk select {
-        font-size: 0.85rem;
-        /* Adjust as needed */
-    }
-
-    /* Small text for error messages */
-    form#Penduduk small.text-danger {
-        font-size: 0.75rem;
-        /* Adjust as needed */
-    }
-
-</style>
-
-
 <!-- Row -->
 <div class="row">
     <!-- Datatables -->
     <div class="col-lg-12">
         <div class="card mb-4">
             <div class="table-responsive p-3">
-
                 <div class="app-page-title">
                     <div class="page-title-wrapper">
                         <div class="page-title-heading">
@@ -46,16 +20,15 @@
                 <div>
                     &nbsp;
                 </div>
-                <form action="/database/pelanggan" method="post" id="Penduduk">
+                <form action="/customers" method="post" id="Penduduk">
                     @csrf
-
                     <div class="row">
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
                                 <label for="nik">NIK</label>
                                 <input autocomplete="off" maxlength="16" type="text" name="nik" id="nik"
                                     class="form-control" value="">
-                                <small class="text-danger" id="msg_nik"></small>
+                                <small class="text-danger" id="msg_nik">{{ $errors->first('nik') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -63,15 +36,16 @@
                                 <label for="nama_lengkap">Nama lengkap</label>
                                 <input autocomplete="off" type="text" name="nama_lengkap" id="nama_lengkap"
                                     class="form-control">
-                                <small class="text-danger" id="msg_nama_lengkap"></small>
+                                <small class="text-danger"
+                                    id="msg_nama_lengkap">{{ $errors->first('nama_lengkap') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
-                                <label for="nama_pangilan">Nama Panggilan</label>
-                                <input autocomplete="off" type="text" name="nama_pangilan" id="nama_pangilan"
+                                <label for="nama_panggilan">Nama Panggilan</label>
+                                <input autocomplete="off" type="text" name="nama_panggilan" id="nama_panggilan"
                                     class="form-control">
-                                <small class="text-danger" id="msg_nama_pangilan"></small>
+                                <small class="text-danger">{{ $errors->first('nama_panggilan') }}</small>
                             </div>
                         </div>
                     </div>
@@ -81,14 +55,17 @@
                                 <label for="tempat_lahir">Tempat Lahir</label>
                                 <input autocomplete="off" type="text" name="tempat_lahir" id="tempat_lahir"
                                     class="form-control" value="">
-                                <small class="text-danger" id="msg_tempat_lahir"></small>
+                                <small class="text-danger"
+                                    id="msg_tempat_lahir">{{ $errors->first('tempat_lahir') }}</small>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="form-group" id="simple-date1">
-                                <label for="simpleDataInput">Tgl Lahir</label>
+                            <div class="form-group">
+                                <label for="tgl_lahir">Tgl Lahir</label>
                                 <div class="input-group date">
-                                    <input type="date" class="form-control" value="01/06/2020" id="simpleDataInput">
+                                    <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahir"
+                                        value="{{ old('tgl_lahir', date('Y-m-d')) }}">
+                                    <small class="text-danger"id="msg_tgl_lahir">{{ $errors->first('tgl_lahir') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -96,11 +73,11 @@
                             <div class="position-relative mb-3">
                                 <label for="jenis_kelamin">Jenis Kelamin</label>
                                 <select class="js-select-2 form-control" name="jenis_kelamin" id="jenis_kelamin">
-                                    <option>Pilih Jenis Kelamin</option>
+                                    <option value="">Pilih Jenis Kelamin</option>
                                     <option value="L">Laki Laki</option>
                                     <option value="P">Perempuan</option>
                                 </select>
-                                <small class="text-danger" id="msg_jenis_kelamin"></small>
+                                <small class="text-danger">{{ $errors->first('jenis_kelamin') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -108,7 +85,7 @@
                                 <label for="no_kk">No. KK</label>
                                 <input autocomplete="off" type="text" name="no_kk" id="no_kk" class="form-control"
                                     value="">
-                                <small class="text-danger" id="msg_no_kk"></small>
+                                <small class="text-danger" id="msg_no_kk">{{ $errors->first('no_kk') }}</small>
                             </div>
                         </div>
                     </div>
@@ -118,19 +95,19 @@
                                 <label for="alamat">Alamat KTP</label>
                                 <input autocomplete="off" type="text" name="alamat" id="alamat" class="form-control"
                                     value="">
-                                <small class="text-danger" id="msg_alamat"></small>
+                                <small class="text-danger" id="msg_alamat">{{ $errors->first('alamat') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
                                 <label for="domisi">Domisili saat ini</label>
                                 <input autocomplete="off" type="text" name="domisi" id="domisi" class="form-control">
-                                <small class="text-danger" id="msg_domisi"></small>
+                                <small class="text-danger" id="msg_domisi">{{ $errors->first('domisi') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
-                                <label for="jenis_usaha" for="desa">Desa/Kelurahan</label>
+                                <label for="desa">Desa/Kelurahan</label>
                                 <select class="js-select-2 form-control" name="desa" id="desa">
                                     <option>Pilih Desa/Kelurahan</option>
                                     @foreach ($desa as $ds)
@@ -138,7 +115,6 @@
                                         {{ $ds->nama }}
                                     </option>
                                     @endforeach
-
                                 </select>
                                 <small class="text-danger" id="msg_desa"></small>
                             </div>
@@ -148,9 +124,8 @@
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
                                 <label for="no_telp">No. Telp</label>
-                                <input autocomplete="off" type="text" name="no_telp" id="no_telp" class="form-control"
-                                    value="08">
-                                <small class="text-danger" id="msg_no_telp"></small>
+                                <input autocomplete="off" type="text" name="no_telp" id="no_telp" class="form-control">
+                                <small class="text-danger" id="msg_no_telp">{{ $errors->first('no_telp') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -168,7 +143,8 @@
                                     <option value="magister">Magister (S2)</option>
                                     <option value="doktor">Doktor (S3)</option>
                                 </select>
-                                <small class="text-danger" id="msg_pendidikan"></small>
+                                <small class="text-danger"
+                                    id="msg_pendidikan">{{ $errors->first('pendidikan') }}</small>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -183,7 +159,7 @@
                                     <option value="buddha">Buddha</option>
                                     <option value="konghucu">Konghucu</option>
                                 </select>
-                                <small class="text-danger" id="msg_agama"></small>
+                                <small class="text-danger" id="msg_agama">{{ $errors->first('agama') }}</small>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -197,7 +173,8 @@
                                     <option value="cerai hidup">Cerai Hidup</option>
                                     <option value="cerai mati">Cerai Mati</option>
                                 </select>
-                                <small class="text-danger" id="msg_status_pernikahan"></small>
+                                <small class="text-danger"
+                                    id="msg_status_pernikahan">{{ $errors->first('status_pernikahan') }}</small>
                             </div>
                         </div>
                     </div>
@@ -207,7 +184,7 @@
                                 <label for="nama_ibu">Nama Ibu Kandung</label>
                                 <input autocomplete="off" type="text" name="nama_ibu" id="nama_ibu"
                                     class="form-control">
-                                <small class="text-danger" id="msg_nama_ibu"></small>
+                                <small class="text-danger" id="msg_nama_ibu">{{ $errors->first('nama_ibu') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -215,7 +192,8 @@
                                 <label for="tempat_kerja">Alamat Tempat Kerja</label>
                                 <input autocomplete="off" type="text" name="tempat_kerja" id="tempat_kerja"
                                     class="form-control">
-                                <small class="text-danger" id="msg_tempat_kerja"></small>
+                                <small class="text-danger"
+                                    id="msg_tempat_kerja">{{ $errors->first('tempat_kerja') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -223,17 +201,17 @@
                                 <label for="jenis_usaha">Jenis Usaha</label>
                                 <input autocomplete="off" type="text" name="jenis_usaha" id="jenis_usaha"
                                     class="form-control">
-                                <small class="text-danger" id="msg_jenis_usaha"></small>
+                                <small class="text-danger"
+                                    id="msg_jenis_usaha">{{ $errors->first('jenis_usaha') }}</small>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
-                                <label for="nik_penjamin">NIK Penjamin</label>
-                                <input autocomplete="off" type="text" name="nik_penjamin" id="nik_penjamin"
-                                    class="form-control" value="" maxlength="16" minlength="16">
-                                <small class="text-danger" id="msg_nik_penjamin"></small>
+                                <label for="nik_penjamin">Nik Penjamin</label>
+                                <input autocomplete="off" type="text" name="nik_penjamin" id="nik_penjamin" class="form-control">
+                                <small class="text-danger" id="msg_nik_penjamin">{{ $errors->first('nik_penjamin') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -241,7 +219,7 @@
                                 <label for="penjamin">Penjamin</label>
                                 <input autocomplete="off" type="text" name="penjamin" id="penjamin"
                                     class="form-control">
-                                <small class="text-danger" id="msg_penjamin"></small>
+                                <small class="text-danger" id="msg_penjamin">{{ $errors->first('penjamin') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -254,7 +232,7 @@
                                     </option>
                                     @endforeach
                                 </select>
-                                <small class="text-danger" id="msg_hubungan"></small>
+                                <small class="text-danger" id="msg_hubungan">{{ $errors->first('hubungan') }}</small>
                             </div>
                         </div>
                     </div>
@@ -273,10 +251,13 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
 <script>
-    $('.js-select-2').select2({
-        theme: 'bootstrap-5'
-    });
+    // $('.js-select-2').select2({
+    //     theme: 'bootstrap-5'
+    // });
 
     // Function to set font size
     function setFontSize(size) {
@@ -284,60 +265,61 @@
             size + 'px');
     }
 
-    $('.date').datepicker({
-        dateFormat: 'dd/mm/yy'
-    });
+    // $('.date').datepicker({
+    //     dateFormat: 'dd/mm/yy'
+    // });
     // Bootstrap Date Picker
-    $('#simple-date1 .input-group.date').datepicker({
-        format: 'dd/mm/yyyy',
-        todayBtn: 'linked',
-        todayHighlight: true,
-        autoclose: true,
-    });
+    // $('#simple-date1 .input-group.date').datepicker({
+    //     format: 'dd/mm/yyyy',
+    //     todayBtn: 'linked',
+    //     todayHighlight: true,
+    //     autoclose: true,
+    // });
 
 </script>
 <script>
     // Mendapatkan tanggal saat ini
     const today = new Date().toISOString().split('T')[0];
-    
+
     // Mengatur tanggal hari ini sebagai nilai default
     document.getElementById("simpleDataInput").value = today;
+
 </script>
-@section('script')
-<script>
+{{-- <script>
     $(document).on('click', '#SimpanPenduduk', function(e) {
-            e.preventDefault()
-            $('small').html('')
+        e.preventDefault()
+        $('small').html('')
 
-            var form = $('#Penduduk')
-            $.ajax({
-                type: 'post',
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function(result) {
-                    Swal.fire('Berhasil', result.msg, 'success').then(() => {
-                        Swal.fire({
-                            title: 'Tambah Penduduk Baru?',
-                            text: "",
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonText: 'Ya',
-                            cancelButtonText: 'Tidak'
-                            window.location.href = '/database/pelanggan'
+        var form = $('#Penduduk')
+        $.ajax({
+            type: 'post',
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function(result) {
+                Swal.fire('Berhasil', result.msg, 'success').then(() => {
+                    Swal.fire({
+                        title: 'Tambah Penduduk Baru?',
+                        text: "",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya',
+                        cancelButtonText: 'Tidak'
+                    }).then(() => {
+                        // 
                     })
-                },
-                error: function(result) {
-                    const respons = result.responseJSON;
+                })
+            },
+            error: function(result) {
+                const respons = result.responseJSON;
 
-                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error')
-                    $.map(respons, function(res, key) {
-                        $('#' + key).parent('.input-group.input-group-static').addClass(
-                            'is-invalid')
-                        $('#msg_' + key).html(res)
-                    })
-                }
-            })
+                Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error')
+                $.map(respons, function(res, key) {
+                    $('#' + key).parent('.input-group.input-group-static').addClass(
+                        'is-invalid')
+                    $('#msg_' + key).html(res)
+                })
+            }
         })
-</script>
+    })
+</script> --}}
 @endsection
-

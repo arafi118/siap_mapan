@@ -25,13 +25,13 @@ return new class extends Migration
             $table->text('tempat_lahir')->nullable();
             $table->date('tgl_lahir')->nullable();
             $table->text('domisi')->nullable();
-            $table->string('hp');
+            $table->char('hp')->nullable();
             $table->string('kk')->nullable();
             $table->string('agama')->nullable();
             $table->string('pendidikan')->nullable();
             $table->string('status_pernikahan')->nullable();
             $table->string('penjamin')->nullable();
-            $table->string('nik_penjamin')->nullable();
+            $table->char('nik_penjamin')->nullable();
             $table->string('hubungan')->nullable();
             $table->string('nama_ibu')->nullable();
             $table->string('tempat_kerja')->nullable();

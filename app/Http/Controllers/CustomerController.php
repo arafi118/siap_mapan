@@ -33,18 +33,61 @@ class CustomerController extends Controller
         return view('pelanggan.create')->with(compact('desa', 'hubungan','title'));
     }
 
-    
-    public function register()
-    {
-        $title = 'Register Penduduk';
-        return view('penduduk.register')->with(compact('title'));
-    }
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        
+        $this->validate($request,[
+            'nik' => 'required|unique:customers',
+            'nama_lengkap' => 'required',
+            'nama_panggilan' => 'required',
+            'alamat' => 'required',
+            'tempat_lahir' => 'required',
+            'tgl_lahir' => 'required',
+            'jenis_kelamin' => 'required',
+            'no_kk' => 'required',
+            'nik_penjamin' => 'required',
+            'penjamin' => 'required',
+            'domisi' => 'required',
+            'desa' => 'required',
+            'no_telp' => 'required',
+            'pendidikan' => 'required',
+            'agama' => 'required',
+            'status_pernikahan' => 'required',
+            'nama_ibu' => 'required',
+            'tempat_kerja' => 'required',
+            'jenis_usaha' => 'required',
+            'hubungan' => 'required',
+         ]);
+
+        //  CARA 1
+        Customer::create([
+            'nik' => $request->nik,
+            'nama' => $request->nama_lengkap,
+            'nama_panggilan' => $request->nama_panggilan,
+            'alamat' => $request->alamat,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tgl_lahir' => $request->tgl_lahir,
+            'jk' => $request->jenis_kelamin,
+            'kk' => $request->no_kk,
+            'nik_penjamin' => $request->nik_penjamin,
+            'penjamin' => $request->penjamin,
+            'domisi' => $request->domisi,
+            'desa' => $request->desa,
+            'hp' => $request->no_telp,
+            'pendidikan' => $request->pendidikan,
+            'agama' => $request->agama,
+            'status_pernikahan' => $request->status_pernikahan,
+            'nama_ibu' => $request->nama_ibu,
+            'tempat_kerja' => $request->tempat_kerja,
+            'usaha' => $request->jenis_usaha,
+            'nik_penjamian' => $request->nik_penjamian,
+            'hubungan' => $request->hubungan
+        ]);
+
+        return redirect('/customers')->with('berhasil','Customer berhasil disimpan');
     }
 
     /**
@@ -52,7 +95,11 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        dd($customer);
+         // Menghapus customer berdasarkan id yang diterima
+        $customer->delete();
+    
+        // Redirect ke halaman customer dengan pesan sukses
+        return redirect('/customers')->with('Berhasil', 'Customer berhasil dihapus');
     }
 
     /**
@@ -60,7 +107,11 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        //
+        $desa = Village::all();
+        $hubungan = Family::orderBy('id', 'ASC')->get();
+
+        $title = 'Edit Pelanggan';
+        return view('pelanggan.edit')->with(compact('desa', 'hubungan','customer','title'));
     }
 
     /**
@@ -68,7 +119,62 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        // Validasi input
+        $validasi = [
+            'nik' => 'required',
+            'nama_lengkap' => 'required',
+            'nama_panggilan' => 'required',
+            'alamat' => 'required',
+            'tempat_lahir' => 'required',
+            'tgl_lahir' => 'required',
+            'jenis_kelamin' => 'required',
+            'no_kk' => 'required',
+            'nik_penjamin' => 'required',
+            'penjamin' => 'required',
+            'domisi' => 'required',
+            'desa' => 'required',
+            'no_telp' => 'required',
+            'pendidikan' => 'required',
+            'agama' => 'required',
+            'status_pernikahan' => 'required',
+            'nama_ibu' => 'required',
+            'tempat_kerja' => 'required',
+            'jenis_usaha' => 'required',
+            'hubungan' => 'required',
+        ];
+
+        if ($request->nik != $customer->nik) {
+            $validasi['nik'] = 'required|unique:customers';
+        }
+
+        $this->validate($request, $validasi);
+    
+        // Update data customer
+        $update = Customer::where('id', $customer->id)->update([
+            'nik' => $request->nik,
+            'nama' => $request->nama_lengkap,
+            'nama_panggilan' => $request->nama_panggilan,
+            'alamat' => $request->alamat,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tgl_lahir' => $request->tgl_lahir,
+            'jk' => $request->jenis_kelamin,
+            'kk' => $request->no_kk,
+            'nik_penjamin' => $request->nik_penjamin,
+            'penjamin' => $request->penjamin,
+            'domisi' => $request->domisi,
+            'desa' => $request->desa,
+            'hp' => $request->no_telp,
+            'pendidikan' => $request->pendidikan,
+            'agama' => $request->agama,
+            'status_pernikahan' => $request->status_pernikahan,
+            'nama_ibu' => $request->nama_ibu,
+            'tempat_kerja' => $request->tempat_kerja,
+            'usaha' => $request->jenis_usaha,
+            'hubungan' => $request->hubungan
+        ]);
+    
+        return redirect('/customers')->with('Berhasil', 'Customer berhasil diperbarui');
+
     }
 
     /**

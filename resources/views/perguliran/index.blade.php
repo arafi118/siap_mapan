@@ -15,7 +15,7 @@
     </div>
 </div>
 </div>
-<div class="container-fluid" id="container-wrapper">
+<div class="container-fluid" id="container-wrapper"style="font-size: 14px;">
     <!-- Row -->
     <div class="row">
         <!-- Datatables -->

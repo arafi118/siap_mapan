@@ -20,7 +20,7 @@
           </a>
           <div id="collapsePage" class="collapse" aria-labelledby="headingPage" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="login.html">Login</a>
+              <a class="collapse-item" href="login.html">Personalisasi SOP</a>
               <a class="collapse-item" href="register.html">Register</a>
               <a class="collapse-item" href="404.html">404 Page</a>
               <a class="collapse-item" href="blank.html">Blank Page</a>
@@ -36,7 +36,7 @@
           <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
               <a class="collapse-item" href="/customers/create">Register Nasabah</a>
-              <a class="collapse-item" href="/customers">Data Nasabah</a>
+              <a class="collapse-item" href="/customers">Data Pelanggan</a>
               <a class="collapse-item" href="/accounts">Rekening</a>
               <a class="collapse-item" href="/packages">Paket</a>
             </div>
@@ -50,7 +50,7 @@
           </a>
           <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">  
-              <a class="collapse-item" href="../pdm/register.blade.php">Register Instalasi</a>
+              <a class="collapse-item" href="/installations/create">Register Instalasi</a>
               <a class="collapse-item" href="/installations">Status Instalasi</a>
               <a class="collapse-item" href="/usages">Penggunaan</a>
             </div>

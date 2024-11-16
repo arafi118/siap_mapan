@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Family;
 use App\Models\Installation;
+use App\Models\Village;
 use Illuminate\Http\Request;
 
 class InstallationController extends Controller
@@ -13,8 +15,7 @@ class InstallationController extends Controller
     public function index()
     {
         $installations = Installation::all();
-
-        $title = 'Instalasi';
+        $title = 'Proposal';
         return view('perguliran.index')->with(compact('title','installations'));   
      }
 
@@ -27,8 +28,8 @@ class InstallationController extends Controller
         $hubungan = Family::orderBy('id', 'ASC')->get();
 
         $title = 'Register Proposal';
-        return view('pelanggan.create')->with(compact('desa', 'hubungan','title'));
-    }    }
+        return view('perguliran.create')->with(compact('desa', 'hubungan','title'));
+    }    
 
     /**
      * Store a newly created resource in storage.

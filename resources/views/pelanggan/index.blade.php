@@ -34,14 +34,14 @@
                     <tbody>
                         @foreach ($customers as $customer)
                         <tr>
+                            <td>{{ $customer->nik }}</td>
                             <td>{{ $customer->nama }}</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>$320,800</td>
+                            <td>{{ $customer->alamat }}</td>
+                            <td>{{ $customer->hp }}</td>
+                            <td></td>
                             <td style="text-align: center;"> 
-                                <a href="" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
-                                <a href="" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
+                                <a href="/customers/{{ $customer->nik }}/edit" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
+                                <a href="/customers/{{ $customer->nik }}" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
                               </td>
                         </tr>
                         @endforeach
@@ -129,4 +129,9 @@
     });
 </script>
 
+@if (Session::get('berhasil'))
+    <script>
+        alert('{{ Session::get('berhasil') }}')
+    </script>
+@endif
 @endsection
