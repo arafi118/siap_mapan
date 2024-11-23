@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Family;
 use App\Models\Installation;
+use App\Models\Package;
 use App\Models\Village;
 use Illuminate\Http\Request;
 
@@ -24,11 +26,11 @@ class InstallationController extends Controller
      */
     public function create()
     {
-        $desa = Village::all();
-        $hubungan = Family::orderBy('id', 'ASC')->get();
-
-        $title = 'Register Proposal';
-        return view('perguliran.create')->with(compact('desa', 'hubungan','title'));
+        $paket = Package::all();
+        $installations = Installation::all();
+        $customer = Customer::with('village')->orderBy('id', 'ASC')->get();
+        $title = 'Register Proposal'; 
+        return view('perguliran.create')->with(compact('paket','installations','customer','title'));
     }    
 
     /**

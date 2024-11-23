@@ -12,35 +12,84 @@
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/ruang-admin-min.css" rel="stylesheet">
     <link href="/assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-    <!-- Bootstrap DatePicker -->  
+    <!-- Bootstrap DatePicker -->
 </head>
 <style>
-     .modal-open .select2-dropdown {
-            z-index: 10060;
-        }
+  .align-right {
+    text-align: right; /* Mengatur teks dalam elemen ke kanan */
+  }
 
-        .modal-open .select2-close-mask {
-            z-index: 10055;
-        }
+     .custom-modal .modal-dialog {
+    max-width: 600px; /* Atur lebar */
+    margin: auto; /* Tengah */
+  }
+    @media (max-width: 768px) {
+    .custom-modal .modal-dialog {
+        max-width: 90%; /* Sesuaikan untuk layar kecil */
+    }
+
+    .custom-modal .modal-content {
+        height: auto; /* Biarkan otomatis */
+    }
+    }
+  .custom-modal .modal-content {
+    height: 400px; /* Atur tinggi */
+  }
+    .modal-open .select2-dropdown {
+        z-index: 10060;
+    }
+
+    .modal-open .select2-close-mask {
+        z-index: 10055;
+    }
+
+    th {
+        font-size: 11px;
+    }
+
+    td {
+        font-size: 13px;
+    }
 
     .custom-button {
-    width: 200px; /* Atur panjang tombol sesuai kebutuhan */
-    float: right; /* Tempatkan tombol di sebelah kanan */
-    text-align: center; /* Pusatkan teks di tombol */
-    background-color: #000000; /* Warna latar belakang */
-    color: rgb(80, 43, 43); /* Warna teks */
-    border: none; /* Hilangkan border */
-    border-radius: 5px; /* Atur radius sudut */
-    cursor: pointer; /* Ubah kursor saat dihover */
+        width: 200px;
+        /* Atur panjang tombol sesuai kebutuhan */
+        float: right;
+        /* Tempatkan tombol di sebelah kanan */
+        text-align: center;
+        /* Pusatkan teks di tombol */
+        background-color: #000000;
+        /* Warna latar belakang */
+        color: rgb(80, 43, 43);
+        /* Warna teks */
+        border: none;
+        /* Hilangkan border */
+        border-radius: 5px;
+        /* Atur radius sudut */
+        cursor: pointer;
+        /* Ubah kursor saat dihover */
     }
 
     .custom-button:hover {
-        background-color: #495057; /* Warna latar belakang saat dihover */
+        background-color: #495057;
+        /* Warna latar belakang saat dihover */
     }
-    .button-group .btn {
-      margin: 10px; /* Atur jarak antar tombol */
-      width: 170px; /* Atur lebar tombol */
+
+
+    .nav-pills {
+    display: flex;
+    justify-content: space-between; /* Jarak merata */
+    padding: 0; /* Hapus padding default */
+    list-style: none; /* Hapus bullet */
+    text-align: center;
     }
+
+    .nav-pills .nav-link {
+        width: 180px; 
+    /* Atur jarak antar tombol */
+    }
+
+
 
     /* Target form labels */
     form#Penduduk label {
@@ -60,70 +109,102 @@
         font-size: 0.75rem;
         /* Adjust as needed */
     }
- 
+
     /* CSS untuk .app-wrapper-title */
     .app-title {
-        background-color: #c0c4c5; /* Warna latar belakang untuk app-page-title */
-        padding: 20px; /* Padding untuk ruang di sekitar konten */
-        border-radius: 8px; /* Membuat sudut melengkung */
-        margin-bottom: 10px; /* Jarak bawah dari elemen lain */
+        background-color: #c0c4c5;
+        /* Warna latar belakang untuk app-page-title */
+        padding: 20px;
+        /* Padding untuk ruang di sekitar konten */
+        border-radius: 8px;
+        /* Membuat sudut melengkung */
+        margin-bottom: 10px;
+        /* Jarak bawah dari elemen lain */
     }
-    
+
     /* CSS untuk .page-title-wrapper */
     .app-wrapper {
-        display: flex; /* Gunakan flexbox untuk mengatur tata letak */
-        align-items: center; /* Menyelaraskan item di tengah secara vertikal */
+        display: flex;
+        /* Gunakan flexbox untuk mengatur tata letak */
+        align-items: center;
+        /* Menyelaraskan item di tengah secara vertikal */
     }
-    
+
     /* CSS untuk .page-title-heading */
     .app-heading {
-        display: flex; /* Gunakan flexbox untuk mengatur tata letak */
-        align-items: center; /* Menyelaraskan item di tengah secara vertikal */
+        display: flex;
+        /* Gunakan flexbox untuk mengatur tata letak */
+        align-items: center;
+        /* Menyelaraskan item di tengah secara vertikal */
     }
-    
+
     /* CSS untuk .app-bg-icon */
     .app-bg-icon {
-        display: flex; /* Gunakan flexbox untuk mengatur tata letak ikon */
-        align-items: center; /* Menyelaraskan ikon di tengah secara vertikal */
-        justify-content: center; /* Menyelaraskan ikon di tengah secara horizontal */
-        width: 40px; /* Lebar tetap untuk ikon */
-        height: 40px; /* Tinggi tetap untuk ikon */
-        background-color: #c0c4c505; /* Warna latar belakang untuk ikon */
-        border-radius: 10%; /* Membuat ikon menjadi lingkaran */
-        margin-right: 15px; /* Jarak kanan dari teks */
+        display: flex;
+        /* Gunakan flexbox untuk mengatur tata letak ikon */
+        align-items: center;
+        /* Menyelaraskan ikon di tengah secara vertikal */
+        justify-content: center;
+        /* Menyelaraskan ikon di tengah secara horizontal */
+        width: 40px;
+        /* Lebar tetap untuk ikon */
+        height: 40px;
+        /* Tinggi tetap untuk ikon */
+        background-color: #c0c4c505;
+        /* Warna latar belakang untuk ikon */
+        border-radius: 10%;
+        /* Membuat ikon menjadi lingkaran */
+        margin-right: 15px;
+        /* Jarak kanan dari teks */
     }
-    
-    
+
+
     /* CSS untuk .page-title-subheading */
     .app-text_fount {
-        font-size: 14px; /* Ukuran font untuk subjudul */
-        color: #373636; /* Warna teks untuk subjudul */
-        margin-top: 15px; /* Jarak atas dari judul */
+        font-size: 14px;
+        /* Ukuran font untuk subjudul */
+        color: #373636;
+        /* Warna teks untuk subjudul */
+        margin-top: 15px;
+        /* Jarak atas dari judul */
     }
+
     .btn-purple {
         background-color: purple;
         color: white;
         border-color: purple;
     }
+
     .small-font-form {
-    font-size: 10px;
+        font-size: 10px;
     }
+
     .custom-button {
-        width: 200px; /* Atur panjang tombol sesuai kebutuhan */
-        float: right; /* Tempatkan tombol di sebelah kanan */
-        text-align: center; /* Pusatkan teks di tombol */
-        background-color: #2280de; /* Warna latar belakang */
-        color: white; /* Warna teks */
-        border: none; /* Hilangkan border */
-        border-radius: 5px; /* Atur radius sudut */
-        cursor: pointer; /* Ubah kursor saat dihover */
+        width: 200px;
+        /* Atur panjang tombol sesuai kebutuhan */
+        float: right;
+        /* Tempatkan tombol di sebelah kanan */
+        text-align: center;
+        /* Pusatkan teks di tombol */
+        background-color: #2280de;
+        /* Warna latar belakang */
+        color: white;
+        /* Warna teks */
+        border: none;
+        /* Hilangkan border */
+        border-radius: 5px;
+        /* Atur radius sudut */
+        cursor: pointer;
+        /* Ubah kursor saat dihover */
     }
 
     .custom-button:hover {
-        background-color: #495057; /* Warna latar belakang saat dihover */
+        background-color: #495057;
+        /* Warna latar belakang saat dihover */
     }
 
 </style>
+
 <body id="page-top">
     <div id="wrapper">
         <!-- Sidebar -->
@@ -148,6 +229,9 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    @yield('modal')
+
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -164,10 +248,14 @@
     <script src="/assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
-          $('#dataTable').DataTable(); // ID From dataTable 
-          $('#dataTableHover').DataTable(); // ID From dataTable with Hover
+            $('#TbPermohonan').DataTable(); // ID From dataTable 
+            $('#TbPasang').DataTable(); 
+            $('#TbAktif').DataTable(); 
+            $('#TbBlokir').DataTable(); 
+            $('#TbCabut').DataTable(); 
         });
-      </script>  z
+
+    </script>
     @yield('script')
 </body>
 

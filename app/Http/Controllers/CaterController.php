@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Package;
+use App\Models\Cater;
 use Illuminate\Http\Request;
 
-class PackageController extends Controller
+class CaterController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $packages = Package::all();
-
-        $title = 'Paket Pelanggan';
-        return view('paket.index')->with(compact('title','packages'));
+        //
     }
 
     /**
@@ -23,10 +20,7 @@ class PackageController extends Controller
      */
     public function create()
     {
-        $paket = Package::all();
-
-        $title = 'Register Penduduk';
-        return view('pelanggan.create')->with(compact('paket','title'));
+        //
     }
 
     /**
@@ -40,7 +34,7 @@ class PackageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Package $package)
+    public function show(Cater $cater)
     {
         //
     }
@@ -48,7 +42,7 @@ class PackageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Package $package)
+    public function edit(Cater $cater)
     {
         //
     }
@@ -56,7 +50,7 @@ class PackageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Package $package)
+    public function update(Request $request, Cater $cater)
     {
         //
     }
@@ -64,7 +58,7 @@ class PackageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Package $package)
+    public function destroy(Cater $cater)
     {
         //
     }

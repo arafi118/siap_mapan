@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Family;
 use App\Models\Village;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CustomerController extends Controller
 {
@@ -15,6 +16,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
+        Session::put('business_id','1');
         $customers = Customer::all();
 
         $title = 'Data penduduk';
@@ -96,7 +98,7 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
          // Menghapus customer berdasarkan id yang diterima
-        $customer->delete();
+        // $customer->delete();
     
         // Redirect ke halaman customer dengan pesan sukses
         return redirect('/customers')->with('Berhasil', 'Customer berhasil dihapus');

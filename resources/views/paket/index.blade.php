@@ -4,12 +4,6 @@
 
 <!-- Row -->
 <!-- Row -->
-<style>
-    table, th, td {
-        font-size: 12px;
-    }
-</style>
-
 <div class="row">
     <!-- Datatables -->
     <div class="col-lg-12">
@@ -23,26 +17,26 @@
                         </div>
                         <div>&nbsp;</div>
                         <tr>
-                            <th>NIK</th>
-                            <th>NAMA LENGKAP</th>
-                            <th>ALAMAT</th>
-                            <th>TELPON</th>
-                            <th>STATUS</th>
+                            <th>KELAS</th>
+                            <th>HARGA</th>
+                            <th>BEBAN</th>
+                            <th>DENDA</th>
                             <th style="text-align: center;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($packages as $paket)
                         <tr>
-                            <td></td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>$320,800</td>
+                            <td>{{ $paket->kelas }}</td>
+                            <td>{{ $paket->harga }}</td>
+                            <td>{{ $paket->abodemen }}</td>
+                            <td>{{ $paket->denda }}</td>
                             <td style="text-align: center;"> 
                                 <a href="" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
                                 <a href="" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
                               </td>
-                        </tr>
+                        </tr> 
+                        @endforeach                    
                     </tbody>
                 </table>
             </div>

@@ -4,11 +4,7 @@
 
 <!-- Row -->
 <!-- Row -->
-<style>
-    table, th, td {
-        font-size: 12px;
-    }
-</style>
+
 
 <div class="row">
     <!-- Datatables -->
