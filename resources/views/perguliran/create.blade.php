@@ -16,7 +16,6 @@
                                 Catatan : ( Jika Ada data atau inputan yang kosong bisa di isi ( 0 ) atau ( - ) )
                             </div>
                             <div class="alert alert-light" role="alert">
-
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="position-relative mb-3">
@@ -142,6 +141,7 @@
     </div>
 </div>
 @endsection
+
 @section('script')
 <script>
     $('.date').datepicker({
