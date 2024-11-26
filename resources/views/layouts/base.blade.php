@@ -15,25 +15,12 @@
     <!-- Bootstrap DatePicker -->
 </head>
 <style>
+    .form-label {
+        font-size: 12px; /* Atur ukuran sesuai kebutuhan */
+        font-weight: normal; /* Tambahkan jika ingin teks lebih ringan */
+    }
   .align-right {
     text-align: right; /* Mengatur teks dalam elemen ke kanan */
-  }
-
-     .custom-modal .modal-dialog {
-    max-width: 600px; /* Atur lebar */
-    margin: auto; /* Tengah */
-  }
-    @media (max-width: 768px) {
-    .custom-modal .modal-dialog {
-        max-width: 90%; /* Sesuaikan untuk layar kecil */
-    }
-
-    .custom-modal .modal-content {
-        height: auto; /* Biarkan otomatis */
-    }
-    }
-  .custom-modal .modal-content {
-    height: 400px; /* Atur tinggi */
   }
     .modal-open .select2-dropdown {
         z-index: 10060;

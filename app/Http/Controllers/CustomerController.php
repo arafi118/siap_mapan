@@ -97,12 +97,13 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-         // Menghapus customer berdasarkan id yang diterima
-        // $customer->delete();
+        // Menghapus customer berdasarkan id yang diterima
+        $customer->delete();
     
         // Redirect ke halaman customer dengan pesan sukses
-        return redirect('/customers')->with('Berhasil', 'Customer berhasil dihapus');
+        return redirect('/customers')->with('success', 'Customer berhasil dihapus');
     }
+    
 
     /**
      * Show the form for editing the specified resource.

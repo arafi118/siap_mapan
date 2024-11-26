@@ -76,11 +76,6 @@
     </div>
 </div>
 @endsection
-
-@section('modal')
-    @include('rekening.create')
-@endsection
-
 @section('script')
 <script>
     $(document).ready(function () {
