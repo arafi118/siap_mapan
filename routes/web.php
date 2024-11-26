@@ -4,7 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\InstallationController;
+use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
@@ -46,7 +46,10 @@ Route::resource('/customers', CustomerController::class);
 // DELETE /customers/{id}           destroy
 
 // Installations || Instalasi
-Route::resource('/installations', InstallationController::class);
+Route::resource('/installations', InstallationsController::class);
+Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'janis_paket']);
+Route::get('installations/generatekode_istalasi', [InstallationsController::class, 'generatekode_istalasi']);
+
 
 // Packages || Paket
 Route::resource('/packages', PackageController::class);

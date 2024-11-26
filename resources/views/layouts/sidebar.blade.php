@@ -36,7 +36,7 @@
             <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap"
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="/customers/create">Register Nasabah</a>
+                    <a class="collapse-item" href="/customers/create">Register Pelanggan</a>
                     <a class="collapse-item" href="/customers">Data Pelanggan</a>
                     <a class="collapse-item" href="/accounts">Rekening</a>
                     <a class="collapse-item" href="/packages">Paket</a>

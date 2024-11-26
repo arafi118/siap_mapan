@@ -8,19 +8,27 @@
             <div class="card-body">
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" data-target="#Permohonan" href="#">Permohonan</a>
+                        <a class="nav-link active" data-toggle=" tab" data-target="#Permohonan" href="#">
+                            <b>Permohonan (P)</b>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Pasang" href="#">Pasang</a>
+                        <a class="nav-link" data-toggle="tab" data-target="#Pasang" href="#">
+                            <b>Pasang (S)</b>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Aktif" href="#">Aktif</a>
+                        <a class="nav-link" data-toggle="tab" data-target="#Aktif" href="#">
+                            <b>Aktif (A)</b>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Blokir" href="#">Blokir</a>
+                        <a class="nav-link" data-toggle="tab" data-target="#Blokir" href="#">
+                            <b>Blokir (B)</b>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Cabut" href="#">Cabut</a>
+                        <a class="nav-link" data-toggle="tab" data-target="#Cabut" href="#">Cabut (C)</a>
                     </li>
                 </ul>
             </div>
