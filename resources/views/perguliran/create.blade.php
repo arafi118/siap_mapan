@@ -49,7 +49,7 @@
                                                 <option>Pilih Nama/Desa</option>
                                                 @foreach ( $customer as $anggota )
                                                 <option value="{{ $anggota->id }}">
-                                                    {{ $anggota->nama }} [{{ $anggota->village->nama }}]
+                                                    {{ $anggota->village->nama }}
                                                 </option>
                                                 @endforeach
                                             </select>
