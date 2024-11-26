@@ -8,33 +8,50 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>{{ $title }}</title>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+        integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css">
     <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/ruang-admin-min.css" rel="stylesheet">
     <link href="/assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <!-- Bootstrap DatePicker -->
+
 </head>
 <style>
-  .align-right {
-    text-align: right; /* Mengatur teks dalam elemen ke kanan */
-  }
+    .align-right {
+        text-align: right;
+        /* Mengatur teks dalam elemen ke kanan */
+    }
 
-     .custom-modal .modal-dialog {
-    max-width: 600px; /* Atur lebar */
-    margin: auto; /* Tengah */
-  }
-    @media (max-width: 768px) {
     .custom-modal .modal-dialog {
-        max-width: 90%; /* Sesuaikan untuk layar kecil */
+        max-width: 600px;
+        /* Atur lebar */
+        margin: auto;
+        /* Tengah */
+    }
+
+    @media (max-width: 768px) {
+        .custom-modal .modal-dialog {
+            max-width: 90%;
+            /* Sesuaikan untuk layar kecil */
+        }
+
+        .custom-modal .modal-content {
+            height: auto;
+            /* Biarkan otomatis */
+        }
     }
 
     .custom-modal .modal-content {
-        height: auto; /* Biarkan otomatis */
+        height: 400px;
+        /* Atur tinggi */
     }
-    }
-  .custom-modal .modal-content {
-    height: 400px; /* Atur tinggi */
-  }
+
     .modal-open .select2-dropdown {
         z-index: 10060;
     }
@@ -77,16 +94,19 @@
 
 
     .nav-pills {
-    display: flex;
-    justify-content: space-between; /* Jarak merata */
-    padding: 0; /* Hapus padding default */
-    list-style: none; /* Hapus bullet */
-    text-align: center;
+        display: flex;
+        justify-content: space-between;
+        /* Jarak merata */
+        padding: 0;
+        /* Hapus padding default */
+        list-style: none;
+        /* Hapus bullet */
+        text-align: center;
     }
 
     .nav-pills .nav-link {
-        width: 180px; 
-    /* Atur jarak antar tombol */
+        width: 180px;
+        /* Atur jarak antar tombol */
     }
 
 
@@ -246,16 +266,20 @@
     <!-- Page level plugins -->
     <script src="/assets/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="/assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"
+        integrity="sha512-+UiyfI4KyV1uypmEqz9cOIJNwye+u+S58/hSwKEAeUMViTTqM9/L4lqu8UxJzhmzGpms8PzFJDzEqXL9niHyjA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function () {
             $('#TbPermohonan').DataTable(); // ID From dataTable 
-            $('#TbPasang').DataTable(); 
-            $('#TbAktif').DataTable(); 
-            $('#TbBlokir').DataTable(); 
-            $('#TbCabut').DataTable(); 
+            $('#TbPasang').DataTable();
+            $('#TbAktif').DataTable();
+            $('#TbBlokir').DataTable();
+            $('#TbCabut').DataTable();
         });
 
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @yield('script')
 </body>
 
