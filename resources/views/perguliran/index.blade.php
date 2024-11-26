@@ -8,21 +8,29 @@
             <div class="card-body">
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" data-target="#Permohonan" href="#">Permohonan</a>
+                        <a class="nav-link active" data-toggle=" tab" data-target="#Permohonan" href="#">
+                            <b>Permohonan (P)</b>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Pasang" href="#">Pasang</a>
+                        <a class="nav-link" data-toggle="tab" data-target="#Pasang" href="#">
+                            <b>Pasang (S)</b>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Aktif" href="#">Aktif</a>
+                        <a class="nav-link" data-toggle="tab" data-target="#Aktif" href="#">
+                            <b>Aktif (A)</b>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Blokir" href="#">Blokir</a>
+                        <a class="nav-link" data-toggle="tab" data-target="#Blokir" href="#">
+                            <b>Blokir (B)</b>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Cabut" href="#">Cabut</a>
+                        <a class="nav-link" data-toggle="tab" data-target="#Cabut" href="#">Cabut (C)</a>
                     </li>
-                </ul> 
+                </ul>
             </div>
         </div>
     </div>
@@ -40,11 +48,11 @@
                             <table class="table align-items-center table-flush" id="TbPermohonan">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Permohonan</th>
-                                        <th>Position</th>
-                                        <th>Office</th>
-                                        <th>Age</th>
-                                        <th>Start date</th>
+                                        <th>Kode instalasi</th>
+                                        <th>Customer</th>
+                                        <th>Package</th>
+                                        <th>Tanggal Order</th>
+                                        <th>Status</th>
                                         <th style="text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
@@ -53,10 +61,11 @@
                                         <td>Tiger Nixon</td>
                                         <td>System Architect</td>
                                         <td>Edinburgh</td>
-                                        <td>61</td>
-                                        <td>$320,800</td>
+                                        <td>System Architect</td>
+                                        <td>Edinburgh</td>
                                         <td style="text-align: center;">
-                                            <a href="" class="btn btn-warning mx-1"><i class="fas fa-pencil-alt"></i></a>
+                                            <a href="" class="btn btn-warning mx-1"><i
+                                                    class="fas fa-pencil-alt"></i></a>
                                             <a href="" class="btn btn-danger mx-1"><i class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>
@@ -93,7 +102,8 @@
                                         <td>61</td>
                                         <td>$320,800</td>
                                         <td style="text-align: center;">
-                                            <a href="" class="btn btn-warning mx-1"><i class="fas fa-pencil-alt"></i></a>
+                                            <a href="" class="btn btn-warning mx-1"><i
+                                                    class="fas fa-pencil-alt"></i></a>
                                             <a href="" class="btn btn-danger mx-1"><i class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>
@@ -103,7 +113,7 @@
                     </div>
                 </div>
             </div>
-         </div>
+        </div>
 
         <!-- Aktif Tab -->
         <div id="Aktif" role="tab" class="tab-pane">
@@ -130,7 +140,8 @@
                                         <td>61</td>
                                         <td>$320,800</td>
                                         <td style="text-align: center;">
-                                            <a href="" class="btn btn-warning mx-1"><i class="fas fa-pencil-alt"></i></a>
+                                            <a href="" class="btn btn-warning mx-1"><i
+                                                    class="fas fa-pencil-alt"></i></a>
                                             <a href="" class="btn btn-danger mx-1"><i class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>
@@ -167,7 +178,8 @@
                                         <td>61</td>
                                         <td>$320,800</td>
                                         <td style="text-align: center;">
-                                            <a href="" class="btn btn-warning mx-1"><i class="fas fa-pencil-alt"></i></a>
+                                            <a href="" class="btn btn-warning mx-1"><i
+                                                    class="fas fa-pencil-alt"></i></a>
                                             <a href="" class="btn btn-danger mx-1"><i class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>
@@ -203,7 +215,8 @@
                                         <td>61</td>
                                         <td>$320,800</td>
                                         <td style="text-align: center;">
-                                            <a href="" class="btn btn-warning mx-1"><i class="fas fa-pencil-alt"></i></a>
+                                            <a href="" class="btn btn-warning mx-1"><i
+                                                    class="fas fa-pencil-alt"></i></a>
                                             <a href="" class="btn btn-danger mx-1"><i class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>
@@ -213,7 +226,7 @@
                     </div>
                 </div>
             </div>
-         </div>
+        </div>
     </div>
 </div>
 @endsection
