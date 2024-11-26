@@ -266,13 +266,13 @@ $status = '1';
                         </div>
                         <button type="submit" class="btn btn-dark btn-sm float-end" id="SimpanPenduduk">Simpan
                             Penduduk</button>
-                        <button type="button" class="btn btn-danger btn-sm me-3 float-end" id="BlokirPenduduk">
+                        {{-- <button type="button" class="btn btn-danger btn-sm me-3 float-end" id="BlokirPenduduk">
                             @if ($status == '0')
                             Blokir Penduduk
                             @else
                             Lepaskan Blokiran
                             @endif
-                        </button>
+                        </button> --}}
                     </form>
                 </div>
             </div>

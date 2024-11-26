@@ -4,14 +4,20 @@
 
 <!-- Row -->
 <!-- Row -->
-
-
+@if (session('success'))
+<div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+    <li class="	fas fa-check-circle"></li>
+    {{ session('success') }}
+</div>
+@endif
+<form action="/customers" method="post" id="HapusPenduduk">
+    @csrf
 <div class="row">
     <!-- Datatables -->
     <div class="col-lg-12">
         <div class="card mb-4">
             <div class="table-responsive p-3">
-                <table class="table align-items-center table-flush" id="dataTable">
+                <table class="table align-items-center table-flush" id="TbPelanggan">
                     <thead class="thead-light">
                         <div style="display: flex; align-items: center;">
                             <i class="fas fa-users" style="font-size: 30px; margin-right: 13px;"></i>
@@ -38,7 +44,7 @@
                             <td style="text-align: center;"> 
                                 <a href="/customers/{{ $customer->nik }}/edit" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
                                 <a href="/customers/{{ $customer->nik }}" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
-                              </td>
+                              </td>            
                         </tr>
                         @endforeach
                     </tbody>
@@ -47,6 +53,8 @@
         </div>
     </div>
 </div>
+</form>
+
 <!--Row-->
 
 <!-- Documentation Link -->
@@ -75,6 +83,10 @@
 @endsection
 @section('script')
 <script>
+    $(document).ready(function () {
+        $('#TbPelanggan').DataTable(); // ID From dataTable 
+    });
+
     var table = $('.table-hover').DataTable({
         language: {
             paginate: {
@@ -84,7 +96,7 @@
         },
         processing: true,
         serverSide: true,
-        ajax: "/database/pelanggan",
+        ajax: "/customers",
         columns: [{
                 data: 'id',
                 name: 'id',
@@ -121,13 +133,25 @@
 
     $('.table').on('click', 'tbody tr', function (e) {
         var data = table.row(this).data();
-        window.location.href = '/database/pelanggan/' + data.nik;
+        window.location.href = '/customers' + data.nik;
     });
 </script>
 
-@if (Session::get('berhasil'))
+    @if (Session::get('berhasil'))
+        <script>
+            alert('{{ Session::get('berhasil') }}')
+        </script>
+    @endif
     <script>
-        alert('{{ Session::get('berhasil') }}')
+        // Menghilangkan notifikasi setelah 5 detik
+        document.addEventListener('DOMContentLoaded', function() {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 2000); // 2000ms = 2 detik
+            }
+        });
     </script>
-@endif
+
 @endsection

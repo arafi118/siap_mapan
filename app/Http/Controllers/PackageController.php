@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class PackageController extends Controller
 {
@@ -14,7 +16,7 @@ class PackageController extends Controller
     {
         $packages = Package::all();
 
-        $title = 'Paket Pelanggan';
+        $title = 'Data Paket';
         return view('paket.index')->with(compact('title','packages'));
     }
 
@@ -25,8 +27,8 @@ class PackageController extends Controller
     {
         $paket = Package::all();
 
-        $title = 'Register Penduduk';
-        return view('pelanggan.create')->with(compact('paket','title'));
+        $title = 'Register Paket';
+        return view('paket.create')->with(compact('paket','title'));
     }
 
     /**
@@ -34,7 +36,24 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'kelas' => 'required',
+            'harga' => 'required',
+            'harga1' => 'required',
+            'beban' => 'required',
+            'denda' => 'required'
+         ]);
+
+            Package::create([
+            'kelas' => $request->kelas,
+            'harga' => $request->harga,
+            'harga1' => $request->harga1,
+            'abodemen' => $request->beban,
+            'denda' => $request->denda
+            
+        ]);
+
+        return redirect('/packages')->with('berhasil','Customer berhasil disimpan');
     }
 
     /**
@@ -42,7 +61,10 @@ class PackageController extends Controller
      */
     public function show(Package $package)
     {
-        //
+        $package->delete();
+    
+        // Redirect ke halaman customer dengan pesan sukses
+        return redirect('/packages')->with('success', 'Package berhasil dihapus');
     }
 
     /**

@@ -230,3 +230,16 @@
     </div>
 </div>
 @endsection
+
+@section('script')
+<script>
+    $(document).ready(function () {
+        $('#TbPermohonan').DataTable(); // ID From dataTable 
+        $('#TbPasang').DataTable(); 
+        $('#TbAktif').DataTable(); 
+        $('#TbBlokir').DataTable(); 
+        $('#TbCabut').DataTable(); 
+    });
+
+</script>
+@endsection

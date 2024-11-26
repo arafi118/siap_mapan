@@ -23,6 +23,7 @@
 
 </head>
 <style>
+<<<<<<< HEAD
     .align-right {
         text-align: right;
         /* Mengatur teks dalam elemen ke kanan */
@@ -52,6 +53,15 @@
         /* Atur tinggi */
     }
 
+=======
+    .form-label {
+        font-size: 12px; /* Atur ukuran sesuai kebutuhan */
+        font-weight: normal; /* Tambahkan jika ingin teks lebih ringan */
+    }
+  .align-right {
+    text-align: right; /* Mengatur teks dalam elemen ke kanan */
+  }
+>>>>>>> 46612e4a110d5e8e80bd81885639b90553347087
     .modal-open .select2-dropdown {
         z-index: 10060;
     }
@@ -265,6 +275,7 @@
     <!-- Page level plugins -->
     <script src="/assets/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="/assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<<<<<<< HEAD
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"
         integrity="sha512-+UiyfI4KyV1uypmEqz9cOIJNwye+u+S58/hSwKEAeUMViTTqM9/L4lqu8UxJzhmzGpms8PzFJDzEqXL9niHyjA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -279,6 +290,9 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+=======
+    
+>>>>>>> 46612e4a110d5e8e80bd81885639b90553347087
     @yield('script')
 </body>
 
