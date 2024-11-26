@@ -5,7 +5,7 @@
 <!-- Row -->
 <!-- Row -->
     <!-- Datatables -->
-    <div class="col-lg-12">
+    {{-- <div class="col-lg-12">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <!-- Bagian kiri: Rekening -->
             <div style="display: flex; align-items: center;">
@@ -19,21 +19,24 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> --}}
     
 <div class="row">
     <!-- Datatables -->
     <div class="col-lg-12">
         <div class="card mb-4">
             <div class="table-responsive p-3">
-                <table class="table align-items-center table-flush" id="dataTable">
+                <table class="table align-items-center table-flush" id="TbRekening">
+                    <div style="display: flex; align-items: center;">
+                        <i class="far fa-credit-card" style="font-size: 20px; margin-right: 5px;"></i>
+                        <b>Rekening</b>
+                    </div>
                     <thead class="thead-light">
                         <div>&nbsp;</div>
                         <tr>
                             <th>KODE AKUN</th>
                             <th>NAMA AKUN</th>
                             <th>JENIS MUTASI</th>
-                            <th style="text-align: center;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,10 +45,6 @@
                             <td>{{ $rek->kode_akun}}</td>
                             <td>{{ $rek->nama_akun }}</td>
                             <td>{{ $rek->jenis_mutasi }}</td>
-                            <td style="text-align: center;"> 
-                                <a href="/packages/{{ $rek->kode_akun }}/edit" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
-                                <a href="/packages/{{ $rek->kode_akun }}" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
-                              </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -76,9 +75,16 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('modal')
     @include('rekening.create')
+@endsection
+
+@section('script')
+<script>
+    $(document).ready(function () {
+        $('#TbRekening').DataTable(); // ID From dataTable 
+    });
+</script>
 @endsection

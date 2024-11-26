@@ -12,7 +12,7 @@
                 <table class="table align-items-center table-flush" id="dataTable">
                     <thead class="thead-light">
                         <div style="display: flex; align-items: center;">
-                            <i class="fas fa-users" style="font-size: 30px; margin-right: 13px;"></i>
+                            <i class="fa fa-cubes" style="font-size: 30px; margin-right: 13px;"></i>
                             <b> Data Paket</b>
                         </div>
                         <div>&nbsp;</div>
