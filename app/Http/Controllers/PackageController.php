@@ -53,7 +53,7 @@ class PackageController extends Controller
             
         ]);
 
-        return redirect('/packages')->with('berhasil','Customer berhasil disimpan');
+        return redirect('/packages')->with('berhasil','Paket berhasil ditambahkan');
     }
 
     /**
@@ -64,7 +64,7 @@ class PackageController extends Controller
         $package->delete();
     
         // Redirect ke halaman customer dengan pesan sukses
-        return redirect('/packages')->with('success', 'Package berhasil dihapus');
+        return redirect('/packages')->with('success', 'Paket berhasil dihapus');
     }
 
     /**
@@ -72,7 +72,10 @@ class PackageController extends Controller
      */
     public function edit(Package $package)
     {
-        //
+
+        $title = 'Edit Paket';
+        return view('paket.edit')->with(compact('title','package'));
+    
     }
 
     /**
@@ -80,7 +83,32 @@ class PackageController extends Controller
      */
     public function update(Request $request, Package $package)
     {
-        //
+        // Validasi input
+        $validasi = [
+            'kelas' => 'required',
+            'harga' => 'required',
+            'harga1' => 'required',
+            'beban' => 'required',
+            'denda' => 'required'
+        ];
+
+        if ($request->id != $package->id) {
+            $validasi['id'] = 'required|unique:packages';
+        }
+
+        $this->validate($request, $validasi);
+    
+        // Update data customer
+        $update = Package::where('id', $package->id)->update([
+            'kelas' => $request->kelas,
+            'harga' => $request->harga,
+            'harga1' => $request->harga1,
+            'abodemen' => $request->beban,
+            'denda' => $request->denda
+        ]);
+    
+        return redirect('/packages')->with('Berhasil', 'Paket berhasil diperbarui');
+
     }
 
     /**
