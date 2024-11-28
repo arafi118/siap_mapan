@@ -3,7 +3,8 @@
 @section('content')
 
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert" id="success-alert">
+        <li class="	fas fa-check-circle"></li>
         {{ session('success') }}
     </div>
 @endif
@@ -48,7 +49,7 @@
                             <td>{{ $paket->abodemen }}</td>
                             <td>{{ $paket->denda }}</td>
                             <td style="text-align: center;"> 
-                                <a href="/packages/{{ $paket->id }}/edit" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
+                                <a href="/packages/{{ $paket->id}}/edit" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
                                 <a href="/packages/{{ $paket->id }}" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
                               </td>
                         </tr> 
@@ -133,7 +134,7 @@
 
     $('.table').on('click', 'tbody tr', function (e) {
         var data = table.row(this).data();
-        window.location.href = '/packages' + data.kelas;
+        window.location.href = '/packages' + data.id;
     });
 </script>
 <script>
