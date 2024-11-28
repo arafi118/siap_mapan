@@ -34,10 +34,51 @@ class InstallationsController extends Controller
     {
         $paket = Package::all();
         $installations = Installations::all();
-        $customer = Customer::with('village')->orderBy('id', 'ASC')->get();
+        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $desa = Village::all();
+
+        $pilih_desa =0;
         $title = 'Register Proposal'; 
-        return view('perguliran.create')->with(compact('paket','installations','customer','title'));
+        return view('perguliran.create')->with(compact('paket','installations','customer', 'desa', 'pilih_desa', 'title'));
     }    
+
+    public function kode_instalasi()
+    {
+        $kd_desa = request()->get('kode');
+        $jumlah_kode_instalasi_by_desa = Installations::where('desa', $kd_desa)->orderBy('kode_instalasi', 'DESC');
+
+        $desa = Village::where('id', $kd_desa)->first();
+        $kd_prov = substr($desa->kode, 0, 2);
+        $kd_kab = substr($desa->kode, 2, 2);
+        $kd_kec = substr($desa->kode, 4, 2);
+        $kd_desa = substr($desa->kode, 6, 4);
+        $kode_instalasi = $kd_prov . '.' . $kd_kab . '.' . $kd_kec . '.' . $kd_desa;
+
+        if ($jumlah_kode_instalasi_by_desa->count() > 0) {
+            $jumlah = str_pad(($jumlah_kode_instalasi_by_desa->count() + 1), 3, "0", STR_PAD_LEFT);
+        } else {
+            $jumlah = str_pad(Installations::where('desa', $kd_desa)->count() + 1, 3, "0", STR_PAD_LEFT);
+        }
+        
+        $kode_instalasi .= '.' . $jumlah;
+
+        if (request()->get('kd_instalasi')) {
+            $kd_ins = request()->get('kd_instalasi');
+            $instalasi = Installations::where('kd_instalasi', $kd_ins);
+                if ($instalasi->count() > 0) {
+                    $data_ins = $instalasi->first();
+
+                if ($kd_desa == $data_ins->desa) {
+                    $kode_instalasi = $data_ins->kd_instalasi;
+                }
+            }
+        }
+    
+        return response()->json([
+                'kd_instalasi' => $kode_instalasi
+            ], Response::HTTP_ACCEPTED);
+        }
+
     public function janis_paket($id)
     {
         $package = Package::where('id', $id)->first();
@@ -52,19 +93,19 @@ class InstallationsController extends Controller
     public function store(Request $request)
     {
     $data = $request->only([
+    'kode_instalasi',
     'customer_id',
     'order',
     'desa',
-    'hamlet_id',
     'alamat',
     'koordinate',
     'package_id'
     ]);
     $rules = [
+    'kode_instalasi' => 'required',
     'customer_id' => 'required',
     'order' => 'required',
     'desa' => 'required',
-    'hamlet_id' => 'required',
     'alamat' => 'required',
     'koordinate'=> 'required',
     'package_id' => 'required'
@@ -77,10 +118,10 @@ class InstallationsController extends Controller
     }
 
     $insert = [
+    'kode_instalasi' =>$request->kode_instalasi,
     'customer_id' => $request->customer_id,
     'order' => Tanggal::tglNasional($request->order),
     'desa' => $request->desa,
-    'hamlet_id' => $request->hamlet_id,
     'alamat' => $request->alamat,
     'koordinate' => $request->koordinate,
     'package_id' => $request->package_id
@@ -88,49 +129,9 @@ class InstallationsController extends Controller
 
     $installations = Installations::create($insert);
     return response()->json([
-    'msg' => 'Register Permohonan dengan Kode Instalasi ' . $insert['customer_id'] . ' berhasil disimpan'
+    'msg' => 'Register Permohonan dengan Kode Instalasi ' . $insert['kode_instalasi'] . ' berhasil disimpan'
     ], Response::HTTP_ACCEPTED);
     }
-
-
-    public function generatekode_istalasi()
-    {
-    $kd_desa = request()->get('kode_istalasi');
-
-    $jumlah_instalasi_by_kd_desa = Installations::where('villages', $kd_desa)->orderBy('kd_instalasi', 'DESC');
-    if ($jumlah_instalasi_by_kd_desa->count() > 0) {
-        $data_instalasi = $jumlah_instalasi_by_kd_desa->first();
-        $kode_istalasi= explode('-',$data_instalasi->kd_instalasi);
-
-    if (count($kode_istalasi) >= 2) {
-            $kode_istalasi = $kode_istalasi[0] . '-' . str_pad(($kode_istalasi[1] + 1), 3, "0", STR_PAD_LEFT);
-        } else {
-            $jumlah_instalasi = str_pad(Installations::where('villages', $kd_desa)->count() + 1, 3, "0", STR_PAD_LEFT);
-            $kd_instalasi = $kd_desa . '-' . $jumlah_instalasi;
-        }
-        } else {
-            $jumlah_instalasi = str_pad(Installations::where('desa', $kd_desa)->count() + 1, 3, "0", STR_PAD_LEFT);
-            $kd_instalasi = $kd_desa . '-' . $jumlah_instalasi;
-    
-        }
-
-    if (request()->get('kd_instalasi')) {
-        $kd_kel = request()->get('kd_instalasi');
-        $istallations = Installations::where('kd_instalasi', $kd_kel);
-            if ($istallations->count() > 0) {
-                $data_kel = $istallations->first();
-
-                if ($kd_desa == $data_kel->desa) {
-                    $kd_instalasi = $data_kel->kd_instalasi;
-                }
-            }
-        }
-
-        return response()->json([
-            'kd_instalasi' => $kd_instalasi
-        ], Response::HTTP_ACCEPTED);
-    }
-
 
     /**
      * Display the specified resource.
