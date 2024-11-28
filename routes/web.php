@@ -46,9 +46,9 @@ Route::resource('/customers', CustomerController::class);
 // DELETE /customers/{id}           destroy
 
 // Installations || Instalasi
-Route::resource('/installations', InstallationsController::class);
 Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'janis_paket']);
-Route::get('installations/generatekode_istalasi', [InstallationsController::class, 'generatekode_istalasi']);
+Route::get('/installations/kode_instalasi', [InstallationsController::class, 'kode_instalasi']);
+Route::resource('/installations', InstallationsController::class);
 
 
 // Packages || Paket

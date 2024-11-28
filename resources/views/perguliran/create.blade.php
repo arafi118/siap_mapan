@@ -5,7 +5,7 @@
     <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
         <div class="main-card mb-3 card">
             <div class="card-body">
-                <form action="/installations" method="post" id="FormRegisterPermohonan" class="small-font-form">
+                <form action="/installations" method="post" id="FormRegisterPermohonan">
                     @csrf
                     <div class="row">
                         <div class="card-body">
@@ -24,7 +24,6 @@
                                                 @foreach ( $customer as $anggota )
                                                 <option value="{{ $anggota->id }}">
                                                     {{ $anggota->nik }} {{ $anggota->nama }}
-                                                    [{{ $anggota->village->nama }}]
                                                 </option>
                                                 @endforeach
                                             </select>
@@ -41,35 +40,22 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="position-relative mb-3">
                                             <label for="desa">Nama/Desa</label>
                                             <select class="select2 form-control" name="desa" id="desa">
                                                 <option>Pilih Nama/Desa</option>
-                                                @foreach ( $customer as $anggota )
-                                                <option value="{{ $anggota->id }}">
-                                                    {{ $anggota->village->nama }}
+                                                @foreach ( $desa as $ds )
+                                                <option
+                                                    {{ $pilih_desa == $ds->kode ? 'selected' : '' }}value="{{ $ds->id }}">
+                                                    {{ $ds->kode}} - [{{ $ds->nama }}]
                                                 </option>
                                                 @endforeach
                                             </select>
                                             <small class="text-danger" id="msg_desa"></small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="position-relative mb-3">
-                                            <label for="hamlet_id">Nama/Dusun</label>
-                                            <select class="select2 form-control" name="hamlet_id" id="hamlet_id">
-                                                <option>Pilih Nama/Dusun</option>
-                                                @foreach ($installations as $ins)
-                                                <option value="{{ $ins->id }}">
-                                                    {{ $ins->alamat }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            <small class="text-danger" id="msg_hamlet_id"></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="position-relative mb-3">
                                             <label for="alamat">Alamat</label>
                                             <input type="text" class="form-control" id="alamat" name="alamat"
@@ -113,10 +99,10 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label for="Kode_istalasi">Kode_istalasi</label>
+                                        <label for="kode_instalasi">Kode instalasi</label>
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" aria-describedby="Kode_istalasi"
-                                                name="Kode_istalasi" id="Kode_istalasi" readonly>
+                                            <input type="text" class="form-control" aria-describedby="Kode_instalasi"
+                                                name="kode_instalasi" id="kode_instalasi" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -144,10 +130,6 @@
 
 @section('script')
 <script>
-    $('.date').datepicker({
-        dateFormat: 'dd/mm/yy'
-    });
-
     $(document).ready(function () {
         $('.select2').select2({
             theme: 'bootstrap4',
@@ -155,7 +137,6 @@
     });
 
     jQuery.datetimepicker.setLocale('de');
-
     $('.date').datetimepicker({
         i18n: {
             de: {
@@ -174,6 +155,17 @@
         format: 'd/m/Y'
     });
 
+
+    $(document).on('change', '#desa', function (e) {
+        e.preventDefault()
+
+        var kd_desa = $(this).val()
+        $.get('/installations/kode_instalasi?kode=' + kd_desa, function (result) {
+            $('#kode_instalasi').val(result.kd_instalasi)
+        })
+    });
+
+
     $(document).on('change', '#jenis_paket', function () {
         var jenis_paket = $(this).val()
 
@@ -181,16 +173,6 @@
             $('#formjenis_paket').html(result.view)
         })
     })
-
-    $(document).on('change', '#desa', function (e) {
-        e.preventDefault()
-
-        var kd_desa = $(this).val()
-        $.get('installations/generatekode_istalasi?kode=' + kd_desa, function (result) {
-            $('#Kode_istalasi').val(result.Kode_istalasi)
-        })
-    });
-
 
     $(document).on('click', '#SimpanPermohonan', function (e) {
         e.preventDefault();
