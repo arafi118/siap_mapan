@@ -126,7 +126,6 @@ class InstallationsController extends Controller
     'koordinate' => $request->koordinate,
     'package_id' => $request->package_id
     ];
-
     $installations = Installations::create($insert);
     return response()->json([
     'msg' => 'Register Permohonan dengan Kode Instalasi ' . $insert['kode_instalasi'] . ' berhasil disimpan'
