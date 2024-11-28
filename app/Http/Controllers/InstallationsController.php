@@ -146,7 +146,7 @@ class InstallationsController extends Controller
      */
     public function edit(Installation $installation)
     {
-        //
+        //test
     }
 
     /**
