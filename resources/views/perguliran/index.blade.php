@@ -64,8 +64,7 @@
                                         <td>System Architect</td>
                                         <td>Edinburgh</td>
                                         <td style="text-align: center;">
-                                            <a href="" class="btn btn-warning mx-1"><i
-                                                    class="fas fa-pencil-alt"></i></a>
+                                            <a href="" class="btn btn-warning mx-1"><i class="fas fa-pencil-alt"></i></a>
                                             <a href="" class="btn btn-danger mx-1"><i class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>

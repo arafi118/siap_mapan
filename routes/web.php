@@ -6,6 +6,7 @@ use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
@@ -62,3 +63,5 @@ Route::resource('/usages', UsageController::class);
 
 // Users || Pengguna
 Route::resource('/users', UserController::class);
+
+Route::get('/pengaturan/sop', [SopController::class, 'index']);
