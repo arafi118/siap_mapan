@@ -10,6 +10,7 @@ use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
+use App\Models\Installations;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,3 +66,5 @@ Route::resource('/usages', UsageController::class);
 Route::resource('/users', UserController::class);
 
 Route::get('/pengaturan/sop', [SopController::class, 'index']);
+Route::get('/detail/{perguliran}', [Installations::class, 'detail'])->middleware('auth');
+

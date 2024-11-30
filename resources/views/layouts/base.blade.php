@@ -23,6 +23,7 @@
 
 </head>
 <style>
+
     HEAD .align-right {
         text-align: right;
         /* Mengatur teks dalam elemen ke kanan */
@@ -117,7 +118,7 @@
     }
 
     .nav-pills .nav-link {
-        width: 180px;
+        width: 160px;
         /* Atur jarak antar tombol */
     }
 
@@ -280,16 +281,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"
         integrity="sha512-+UiyfI4KyV1uypmEqz9cOIJNwye+u+S58/hSwKEAeUMViTTqM9/L4lqu8UxJzhmzGpms8PzFJDzEqXL9niHyjA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        $(document).ready(function () {
-            $('#TbPermohonan').DataTable(); // ID From dataTable 
-            $('#TbPasang').DataTable();
-            $('#TbAktif').DataTable();
-            $('#TbBlokir').DataTable();
-            $('#TbCabut').DataTable();
-        });
-
-    </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @yield('script')
 </body>
