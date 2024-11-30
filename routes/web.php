@@ -65,6 +65,8 @@ Route::resource('/usages', UsageController::class);
 // Users || Pengguna
 Route::resource('/users', UserController::class);
 
-Route::get('/pengaturan/sop', [SopController::class, 'index']);
+Route::get('/pengaturan/sop', [SopController::class, 'profil']);
+Route::get('/pengaturan/sop/create', [SopController::class, 'create_paket']);
+
 Route::get('/detail/{perguliran}', [Installations::class, 'detail'])->middleware('auth');
 
