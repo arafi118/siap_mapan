@@ -25,6 +25,37 @@
 
 </head>
 <style>
+<<<<<<< HEAD
+=======
+
+.btn-white-custom {
+        display: flex;
+        align-items: center;
+        background-color: rgb(253, 12, 12);
+        color: black;
+        border-color: #ffffff;
+        /* Menjaga warna border asli */
+    }
+
+    .btn-white-custom:hover,
+    .btn-white-custom:focus,
+    .btn-white-custom.active {
+        background-color: #202b3c;
+        /* Warna asli saat aktif atau hover */
+        color: rgb(250, 251, 255);
+    }
+
+    .left-align {
+        display: flex;
+        align-items: center;
+    }
+
+    .left-align span {
+        font-size: 13px;
+        /* Adjust the text size as needed */
+    }
+
+>>>>>>> 7b360fae3801b69d15beb1c91693dfefb47512a5
     HEAD .align-right {
         text-align: right;
         /* Mengatur teks dalam elemen ke kanan */

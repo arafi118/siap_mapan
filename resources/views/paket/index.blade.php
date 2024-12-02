@@ -18,9 +18,9 @@
             <b>Data Paket</b>
         </div>
         <!-- Bagian kanan: Tombol -->
-        <div>
+        {{-- <div>
             <a href="/packages/create" class="btn btn-primary" id="RegisterPaket">Register Paket</a>
-        </div>
+        </div> --}}
     </div>
 </div>
 <div class="row">
