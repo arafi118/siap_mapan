@@ -12,15 +12,15 @@ class Installations extends Model
 
     public function customer()
     {
-            return $this->belongsTo(Customer::class, 'id', 'id');
-    }
-    public function hamlet()
-    {
-            return $this->belongsTo(Hamlet::class, 'dusun', 'id');
+            return $this->belongsTo(Customer::class);
     }
     public function package()
     {
-            return $this->belongsTo(Package::class, 'id', 'id');
+            return $this->belongsTo(Package::class);
+    }
+    public function Village()
+    {
+            return $this->belongsTo(Village::class, 'id');
     }
 
 }

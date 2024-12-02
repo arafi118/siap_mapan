@@ -19,11 +19,12 @@
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/ruang-admin-min.css" rel="stylesheet">
     <link href="/assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+
     <!-- Bootstrap DatePicker -->
 
 </head>
 <style>
-
     HEAD .align-right {
         text-align: right;
         /* Mengatur teks dalam elemen ke kanan */
@@ -281,7 +282,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"
         integrity="sha512-+UiyfI4KyV1uypmEqz9cOIJNwye+u+S58/hSwKEAeUMViTTqM9/L4lqu8UxJzhmzGpms8PzFJDzEqXL9niHyjA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"
+        integrity="sha512-Rdk63VC+1UYzGSgd3u2iadi0joUrcwX0IWp2rTh6KXFoAmgOjRS99Vynz1lJPT8dLjvo6JZOqpAHJyfCEZ5KoA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @yield('script')
 </body>

@@ -130,6 +130,9 @@
 
 @section('script')
 <script>
+    $("#total").maskMoney({
+        allowNegative: true
+    });
     $(document).ready(function () {
         $('.select2').select2({
             theme: 'bootstrap4',
@@ -155,7 +158,6 @@
         format: 'd/m/Y'
     });
 
-
     $(document).on('change', '#desa', function (e) {
         e.preventDefault()
 
@@ -164,7 +166,6 @@
             $('#kode_instalasi').val(result.kd_instalasi)
         })
     });
-
 
     $(document).on('change', '#jenis_paket', function () {
         var jenis_paket = $(this).val()

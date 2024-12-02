@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Family;
 use App\Models\Installations;
 use App\Models\Package;
+use App\Models\Transaction;
 use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -23,14 +24,35 @@ class InstallationsController extends Controller
     public function index()
     {
         $installations = Installations::all();
+        $status_P = Installations::whereIn('status', ['P', '0'])->with(
+            'customer',
+            'package'
+        )->get(); 
+        $status_S = Installations::where('status', 'S')->with(
+            'customer',
+            'package'
+        )->get();
+        $status_A = Installations::where('status', 'A')->with(
+            'customer',
+            'package'
+        )->get();
+        $status_B = Installations::where('status', 'B')->with(
+            'customer',
+            'package'
+        )->get();
+        $status_C = Installations::where('status', 'C')->with(
+            'customer',
+            'package'
+        )->get();
 
         $title = 'Proposal';
-        return view('perguliran.index')->with(compact('title','installations'));   
+        return view('perguliran.index')->with(compact('title','installations', 'status_P', 'status_S', 'status_A', 'status_B', 'status_C'));
      }
 
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
         $paket = Package::all();
@@ -78,7 +100,7 @@ class InstallationsController extends Controller
         return response()->json([
                 'kd_instalasi' => $kode_instalasi
             ], Response::HTTP_ACCEPTED);
-        }
+    }
 
     public function janis_paket($id)
     {
@@ -88,49 +110,101 @@ class InstallationsController extends Controller
             'view' => view('perguliran.partials.jenis_paket')->with(compact('package'))->render()
         ]);
     }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-    $data = $request->only([
-    'kode_instalasi',
-    'customer_id',
-    'order',
-    'desa',
-    'alamat',
-    'koordinate',
-    'package_id'
-    ]);
-    $rules = [
-    'kode_instalasi' => 'required',
-    'customer_id' => 'required',
-    'order' => 'required',
-    'desa' => 'required',
-    'alamat' => 'required',
-    'koordinate'=> 'required',
-    'package_id' => 'required'
-    ];
+        $data = $request->only([
+            "customer_id",
+            "order",
+            "desa" ,
+            "alamat",
+            "koordinate",
+            "package_id",
+            "tarif",
+            "biaya",
+            "denda" ,
+            "kode_instalasi",
+            "total",
+        ]);
+        
+        $rules = [
+            'kode_instalasi' => 'required',
+            'customer_id' => 'required',
+            'order' => 'required',
+            'desa' => 'required',
+            'alamat' => 'required',
+            'koordinate'=> 'required',
+            'package_id' => 'required'
+        ];
 
-    $validate = Validator::make($data,$rules);
+        $validate = Validator::make($data,$rules);
 
-    if ($validate->fails()) {
-    return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-    }
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+        $data['tarif'] = str_replace(',','', $data['tarif']);
+        $data['tarif'] = str_replace('.00','', $data['tarif']);
+        $data['tarif'] = floatval($data['tarif']);
 
-    $insert = [
-    'kode_instalasi' =>$request->kode_instalasi,
-    'customer_id' => $request->customer_id,
-    'order' => Tanggal::tglNasional($request->order),
-    'desa' => $request->desa,
-    'alamat' => $request->alamat,
-    'koordinate' => $request->koordinate,
-    'package_id' => $request->package_id
-    ];
-    $installations = Installations::create($insert);
-    return response()->json([
-    'msg' => 'Register Permohonan dengan Kode Instalasi ' . $insert['kode_instalasi'] . ' berhasil disimpan'
-    ], Response::HTTP_ACCEPTED);
+        $data['biaya'] = str_replace(',','', $data['biaya']);
+        $data['biaya'] = str_replace('.00','', $data['biaya']);
+        $data['biaya'] = floatval($data['biaya']);
+
+        $data['total'] = str_replace(',','', $data['total']);
+        $data['total'] = str_replace('.00','', $data['total']);
+        $data['total'] = floatval($data['total']);
+
+        $biaya_instal = $data['total'] - $data['biaya'];
+        $biaya_pakai = $data['tarif'] - $biaya_instal;
+        
+        $status = '0';
+        $jumlah = ($data['tarif'] + $data['biaya']) - $data['total'];
+        if ($jumlah <= 0) {
+            $status = 'P';
+        }
+
+        // INSTALLATION
+        $install = Installations::create([
+            'kode_instalasi' => $request->kode_instalasi,
+            'customer_id' => $request->customer_id,
+            'order' => Tanggal::tglNasional($request->order),
+            'desa' => $request->desa,
+            'alamat' => $request->alamat,
+            'koordinate'=> $request->koordinate,
+            'package_id' => $request->package_id,
+            'status' => $status,
+        ]);
+        
+        // TRANSACTION INSTALLASI
+        $jumlah_instal = ($biaya_instal >= 0) ? $data['biaya']:$data['total'];
+        $persen = 100 - ($jumlah/$data['biaya']*100);
+        $transaksi = Transaction::create([
+            'rekening_debit' => '1',
+            'rekening_kredit' => '67',
+            'total' => $jumlah_instal,
+            'installation_id' => $install->id,
+            'keterangan'=> 'Biaya istalasi ' . $persen . '%',
+        ]);
+        
+        // TRANSACTION AWAL PAKAI
+        if ($biaya_pakai <= 0) {
+            $jumlah_pakai = $biaya_instal;
+            $transaksi = Transaction::create([
+                'rekening_debit' => '1',
+                'rekening_kredit' => '59',
+                'total' => $jumlah_pakai,
+                'installation_id' => $install->id,
+                'keterangan'=> 'Biaya Pemasangan 1 bulan kedepan'
+            ]);
+        }
+    return redirect('/installations')->with('berhasil','Paket berhasil ditambahkan');
+
+        // return response('/installations')->json([
+        // 'msg' => 'Register Permohonan dengan Kode Instalasi ' . $install['kode_instalasi'] . ' berhasil disimpan'
+        // ], Response::HTTP_ACCEPTED);
     }
 
     /**
