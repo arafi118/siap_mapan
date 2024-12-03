@@ -72,7 +72,3 @@ Route::resource('/villages', VillageController::class);
 
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
 Route::get('/pengaturan/sop/create', [SopController::class, 'create_paket']);
-
-Route::get('/detail/{perguliran}', [InstallationsController::class, 'detail'])->middleware('auth');
-
-Route::get('/detail/{perguliran}', [Installations::class, 'detail'])->middleware('auth');
