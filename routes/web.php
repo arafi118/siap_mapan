@@ -10,6 +10,11 @@ use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
+<<<<<<< HEAD
+=======
+use App\Http\Controllers\VillageController;
+use App\Models\Installations;
+>>>>>>> 6e9fef6eb3dc134d8c4fceaebeb662c0e9df7e6a
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,7 +70,16 @@ Route::resource('/usages', UsageController::class);
 // Users || Pengguna
 Route::resource('/users', UserController::class);
 
+// Users || Desa
+Route::resource('/villages', VillageController::class);
+
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
 Route::get('/pengaturan/sop/create', [SopController::class, 'create_paket']);
 
+<<<<<<< HEAD
 Route::get('/detail/{perguliran}', [InstallationsController::class, 'detail'])->middleware('auth');
+=======
+Route::get('/detail/{perguliran}', [Installations::class, 'detail'])->middleware('auth');
+
+
+>>>>>>> 6e9fef6eb3dc134d8c4fceaebeb662c0e9df7e6a

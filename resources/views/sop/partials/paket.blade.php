@@ -55,8 +55,11 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="font-icon-wrapper">
-                                <p><b>Catatan : </b> ( Jika Ada data atau inputan yang kosong bisa di isi ( 0 ) atau ( - ) )</p>
+                            <div class="alert alert-warning alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                Catatan : ( Jika Ada data atau inputan yang kosong bisa di isi ( 0 ) atau ( - ) )
                             </div>
                         </div>
                         <div class="col-12 text-right">

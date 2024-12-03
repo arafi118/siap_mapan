@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Village;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,10 @@ class VillageController extends Controller
      */
     public function index()
     {
-        //
+        $villages = Village::all();
+
+        $title = 'Data Desa';
+        return view('pelanggan.index_desa')->with(compact('title','villages'));
     }
 
     /**
@@ -20,7 +24,10 @@ class VillageController extends Controller
      */
     public function create()
     {
-        //
+        $desa = Village::all();
+
+        $title = 'Register Desa';
+        return view('pelanggan.create_desa')->with(compact('desa','title'));
     }
 
     /**
@@ -28,7 +35,22 @@ class VillageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'kode' => 'required|unique:villages',
+            'nama' => 'required',
+            'alamat' => 'required',
+            'hp' => 'required'
+         ]);
+
+        //  CARA 1
+        Village::create([
+            'kode' => $request->kode,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'hp' => $request->hp
+        ]);
+
+        return redirect('/villages')->with('berhasil','Customer berhasil disimpan');
     }
 
     /**
@@ -44,7 +66,8 @@ class VillageController extends Controller
      */
     public function edit(Village $village)
     {
-        //
+        $title = 'Edit Desa';
+        return view('pelanggan.edit_desa')->with(compact('village','title'));
     }
 
     /**
@@ -52,7 +75,26 @@ class VillageController extends Controller
      */
     public function update(Request $request, Village $village)
     {
-        //
+        // Validasi input
+        $validasi = [
+            'kode' => 'required',
+            'nama' => 'required',
+            'alamat' => 'required',
+            'hp' => 'required'
+        ];
+
+        $this->validate($request, $validasi);
+    
+        // Update data 
+        $update = $village::where('id', $village->id)->update([
+            'kode' => $request->kode,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'hp' => $request->hp
+        ]);
+    
+        return redirect('/villages')->with('Berhasil', 'Desa berhasil diperbarui');
+
     }
 
     /**

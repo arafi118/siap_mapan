@@ -22,7 +22,7 @@
         margin-bottom: 29px; /* Adjust the value as needed */
     }
     .alert-warning {
-        background-color: rgba(93, 170, 132, 0.811);
+        background-color: rgba(248, 162, 14, 0.783);
         color: rgb(110, 77, 0); /* Change text color to white for better readability */
         margin-top: 29px; /* Adjust the value as needed */
         margin-bottom: 29px; /* Adjust the value as needed */
@@ -35,10 +35,10 @@
             <h3 class="text-align-center mb-n-xlg">
                 <i class="fa-solid fa fa-space-shuttle"></i>
                 <b> Standar Operasional Prosedur (SOP)<br>
-                    Penggunaan Aplikasi LKM<br>
+                    Penggunaan Aplikasi SIAP MAPAN<br>
                     <br></b>
-                <span class="h5">Sebagai dasar penggunaan LKM ini<br>
-                    Isilah sesuai dengan prosedur yang berlaku di Lembaga Anda,<br> Klik navbar di atas saya untuk mengatur SOP<br>
+                <span class="h5">Sebagai dasar penggunaan aplikasi SIAP MAPAN ini<br>
+                    Isilah sesuai dengan prosedur yang berlaku di Lembaga Anda,<br> Klik navbar di menu pengaturan untuk mengatur SOP<br>
                     Gunakanlah secara bijak sesuai dengan wewenang Anda, semoga bermanfaat!<br>Salam, <b>Siap Tunai</b></span>
             </h3>
         </div>

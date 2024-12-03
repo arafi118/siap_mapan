@@ -16,7 +16,7 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePage"
                 aria-expanded="true" aria-controls="collapsePage">
                 <i class="fas fa-cog"></i>
-                <span>Pengaturan Sop</span>
+                <span>Pengaturan</span>
             </a>
             <div id="collapsePage" class="collapse" aria-labelledby="headingPage" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
@@ -38,6 +38,8 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="/customers/create">Register Pelanggan</a>
                     <a class="collapse-item" href="/customers">Data Pelanggan</a>
+                    <a class="collapse-item" href="/villages">Data Desa</a>
+                    <a class="collapse-item" href="/accounts">Data Dusun</a>
                     <a class="collapse-item" href="/accounts">Rekening</a>
                     <a class="collapse-item" href="/packages">Paket</a>
                 </div>
