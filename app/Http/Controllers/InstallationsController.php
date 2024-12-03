@@ -7,6 +7,7 @@ use App\Models\Family;
 use App\Models\Installations;
 use App\Models\Package;
 use App\Models\Transaction;
+use App\Models\Usage;
 use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -26,6 +27,7 @@ class InstallationsController extends Controller
         $installations = Installations::all();
         $status_P = Installations::whereIn('status', ['P', '0'])->with(
             'customer',
+            'village',
             'package'
         )->get(); 
         $status_S = Installations::where('status', 'S')->with(
@@ -145,9 +147,9 @@ class InstallationsController extends Controller
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
-        $data['tarif'] = str_replace(',','', $data['tarif']);
-        $data['tarif'] = str_replace('.00','', $data['tarif']);
-        $data['tarif'] = floatval($data['tarif']);
+        // $data['tarif'] = str_replace(',','', $data['tarif']);
+        // $data['tarif'] = str_replace('.00','', $data['tarif']);
+        // $data['tarif'] = floatval($data['tarif']);
 
         $data['biaya'] = str_replace(',','', $data['biaya']);
         $data['biaya'] = str_replace('.00','', $data['biaya']);
@@ -158,10 +160,10 @@ class InstallationsController extends Controller
         $data['total'] = floatval($data['total']);
 
         $biaya_instal = $data['total'] - $data['biaya'];
-        $biaya_pakai = $data['tarif'] - $biaya_instal;
+        // $biaya_pakai = $data['tarif'] - $biaya_instal;
         
         $status = '0';
-        $jumlah = ($data['tarif'] + $data['biaya']) - $data['total'];
+        $jumlah = $data['biaya'] - $data['total'];
         if ($jumlah <= 0) {
             $status = 'P';
         }
@@ -177,7 +179,13 @@ class InstallationsController extends Controller
             'package_id' => $request->package_id,
             'status' => $status,
         ]);
-        
+
+        // INSTALLATION
+        $usages = Usage::create([
+        'installation_id' => $install->id,
+        'jumlah' => $request->tarif,
+        ]);
+
         // TRANSACTION INSTALLASI
         $jumlah_instal = ($biaya_instal >= 0) ? $data['biaya']:$data['total'];
         $persen = 100 - ($jumlah/$data['biaya']*100);
@@ -189,44 +197,108 @@ class InstallationsController extends Controller
             'keterangan'=> 'Biaya istalasi ' . $persen . '%',
         ]);
         
-        // TRANSACTION AWAL PAKAI
-        if ($biaya_pakai <= 0) {
-            $jumlah_pakai = $biaya_instal;
-            $transaksi = Transaction::create([
-                'rekening_debit' => '1',
-                'rekening_kredit' => '59',
-                'total' => $jumlah_pakai,
-                'installation_id' => $install->id,
-                'keterangan'=> 'Biaya Pemasangan 1 bulan kedepan'
-            ]);
-        }
-    return redirect('/installations')->with('berhasil','Paket berhasil ditambahkan');
-
-        // return response('/installations')->json([
-        // 'msg' => 'Register Permohonan dengan Kode Instalasi ' . $install['kode_instalasi'] . ' berhasil disimpan'
-        // ], Response::HTTP_ACCEPTED);
+        // // TRANSACTION AWAL PAKAI
+        // if ($biaya_pakai <= 0) {
+        //     $jumlah_pakai = $biaya_instal;
+        //     $transaksi = Transaction::create([
+        //         'rekening_debit' => '1',
+        //         'rekening_kredit' => '59',
+        //         'total' => $jumlah_pakai,
+        //         'installation_id' => $install->id,
+        //         'keterangan'=> 'Biaya Pemasangan 1 bulan kedepan'
+        //     ]);
+        // }
+    
+        return response()->json([
+            'success' => true,
+            'msg' => 'Permohonan berhasil disimpan',
+            'installation' => $install
+        ]);
     }
 
+    public function pelunasan_instalasi()
+    {
+        $installations = Installations::all();
+        $status_0 = Installations::where('status', '0')->with(
+        'customer',
+        'village',
+        'package'
+        )->get();
+        $title = 'Proposal';
+        return view('perguliran.pelunasan_instalasi')->with(compact('title', 'status_0'));
+    }
     /**
      * Display the specified resource.
      */
-    public function show(Installation $installation)
+    public function show(Installations $installation)
     {
-        //
+          $installation = $installation->with([
+          'customer',
+          'package',
+          'usage',
+          'village'
+          ])->where('id', $installation->id)->first(); 
+          $trx = transaction::where([
+            ['installation_id', $installation->id],
+            ['rekening_debit', '1'],
+            ['rekening_kredit', '67']
+          ])->sum('total');
+       
+          if ($installation->status == 'P' || $installation->status == '0') {
+          $view = 'permohonan';
+          } elseif ($installation->status == 'S') {
+          $view = 'pasang';
+          } elseif ($installation->status == 'A') {
+          $view = 'aktif';
+          } elseif ($installation->status == 'B') {
+          $view = 'blokir';
+          } elseif ($installation->status == 'C') {
+          $view = 'cabut';
+          }elseif ($installation->status == '0') {
+          $view = 'belum_lunas'; 
+          }
+
+          return view('perguliran.partials/' . $view)->with(compact('installation','trx'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Installation $installation)
+    public function edit(Installations $installation)
     {
-        //test
-    }
+$installation = $installation->with([
+          'customer',
+          'package',
+          'usage',
+          'village'
+          ])->where('id', $installation->id)->first(); 
+          $trx = transaction::where([
+            ['installation_id', $installation->id],
+            ['rekening_debit', '1'],
+            ['rekening_kredit', '67']
+          ])->sum('total');
+       
+          if ($installation->status == 'P' || $installation->status == '0') {
+          $view = 'permohonan';
+          } elseif ($installation->status == 'S') {
+          $view = 'pasang';
+          } elseif ($installation->status == 'A') {
+          $view = 'aktif';
+          } elseif ($installation->status == 'B') {
+          $view = 'blokir';
+          } elseif ($installation->status == 'C') {
+          $view = 'cabut';
+          }elseif ($installation->status == '0') {
+          $view = 'belum_lunas'; 
+          }
+
+          return view('perguliran.partials/' . $view)->with(compact('installation','trx'));    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Installation $installation)
+    public function update(Request $request, Installations $installation)
     {
         //
     }
@@ -234,7 +306,7 @@ class InstallationsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Installation $installation)
+    public function destroy(Installations $installation)
     {
         //
     }

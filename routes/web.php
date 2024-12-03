@@ -10,7 +10,6 @@ use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
-use App\Models\Installations;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,6 +49,7 @@ Route::resource('/customers', CustomerController::class);
 // Installations || Instalasi
 Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'janis_paket']);
 Route::get('/installations/kode_instalasi', [InstallationsController::class, 'kode_instalasi']);
+Route::get('/installations/pelunasan_instalasi', [InstallationsController::class, 'pelunasan_instalasi']);
 Route::resource('/installations', InstallationsController::class);
 
 
@@ -68,5 +68,4 @@ Route::resource('/users', UserController::class);
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
 Route::get('/pengaturan/sop/create', [SopController::class, 'create_paket']);
 
-Route::get('/detail/{perguliran}', [Installations::class, 'detail'])->middleware('auth');
-
+Route::get('/detail/{perguliran}', [InstallationsController::class, 'detail'])->middleware('auth');

@@ -187,9 +187,23 @@
             url: actionUrl,
             data: form.serialize(),
             success: function (result) {
-                Swal.fire('Berhasil', 'Permohonan berhasil disimpan', 'success').then(() => {
-                    window.location.href = '/installations';
-                });
+                if (result.success) {
+                    Swal.fire({
+                        title: result.msg,
+                        text: "Tambahkan Permohonan Baru?",
+                        icon: "success",
+                        showDenyButton: true,
+                        confirmButtonText: "Tambahkan",
+                        denyButtonText: `Tidak`
+                    }).then((res) => {
+                        if (res.isConfirmed) {
+                            window.location.reload()
+                        } else {
+                            window.location.href = '/installations/' + result.installation
+                                .id;
+                        }
+                    });
+                }
             },
             error: function (result) {
                 const response = result.responseJSON;

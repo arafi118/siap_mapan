@@ -55,7 +55,7 @@
                                     <tr>
                                         <td>{{ $status_P->kode_instalasi }}</td>
                                         <td>{{ ($status_P->customer) ? $status_P->customer->nama:'' }}</td>
-                                        <td>{{ $status_P->alamat }}</td>
+                                        <td>{{ ($status_P->village) ? $status_P->village->nama:'' }}</td>
                                         <td>{{ ($status_P->package) ? $status_P->package->kelas:'' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($status_P->order)->format('d-m-Y') }}</td>
                                         <td>
@@ -66,7 +66,7 @@
                                             @endif
                                         </td>
                                         <td style="text-align: center;">
-                                            <a href="/packages/{{ $status_P->id}}/edit" class="btn-sm btn-primary"><i
+                                            <a href="/installations/{{ $status_P->id}}" class="btn-sm btn-primary"><i
                                                     class="fa fa-exclamation-circle"></i></a>
                                             <a href="" class="btn-sm btn-warning mx-1"><i
                                                     class="fas fa-pencil-alt"></i></a>
@@ -106,7 +106,7 @@
                                     <tr>
                                         <td>{{ $status_S->kode_instalasi }}</td>
                                         <td>{{ ($status_S->customer) ? $status_S->customer->nama:'' }}</td>
-                                        <td>{{ $status_S->alamat }}</td>
+                                        <td>{{ ($status_s->village) ? $status_s->village->nama:'' }}</td>
                                         <td>{{ ($status_S->package) ? $status_S->package->kelas:'' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($status_S->order)->format('d-m-Y') }}</td>
 
@@ -146,7 +146,7 @@
                                     <tr>
                                         <td>{{ $status_A->kode_instalasi }}</td>
                                         <td>{{ ($status_A->customer) ? $status_A->customer->nama:'' }}</td>
-                                        <td>{{ $status_A->alamat }}</td>
+                                        <td>{{ ($status_A->village) ? $status_A->village->nama:'' }}</td>
                                         <td>{{ ($status_A->package) ? $status_A->package->kelas:'' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($status_A->order)->format('d-m-Y') }}</td>
 
@@ -186,7 +186,7 @@
                                     <tr>
                                         <td>{{ $status_B->kode_instalasi }}</td>
                                         <td>{{ ($status_B->customer) ? $status_B->customer->nama:'' }}</td>
-                                        <td>{{ $status_B->alamat }}</td>
+                                        <td>{{ ($status_B->village) ? $status_B->village->nama:'' }}</td>
                                         <td>{{ ($status_B->package) ? $status_B->package->kelas:'' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($status_B->order)->format('d-m-Y') }}</td>
 
@@ -225,7 +225,7 @@
                                     <tr>
                                         <td>{{ $status_C->kode_instalasi }}</td>
                                         <td>{{ ($status_C->customer) ? $status_C->customer->nama:'' }}</td>
-                                        <td>{{ $status_C->alamat }}</td>
+                                        <td>{{ ($status_C->village) ? $status_C->village->nama:'' }}</td>
                                         <td>{{ ($status_C->package) ? $status_C->package->kelas:'' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($status_C->order)->format('d-m-Y') }}</td>
 

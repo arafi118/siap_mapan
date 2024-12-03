@@ -14,6 +14,11 @@ class Customer extends Model
     {
             return $this->belongsTo(Family::class, 'hubungan', 'id');
     }
+
+    public function installation()
+    {
+    return $this->hasMany(Installations::class);
+    }
         
     public function village()
     {

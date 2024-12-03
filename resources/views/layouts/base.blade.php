@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{{ $title }}</title>
+    {{-- <title>{{ $title }}</title> --}}
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
         integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g=="
@@ -25,10 +25,7 @@
 
 </head>
 <style>
-<<<<<<< HEAD
-=======
-
-.btn-white-custom {
+    .btn-white-custom {
         display: flex;
         align-items: center;
         background-color: rgb(253, 12, 12);
@@ -55,7 +52,6 @@
         /* Adjust the text size as needed */
     }
 
->>>>>>> 7b360fae3801b69d15beb1c91693dfefb47512a5
     HEAD .align-right {
         text-align: right;
         /* Mengatur teks dalam elemen ke kanan */
@@ -297,6 +293,7 @@
 
     @yield('modal')
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
