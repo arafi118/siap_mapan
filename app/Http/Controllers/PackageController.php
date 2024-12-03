@@ -92,13 +92,9 @@ class PackageController extends Controller
             'denda' => 'required'
         ];
 
-        if ($request->id != $package->id) {
-            $validasi['id'] = 'required|unique:packages';
-        }
-
         $this->validate($request, $validasi);
     
-        // Update data customer
+        // Update data 
         $update = Package::where('id', $package->id)->update([
             'kelas' => $request->kelas,
             'harga' => $request->harga,
