@@ -1,3 +1,34 @@
+@php
+$status = Request::get('status');
+
+$tombolP = '';
+$tombolS = '';
+$tombolA = '';
+$tombolB = '';
+$tombolC = '';
+switch ($status) {
+case 'P':
+$tombolP = 'active';
+break;
+case 'S':
+$tombolS = 'active';
+break;
+case 'A':
+$tombolA = 'active';
+break;
+case 'B':
+$tombolB = 'active';
+break;
+case 'C':
+$tombolC = 'active';
+break;
+
+default:
+$tombolP = 'active';
+break;
+}
+@endphp
+
 @extends('layouts.base')
 
 @section('content')
@@ -8,20 +39,24 @@
             <div class="card-body">
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" data-target="#Permohonan"
-                            href="#"><b>Permohonan(P)</b></a>
+                        <a class="nav-link {{ $tombolP }}" data-status="P" data-toggle="tab" data-target="#Permohonan"
+                            href="#"><b>Permohonan (P)</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Pasang" href="#"><b>Pasang (S)</b></a>
+                        <a class="nav-link {{ $tombolS }}" data-status="S" data-toggle="tab" data-target="#Pasang"
+                            href="#"><b>Pasang (S)</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Aktif" href="#"><b>Aktif(A)</b></a>
+                        <a class="nav-link {{ $tombolA }}" data-status="A" data-toggle="tab" data-target="#Aktif"
+                            href="#"><b>Aktif (A)</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Blokir" href="#"><b>Blokir(B)</b></a>
+                        <a class="nav-link {{ $tombolB }}" data-status="B" data-toggle="tab" data-target="#Blokir"
+                            href="#"><b>Blokir (B)</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" data-target="#Cabut" href="#"><b>Cabut(C)</b></a>
+                        <a class="nav-link {{ $tombolC }}" data-status="C" data-toggle="tab" data-target="#Cabut"
+                            href="#"><b>Cabut (C)</b></a>
                     </li>
                 </ul>
             </div>
@@ -32,7 +67,7 @@
 <div class="container-fluid" id="container-wrapper">
     <div id="tabsContent" class="tab-content">
         <!-- Permohonan Tab -->
-        <div id="Permohonan" role="tab" class="tab-pane active show">
+        <div id="Permohonan" role="tab" class="tab-pane {{ $tombolP }}">
             <!-- Content for Permohonan -->
             <div class="row">
                 <div class="col-lg-12">
@@ -68,9 +103,10 @@
                                         <td style="text-align: center;">
                                             <a href="/installations/{{ $status_P->id}}" class="btn-sm btn-primary"><i
                                                     class="fa fa-exclamation-circle"></i></a>
-                                            <a href="" class="btn-sm btn-warning mx-1"><i
-                                                    class="fas fa-pencil-alt"></i></a>
-                                            <a href="" class="btn-sm btn-danger mx-1"><i
+                                            <a href="/installations/{{ $status_P->id}}/edit"
+                                                class="btn-sm btn-warning mx-1"><i class="fas fa-pencil-alt"></i></a>
+                                            <a href="#" data-id="{{ $status_P->id }}"
+                                                class="btn-sm btn-danger mx-1 Hapus_id"><i
                                                     class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>
@@ -85,7 +121,7 @@
         </div>
 
         <!-- Pasang Tab -->
-        <div id="Pasang" role="tab" class="tab-pane ">
+        <div id="Pasang" role="tab" class="tab-pane {{ $tombolS }}">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card mb-4">
@@ -106,12 +142,12 @@
                                     <tr>
                                         <td>{{ $status_S->kode_instalasi }}</td>
                                         <td>{{ ($status_S->customer) ? $status_S->customer->nama:'' }}</td>
-                                        <td>{{ ($status_s->village) ? $status_s->village->nama:'' }}</td>
+                                        <td>{{ ($status_P->village) ? $status_P->village->nama:'' }}</td>
                                         <td>{{ ($status_S->package) ? $status_S->package->kelas:'' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($status_S->order)->format('d-m-Y') }}</td>
 
                                         <td style="text-align: center;">
-                                            <a href="" class="btn-sm btn-primary"><i
+                                            <a href="/installations/{{ $status_S->id}}" class="btn-sm btn-primary"><i
                                                     class="fa fa-exclamation-circle"></i></a>
                                         </td>
                                     </tr>
@@ -125,7 +161,7 @@
         </div>
 
         <!-- Aktif Tab -->
-        <div id="Aktif" role="tab" class="tab-pane">
+        <div id="Aktif" role="tab" class="tab-pane {{ $tombolA }}">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card mb-4">
@@ -165,7 +201,7 @@
         </div>
 
         <!-- Blokir Tab -->
-        <div id="Blokir" role="tab" class="tab-pane">
+        <div id="Blokir" role="tab" class="tab-pane {{ $tombolB }}">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card mb-4">
@@ -204,7 +240,7 @@
             </div>
         </div>
         <!-- Cabut Tab -->
-        <div id="Cabut" role="tab" class="tab-pane">
+        <div id="Cabut" role="tab" class="tab-pane {{ $tombolC }}">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card mb-4">
@@ -244,6 +280,11 @@
         </div>
     </div>
 </div>
+
+<form action="" method="post" id="FormHapus">
+    @method('DELETE')
+    @csrf
+</form>
 @endsection
 
 @section('script')
@@ -254,6 +295,69 @@
         $('#TbAktif').DataTable();
         $('#TbBlokir').DataTable();
         $('#TbCabut').DataTable();
+    });
+
+    $(document).on('click', '.Hapus_id', function (e) {
+        e.preventDefault();
+
+        var hapus_id = $(this).attr('data-id'); // Ambil ID yang terkait dengan tombol hapus
+        var actionUrl = '/installations/' + hapus_id; // URL endpoint untuk proses hapus
+
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Data Akan dihapus secara permanen dari aplikasi tidak bisa dikembalikan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Hapus",
+            cancelButtonText: "Batal",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var form = $('#FormHapus')
+                $.ajax({
+                    type: form.attr('method'), // Gunakan metode HTTP DELETE
+                    url: actionUrl,
+                    data: form.serialize(),
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: response.message || "Data berhasil dihapus.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then((res) => {
+                            if (res.isConfirmed) {
+                                window.location.reload()
+                            } else {
+                                window.location.href = '/installations/' + result
+                                    .installation
+                                    .id;
+                            }
+                        });
+                    },
+                    error: function (response) {
+                        const errorMsg = "Terjadi kesalahan.";
+                        Swal.fire({
+                            title: "Error",
+                            text: errorMsg,
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire({
+                    title: "Dibatalkan",
+                    text: "Data tidak jadi dihapus.",
+                    icon: "info",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    });
+
+    $('.nav-pills>.nav-item>.nav-link').on('click', function () {
+        var status = $(this).attr('data-status')
+        window.history.pushState({}, "", '/installations?status=' + status);
     });
 
 </script>

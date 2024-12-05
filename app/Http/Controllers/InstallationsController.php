@@ -233,10 +233,10 @@ class InstallationsController extends Controller
     public function show(Installations $installation)
     {
           $installation = $installation->with([
-          'customer',
-          'package',
-          'usage',
-          'village'
+            'customer',
+            'package',
+            'usage',
+            'village'
           ])->where('id', $installation->id)->first(); 
           $trx = transaction::where([
             ['installation_id', $installation->id],
@@ -266,34 +266,27 @@ class InstallationsController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Installations $installation)
-    {
-$installation = $installation->with([
-          'customer',
-          'package',
-          'usage',
-          'village'
-          ])->where('id', $installation->id)->first(); 
-          $trx = transaction::where([
+       {
+       $paket = Package::all();
+       $installations = $installation->with([
+            'customer',
+            'package',
+            'usage',
+            'village'
+       ])->where('id', $installation->id)->first();
+       $trx = transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', '1'],
             ['rekening_kredit', '67']
-          ])->sum('total');
-       
-          if ($installation->status == 'P' || $installation->status == '0') {
-          $view = 'permohonan';
-          } elseif ($installation->status == 'S') {
-          $view = 'pasang';
-          } elseif ($installation->status == 'A') {
-          $view = 'aktif';
-          } elseif ($installation->status == 'B') {
-          $view = 'blokir';
-          } elseif ($installation->status == 'C') {
-          $view = 'cabut';
-          }elseif ($installation->status == '0') {
-          $view = 'belum_lunas'; 
-          }
+       ])->sum('total');
+       $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+       $desa = Village::all();
 
-          return view('perguliran.partials/' . $view)->with(compact('installation','trx'));    }
+       $pilih_desa =0;
+       $title = 'Register Proposal';
+       return view('perguliran.partials.edit_permohonan')->with(compact('trx', 'paket','installations','customer', 'desa', 'pilih_desa',
+       'title'));
+       }
 
     /**
      * Update the specified resource in storage.
@@ -308,6 +301,16 @@ $installation = $installation->with([
      */
     public function destroy(Installations $installation)
     {
-        //
+         // Menghapus Installations berdasarkan id yang diterima
+         Installations::where('id', $installation->id)->delete();
+         Transaction::where('installation_id', $installation->id)->delete();
+         Usage::where('installation_id', $installation->id)->delete();
+
+         // Redirect ke halaman Installations dengan pesan sukses
+         return response()->json([
+         'success' => true,
+         'msg' => 'Permohonan berhasil dihapus',
+         'installation' => $installation
+         ]);
     }
 }

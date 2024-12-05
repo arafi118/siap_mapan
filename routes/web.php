@@ -43,10 +43,10 @@ Route::resource('/customers', CustomerController::class);
 // GET /customers                   index
 // POST /customers                  store
 // GET /customers/create            create
-// GET /customers/{id}              show
-// GET /customers/{id}/edit         edit
-// PUT /customers/{id}              update
-// DELETE /customers/{id}           destroy
+// GET /customers/{customer}              show
+// GET /customers/{customer}/edit         edit
+// PUT /customers/{customer}              update
+// DELETE /customers/{customer}           destroy
 
 // Installations || Instalasi
 Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'janis_paket']);
@@ -71,4 +71,5 @@ Route::resource('/users', UserController::class);
 Route::resource('/villages', VillageController::class);
 
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
+Route::get('/pengaturan/sop/sistem_instalasi', [SopController::class, 'sistem_instalasi']);
 Route::get('/pengaturan/sop/create', [SopController::class, 'create_paket']);
