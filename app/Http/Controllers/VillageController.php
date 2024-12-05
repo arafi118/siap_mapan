@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Region;
 use App\Models\Village;
 use Illuminate\Http\Request;
 
@@ -22,13 +23,81 @@ class VillageController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
-        $desa = Village::all();
+        $provinsi = Region::whereRaw('LENGTH(kode)=2')->get();
 
         $title = 'Register Desa';
-        return view('pelanggan.create_desa')->with(compact('desa','title'));
+        return view('pelanggan.create_desa')->with(compact('provinsi','title'));
     }
+
+    public function generateAlamat($kode)
+    {
+        // Memecah kode menjadi bagian-bagian
+        $kode_provinsi = substr($kode, 0, 2);
+        $kode_kabupaten = substr($kode, 0, 5);
+        $kode_kecamatan = substr($kode, 0, 8);
+        $kode_desa = $kode;
+    
+        // Mengambil data wilayah berdasarkan kode
+        $provinsi = Region::where('kode', $kode_provinsi)->first();
+        $kabupaten = Region::where('kode', $kode_kabupaten)->first();
+        $kecamatan = Region::where('kode', $kode_kecamatan)->first();
+        $desa = Region::where('kode', $kode_desa)->first();
+    
+        $alamat = '';
+        if ($provinsi) {
+            $alamat .= 'Provinsi ' . ucfirst(strtolower($provinsi->nama));
+        }
+        if ($kabupaten) {
+            $alamat .= ', ' . ucfirst(strtolower($kabupaten->nama));
+        }
+        if ($kecamatan) {
+            $alamat .= ', Kecamatan ' . ucfirst(strtolower($kecamatan->nama));
+        }
+        if ($desa) {
+            $alamat .= ', Desa ' . ucfirst(strtolower($desa->nama));
+        }
+
+        
+    
+        return response()->json([
+            'success' => true,
+            'alamat' => $alamat
+        ]);
+    }
+
+    public function ambil_kab($kode)
+     {
+        $kabupaten = Region::where('kode', 'LIKE',$kode . '%')->whereRaw('length(kode)=5')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $kabupaten
+        ]);
+     }
+
+     public function ambil_kec($kode)
+     {
+        $kecamatan = Region::where('kode', 'LIKE',$kode . '%')->whereRaw('length(kode)=8')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $kecamatan
+        ]);
+     }
+     
+     public function ambil_desa($kode)
+     {
+        $desa = Region::where('kode', 'LIKE',$kode . '%')->whereRaw('length(kode)>8')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $desa
+        ]);
+     }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -104,4 +173,5 @@ class VillageController extends Controller
     {
         //
     }
+    
 }
