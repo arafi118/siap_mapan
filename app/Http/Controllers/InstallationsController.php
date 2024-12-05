@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Family;
 use App\Models\Installations;
 use App\Models\Package;
+use App\Models\Region;
 use App\Models\Transaction;
 use App\Models\Usage;
 use App\Models\Village;
@@ -50,22 +51,6 @@ class InstallationsController extends Controller
         $title = 'Proposal';
         return view('perguliran.index')->with(compact('title','installations', 'status_P', 'status_S', 'status_A', 'status_B', 'status_C'));
      }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-
-    public function create()
-    {
-        $paket = Package::all();
-        $installations = Installations::all();
-        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
-        $desa = Village::all();
-
-        $pilih_desa =0;
-        $title = 'Register Proposal'; 
-        return view('perguliran.create')->with(compact('paket','installations','customer', 'desa', 'pilih_desa', 'title'));
-    }    
 
     public function kode_instalasi()
     {

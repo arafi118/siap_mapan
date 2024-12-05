@@ -68,7 +68,14 @@ Route::resource('/usages', UsageController::class);
 Route::resource('/users', UserController::class);
 
 // Users || Desa
+Route::get('/ambil_kab/{kode}', [VillageController::class, 'ambil_kab']);
+Route::get('/ambil_kec/{kode}', [VillageController::class, 'ambil_kec']);
+Route::get('/ambil_desa/{kode}', [VillageController::class, 'ambil_desa']);
+Route::get('/set_alamat/{kode}', [VillageController::class, 'generateAlamat']);
 Route::resource('/villages', VillageController::class);
 
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
 Route::get('/pengaturan/sop/create', [SopController::class, 'create_paket']);
+
+Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);
+
