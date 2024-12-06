@@ -20,8 +20,7 @@
             </a>
             <div id="collapsePage" class="collapse" aria-labelledby="headingPage" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="/pengaturan/sop">Profil Bisnis</a>
-                    <a class="collapse-item" href="/pengaturan/sop/sistem_instalasi">Sistem Instalasi</a>
+                    <a class="collapse-item" href="/pengaturan">Personalisasi SOP</a>
                     <a class="collapse-item" href="/packages/create">Tambah paket</a>
                 </div>
             </div>

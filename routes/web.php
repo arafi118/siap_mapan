@@ -76,8 +76,9 @@ Route::get('/ambil_desa/{kode}', [VillageController::class, 'ambil_desa']);
 Route::get('/set_alamat/{kode}', [VillageController::class, 'generateAlamat']);
 Route::resource('/villages', VillageController::class);
 
+Route::resource('/pengaturan', SopController::class);
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
 Route::get('/pengaturan/sop/sistem_instalasi', [SopController::class, 'sistem_instalasi']);
-Route::get('/pengaturan/sop/create', [SopController::class, 'create_paket']);
+Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
 
 Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);

@@ -47,29 +47,52 @@ class PackageController extends Controller
     {
         $data = $request->only([
             "kelas",
-            "harga",
             "abodemen",
-            "denda"
+            "denda",
+            "blok"
         ]);
         $rules = [
             'kelas' => 'required',
-            'harga' => 'required',
             'abodemen' => 'required',
             'denda' => 'required'
         ];
         $validate = Validator::make($data,$rules);
-
+        
         if ($validate->fails()) {
-        return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
+        
+        $data['abodemen'] = str_replace(',','', $data['abodemen']);
+        $data['abodemen'] = str_replace('.00','', $data['abodemen']);
+        $data['abodemen'] = floatval($data['abodemen']);
+
+        $data['denda'] = str_replace(',','', $data['denda']);
+        $data['denda'] = str_replace('.00','', $data['denda']);
+        $data['denda'] = floatval($data['denda']);
+
+        $no = 1;
+        $blok = [];
+        foreach ($data['blok'] as $b) {
+            $data['_blok'] = str_replace(',','', $b);
+            $data['_blok'] = str_replace('.00','', $data['_blok']);
+            $data['_blok'] = floatval($data['_blok']);
+
+            $blok[$no] = $data['_blok'];
+            $no++;
+        }
+
+        
+        $abodemen =$data['abodemen'];
+        $denda =$data['denda']; 
 
         $Package =Package::create([
             'kelas' => $request->kelas,
-            'harga' => $request->harga,
-            'abodemen' => $request->abodemen,
-            'denda' => $request->denda
+            'harga' => json_encode($blok),
+            'abodemen' => $abodemen,
+            'denda' => $denda
             
         ]);
+
         return response()->json([
         'success' => true,
         'msg' => 'Paket berhasil disimpan',
