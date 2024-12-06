@@ -16,11 +16,11 @@
                                     <i class="fas fa-home" style="font-size: 30px; margin-right: 9px;"></i>
                                     <b>Data Desa</b>
                                 </div>
-                                <div>
+                                {{-- <div>
                                     <a href="/villages/create" class="btn btn-primary" id="RegisterDesa"
                                         style="display: inline-block; width: 130px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;"><i
                                         class="fas fa-plus"></i> Register Desa</a>
-                                </div>
+                                </div> --}}
                             </div>
                             <div>&nbsp;</div>
                             <tr>
@@ -28,7 +28,7 @@
                                 <th>NAMA DESA</th>
                                 <th>ALAMAT</th>
                                 <th>TELPON</th>
-                                <th style="text-align: center;">AKSI</th>
+                                {{-- <th style="text-align: center;">AKSI</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -38,14 +38,18 @@
                                 <td>{{ $village->nama }}</td>
                                 <td>{{ $village->alamat }}</td>
                                 <td>{{ $village->hp }}</td>
-                                <td style="text-align: center;">
+                                {{-- <td style="text-align: center;">
                                     <a href="/villages/{{ $village->id }}/edit" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
                                     <a href="/villages/{{ $village->id }}" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="card-footer text-end">
+                        <a href="/installations/create" class="btn btn-primary btn-sm">Kembali</a>
+                    </div>
+                    
                 </div>
             </div>
         </div>

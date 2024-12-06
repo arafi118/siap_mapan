@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Region;
 use App\Models\Village;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class VillageController extends Controller
 {
@@ -17,7 +18,7 @@ class VillageController extends Controller
         $villages = Village::all();
 
         $title = 'Data Desa';
-        return view('pelanggan.index_desa')->with(compact('title','villages'));
+        return view('desa.index')->with(compact('title','villages'));
     }
 
     /**
@@ -29,7 +30,7 @@ class VillageController extends Controller
         $provinsi = Region::whereRaw('LENGTH(kode)=2')->get();
 
         $title = 'Register Desa';
-        return view('pelanggan.create_desa')->with(compact('provinsi','title'));
+        return view('desa.create')->with(compact('provinsi','title'));
     }
 
     public function generateAlamat($kode)
@@ -105,21 +106,26 @@ class VillageController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'kode' => 'required|unique:villages',
-            'nama' => 'required',
+            'desa' => 'required',
             'alamat' => 'required',
             'hp' => 'required'
+
          ]);
 
-        //  CARA 1
+         $kode = Session::get('business_id');
+         $jumlah_desa = Village::where('kode', 'LIKE', $kode . '%')->count();
+         $kode .= str_pad(($jumlah_desa + 1), '3', '0', STR_PAD_LEFT);
+
+         $desa = Region::where('kode', $request->desa)->first();
+
         Village::create([
-            'kode' => $request->kode,
-            'nama' => $request->nama,
+            'kode' => $kode,
+            'nama' => $desa->nama,
             'alamat' => $request->alamat,
             'hp' => $request->hp
         ]);
 
-        return redirect('/villages')->with('berhasil','Customer berhasil disimpan');
+        return redirect('/villages')->with('berhasil','Customer berhasil ditambahkan!');
     }
 
     /**
@@ -136,7 +142,7 @@ class VillageController extends Controller
     public function edit(Village $village)
     {
         $title = 'Edit Desa';
-        return view('pelanggan.edit_desa')->with(compact('village','title'));
+        return view('desa.edit')->with(compact('village','title'));
     }
 
     /**

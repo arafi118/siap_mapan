@@ -14,8 +14,14 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                                 Catatan : ( Jika Ada data atau inputan yang kosong bisa di isi ( 0 ) atau ( - ) )
-                            </div>
+                            </div>                            
                             <div class="alert alert-light" role="alert">
+                                <div style="display: flex; justify-content: flex-end;">
+                                    <a href="/villages/create" class="btn btn-primary" id="RegisterDesa"
+                                        style="display: inline-block; width: 130px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;">
+                                        <i class="fas fa-plus"></i> Register Desa
+                                    </a>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="position-relative mb-3">
@@ -174,7 +180,7 @@
             $('#formjenis_paket').html(result.view)
         })
     })
-
+    style="background-color: #7365f0; color: #fff; border-color: #6f42c1;">Close
     $(document).on('click', '#SimpanPermohonan', function (e) {
         e.preventDefault();
         $('small').html('');
