@@ -328,9 +328,7 @@ break;
                             if (res.isConfirmed) {
                                 window.location.reload()
                             } else {
-                                window.location.href = '/installations/' + result
-                                    .installation
-                                    .id;
+                                window.location.href = '/installations/';
                             }
                         });
                     },

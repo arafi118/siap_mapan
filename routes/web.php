@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VillageController;
 use App\Models\Installations;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    Session::put('business_id','1');
     return view('welcome')->with('title','Dashboard');
 });
 
@@ -79,4 +81,3 @@ Route::get('/pengaturan/sop/sistem_instalasi', [SopController::class, 'sistem_in
 Route::get('/pengaturan/sop/create', [SopController::class, 'create_paket']);
 
 Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);
-

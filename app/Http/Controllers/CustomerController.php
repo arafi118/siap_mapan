@@ -16,7 +16,6 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        Session::put('business_id','1');
         $customers = Customer::all();
 
         $title = 'Data penduduk';

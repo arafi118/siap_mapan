@@ -52,6 +52,19 @@ class InstallationsController extends Controller
         return view('perguliran.index')->with(compact('title','installations', 'status_P', 'status_S', 'status_A', 'status_B', 'status_C'));
      }
 
+    public function create()
+    {
+        $paket = Package::all();
+        $installations = Installations::all();
+        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $desa = Village::all();
+
+        $pilih_desa =0;
+        $title = 'Register Proposal';
+        return view('perguliran.create')->with(compact('paket','installations','customer', 'desa', 'pilih_desa', 'title'));
+    }
+
+
     public function kode_instalasi()
     {
         $kd_desa = request()->get('kode');
@@ -101,6 +114,8 @@ class InstallationsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+
     public function store(Request $request)
     {
         $data = $request->only([

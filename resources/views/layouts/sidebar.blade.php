@@ -22,7 +22,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="/pengaturan/sop">Profil Bisnis</a>
                     <a class="collapse-item" href="/pengaturan/sop/sistem_instalasi">Sistem Instalasi</a>
-                    <a class="collapse-item" href="/pengaturan/sop/create">Tambah paket</a>
+                    <a class="collapse-item" href="/packages/create">Tambah paket</a>
                 </div>
             </div>
         </li>

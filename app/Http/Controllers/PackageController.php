@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\Family;
+use App\Models\Installations;
 use App\Models\Package;
+use App\Models\Region;
+use App\Models\Transaction;
+use App\Models\Usage;
+use App\Models\Village;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Utils\Tanggal;
+use App\Utils\Keuangan;
+
 use Illuminate\Support\Facades\Validator;
-
-
 class PackageController extends Controller
 {
     /**
@@ -36,24 +45,37 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $data = $request->only([
+            "kelas",
+            "harga",
+            "abodemen",
+            "denda"
+        ]);
+        $rules = [
             'kelas' => 'required',
             'harga' => 'required',
-            'harga1' => 'required',
-            'beban' => 'required',
+            'abodemen' => 'required',
             'denda' => 'required'
-         ]);
+        ];
+        $validate = Validator::make($data,$rules);
 
-            Package::create([
+        if ($validate->fails()) {
+        return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        $Package =Package::create([
             'kelas' => $request->kelas,
             'harga' => $request->harga,
-            'harga1' => $request->harga1,
-            'abodemen' => $request->beban,
+            'abodemen' => $request->abodemen,
             'denda' => $request->denda
             
         ]);
+        return response()->json([
+        'success' => true,
+        'msg' => 'Paket berhasil disimpan',
+        'simpanpackage' => $Package
+        ]);
 
-        return redirect('/packages')->with('berhasil','Paket berhasil ditambahkan');
     }
 
     /**
@@ -61,10 +83,7 @@ class PackageController extends Controller
      */
     public function show(Package $package)
     {
-        $package->delete();
-    
-        // Redirect ke halaman customer dengan pesan sukses
-        return redirect('/packages')->with('success', 'Paket berhasil dihapus');
+        //
     }
 
     /**
@@ -83,27 +102,37 @@ class PackageController extends Controller
      */
     public function update(Request $request, Package $package)
     {
-        // Validasi input
-        $validasi = [
+        $data = $request->only([
+            "kelas",
+            "harga",
+            "abodemen",
+            "denda"
+            ]);
+        $rules = [
             'kelas' => 'required',
             'harga' => 'required',
-            'harga1' => 'required',
-            'beban' => 'required',
+            'abodemen' => 'required',
             'denda' => 'required'
         ];
 
-        $this->validate($request, $validasi);
-    
+        $validate = Validator::make($data,$rules);
+
+        if ($validate->fails()) {
+        return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
         // Update data 
         $update = Package::where('id', $package->id)->update([
             'kelas' => $request->kelas,
             'harga' => $request->harga,
-            'harga1' => $request->harga1,
-            'abodemen' => $request->beban,
+            'abodemen' => $request->abodemen,
             'denda' => $request->denda
         ]);
-    
-        return redirect('/packages')->with('Berhasil', 'Paket berhasil diperbarui');
+
+        return response()->json([
+        'success' => true,
+        'msg' => 'Edit Paket berhasil disimpan',
+        'Editpackage' => $update
+        ]);
 
     }
 
@@ -112,6 +141,14 @@ class PackageController extends Controller
      */
     public function destroy(Package $package)
     {
-        //
+
+        // $package->delete();
+
+    package::where('id', $package->id)->delete();
+        return response()->json([
+        'success' => true,
+        'msg' => 'Data Paket berhasil dihapus',
+        'installation' => $package
+        ]);
     }
 }

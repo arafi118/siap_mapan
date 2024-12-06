@@ -14,15 +14,15 @@
                 <div class="form-group">
                     <label>Swit Tombol</label>
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="swit_tombol_1" name="swit_tombol"
-                            value="1">
+                        <input type="radio" class="custom-control-input" id="swit_tombol_1" name="swit_tombol" value="1"
+                            {{ isset($tampil_settings) && $tampil_settings->swit_tombol == 1 ? 'checked' : '' }}>
                         <label class="custom-control-label" for="swit_tombol_1">
                             progres instalasi (Nominal <b>tidak boleh</b> nyicil)
                         </label>
                     </div>
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="swit_tombol_2" name="swit_tombol"
-                            value="2">
+                        <input type="radio" class="custom-control-input" id="swit_tombol_2" name="swit_tombol" value="2"
+                            {{ isset($tampil_settings) && $tampil_settings->swit_tombol == 2 ? 'checked' : '' }}>
                         <label class="custom-control-label" for="swit_tombol_2">
                             progres instalasi (Nominal <b>boleh</b> nyicil)
                         </label>
@@ -46,10 +46,17 @@
 <script>
     $(document).on('click', '#SimpanSwit', function (e) {
         e.preventDefault();
-        $('small').html('');
-
         var form = $('#Fromswit');
         var actionUrl = form.attr('action');
+
+        var toastMixin = Swal.mixin({
+            toast: true,
+            icon: 'success',
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
 
         $.ajax({
             type: 'GET',
@@ -57,31 +64,14 @@
             data: form.serialize(),
             success: function (result) {
                 if (result.success) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "Pembaruhan Sistem Instalasi Berhasil",
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then((res) => {
-                        window.location.reload()
+                    toastMixin.fire({
+                        title: 'Pembaruhan Sistem Instalasi Berhasil'
                     });
+                    setTimeout(() => window.location.reload(), 3000);
                 }
             },
-            error: function (result) {
-                const response = result.responseJSON;
-
+            error: function () {
                 Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
-
-                if (response && typeof response === 'object') {
-                    $.each(response, function (key, message) {
-                        $('#' + key)
-                            .closest('.input-group.input-group-static')
-                            .addClass('is-invalid');
-
-                        $('#msg_' + key).html(message);
-                    });
-                }
             }
         });
     });
