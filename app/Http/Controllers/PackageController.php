@@ -61,9 +61,7 @@ class PackageController extends Controller
             "blok"
         ]);
         $rules = [
-            'kelas' => 'required',
-            'abodemen' => 'required',
-            'denda' => 'required'
+            'kelas' => 'required'
         ];
         $validate = Validator::make($data, $rules);
 
@@ -79,7 +77,7 @@ class PackageController extends Controller
         $data['denda'] = str_replace('.00', '', $data['denda']);
         $data['denda'] = floatval($data['denda']);
 
-        $no = 1;
+        $no = 0;
         $blok = [];
         foreach ($data['blok'] as $b) {
             $data['_blok'] = str_replace(',', '', $b);
@@ -122,9 +120,13 @@ class PackageController extends Controller
      */
     public function edit(Package $package)
     {
+        $business_id = Session::get('business_id');
+        $pengaturan = Settings::where('business_id', $business_id);
+        $paket = Package::all();
 
+        $tampil_settings = $pengaturan->first();
         $title = 'Edit Paket';
-        return view('paket.edit')->with(compact('title', 'package'));
+        return view('paket.edit')->with(compact('title', 'package', 'tampil_settings'));
     }
 
     /**
@@ -134,28 +136,49 @@ class PackageController extends Controller
     {
         $data = $request->only([
             "kelas",
-            "harga",
+            "blok",
             "abodemen",
             "denda"
         ]);
         $rules = [
-            'kelas' => 'required',
-            'harga' => 'required',
-            'abodemen' => 'required',
-            'denda' => 'required'
+            'kelas' => 'required'
         ];
-
         $validate = Validator::make($data, $rules);
 
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
+
+        $data['abodemen'] = str_replace(',', '', $data['abodemen']);
+        $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
+        $data['abodemen'] = floatval($data['abodemen']);
+
+        $data['denda'] = str_replace(',', '', $data['denda']);
+        $data['denda'] = str_replace('.00', '', $data['denda']);
+        $data['denda'] = floatval($data['denda']);
+
+        $no = 0;
+        $blok = [];
+        foreach ($data['blok'] as $b) {
+            $data['_blok'] = str_replace(',', '', $b);
+            $data['_blok'] = str_replace('.00', '', $data['_blok']);
+            $data['_blok'] = floatval($data['_blok']);
+
+            $blok[$no] = $data['_blok'];
+            $no++;
+        }
+
+
+        $abodemen = $data['abodemen'];
+        $denda = $data['denda'];
+
+
         // Update data 
         $update = Package::where('id', $package->id)->update([
             'kelas' => $request->kelas,
-            'harga' => $request->harga,
-            'abodemen' => $request->abodemen,
-            'denda' => $request->denda
+            'harga' => $blok,
+            'abodemen' => $abodemen,
+            'denda' =>  $denda
         ]);
 
         return response()->json([

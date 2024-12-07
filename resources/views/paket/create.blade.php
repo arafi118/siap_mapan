@@ -1,4 +1,8 @@
 @extends('layouts.base')
+@php
+    $blok = json_decode($tampil_settings->block, true);
+    $jumlah_blok = count($blok);
+@endphp
 @section('content')
     <form action="/packages" method="post" id="paket">
         @csrf
@@ -55,7 +59,7 @@
                                     @endfor
                                 </div>
                                 <hr>
-                                <div class="col-12 text-right">
+                                <div class="col-12 d-flex justify-content-end">
                                     <button class="btn btn-secondary btn-icon-split" type="submit" id="SimpanPaket"
                                         class="btn btn-dark" style="float: right; margin-left: 10px;">
                                         <span class="icon text-white-50"><svg xmlns="http://www.w3.org/2000/svg"
@@ -86,8 +90,6 @@
         $(".block").maskMoney({
             allowNegative: true
         });
-
-
 
         $(document).on('click', '#SimpanPaket', function(e) {
             e.preventDefault();

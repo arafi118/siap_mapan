@@ -6,16 +6,6 @@
 @endphp
 
 @section('content')
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show text-center" role="alert" id="success-alert">
-            <li class="	fas fa-check-circle"></li>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            {{ session('success') }}
-        </div>
-    @endif
-
     <!-- Row -->
     <div class="col-lg-12">
         <div class="d-flex align-items-center justify-content-between mb-4">
@@ -35,7 +25,9 @@
                             <div>&nbsp;</div>
                             <tr>
                                 <th>KELAS</th>
-                                <th>HARGA</th>
+                                @for ($i = 0; $i < $jumlah_blok; $i++)
+                                    <th>{{ $blok[$i]['nama'] }} .[ {{ $blok[$i]['jarak'] }} ]</th>
+                                @endfor
                                 <th>BEBAN</th>
                                 <th>DENDA</th>
                                 <th style="text-align: center;">AKSI</th>
@@ -43,11 +35,18 @@
                         </thead>
                         <tbody>
                             @foreach ($packages as $paket)
+                                @php
+                                    $harga = json_decode($paket->harga, true);
+                                @endphp
                                 <tr>
                                     <td>{{ $paket->kelas }}</td>
-                                    <td>{{ $paket->harga }}</td>
-                                    <td>{{ $paket->abodemen }}</td>
-                                    <td>{{ $paket->denda }}</td>
+                                    @for ($i = 0; $i < $jumlah_blok; $i++)
+                                        <td>
+                                            {{ number_format(isset($harga[$i]) ? $harga[$i] : '0', 2) }}
+                                        </td>
+                                    @endfor
+                                    <td>{{ number_format($paket->abodemen, 2) }}</td>
+                                    <td>{{ number_format($paket->denda, 2) }}</td>
                                     <td style="text-align: center;">
                                         <a href="/packages/{{ $paket->id }}/edit" class="btn-sm btn-warning"><i
                                                 class=" fas fa-pencil-alt"></i></a>
