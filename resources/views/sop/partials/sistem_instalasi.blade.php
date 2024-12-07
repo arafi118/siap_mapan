@@ -29,39 +29,3 @@
         </div>
     </form>
 </div>
-
-@section('script')
-    <script>
-        $(document).on('click', '#SimpanSwit', function(e) {
-            e.preventDefault();
-            var form = $('#Fromswit');
-            var actionUrl = form.attr('action');
-
-            var toastMixin = Swal.mixin({
-                toast: true,
-                icon: 'success',
-                position: 'top-right',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
-
-            $.ajax({
-                type: 'GET',
-                url: actionUrl,
-                data: form.serialize(),
-                success: function(result) {
-                    if (result.success) {
-                        toastMixin.fire({
-                            title: 'Pembaruhan Sistem Instalasi Berhasil'
-                        });
-                        setTimeout(() => window.location.reload(), 3000);
-                    }
-                },
-                error: function() {
-                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
-                }
-            });
-        });
-    </script>
-@endsection

@@ -1,5 +1,4 @@
 @extends('layouts.base')
-
 @section('content')
     <form action="/packages" method="post" id="paket">
         @csrf
@@ -41,17 +40,15 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    @php
-                                        $jumlah_blok = 3;
-                                    @endphp
                                     @for ($i = 0; $i < $jumlah_blok; $i++)
                                         <div class="col-{{ 12 / $jumlah_blok }}">
                                             <div class="position-relative mb-2">
-                                                <label for="block_1" class="form-label">
-                                                    Blok {{ $i + 1 }}. [\]
+                                                <label for="block_1" class="form-label">{{ $blok[$i]['nama'] }} .
+                                                    [ {{ $blok[$i]['jarak'] }} ]
                                                 </label>
                                                 <input autocomplete="off" maxlength="16" type="text" name="blok[]"
-                                                    id="block_{{ $i }}" class="form-control form-control-sm">
+                                                    id="block_{{ $i }}"
+                                                    class="form-control form-control-sm block">
                                                 <small class="text-danger" id="msg_block_{{ $i }}"></small>
                                             </div>
                                         </div>
@@ -86,16 +83,7 @@
         $("#denda").maskMoney({
             allowNegative: true
         });
-        $("#block_1").maskMoney({
-            allowNegative: true
-        });
-        $("#block_2").maskMoney({
-            allowNegative: true
-        });
-        $("#block_3").maskMoney({
-            allowNegative: true
-        });
-        $("#block_4").maskMoney({
+        $(".block").maskMoney({
             allowNegative: true
         });
 

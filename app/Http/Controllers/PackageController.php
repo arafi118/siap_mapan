@@ -10,12 +10,15 @@ use App\Models\Region;
 use App\Models\Transaction;
 use App\Models\Usage;
 use App\Models\Village;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Utils\Tanggal;
 use App\Utils\Keuangan;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+
 class PackageController extends Controller
 {
     /**
@@ -23,10 +26,13 @@ class PackageController extends Controller
      */
     public function index()
     {
+        $business_id = Session::get('business_id');
+        $pengaturan = Settings::where('business_id', $business_id);
         $packages = Package::all();
 
+        $tampil_settings = $pengaturan->first();
         $title = 'Data Paket';
-        return view('paket.index')->with(compact('title','packages'));
+        return view('paket.index')->with(compact('title', 'packages', 'tampil_settings'));
     }
 
     /**
@@ -34,10 +40,13 @@ class PackageController extends Controller
      */
     public function create()
     {
+        $business_id = Session::get('business_id');
+        $pengaturan = Settings::where('business_id', $business_id);
         $paket = Package::all();
 
+        $tampil_settings = $pengaturan->first();
         $title = 'Register Paket';
-        return view('paket.create')->with(compact('paket','title'));
+        return view('paket.create')->with(compact('paket', 'title', 'tampil_settings'));
     }
 
     /**
@@ -56,49 +65,48 @@ class PackageController extends Controller
             'abodemen' => 'required',
             'denda' => 'required'
         ];
-        $validate = Validator::make($data,$rules);
-        
+        $validate = Validator::make($data, $rules);
+
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
-        
-        $data['abodemen'] = str_replace(',','', $data['abodemen']);
-        $data['abodemen'] = str_replace('.00','', $data['abodemen']);
+
+        $data['abodemen'] = str_replace(',', '', $data['abodemen']);
+        $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
         $data['abodemen'] = floatval($data['abodemen']);
 
-        $data['denda'] = str_replace(',','', $data['denda']);
-        $data['denda'] = str_replace('.00','', $data['denda']);
+        $data['denda'] = str_replace(',', '', $data['denda']);
+        $data['denda'] = str_replace('.00', '', $data['denda']);
         $data['denda'] = floatval($data['denda']);
 
         $no = 1;
         $blok = [];
         foreach ($data['blok'] as $b) {
-            $data['_blok'] = str_replace(',','', $b);
-            $data['_blok'] = str_replace('.00','', $data['_blok']);
+            $data['_blok'] = str_replace(',', '', $b);
+            $data['_blok'] = str_replace('.00', '', $data['_blok']);
             $data['_blok'] = floatval($data['_blok']);
 
             $blok[$no] = $data['_blok'];
             $no++;
         }
 
-        
-        $abodemen =$data['abodemen'];
-        $denda =$data['denda']; 
 
-        $Package =Package::create([
+        $abodemen = $data['abodemen'];
+        $denda = $data['denda'];
+
+        $Package = Package::create([
             'kelas' => $request->kelas,
             'harga' => json_encode($blok),
             'abodemen' => $abodemen,
             'denda' => $denda
-            
+
         ]);
 
         return response()->json([
-        'success' => true,
-        'msg' => 'Paket berhasil disimpan',
-        'simpanpackage' => $Package
+            'success' => true,
+            'msg' => 'Paket berhasil disimpan',
+            'simpanpackage' => $Package
         ]);
-
     }
 
     /**
@@ -116,8 +124,7 @@ class PackageController extends Controller
     {
 
         $title = 'Edit Paket';
-        return view('paket.edit')->with(compact('title','package'));
-    
+        return view('paket.edit')->with(compact('title', 'package'));
     }
 
     /**
@@ -130,7 +137,7 @@ class PackageController extends Controller
             "harga",
             "abodemen",
             "denda"
-            ]);
+        ]);
         $rules = [
             'kelas' => 'required',
             'harga' => 'required',
@@ -138,10 +145,10 @@ class PackageController extends Controller
             'denda' => 'required'
         ];
 
-        $validate = Validator::make($data,$rules);
+        $validate = Validator::make($data, $rules);
 
         if ($validate->fails()) {
-        return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
         // Update data 
         $update = Package::where('id', $package->id)->update([
@@ -152,11 +159,10 @@ class PackageController extends Controller
         ]);
 
         return response()->json([
-        'success' => true,
-        'msg' => 'Edit Paket berhasil disimpan',
-        'Editpackage' => $update
+            'success' => true,
+            'msg' => 'Edit Paket berhasil disimpan',
+            'Editpackage' => $update
         ]);
-
     }
 
     /**
@@ -167,11 +173,11 @@ class PackageController extends Controller
 
         // $package->delete();
 
-    package::where('id', $package->id)->delete();
+        package::where('id', $package->id)->delete();
         return response()->json([
-        'success' => true,
-        'msg' => 'Data Paket berhasil dihapus',
-        'installation' => $package
+            'success' => true,
+            'msg' => 'Data Paket berhasil dihapus',
+            'installation' => $package
         ]);
     }
 }
