@@ -88,7 +88,7 @@ class CustomerController extends Controller
             'hubungan' => $request->hubungan
         ]);
 
-        return redirect('/customers')->with('berhasil','Customer berhasil disimpan');
+        return redirect('/customers')->with('berhasil','Customer berhasil Ditambahkan!');
     }
 
     /**
@@ -97,10 +97,7 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         // Menghapus customer berdasarkan id yang diterima
-        $customer->delete();
-    
-        // Redirect ke halaman customer dengan pesan sukses
-        return redirect('/customers')->with('success', 'Customer berhasil dihapus');
+       
     }
     
 
@@ -184,6 +181,9 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+        $customer->delete();
+    
+        // Redirect ke halaman customer dengan pesan sukses
+        return redirect('/customers')->with('success', 'Customer berhasil dihapus');
     }
 }

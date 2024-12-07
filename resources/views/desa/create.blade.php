@@ -1,6 +1,14 @@
 @extends('layouts.base')
 
 @section('content')
+@if (session('success'))
+<div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+    <i class="fas fa-check-circle"></i>
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
 <form action="/villages" method="post" id="FormInputDesa">
     @csrf
     <!-- Alert -->
@@ -136,4 +144,15 @@
     });
 
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const alert = document.getElementById('success-alert');
+        if (alert) {
+            setTimeout(() => {
+                alert.classList.add('d-none');
+            }, 5000); // Notifikasi hilang setelah 5 detik
+        }
+    });
+</script>
+
 @endsection

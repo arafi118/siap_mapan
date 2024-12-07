@@ -41,10 +41,18 @@
                             <td>{{ $customer->alamat }}</td>
                             <td>{{ $customer->hp }}</td>
                             <td></td>
-                            <td style="text-align: center;"> 
-                                <a href="/customers/{{ $customer->nik }}/edit" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
-                                <a href="/customers/{{ $customer->nik }}" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
-                              </td>            
+                              <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                <a href="/customers/{{ $customer->nik }}/edit" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                <form action="/customers/{{ $customer->nik }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus desa ini?');" style="margin: 0;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>          
                         </tr>
                         @endforeach
                     </tbody>
