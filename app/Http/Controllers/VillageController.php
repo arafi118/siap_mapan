@@ -177,7 +177,11 @@ class VillageController extends Controller
      */
     public function destroy(Village $village)
     {
-        //
+        // Menghapus customer berdasarkan id yang diterima
+        $village->delete();
+    
+        // Redirect ke halaman customer dengan pesan sukses
+        return redirect('/villages')->with('success', 'Desa berhasil dihapus');
     }
     
 }

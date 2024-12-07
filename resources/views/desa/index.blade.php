@@ -1,7 +1,12 @@
 @extends('layouts.base')
 
 @section('content')
-
+@if (session('success'))
+<div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+    <li class="	fas fa-check-circle"></li>
+    {{ session('success') }}
+</div>
+@endif
     <div class="row">
         <!-- Datatables -->
         <div class="col-lg-12">
@@ -9,18 +14,12 @@
                 <div class="table-responsive p-3">
                     <table class="table align-items-center table-flush" id="TbDesa">
                         <thead class="thead-light">
-                            <div
-                                style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                                 <!-- Data Desa -->
                                 <div style="display: flex; align-items: center;">
                                     <i class="fas fa-home" style="font-size: 30px; margin-right: 9px;"></i>
                                     <b>Data Desa</b>
                                 </div>
-                                {{-- <div>
-                                    <a href="/villages/create" class="btn btn-primary" id="RegisterDesa"
-                                        style="display: inline-block; width: 130px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;"><i
-                                        class="fas fa-plus"></i> Register Desa</a>
-                                </div> --}}
                             </div>
                             <div>&nbsp;</div>
                             <tr>
@@ -28,7 +27,7 @@
                                 <th>NAMA DESA</th>
                                 <th>ALAMAT</th>
                                 <th>TELPON</th>
-                                {{-- <th style="text-align: center;">AKSI</th> --}}
+                                <th style="text-align: center;">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,19 +35,28 @@
                             <tr>
                                 <td>{{ $village->kode }}</td>
                                 <td>{{ $village->nama }}</td>
-                                <td>{{ $village->alamat }}</td>
+                                <td style="padding: 3px; word-wrap: break-word; max-width: 200px;">
+                                    {{ $village->alamat }}
+                                </td>
                                 <td>{{ $village->hp }}</td>
-                                {{-- <td style="text-align: center;">
-                                    <a href="/villages/{{ $village->id }}/edit" class="btn btn-warning"><i class=" fas fa-pencil-alt"></i></a>
-                                    <a href="/villages/{{ $village->id }}" class="btn btn-danger"><i class=" fas fa-trash-alt"></i></a>
-                                </td> --}}
+                                <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                    <a href="/villages/{{ $village->id }}/edit" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <form action="/villages/{{ $village->id }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus desa ini?');" style="margin: 0;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                
                             </tr>
+                            
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="card-footer text-end">
-                        <a href="/installations/create" class="btn btn-primary btn-sm">Kembali</a>
-                    </div>
                     
                 </div>
             </div>
@@ -93,6 +101,18 @@
     alert('{{ Session::get('
         berhasil ') }}')
 
+</script>
+
+<script>
+// Menghilangkan notifikasi setelah 5 detik
+document.addEventListener('DOMContentLoaded', function() {
+    const alert = document.getElementById('success-alert');
+    if (alert) {
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 2000); // 2000ms = 2 detik
+    }
+});
 </script>
 @endif
 @endsection
