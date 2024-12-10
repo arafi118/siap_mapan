@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\HamletController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\SopController;
@@ -76,6 +77,11 @@ Route::get('/ambil_desa/{kode}', [VillageController::class, 'ambil_desa']);
 Route::get('/set_alamat/{kode}', [VillageController::class, 'generateAlamat']);
 Route::resource('/villages', VillageController::class);
 Route::delete('/villages/{village}', [VillageController::class, 'destroy']);
+
+// Dusun
+Route::resource('/hamlets', HamletController::class);
+Route::delete('/hamlets/{hamlet}', [HamletController::class, 'destroy']);
+
 
 
 
