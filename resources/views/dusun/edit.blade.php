@@ -25,10 +25,10 @@
                             <!-- Kolom Nama Desa -->
                             <div class="col-md-6">
                                 <div class="position-relative mb-3">
-                                    <label for="nama">Nama Desa</label>
-                                    <input autocomplete="off" type="text" name="nama" id="nama" class="form-control"
+                                    <label for="id_desa">Nama Desa</label>
+                                    <input autocomplete="off" type="text" name="id_desa" id="id_desa" class="form-control"
                                         value="{{ $hamlet->village->nama }}">
-                                    <small class="text-danger" id="msg_nama">{{ $errors->first('nama') }}</small>
+                                    <small class="text-danger" id="msg_id_desa">{{ $errors->first('id_desa') }}</small>
                                 </div>
                             </div>
                         
