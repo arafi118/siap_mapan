@@ -30,30 +30,58 @@ class SopController extends Controller
         return view('sop.partials.profil')->with(compact('title'));
     }
 
-    public function sistem_instalasi()
+    public function pasang_baru()
     {
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
 
         if (request()->ajax()) {
             $data['swit_tombol'] = request()->get('swit_tombol');
+            $data['pasang_baru'] = request()->get('pasang_baru');
+            $data['abodemen'] = request()->get('abodemen');
+            $data['denda'] = request()->get('denda');
 
             $validate = Validator::make($data, [
                 'swit_tombol' => 'required',
+                'pasang_baru' => 'required',
+                'abodemen'    => 'required',
+                'denda'       => 'required'
             ]);
 
             if ($validate->fails()) {
                 return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
             }
 
+            $data['pasang_baru'] = str_replace(',', '', $data['pasang_baru']);
+            $data['pasang_baru'] = str_replace('.00', '', $data['pasang_baru']);
+            $data['pasang_baru'] = floatval($data['pasang_baru']);
+
+            $data['abodemen'] = str_replace(',', '', $data['abodemen']);
+            $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
+            $data['abodemen'] = floatval($data['abodemen']);
+
+            $data['denda'] = str_replace(',', '', $data['denda']);
+            $data['denda'] = str_replace('.00', '', $data['denda']);
+            $data['denda'] = floatval($data['denda']);
+
+            $pasang_baru = $data['pasang_baru'];
+            $abodemen    = $data['abodemen'];
+            $denda       = $data['denda'];
+
             if ($pengaturan->count() > 0) {
                 $Settings = $pengaturan->update([
                     'swit_tombol' => $data['swit_tombol'],
+                    'pasang_baru' => $pasang_baru,
+                    'abodemen'    => $abodemen,
+                    'denda'       => $denda,
                 ]);
             } else {
                 $Settings = Settings::create([
                     'business_id' => $business_id,
                     'swit_tombol' => $data['swit_tombol'],
+                    'pasang_baru' => $pasang_baru,
+                    'abodemen'    => $abodemen,
+                    'denda'       => $denda,
                 ]);
             }
 
@@ -65,7 +93,7 @@ class SopController extends Controller
 
         $tampil_settings = $pengaturan->first();
         $title = 'Sop';
-        return view('sop.partials.sistem_instalasi')->with(compact('title', 'tampil_settings'));
+        return view('sop.partials.pasang_baru')->with(compact('title', 'tampil_settings'));
     }
 
     public function block_paket()

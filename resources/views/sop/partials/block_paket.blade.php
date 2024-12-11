@@ -2,7 +2,6 @@
     $blok = json_decode($tampil_settings->block, true);
     $jumlah_blok = count($blok);
 @endphp
-
 <div class="card-body">
     <div class="row mb-3 d-none" id="RowBlock">
         <div class="col-md-6">
@@ -10,7 +9,7 @@
             <input type="text" class="form-control" name="nama[]" placeholder="Nama Blok">
         </div>
         <div class="col-md-6">
-            <label for="jarak">Jarak</label>
+            <label for="jarak">Volume</label>
             <input type="text" class="form-control" name="jarak[]" placeholder="0 - 10 M3">
         </div>
     </div>
@@ -27,7 +26,7 @@
                             <input type="text" class="form-control" name="nama[]" value="{{ $blok[$i]['nama'] }}">
                         </div>
                         <div class="col-md-6">
-                            <label for="jarak">Jarak</label>
+                            <label for="jarak">Volume</label>
                             <input type="text" class="form-control" name="jarak[]" value="{{ $blok[$i]['jarak'] }}">
                         </div>
                     </div>

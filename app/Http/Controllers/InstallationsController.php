@@ -7,6 +7,7 @@ use App\Models\Family;
 use App\Models\Installations;
 use App\Models\Package;
 use App\Models\Region;
+use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\Usage;
 use App\Models\Village;
@@ -16,6 +17,7 @@ use App\Utils\Tanggal;
 use App\Utils\Keuangan;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 
 
 class InstallationsController extends Controller
@@ -30,7 +32,7 @@ class InstallationsController extends Controller
             'customer',
             'village',
             'package'
-        )->get(); 
+        )->get();
         $status_S = Installations::where('status', 'S')->with(
             'customer',
             'package'
@@ -49,20 +51,9 @@ class InstallationsController extends Controller
         )->get();
 
         $title = 'Proposal';
-        return view('perguliran.index')->with(compact('title','installations', 'status_P', 'status_S', 'status_A', 'status_B', 'status_C'));
-     }
-
-    public function create()
-    {
-        $paket = Package::all();
-        $installations = Installations::all();
-        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
-        $desa = Village::all();
-
-        $pilih_desa =0;
-        $title = 'Register Proposal';
-        return view('perguliran.create')->with(compact('paket','installations','customer', 'desa', 'pilih_desa', 'title'));
+        return view('perguliran.index')->with(compact('title', 'installations', 'status_P', 'status_S', 'status_A', 'status_B', 'status_C'));
     }
+
 
 
     public function kode_instalasi()
@@ -82,32 +73,37 @@ class InstallationsController extends Controller
         } else {
             $jumlah = str_pad(Installations::where('desa', $kd_desa)->count() + 1, 3, "0", STR_PAD_LEFT);
         }
-        
+
         $kode_instalasi .= '.' . $jumlah;
 
         if (request()->get('kd_instalasi')) {
             $kd_ins = request()->get('kd_instalasi');
             $instalasi = Installations::where('kd_instalasi', $kd_ins);
-                if ($instalasi->count() > 0) {
-                    $data_ins = $instalasi->first();
+            if ($instalasi->count() > 0) {
+                $data_ins = $instalasi->first();
 
                 if ($kd_desa == $data_ins->desa) {
                     $kode_instalasi = $data_ins->kd_instalasi;
                 }
             }
         }
-    
+
         return response()->json([
-                'kd_instalasi' => $kode_instalasi
-            ], Response::HTTP_ACCEPTED);
+            'kd_instalasi' => $kode_instalasi
+        ], Response::HTTP_ACCEPTED);
     }
 
-    public function janis_paket($id)
+    public function jenis_paket($id)
     {
+        $business_id = Session::get('business_id');
+        $pengaturan = Settings::where('business_id', $business_id);
         $package = Package::where('id', $id)->first();
+
+
+        $tampil_settings = $pengaturan->first();
         return response()->json([
             'success' => true,
-            'view' => view('perguliran.partials.jenis_paket')->with(compact('package'))->render()
+            'view' => view('perguliran.partials.jenis_paket')->with(compact('tampil_settings', 'package'))->render()
         ]);
     }
 
@@ -115,53 +111,63 @@ class InstallationsController extends Controller
      * Store a newly created resource in storage.
      */
 
+    public function create()
+    {
+        $paket = Package::all();
+        $installations = Installations::all();
+        $settings = Settings::first();
+        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $desa = Village::all();
+
+        $pilih_desa = 0;
+        $title = 'Register Proposal';
+        return view('perguliran.create')->with(compact('settings', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
+    }
 
     public function store(Request $request)
     {
         $data = $request->only([
             "customer_id",
             "order",
-            "desa" ,
+            "desa",
             "alamat",
             "koordinate",
             "package_id",
-            "tarif",
             "biaya",
-            "denda" ,
             "kode_instalasi",
             "total",
         ]);
-        
+
         $rules = [
             'kode_instalasi' => 'required',
             'customer_id' => 'required',
             'order' => 'required',
             'desa' => 'required',
             'alamat' => 'required',
-            'koordinate'=> 'required',
+            'koordinate' => 'required',
             'package_id' => 'required'
         ];
 
-        $validate = Validator::make($data,$rules);
+        $validate = Validator::make($data, $rules);
 
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
-        // $data['tarif'] = str_replace(',','', $data['tarif']);
-        // $data['tarif'] = str_replace('.00','', $data['tarif']);
-        // $data['tarif'] = floatval($data['tarif']);
+        $data['tarif'] = str_replace(',', '', $data['tarif']);
+        $data['tarif'] = str_replace('.00', '', $data['tarif']);
+        $data['tarif'] = floatval($data['tarif']);
 
-        $data['biaya'] = str_replace(',','', $data['biaya']);
-        $data['biaya'] = str_replace('.00','', $data['biaya']);
+        $data['biaya'] = str_replace(',', '', $data['biaya']);
+        $data['biaya'] = str_replace('.00', '', $data['biaya']);
         $data['biaya'] = floatval($data['biaya']);
 
-        $data['total'] = str_replace(',','', $data['total']);
-        $data['total'] = str_replace('.00','', $data['total']);
+        $data['total'] = str_replace(',', '', $data['total']);
+        $data['total'] = str_replace('.00', '', $data['total']);
         $data['total'] = floatval($data['total']);
 
         $biaya_instal = $data['total'] - $data['biaya'];
-        // $biaya_pakai = $data['tarif'] - $biaya_instal;
-        
+        $biaya_pakai = $data['tarif'] - $biaya_instal;
+
         $status = '0';
         $jumlah = $data['biaya'] - $data['total'];
         if ($jumlah <= 0) {
@@ -175,40 +181,40 @@ class InstallationsController extends Controller
             'order' => Tanggal::tglNasional($request->order),
             'desa' => $request->desa,
             'alamat' => $request->alamat,
-            'koordinate'=> $request->koordinate,
+            'koordinate' => $request->koordinate,
             'package_id' => $request->package_id,
             'status' => $status,
         ]);
 
         // INSTALLATION
         $usages = Usage::create([
-        'installation_id' => $install->id,
-        'jumlah' => $request->tarif,
+            'installation_id' => $install->id,
+            'jumlah' => $request->tarif,
         ]);
 
-        // TRANSACTION INSTALLASI
-        $jumlah_instal = ($biaya_instal >= 0) ? $data['biaya']:$data['total'];
-        $persen = 100 - ($jumlah/$data['biaya']*100);
+        // TRANSACTION INSTALLASI BOLEH NYICIL
+        $jumlah_instal = ($biaya_instal >= 0) ? $data['biaya'] : $data['total'];
+        $persen = 100 - ($jumlah / $data['biaya'] * 100);
         $transaksi = Transaction::create([
             'rekening_debit' => '1',
             'rekening_kredit' => '67',
             'total' => $jumlah_instal,
             'installation_id' => $install->id,
-            'keterangan'=> 'Biaya istalasi ' . $persen . '%',
+            'keterangan' => 'Biaya istalasi ' . $persen . '%',
         ]);
-        
-        // // TRANSACTION AWAL PAKAI
-        // if ($biaya_pakai <= 0) {
-        //     $jumlah_pakai = $biaya_instal;
-        //     $transaksi = Transaction::create([
-        //         'rekening_debit' => '1',
-        //         'rekening_kredit' => '59',
-        //         'total' => $jumlah_pakai,
-        //         'installation_id' => $install->id,
-        //         'keterangan'=> 'Biaya Pemasangan 1 bulan kedepan'
-        //     ]);
-        // }
-    
+
+        // TRANSACTION AWAL PAKAI TIDAK BOLEH NYICIL
+        if ($biaya_pakai <= 0) {
+            $jumlah_pakai = $biaya_instal;
+            $transaksi = Transaction::create([
+                'rekening_debit' => '1',
+                'rekening_kredit' => '59',
+                'total' => $jumlah_pakai,
+                'installation_id' => $install->id,
+                'keterangan' => 'Biaya Pemasangan 1 bulan kedepan'
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'msg' => 'Permohonan berhasil disimpan',
@@ -220,9 +226,9 @@ class InstallationsController extends Controller
     {
         $installations = Installations::all();
         $status_0 = Installations::where('status', '0')->with(
-        'customer',
-        'village',
-        'package'
+            'customer',
+            'village',
+            'package'
         )->get();
         $title = 'Proposal';
         return view('perguliran.pelunasan_instalasi')->with(compact('title', 'status_0'));
@@ -232,33 +238,33 @@ class InstallationsController extends Controller
      */
     public function show(Installations $installation)
     {
-          $installation = $installation->with([
+        $installation = $installation->with([
             'customer',
             'package',
             'usage',
             'village'
-          ])->where('id', $installation->id)->first(); 
-          $trx = transaction::where([
+        ])->where('id', $installation->id)->first();
+        $trx = transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', '1'],
             ['rekening_kredit', '67']
-          ])->sum('total');
-       
-          if ($installation->status == 'P' || $installation->status == '0') {
-          $view = 'permohonan';
-          } elseif ($installation->status == 'S') {
-          $view = 'pasang';
-          } elseif ($installation->status == 'A') {
-          $view = 'aktif';
-          } elseif ($installation->status == 'B') {
-          $view = 'blokir';
-          } elseif ($installation->status == 'C') {
-          $view = 'cabut';
-          }elseif ($installation->status == '0') {
-          $view = 'belum_lunas'; 
-          }
+        ])->sum('total');
 
-          return view('perguliran.partials/' . $view)->with(compact('installation','trx'));
+        if ($installation->status == 'P' || $installation->status == '0') {
+            $view = 'permohonan';
+        } elseif ($installation->status == 'S') {
+            $view = 'pasang';
+        } elseif ($installation->status == 'A') {
+            $view = 'aktif';
+        } elseif ($installation->status == 'B') {
+            $view = 'blokir';
+        } elseif ($installation->status == 'C') {
+            $view = 'cabut';
+        } elseif ($installation->status == '0') {
+            $view = 'belum_lunas';
+        }
+
+        return view('perguliran.partials/' . $view)->with(compact('installation', 'trx'));
     }
 
 
@@ -266,27 +272,34 @@ class InstallationsController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Installations $installation)
-       {
-       $paket = Package::all();
-       $installations = $installation->with([
+    {
+        $paket = Package::all();
+        $installations = $installation->with([
             'customer',
             'package',
             'usage',
             'village'
-       ])->where('id', $installation->id)->first();
-       $trx = transaction::where([
+        ])->where('id', $installation->id)->first();
+        $trx = transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', '1'],
             ['rekening_kredit', '67']
-       ])->sum('total');
-       $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
-       $desa = Village::all();
+        ])->sum('total');
+        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $desa = Village::all();
 
-       $pilih_desa =0;
-       $title = 'Register Proposal';
-       return view('perguliran.partials.edit_permohonan')->with(compact('trx', 'paket','installations','customer', 'desa', 'pilih_desa',
-       'title'));
-       }
+        $pilih_desa = 0;
+        $title = 'Register Proposal';
+        return view('perguliran.partials.edit_permohonan')->with(compact(
+            'trx',
+            'paket',
+            'installations',
+            'customer',
+            'desa',
+            'pilih_desa',
+            'title'
+        ));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -301,16 +314,16 @@ class InstallationsController extends Controller
      */
     public function destroy(Installations $installation)
     {
-         // Menghapus Installations berdasarkan id yang diterima
-         Installations::where('id', $installation->id)->delete();
-         Transaction::where('installation_id', $installation->id)->delete();
-         Usage::where('installation_id', $installation->id)->delete();
+        // Menghapus Installations berdasarkan id yang diterima
+        Installations::where('id', $installation->id)->delete();
+        Transaction::where('installation_id', $installation->id)->delete();
+        Usage::where('installation_id', $installation->id)->delete();
 
-         // Redirect ke halaman Installations dengan pesan sukses
-         return response()->json([
-         'success' => true,
-         'msg' => 'Permohonan berhasil dihapus',
-         'installation' => $installation
-         ]);
+        // Redirect ke halaman Installations dengan pesan sukses
+        return response()->json([
+            'success' => true,
+            'msg' => 'Permohonan berhasil dihapus',
+            'installation' => $installation
+        ]);
     }
 }

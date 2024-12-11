@@ -21,7 +21,8 @@
             <div id="collapsePage" class="collapse" aria-labelledby="headingPage" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="/pengaturan">Personalisasi SOP</a>
-                    <a class="collapse-item" href="/packages/create">Tambah paket</a>
+                    <a class="collapse-item" href="/packages">Kelas & Biaya Pemakaian</a>
+                    <a class="collapse-item" href="/accounts">Rekening</a>
                 </div>
             </div>
         </li>
@@ -38,8 +39,6 @@
                     <a class="collapse-item" href="/customers">Data Pelanggan</a>
                     <a class="collapse-item" href="/villages">Data Desa</a>
                     <a class="collapse-item" href="/accounts">Data Dusun</a>
-                    <a class="collapse-item" href="/accounts">Rekening</a>
-                    <a class="collapse-item" href="/packages">Paket</a>
                 </div>
             </div>
         </li>

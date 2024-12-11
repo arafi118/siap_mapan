@@ -27,8 +27,8 @@ use Illuminate\Support\Facades\Session;
 */
 
 Route::get('/', function () {
-    Session::put('business_id','1');
-    return view('welcome')->with('title','Dashboard');
+    Session::put('business_id', '1');
+    return view('welcome')->with('title', 'Dashboard');
 });
 
 // Auth
@@ -51,7 +51,7 @@ Route::resource('/customers', CustomerController::class);
 // DELETE /customers/{customer}           destroy
 
 // Installations || Instalasi
-Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'janis_paket']);
+Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'jenis_paket']);
 Route::get('/installations/kode_instalasi', [InstallationsController::class, 'kode_instalasi']);
 Route::get('/installations/pelunasan_instalasi', [InstallationsController::class, 'pelunasan_instalasi']);
 Route::resource('/installations', InstallationsController::class);
@@ -81,7 +81,7 @@ Route::delete('/villages/{village}', [VillageController::class, 'destroy']);
 
 Route::resource('/pengaturan', SopController::class);
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
-Route::get('/pengaturan/sop/sistem_instalasi', [SopController::class, 'sistem_instalasi']);
+Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
 Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
 
 Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);

@@ -46,7 +46,7 @@ class PackageController extends Controller
 
         $tampil_settings = $pengaturan->first();
         $title = 'Register Paket';
-        return view('paket.create')->with(compact('paket', 'title', 'tampil_settings'));
+        return view('paket.index')->with(compact('paket', 'title', 'tampil_settings'));
     }
 
     /**
@@ -168,10 +168,8 @@ class PackageController extends Controller
             $no++;
         }
 
-
         $abodemen = $data['abodemen'];
         $denda = $data['denda'];
-
 
         // Update data 
         $update = Package::where('id', $package->id)->update([
@@ -180,7 +178,6 @@ class PackageController extends Controller
             'abodemen' => $abodemen,
             'denda' =>  $denda
         ]);
-
         return response()->json([
             'success' => true,
             'msg' => 'Edit Paket berhasil disimpan',
