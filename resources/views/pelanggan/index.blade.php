@@ -145,21 +145,27 @@
     });
 </script>
 
-    @if (Session::get('berhasil'))
-        <script>
-            alert('{{ Session::get('berhasil') }}')
-        </script>
-    @endif
+@if (Session::has('berhasil'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: '{{ Session::get('berhasil') }}',
+        showConfirmButton: false,
+        timer: 2000
+    });
+</script>
     <script>
-        // Menghilangkan notifikasi setelah 5 detik
-        document.addEventListener('DOMContentLoaded', function() {
-            const alert = document.getElementById('success-alert');
-            if (alert) {
-                setTimeout(() => {
-                    alert.style.display = 'none';
-                }, 2000); // 2000ms = 2 detik
-            }
-        });
+    // Menghilangkan notifikasi setelah 5 detik
+    document.addEventListener('DOMContentLoaded', function() {
+        const alert = document.getElementById('success-alert');
+        if (alert) {
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 2000); // 2000ms = 2 detik
+        }
+    });
     </script>
+@endif
 
 @endsection

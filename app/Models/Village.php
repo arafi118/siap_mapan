@@ -14,4 +14,9 @@ class Village extends Model
     {
             return $this->belongsTo(Customer::class, 'kode', 'desa');
     }
+
+    public function hamlet()
+    {
+        return $this->hasMany(Hamlet::class);
+    }
 }
