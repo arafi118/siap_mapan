@@ -6,7 +6,7 @@
 @endphp
 
 @section('content')
-    <form action="/packages/{{ $package->id }}" method="post" id="editpaket">
+    <form action="/packages/{{ $package->id }}" method="post" id="paket">
         @csrf
         @method('PUT')
 
@@ -84,60 +84,59 @@
         </div>
     </form>
 @endsection
-@section('script')
-    <script>
-        // edit data
 
-        $("#abodemen").maskMoney({
-            allowNegative: true
-        });
-        $("#denda").maskMoney({
-            allowNegative: true
-        });
-        $(".block").maskMoney({
-            allowNegative: true
-        });
+<script>
+    // edit data
 
-        $(document).on('click', '#EditPaket', function(e) {
-            e.preventDefault();
-            $('small').html('');
+    $("#abodemen").maskMoney({
+        allowNegative: true
+    });
+    $("#denda").maskMoney({
+        allowNegative: true
+    });
+    $(".block").maskMoney({
+        allowNegative: true
+    });
 
-            var form = $('#editpaket');
-            var actionUrl = form.attr('action');
+    $(document).on('click', '#EditPaket', function(e) {
+        e.preventDefault();
+        $('small').html('');
 
-            $.ajax({
-                type: 'POST',
-                url: actionUrl,
-                data: form.serialize(),
-                success: function(result) {
-                    if (result.success) {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: result.msg,
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
+        var form = $('#editpaket');
+        var actionUrl = form.attr('action');
 
-                        setTimeout(() => {
-                            window.location.href = '/packages/';
-                        }, 1500);
-                    }
-                },
-                error: function(result) {
-                    const response = result.responseJSON;
-                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
-                    if (response && typeof response === 'object') {
-                        $.each(response, function(key, message) {
-                            $('#' + key)
-                                .closest('.input-group.input-group-static')
-                                .addClass('is-invalid');
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: form.serialize(),
+            success: function(result) {
+                if (result.success) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: result.msg,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
 
-                            $('#msg_' + key).html(message);
-                        });
-                    }
+                    setTimeout(() => {
+                        window.location.href = '/packages/';
+                    }, 1500);
                 }
-            });
+            },
+            error: function(result) {
+                const response = result.responseJSON;
+                Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
+                if (response && typeof response === 'object') {
+                    $.each(response, function(key, message) {
+                        $('#' + key)
+                            .closest('.input-group.input-group-static')
+                            .addClass('is-invalid');
+
+                        $('#msg_' + key).html(message);
+                    });
+                }
+            }
         });
-    </script>
-@endsection
+    });
+</script>

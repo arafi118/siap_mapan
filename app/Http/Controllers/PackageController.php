@@ -107,6 +107,50 @@ class PackageController extends Controller
         ]);
     }
 
+    public function block_paket()
+    {
+        $business_id = Session::get('business_id');
+        $pengaturan = Settings::where('business_id', $business_id);
+
+        if (request()->ajax()) {
+
+            $nama = request()->get('nama');
+            $jarak = request()->get('jarak');
+
+            $blok = [];
+            for ($i = 0; $i < count($nama); $i++) {
+                if ($nama[$i] == '' or $jarak[$i] == '') {
+                    continue;
+                }
+
+                $blok[] = [
+                    "nama" => $nama[$i],
+                    "jarak" => $jarak[$i]
+                ];
+            }
+
+            if ($pengaturan->count() > 0) {
+                $Settings = $pengaturan->update([
+                    'block' => json_encode($blok),
+                ]);
+            } else {
+                $Settings = Settings::create([
+                    'business_id' => $business_id,
+                    'block' => json_encode($blok),
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'simpanpblock' => $Settings
+            ]);
+        }
+
+        $tampil_settings = $pengaturan->first();
+        $title = 'Sop';
+        return view('paket.block_paket')->with(compact('title', 'tampil_settings'));
+    }
+
     /**
      * Display the specified resource.
      */
@@ -144,7 +188,6 @@ class PackageController extends Controller
             'kelas' => 'required'
         ];
         $validate = Validator::make($data, $rules);
-
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }

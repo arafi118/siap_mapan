@@ -38,19 +38,6 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" style="margin-bottom: 10px;">
-                                <a class="nav-link btn btn-white" data-status="B" data-toggle="tab" style="width: 220px;"
-                                    data-target="#blok" href="#">
-                                    <div class="left-align" style="display: flex; align-items: center; gap: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="20"
-                                            height="25" style="fill: rgb(255, 255, 255);">
-                                            <path
-                                                d="M94.1 315.1c0 25.9-21.2 47.1-47.1 47.1S0 341 0 315.1c0-25.9 21.2-47.1 47.1-47.1h47.1v47.1zm23.7 0c0-25.9 21.2-47.1 47.1-47.1s47.1 21.2 47.1 47.1v117.8c0 25.9-21.2 47.1-47.1 47.1s-47.1-21.2-47.1-47.1V315.1zm47.1-189c-25.9 0-47.1-21.2-47.1-47.1S139 32 164.9 32s47.1 21.2 47.1 47.1v47.1H164.9zm0 23.7c25.9 0 47.1 21.2 47.1 47.1s-21.2 47.1-47.1 47.1H47.1C21.2 244 0 222.8 0 196.9s21.2-47.1 47.1-47.1H164.9zm189 47.1c0-25.9 21.2-47.1 47.1-47.1 25.9 0 47.1 21.2 47.1 47.1s-21.2 47.1-47.1 47.1h-47.1V196.9zm-23.7 0c0 25.9-21.2 47.1-47.1 47.1-25.9 0-47.1-21.2-47.1-47.1V79.1c0-25.9 21.2-47.1 47.1-47.1 25.9 0 47.1 21.2 47.1 47.1V196.9zM283.1 385.9c25.9 0 47.1 21.2 47.1 47.1 0 25.9-21.2 47.1-47.1 47.1-25.9 0-47.1-21.2-47.1-47.1v-47.1h47.1zm0-23.7c-25.9 0-47.1-21.2-47.1-47.1 0-25.9 21.2-47.1 47.1-47.1h117.8c25.9 0 47.1 21.2 47.1 47.1 0 25.9-21.2 47.1-47.1 47.1H283.1z" />
-                                        </svg>
-                                        <span><b>blok baru</b></span>
-                                    </div>
-                                </a>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -84,19 +71,6 @@
                         </div>
                     </div>
 
-                    <!-- instalasi Tab -->
-                    <div id="blok" role="tab" class="tab-pane ">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card mb-4">
-                                    <div class="table-responsive p-3">
-                                        @include('sop.partials.block_paket')
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -106,55 +80,6 @@
 @endsection
 
 @section('script')
-    <script>
-        // block paket
-        $(document).on('click', '#blockinput', function(e) {
-            e.preventDefault()
-
-            var container = $('#inputFromblock')
-            var row = $('<div>').addClass('row mb-3')
-            var block = $('#RowBlock').html()
-
-            row.html(block)
-            container.append(row)
-        })
-
-        $('#blockinput').trigger('click')
-
-
-        $(document).on('click', '#SimpanBlock', function(e) {
-            e.preventDefault();
-            var form = $('#Fromblock');
-            var actionUrl = form.attr('action');
-
-            var toastMixin = Swal.mixin({
-                toast: true,
-                icon: 'success',
-                position: 'top-right',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
-
-            $.ajax({
-                type: 'GET',
-                url: actionUrl,
-                data: form.serialize(),
-                success: function(result) {
-                    if (result.success) {
-                        toastMixin.fire({
-                            title: 'Pembaruhan Block Paket Berhasil'
-                        });
-                        // setTimeout(() => window.location.reload(), 3000);
-                    }
-                },
-                error: function() {
-                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
-                }
-            });
-        });
-    </script>
-
     <script>
         //pasang baru
 

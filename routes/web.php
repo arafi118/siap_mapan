@@ -59,6 +59,7 @@ Route::resource('/installations', InstallationsController::class);
 
 
 // Packages || Paket
+Route::get('/packages/block_paket', [PackageController::class, 'block_paket']);
 Route::resource('/packages', PackageController::class);
 
 // Transactions || Transaksi
