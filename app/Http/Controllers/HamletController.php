@@ -69,7 +69,7 @@ class HamletController extends Controller
     public function edit(Hamlet $hamlet)
     {
         $title = 'Edit Dusun';
-        return view('Dusun.edit')->with(compact('hamlet','title'));
+        return view('dusun.edit')->with(compact('hamlet','title'));
     }
 
     /**

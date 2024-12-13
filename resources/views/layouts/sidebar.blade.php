@@ -39,9 +39,9 @@
                     <a class="collapse-item" href="/customers/create">Register Pelanggan</a>
                     <a class="collapse-item" href="/customers">Data Pelanggan</a>
                     <a class="collapse-item" href="/villages">Data Desa</a>
-                    <a class="collapse-item" href="/accounts">Data Dusun</a>
                     <a class="collapse-item" href="/hamlets">Data Dusun</a>
                     <a class="collapse-item" href="/packages">Paket</a>
+                    {{-- <a class="collapse-item" href="/accounts">Rekening</a> --}}
                 </div>
             </div>
         </li>

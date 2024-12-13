@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-<form action="/hamlets/{{ $hamlet->id }}" method="post" id="dusun">
+<form action="/hamlets/{{ $hamlet->id }}" method="post" id="fordusun">
     @csrf
     @method('PUT')
     <div class="row">
@@ -13,7 +13,7 @@
                         <div class="page-title-wrapper">
                             <div class="page-title-heading">
                                 <div style="display: flex; align-items: center;">
-                                    <i class="fa fa-user-secret" style="font-size: 30px; margin-right: 13px;"></i>
+                                    <i class="fas fa-home" style="font-size: 30px; margin-right: 13px;"></i>
                                     <b>Edit Dusun</b>
                                 </div>
                             </div>
@@ -54,7 +54,7 @@
                             </div>
                         </div>
                         <button type="button" class="btn btn-primary btn-sm" id="close">Close</button>
-                        <button type="submit" class="btn btn-dark btn-sm float-end" id="SimpanDusun">Simpan Dusun</button>
+                        <button type="submit" class="btn btn-dark btn-sm"id="SimpanDusun">Simpan Dusun</button>
                     </div>
                 </div>
             </div>
