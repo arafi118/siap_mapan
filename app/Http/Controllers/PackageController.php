@@ -93,6 +93,7 @@ class PackageController extends Controller
         $denda = $data['denda'];
 
         $Package = Package::create([
+            'business_id' => Session::get('business_id'),
             'kelas' => $request->kelas,
             'harga' => json_encode($blok),
             'abodemen' => $abodemen,
@@ -216,6 +217,7 @@ class PackageController extends Controller
 
         // Update data 
         $update = Package::where('id', $package->id)->update([
+            'business_id' => Session::get('business_id'),
             'kelas' => $request->kelas,
             'harga' => $blok,
             'abodemen' => $abodemen,

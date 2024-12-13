@@ -13,20 +13,22 @@
                         <img src="../../assets/img/reg3.png" style="max-height: 150px; margin-right: 20px;" class="img-fluid">
                         <div class="w-100">
                             <div class="col-12 d-flex justify-content-end">
-                                <button class="btn btn-success btn-icon-split" style="background-color: #8eea03; "
-                                    type="submit" id="SimpanPaket" class="btn btn-dark"
-                                    style="float: right; margin-left: 10px;">
+
+                                <a href="/villages/create" class="btn btn-success" id="RegisterDesa"
+                                    style="background-color: #81d700;">
                                     <span class="icon text-white-50"><svg xmlns="http://www.w3.org/2000/svg" width="16"
                                             height="16" fill="currentColor" class="bi bi-sign-intersection-fill"
                                             viewBox="0 0 16 16">
                                             <path
                                                 d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
                                         </svg>
-                                    </span><span class="text" style="float: right;">Simpan Harga</span>
-                                </button>
+                                    </span>&nbsp;
+                                    <span class="text" style="float: right;">Register Desa</span>
+                                </a>
                             </div>
                             <hr>
-                            <h4 class="alert-heading"><b>Tentukan Harga Paket</b></h4>
+                            <h3 class="alert-heading"><b>Register Instalasi</b></h3>
+                            <p>"Lengkapi data dan klik tombol ' <b>SIMPAN</b> ' untuk menyelesaikan pendaftaran."</p>
                         </div>
                     </div>
                 </div>
@@ -42,12 +44,6 @@
                         <div class="row">
                             <div class="card-body">
                                 <div class="alert alert-light" role="alert">
-                                    <div style="display: flex; justify-content: flex-end;">
-                                        <a href="/villages/create" class="btn btn-primary" id="RegisterDesa"
-                                            style="display: inline-block; width: 130px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;">
-                                            <i class="fas fa-plus"></i> Register Desa
-                                        </a>
-                                    </div>
                                     <div class="row">
                                         <div class="col-md-8">
                                             <div class="position-relative mb-3">
@@ -123,7 +119,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                <small class="text-danger" id="msg_package_id"></small>
+                                                <small class="text-danger" id="msg"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -145,7 +141,7 @@
                                                     <label for="total">Nominal</label>
                                                     <input type="text" class="form-control total"
                                                         aria-describedby="total" name="total" id="total"
-                                                        value="100000" readonly>
+                                                        value="{{ number_format($settings->pasang_baru, 2) }}" readonly>
                                                     <small class="text-danger" id="msg_package_id"></small>
                                                 </div>
                                             </div>
@@ -166,8 +162,7 @@
                                     Catatan : ( Jika Ada data atau inputan yang kosong bisa di isi ( 0 ) atau ( - ) )
                                 </p>
                                 <button type="submit" id="SimpanPermohonan" class="btn btn-dark"
-                                    style="float: right;">Simpan
-                                    Permohonan</button>
+                                    style="float: right;">Daftar & Simpan</button>
                                 <br>
                             </div>
                         </div>
@@ -180,9 +175,14 @@
 
 @section('script')
     <script>
+        $("#abodemen").maskMoney({
+            allowNegative: true
+        });
+
         $("#total").maskMoney({
             allowNegative: true
         });
+
         $(document).ready(function() {
             $('.select2').select2({
                 theme: 'bootstrap4',
@@ -225,7 +225,6 @@
             })
         })
 
-        style = "background-color: #7365f0; color: #fff; border-color: #6f42c1;" > Close
         $(document).on('click', '#SimpanPermohonan', function(e) {
             e.preventDefault();
             $('small').html('');
@@ -241,7 +240,7 @@
                     if (result.success) {
                         Swal.fire({
                             title: result.msg,
-                            text: "Tambahkan Permohonan Baru?",
+                            text: "Tambahkan Register Instalasi Baru?",
                             icon: "success",
                             showDenyButton: true,
                             confirmButtonText: "Tambahkan",
