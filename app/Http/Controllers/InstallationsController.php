@@ -298,7 +298,14 @@ class InstallationsController extends Controller
 
         $tampil_settings = $pengaturan->first();
         $title = 'Edit Paket';
-        return view('perguliran.partials.edit_permohonan')->with(compact('title', 'paket', 'trx', 'installations', 'tampil_settings'));
+
+        if ($installations->status === '0') {
+            return view('perguliran.partials.pasang')->with(compact('title', 'paket', 'trx', 'installations', 'tampil_settings'));
+        } elseif ($installations->status === 'p') {
+            return view('perguliran.partials.aktif_pasang')->with(compact('title', 'paket', 'trx', 'installations', 'tampil_settings'));
+        } else {
+            return view('perguliran.partials.edit_permohonan')->with(compact('title', 'paket', 'trx', 'installations', 'tampil_settings'));
+        }
     }
 
     /**
@@ -311,21 +318,24 @@ class InstallationsController extends Controller
             "alamat",
             "koordinate"
         ]);
-
         $rules = [
-            'order' => 'required'
+            'order' => 'required|date', // ensures it's a valid date
+            'alamat' => 'sometimes|string',
+            'koordinate' => 'sometimes|string'
         ];
         $validate = Validator::make($data, $rules);
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
+
         // Update data 
         $update = Package::where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
-            'order' => $request->order,
+            'order_date' => $request->order,
             'alamat' => $request->alamat,
             'koordinate' => $request->koordinate
         ]);
+
         return response()->json([
             'success' => true,
             'msg' => 'Edit berhasil disimpan',

@@ -101,18 +101,20 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <a href="/installations/{{ $status_P->id }}"
-                                                        class="btn-sm btn-primary"><i
-                                                            class="fa fa-exclamation-circle"></i></a>
+                                                        class="btn-sm btn-primary">
+                                                        <i class="fa fa-exclamation-circle"></i>
+                                                    </a>
                                                     <a href="/installations/{{ $status_P->id }}/edit"
-                                                        class="btn-sm btn-warning mx-1"><i
-                                                            class="fas fa-pencil-alt"></i></a>
+                                                        class="btn-sm btn-warning mx-1">
+                                                        <i class="fas fa-pencil-alt"></i>
+                                                    </a>
                                                     <a href="#" data-id="{{ $status_P->id }}"
-                                                        class="btn-sm btn-danger mx-1 Hapus_id"><i
-                                                            class="fas fa-trash-alt"></i></a>
+                                                        class="btn-sm btn-danger mx-1 Hapus_id">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
-
                                     </tbody>
                                 </table>
                             </div>
@@ -292,7 +294,7 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $('#TbPermohonan').DataTable(); // ID From dataTable 
+            $('#TbPermohonan').DataTable(); // ID From dataTable untuk memunculkan search
             $('#TbPasang').DataTable();
             $('#TbAktif').DataTable();
             $('#TbBlokir').DataTable();

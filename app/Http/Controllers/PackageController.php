@@ -42,11 +42,11 @@ class PackageController extends Controller
     {
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
-        $paket = Package::all();
+        $package = Package::all();
 
         $tampil_settings = $pengaturan->first();
         $title = 'Register Paket';
-        return view('paket.index')->with(compact('paket', 'title', 'tampil_settings'));
+        return view('paket.create')->with(compact('package', 'title', 'tampil_settings'));
     }
 
     /**

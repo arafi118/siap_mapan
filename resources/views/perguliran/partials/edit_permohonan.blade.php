@@ -30,7 +30,6 @@
         </div>
         <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
             <div class="main-card mb-3 card">
-
                 <div class="card-body">
                     <form action="/installations/{{ $installations->id }}" method="post" id="FormEditPermohonan">
                         @csrf
@@ -164,7 +163,6 @@
 
         $(document).on('change', '#edit_jenis_paket', function() {
             var edit_jenis_paket = $(this).val()
-
             $.get('/installations/edit_jenis_paket/' + edit_jenis_paket, function(result) {
                 $('#formEditjenis_paket').html(result.view)
             })
