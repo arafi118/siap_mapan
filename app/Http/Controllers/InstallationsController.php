@@ -63,12 +63,7 @@ class InstallationsController extends Controller
                 ->orWhere('nik', 'LIKE', "%{$query}%");
         })->with([
             'installation' => function ($query) {
-                $query->where('status', '0')->withSum(['transaction' => function ($query) {
-                    $query->where([
-                        ['rekening_debit', '1'],
-                        ['rekening_kredit', '67']
-                    ]);
-                }], 'total');
+                $query->where('status', '0');
             },
             'installation.transaction' => function ($query) {
                 $query->where([
