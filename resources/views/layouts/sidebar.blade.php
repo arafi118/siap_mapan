@@ -39,6 +39,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="/customers/create">Register Pelanggan</a>
                     <a class="collapse-item" href="/customers">Data Pelanggan</a>
+                    <a class="collapse-item" href="/">Data Cater</a>
                     <a class="collapse-item" href="/villages">Data Desa</a>
                     <a class="collapse-item" href="/hamlets">Data Dusun</a>
                 </div>
@@ -54,7 +55,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="/installations/create">Register Instalasi</a>
                     <a class="collapse-item" href="/installations">Status Instalasi</a>
-                    <a class="collapse-item" href="/usages">Penggunaan</a>
+                    <a class="collapse-item" href="/usages">Pemakaian</a>
                 </div>
             </div>
         </li>

@@ -25,8 +25,10 @@
                             <tr>
                                 <th>KODE</th>
                                 <th>NAMA DESA</th>
-                                <th>ALAMAT</th>
-                                <th>TELPON</th>
+                                <th>AWAL</th>
+                                <th>AKHIR</th>
+                                <th>AKHIR</th>
+                                <th>AKHIR</th>
                                 <th style="text-align: center;">AKSI</th>
                             </tr>
                         </thead>
