@@ -20,11 +20,7 @@
     <link href="/assets/css/ruang-admin-min.css" rel="stylesheet">
     <link href="/assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-
-
     <!-- Bootstrap DatePicker -->
-
 </head>
 <style>
     .btn-white-custom {
@@ -120,7 +116,7 @@
         /* Pusatkan teks di tombol */
         background-color: #000000;
         /* Warna latar belakang */
-        color: rgb(80, 43, 43);
+        color: rgb(255, 0, 0);
         /* Warna teks */
         border: none;
         /* Hilangkan border */
@@ -265,6 +261,61 @@
         background-color: #495057;
         /* Warna latar belakang saat dihover */
     }
+
+
+    .form-floating .form-control {
+        height: calc(2.5rem + 1px);
+        /* Tinggi input disesuaikan */
+        padding: 0.75rem;
+        /* Padding yang lebih seragam */
+        text-align: left;
+        /* Membuat teks berada di tengah horizontal */
+    }
+
+    .form-floating>label {
+        position: absolute;
+        top: 50%;
+        /* Posisi di tengah vertikal */
+        left: 0.75rem;
+        /* Posisi kiri */
+        transform: translateY(-50%) scale(1);
+        /* Sesuaikan transform agar di tengah */
+        height: auto;
+        /* Tidak perlu 100% tinggi */
+        padding: 0;
+        /* Hapus padding default */
+        pointer-events: none;
+        border: none;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .form-floating .form-control:focus,
+    .form-floating .form-control:not(:placeholder-shown) {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        text-align: left;
+        /* Teks input kembali ke kiri jika aktif */
+    }
+
+    .form-floating .form-control:focus+label,
+    .form-floating .form-control:not(:placeholder-shown)+label {
+        opacity: 0.65;
+        transform: scale(0.85) translateY(-1rem) translateX(0.15rem);
+    }
+
+    .form-floating .invalid-feedback {
+        color: red;
+    }
+
+    .twitter-typeahead {
+        width: 100%;
+    }
+
+    .tt-dropdown-menu {
+        background: var(--white);
+        color: var(--dark);
+        width: 100%;
+    }
 </style>
 
 <body id="page-top">
@@ -314,6 +365,86 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.3/typeahead.jquery.min.js"
+        integrity="sha512-FoYDcEN8AC55Q46d/gra+GO1tD9Bw7ZTLBUDqaza5YQ+g2UGysVxBoVOkXB6RVVM8wFyPJxr3vcEz9wxbFKM6g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        var numFormat = new Intl.NumberFormat('en-EN', {
+            minimumFractionDigits: 2
+        })
+
+        //cari customors
+        $('#CariCustommers').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: 'states',
+            source: function(query, process) {
+                if (query.length < 2) return;
+
+                $.ajax({
+                    url: '/installations/cari_Custommers',
+                    method: 'GET',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        var states = result.map(function(item) {
+                            if (item.installation.length > 0) {
+                                return {
+                                    id: item.id,
+                                    installation: item.installation,
+                                    name: item.nama +
+                                        ' [' + item.village.nama + ']' +
+                                        ' - ' + item.id +
+                                        ' [' + item.nik + ']',
+                                    value: item.id
+                                };
+                            }
+                        });
+
+                        process(states);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
+                        process([]);
+                    }
+                });
+            },
+            displayKey: 'name',
+            autoSelect: true,
+            fitToElement: true,
+            items: 10
+        }).bind('typeahead:selected', function(event, item) {
+            var installation = item.installation
+            var trx = installation[0].transaction
+
+            var sum_total = 0;
+            trx.map(function(item) {
+                sum_total += item.total;
+            })
+
+            // console.log(numFormat.format(installation[0].abodemen))
+            // $("#customername").val(installation[0].customers.nama);
+
+            var tagihan = sum_total - installation[0].abodemen;
+            $("#transaction_id").val(installation[0].id);
+            $("#order").val(installation[0].order);
+            $("#kode_instalasi").val(installation[0].kode_instalasi);
+            $("#alamat").val(installation[0].alamat);
+            $("#package").val(installation[0].package.kelas);
+            $("#abodemen").val(numFormat.format(installation[0].abodemen));
+            $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
+            $("#tagihan").val(numFormat.format(tagihan));
+            $("#_total").val(numFormat.format(installation[0].abodemen - sum_total));
+        });
+        //end cari customors
+    </script>
+
     @yield('script')
 </body>
 

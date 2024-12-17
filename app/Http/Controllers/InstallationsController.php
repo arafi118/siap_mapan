@@ -54,7 +54,34 @@ class InstallationsController extends Controller
         return view('perguliran.index')->with(compact('title', 'installations', 'status_P', 'status_S', 'status_A', 'status_B', 'status_C'));
     }
 
+    public function cariCustomers(Request $request)
+    {
+        $query = $request->input('query');
 
+        $customers = Customer::where(function ($q) use ($query) {
+            $q->where('nama', 'LIKE', "%{$query}%")
+                ->orWhere('nik', 'LIKE', "%{$query}%");
+        })->with([
+            'installation' => function ($query) {
+                $query->where('status', '0')->withSum(['transaction' => function ($query) {
+                    $query->where([
+                        ['rekening_debit', '1'],
+                        ['rekening_kredit', '67']
+                    ]);
+                }], 'total');
+            },
+            'installation.transaction' => function ($query) {
+                $query->where([
+                    ['rekening_debit', '1'],
+                    ['rekening_kredit', '67']
+                ]);
+            },
+            'village',
+            'installation.package'
+        ])->get();
+
+        return response()->json($customers);
+    }
 
     public function kode_instalasi()
     {
@@ -194,6 +221,7 @@ class InstallationsController extends Controller
         $transaksi = Transaction::create([
             'rekening_debit' => '1',
             'rekening_kredit' => '67',
+            'tgl_transaksi' => Tanggal::tglNasional($request->order),
             'total' => $jumlah_instal,
             'installation_id' => $install->id,
             'keterangan' => 'Biaya istalasi ' . $persen . '%',
@@ -218,17 +246,7 @@ class InstallationsController extends Controller
         ]);
     }
 
-    public function pelunasan_instalasi()
-    {
-        $installations = Installations::all();
-        $status_0 = Installations::where('status', '0')->with(
-            'customer',
-            'village',
-            'package'
-        )->get();
-        $title = 'Proposal';
-        return view('perguliran.pelunasan_instalasi')->with(compact('title', 'status_0'));
-    }
+
     /**
      * Display the specified resource.
      */
@@ -237,9 +255,9 @@ class InstallationsController extends Controller
         $installation = $installation->with([
             'customer',
             'package',
-            'usage',
             'village'
         ])->where('id', $installation->id)->first();
+
         $trx = transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', '1'],

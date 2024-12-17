@@ -55,7 +55,7 @@ Route::resource('/customers', CustomerController::class);
 Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'jenis_paket']);
 Route::get('/installations/edit_jenis_paket/{id}', [InstallationsController::class, 'edit_jenis_paket']);
 Route::get('/installations/kode_instalasi', [InstallationsController::class, 'kode_instalasi']);
-Route::get('/installations/pelunasan_instalasi', [InstallationsController::class, 'pelunasan_instalasi']);
+Route::get('/installations/cari_Custommers', [InstallationsController::class, 'cariCustomers']);
 Route::resource('/installations', InstallationsController::class);
 
 
@@ -64,6 +64,7 @@ Route::get('/packages/block_paket', [PackageController::class, 'block_paket']);
 Route::resource('/packages', PackageController::class);
 
 // Transactions || Transaksi
+Route::get('/transactions/pelunasan_instalasi', [TransactionController::class, 'pelunasan_instalasi']);
 Route::resource('/transactions', TransactionController::class);
 
 // Usages || Penggunaan
