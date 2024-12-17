@@ -9,4 +9,10 @@ class Usage extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+
+          
+    public function installation()
+    {
+            return $this->belongsTo(Installations::class);
+    }
 }

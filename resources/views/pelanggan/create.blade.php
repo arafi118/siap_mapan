@@ -128,7 +128,7 @@
                                 <small class="text-danger" id="msg_no_telp">{{ $errors->first('no_telp') }}</small>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        {{-- <div class="col-md-4">
                             <div class="position-relative mb-3">
                                 <label for="pendidikan">Pendidikan</label>
                                 <select class="js-select-2 form-control" name="pendidikan" id="pendidikan">
@@ -176,9 +176,9 @@
                                 <small class="text-danger"
                                     id="msg_status_pernikahan">{{ $errors->first('status_pernikahan') }}</small>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
                                 <label for="nama_ibu">Nama Ibu Kandung</label>
@@ -235,7 +235,7 @@
                                 <small class="text-danger" id="msg_hubungan">{{ $errors->first('hubungan') }}</small>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="alert alert-warning alert-dismissible" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>

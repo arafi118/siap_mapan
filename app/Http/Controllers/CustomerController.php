@@ -49,18 +49,9 @@ class CustomerController extends Controller
             'tgl_lahir' => 'required',
             'jenis_kelamin' => 'required',
             'no_kk' => 'required',
-            'nik_penjamin' => 'required',
-            'penjamin' => 'required',
             'domisi' => 'required',
             'desa' => 'required',
             'no_telp' => 'required',
-            'pendidikan' => 'required',
-            'agama' => 'required',
-            'status_pernikahan' => 'required',
-            'nama_ibu' => 'required',
-            'tempat_kerja' => 'required',
-            'jenis_usaha' => 'required',
-            'hubungan' => 'required',
          ]);
 
         //  CARA 1
@@ -73,19 +64,9 @@ class CustomerController extends Controller
             'tgl_lahir' => $request->tgl_lahir,
             'jk' => $request->jenis_kelamin,
             'kk' => $request->no_kk,
-            'nik_penjamin' => $request->nik_penjamin,
-            'penjamin' => $request->penjamin,
             'domisi' => $request->domisi,
             'desa' => $request->desa,
-            'hp' => $request->no_telp,
-            'pendidikan' => $request->pendidikan,
-            'agama' => $request->agama,
-            'status_pernikahan' => $request->status_pernikahan,
-            'nama_ibu' => $request->nama_ibu,
-            'tempat_kerja' => $request->tempat_kerja,
-            'usaha' => $request->jenis_usaha,
-            'nik_penjamian' => $request->nik_penjamian,
-            'hubungan' => $request->hubungan
+            'hp' => $request->no_telp
         ]);
 
         return redirect('/customers')->with('berhasil','Customer berhasil Ditambahkan!');
@@ -128,18 +109,9 @@ class CustomerController extends Controller
             'tgl_lahir' => 'required',
             'jenis_kelamin' => 'required',
             'no_kk' => 'required',
-            'nik_penjamin' => 'required',
-            'penjamin' => 'required',
             'domisi' => 'required',
             'desa' => 'required',
-            'no_telp' => 'required',
-            'pendidikan' => 'required',
-            'agama' => 'required',
-            'status_pernikahan' => 'required',
-            'nama_ibu' => 'required',
-            'tempat_kerja' => 'required',
-            'jenis_usaha' => 'required',
-            'hubungan' => 'required',
+            'no_telp' => 'required'
         ];
 
         if ($request->nik != $customer->nik) {
@@ -158,18 +130,9 @@ class CustomerController extends Controller
             'tgl_lahir' => $request->tgl_lahir,
             'jk' => $request->jenis_kelamin,
             'kk' => $request->no_kk,
-            'nik_penjamin' => $request->nik_penjamin,
-            'penjamin' => $request->penjamin,
             'domisi' => $request->domisi,
             'desa' => $request->desa,
-            'hp' => $request->no_telp,
-            'pendidikan' => $request->pendidikan,
-            'agama' => $request->agama,
-            'status_pernikahan' => $request->status_pernikahan,
-            'nama_ibu' => $request->nama_ibu,
-            'tempat_kerja' => $request->tempat_kerja,
-            'usaha' => $request->jenis_usaha,
-            'hubungan' => $request->hubungan
+            'hp' => $request->no_telp
         ]);
     
         return redirect('/customers')->with('Berhasil', 'Customer berhasil diperbarui');
