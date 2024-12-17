@@ -12,8 +12,7 @@
                 aria-labelledby="searchDropdown">
                 <form class="navbar-search">
                     <div class="input-group">
-                        <input type="text" class="form-control bg-light border-1 small"
-                            placeholder="What do you want to look for?" aria-label="Search"
+                        <input type="text" class="typeahead form-control bg-light border-1 small" aria-label="Search"
                             aria-describedby="basic-addon2" style="border-color: #3f51b5;">
                         <div class="input-group-append">
                             <button class="btn btn-primary" type="button">
@@ -72,8 +71,8 @@
             </div>
         </li>
         <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-envelope fa-fw"></i>
                 <span class="badge badge-warning badge-counter">2</span>
             </a>
@@ -109,8 +108,8 @@
             </div>
         </li>
         <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-tasks fa-fw"></i>
                 <span class="badge badge-success badge-counter">3</span>
             </a>
@@ -147,8 +146,8 @@
                             <div class="small float-right"><b>75%</b></div>
                         </div>
                         <div class="progress" style="height: 12px;">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75"
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 75%"
+                                aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </a>
@@ -157,8 +156,8 @@
         </li>
         <div class="topbar-divider d-none d-sm-block"></div>
         <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img class="img-profile rounded-circle" src="" style="max-width: 60px">
                 <span class="ml-2 d-none d-lg-inline text-white small">Maman Ketoprak</span>
             </a>

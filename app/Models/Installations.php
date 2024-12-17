@@ -26,14 +26,13 @@ class Installations extends Model
     public function village()
     {
         return $this->belongsTo(Village::class, 'desa');
-    } 
+    }
     public function usage()
     {
         return $this->hasOne(Usage::class, 'installation_id');
-    } 
+    }
     public function transaction()
     {
-        return $this->belongsTo(Transaction::class, 'installation_id');
+        return $this->hasMany(Transaction::class, 'installation_id');
     }
-
 }
