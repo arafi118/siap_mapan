@@ -21,15 +21,14 @@
 
                                 <!-- Konten Teks -->
                                 <div class="flex-grow-1">
-                                    <form class="navbar-search">
-                                        <div class="form-floating">
-                                            <input type="text"
-                                                class="typeahead form-control bg-light border-1 small search"
-                                                id="{{ $ketik_search }}" placeholder="{{ $label_search }}">
-                                            <div class="invalid-feedback">Masukkan (Kode Installasi / Nama Custommers)</div>
+                                    <div class="form-group">
+                                        {{-- <label for="validationServer01">Input with Success</label> --}}
+                                        <input type="text" class="form-control is-valid" id="{{ $ketik_search }}"
+                                            placeholder="{{ $label_search }}">
+                                        <div class="valid-feedback">
+                                            Masukkan (Kode Installasi / Nama Custommers)
                                         </div>
-                                    </form>
-
+                                    </div>
                                     <hr class="my-2 bg-white">
                                     <div class="mt-3">
                                         <table class="table table-bordered table-striped mb-0">
@@ -153,6 +152,7 @@
 
 @section('script')
     <script>
+        //angka 00,000,00
         $("#abodemen").maskMoney({
             allowNegative: true
         });
@@ -169,6 +169,7 @@
             allowNegative: true
         });
 
+        //tanggal
         jQuery.datetimepicker.setLocale('de');
         $('.date').datetimepicker({
             i18n: {
@@ -188,25 +189,26 @@
             format: 'd/m/Y'
         });
 
+        //hitung _total
         $(document).on('change', '#pembayaran', function() {
-            var jumlah = $(this).val()
-            var jumlah_bayar = $("#biaya_sudah_dibayar").val()
-            var abodemen = $("#abodemen").val()
-
-            $('#_total').val(abodemen - (jumlah + jumlah_bayar))
-        })
-
-        // search
-        document.querySelector('.search').addEventListener('input', function() {
-            if (this.value.trim()) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            } else {
-                this.classList.remove('is-valid');
-                this.classList.add('is-invalid');
+            function cleanNumber(value) {
+                let cleanNumber = value.toString().replace(/,/g, ''); // Remove commas
+                return parseFloat(cleanNumber); // Convert back to number
             }
+
+
+            var jumlah = cleanNumber($(this).val());
+            var jumlah_bayar = cleanNumber($("#biaya_sudah_dibayar").val());
+            var abodemen = cleanNumber($("#abodemen").val());
+            var total = abodemen - (jumlah + jumlah_bayar);
+
+            $("#_total").val(numFormat.format(total));
         });
 
+
+
+
+        //simpan
         $(document).on('click', '#simpanpembayaran', function(e) {
             e.preventDefault();
             $('small').html('');
@@ -231,8 +233,7 @@
                             if (res.isConfirmed) {
                                 window.location.reload()
                             } else {
-                                window.location.href = '/installations/' + result.installation
-                                    .id;
+                                window.location.href = '/installations?status=P';
                             }
                         });
                     }

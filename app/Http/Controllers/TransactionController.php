@@ -85,16 +85,9 @@ class TransactionController extends Controller
             $penjumlahantrx = $biaya_sudah_dibayar + $biaya_instalasi;
             $biaya_instal = $data['abodemen'] - $penjumlahantrx;
 
-            $status = '0';
-            $jumlah = $biaya_instal;
-            if ($jumlah <= 0) {
-                $status = 'P';
-            }
-
-
             // TRANSACTION TIDAK BOLEH NYICIL
             $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $biaya_sudah_dibayar;
-            $persen = 100 - ($jumlah / $biaya_sudah_dibayar * 100);
+            $persen = 100 - ($biaya_instal / $biaya_sudah_dibayar * 100);
             $persen = ($penjumlahantrx / $abodemen) * 100;
 
             $transaksi = Transaction::create([
@@ -105,12 +98,17 @@ class TransactionController extends Controller
                 'installation_id' => $request->transaction_id,
                 'keterangan' => 'Biaya istalasi ' . $persen . '%',
             ]);
-            dd($transaksi);
+
+            if ($biaya_instal <= 0) {
+                Installations::where('id', $request->transaction_id)->update([
+                    'status' => 'P',
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
-                'msg' => 'Daftar & Instalasi berhasil disimpan',
-                'installation' => $transaksi
+                'msg' => 'Pembayaran berhasil disimpan',
+                'transaksi' => $transaksi
             ]);
         }
     }
