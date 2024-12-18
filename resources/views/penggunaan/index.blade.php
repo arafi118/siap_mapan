@@ -35,7 +35,6 @@
                                 <th>AKHIR</th>
                                 <th>JUMLAH</th>
                                 <th>TGL AKHIR</th>
-                                <th>CATER</th>
                                 <th style="text-align: center;">AKSI</th>
                             </tr>
                         </thead>
@@ -48,7 +47,6 @@
                                 <td>{{ $usage->akhir }}</td>
                                 <td>{{ $usage->jumlah }}</td>
                                 <td>{{ $usage->tgl_akhir }}</td>
-                                <td>{{ $usage->cate }}</td>
 
                                 <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
                                     <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">

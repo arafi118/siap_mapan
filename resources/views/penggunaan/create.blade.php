@@ -1,5 +1,8 @@
 @extends('layouts.base')
-
+@php
+    $ketik_search = 'CariCustommers';
+    $label_search = 'Nama/Kode Installasi';
+@endphp
 @section('content')
 @if (session('success'))
 <div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
@@ -11,8 +14,7 @@
 
 <form action="/usages" method="post" id="FormInputPenggunaan">
     @csrf
-    <!-- Alert -->
-    <!-- Form Card -->
+    <input type="text" name="pemakaian_id" id="pemakaian_id" hidden>
     <div class="card">
         <div class="alert alert-warning alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -27,25 +29,15 @@
             <input type="hidden" name="_daftar_harga" id="_daftar_harga">
             <div class="row g-3">
                 <div class="col-md-3 mb-3">
-                    <label for="customer" style="font-size: 13px;">Nama</label>
-                    <input type="text" class="form-control" id="searchCustomer" placeholder="Cari Nama Customer" style="font-size: 13px; height: 30px;">
-                        <option class="customer-item" data-value="0">
-                            sjlakan pilih
-                        </option>
-                        @foreach ($customer as $instal)
-                            @php
-                                $package = $instal->package;
-                            @endphp
-                            <option class="customer-item" data-value="{{ $instal->kode_instalasi }}|{{ $package->harga }}">
-                                {{ $instal->kode_instalasi }} - {{ $instal->customer->nama }}
-                            </option>
-                        @endforeach
-                        </select>
-                    <small class="text-danger" id="msg_customer"></small>
+                   <label for="customer" style="font-size: 13px;height">Nama</label>
+                  <input type="text"
+                        class="typeahead form-control bg-light border-1 small search"
+                        id="cariAnggota" placeholder="{{ $label_search }}">
+                    <div class="invalid-feedback">Masukkan (Kode Installasi / Nama Custommers)</div>
                 </div>                
                 <div class="col-md-2 mb-3">
                     <label for="awal" class="form-label"style="font-size: 13px;">Awal</label>
-                    <input type="text" name="awal" id="awal" class="form-control form-control-sm hitungan">
+                    <input type="text" name="awal" id="awal" readonly class="form-control form-control-sm hitungan" value="50">
                     <small class="text-danger" id="msg_awal"></small>
                 </div>
                 <div class="col-md-2 mb-3">
@@ -55,7 +47,7 @@
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="jumlah" class="form-label"style="font-size: 13px;">Jumlah</label>
-                    <input type="text" name="jumlah" id="jumlah" class="form-control form-control-sm">
+                    <input type="text" readonly name="jumlah" id="jumlah" class="form-control form-control-sm">
                     <small class="text-danger" id="msg_jumlah"></small>
                 </div>
                 <div class="col-md-3 mb-3">
@@ -103,66 +95,66 @@
         $("#_daftar_harga").val(harga)
     })
 
-    $(document).on('change','.hitungan', function() {
-        var awal = $('#awal').val()
-        var akhir = $('#akhir').val()
+    // $(document).on('change','.hitungan', function() {
+    //     var awal = $('#awal').val()
+    //     var akhir = $('#akhir').val()
 
-        if (akhir - awal < 0 || akhir == '') {
-            return;
-        }
+    //     if (akhir - awal < 0 || akhir == '') {
+    //         return;
+    //     }
 
-        var block = JSON.parse($("#_block").val())
-        var jumlah_block = block.length
-        var daftar_harga = JSON.parse($("#_daftar_harga").val())
-        var selisih = akhir - awal
+    //     var block = JSON.parse($("#_block").val())
+    //     var jumlah_block = block.length
+    //     var daftar_harga = JSON.parse($("#_daftar_harga").val())
+    //     var selisih = akhir - awal
 
-        $.each(block, function(key, value) {
-            var jarak = value.jarak.replace('M3','').split("-");
-            var jarak_awal = parseInt(jarak[0])
-            var jarak_akhir = parseInt(jarak[1])
+    //     $.each(block, function(key, value) {
+    //         var jarak = value.jarak.replace('M3','').split("-");
+    //         var jarak_awal = parseInt(jarak[0])
+    //         var jarak_akhir = parseInt(jarak[1])
             
-            if (selisih > jarak_awal) {
-                $('#jumlah').val(selisih)
-            }
-        });
-    })
+    //         if (selisih > jarak_awal) {
+    //             $('#jumlah').val(selisih)
+    //         }
+    //     });
+    // })
 
-$(document).ready(function() {
-    $('#searchCustomer').on('keyup', function() {
-        var searchTerm = $(this).val().toLowerCase();
+// $(document).ready(function() {
+//     $('#searchCustomer').on('keyup', function() {
+//         var searchTerm = $(this).val().toLowerCase();
         
-        if (searchTerm === '') {
-            $('#customerList').hide();
-        } else {
-            $('#customerList').show();
-        }
+//         if (searchTerm === '') {
+//             $('#customerList').hide();
+//         } else {
+//             $('#customerList').show();
+//         }
         
-        $('#customerList .customer-item').each(function() {
-            var customerText = $(this).text().toLowerCase();
-            if (customerText.indexOf(searchTerm) > -1) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    });
+//         $('#customerList .customer-item').each(function() {
+//             var customerText = $(this).text().toLowerCase();
+//             if (customerText.indexOf(searchTerm) > -1) {
+//                 $(this).show();
+//             } else {
+//                 $(this).hide();
+//             }
+//         });
+//     });
 
-    $('#customerList').on('click', '.customer-item', function() {
-        var selectedText = $(this).text();
-        var selectedValue = $(this).data('value');
+//     $('#customerList').on('click', '.customer-item', function() {
+//         var selectedText = $(this).text();
+//         var selectedValue = $(this).data('value');
 
-        $('#searchCustomer').val(selectedText);
-        $('#customerList').hide();
+//         $('#searchCustomer').val(selectedText);
+//         $('#customerList').hide();
 
-        console.log('Selected:', selectedValue);
-    });
+//         console.log('Selected:', selectedValue);
+//     });
 
-    $(document).on('click', function(e) {
-        if (!$(e.target).closest('#searchCustomer, #customerList').length) {
-            $('#customerList').hide();
-        }
-    });
-});
+//     $(document).on('click', function(e) {
+//         if (!$(e.target).closest('#searchCustomer, #customerList').length) {
+//             $('#customerList').hide();
+//         }
+//     });
+// });
 
 
 </script>

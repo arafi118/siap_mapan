@@ -41,6 +41,30 @@ class UsageController extends Controller
         $title = 'Register Pemakaian';
         return view('penggunaan.create')->with(compact('customer', 'setting','pilih_customer','caters','title'));
     }
+    public function cariAnggota(Request $request)
+    {
+        $query = $request->input('query');
+
+        // $customer = Installations::with([
+        //     'customer' => function ($q) use ($query) {
+        //         $q->where('nama', 'LIKE', "%{$query}%");
+        //     },
+        //     'package',
+        //     'installation' => function ($query) {
+        //         $query->where('status', '0');
+        //     },
+        //     'caters',
+        // ])->get();
+
+        // SELECT * FROM customers JOIN installations ON customers.id = installations.customer_id
+        $customer = Customer::join('installations', 'customers.id','installations.customer_id')
+                //WHERE customers.nama LIKE '%$query%'
+                ->where('customers.nama', 'LIKE' ,'%' . $query . '%')
+                // OR installations.kode_instalasi LIKE '%$query%';
+                ->orwhere('installations.kode_instalasi', 'LIKE' ,'%' . $query . '%')->get();
+
+        return response()->json($customer);
+    }
 
     /**
      * Store a newly created resource in storage.
