@@ -49,7 +49,6 @@
                                                     <td style="width: 50%; font-size: 14px; padding: 8px;"
                                                         class="text-black">
                                                         Kode Instalasi
-
                                                         <input
                                                             style="float: right; width: 40%; padding: 1px; text-align: center;"
                                                             id="kode_instalasi" disabled>

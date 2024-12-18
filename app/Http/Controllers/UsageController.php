@@ -41,56 +41,26 @@ class UsageController extends Controller
         $title = 'Register Pemakaian';
         return view('penggunaan.create')->with(compact('customer', 'setting','pilih_customer','caters','title'));
     }
-    public function cariAnggota(Request $request)
-    {
-        $query = $request->input('query');
 
-        // $customer = Installations::with([
-        //     'customer' => function ($q) use ($query) {
-        //         $q->where('nama', 'LIKE', "%{$query}%");
-        //     },
-        //     'package',
-        //     'installation' => function ($query) {
-        //         $query->where('status', '0');
-        //     },
-        //     'caters',
-        // ])->get();
-
-        // SELECT * FROM customers JOIN installations ON customers.id = installations.customer_id
-        $customer = Customer::join('installations', 'customers.id','installations.customer_id')
-                //WHERE customers.nama LIKE '%$query%'
-                ->where('customers.nama', 'LIKE' ,'%' . $query . '%')
-                // OR installations.kode_instalasi LIKE '%$query%';
-                ->orwhere('installations.kode_instalasi', 'LIKE' ,'%' . $query . '%')->get();
-
-        return response()->json($customer);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'kode_instalasi' => 'required',
+        $this->validate($request, [
             'customer' => 'required',
-            'awal' => 'required',
-            'akhir' => 'required',
-            'jumlah' => 'required',
-            'tgl_akhir' => 'required',
-            'cater' => 'required'
-         ]);
+            'awal' => 'required|numeric',
+            'akhir' => 'required|numeric',
+            'jumlah' => 'required|numeric',
+            'tgl_akhir' => 'required|date'
+        ]);
+        
 
-        //  CARA 1
         Usage::create([
-            'kode_instalasi' => $request->kode_instalasi,
             'customer' => $request->customer,
             'awal' => $request->awal,
             'akhir' => $request->akhir,
             'jumlah' => $request->jumlah,
-            'tgl_akhir' => $request->tgl_akhir,
-            'cater' => $request->cater
+            'tgl_akhir' => $request->tgl_akhir
         ]);
+        
 
         return redirect('/usages')->with('berhasil','Usage berhasil Ditambahkan!');
     }
@@ -98,6 +68,30 @@ class UsageController extends Controller
     /**
      * Display the specified resource.
      */
+    public function carianggota(Request $request)
+    {
+        $query = $request->input('query');
+
+        // SELECT * FROM customers JOIN installations ON customers.id = installations.customer_id
+        $customer = Customer::join('installations', 'customers.id','installations.customer_id')
+                // WHERE customers.nama LIKE '%$query%'
+                ->where('customers.nama', 'LIKE' ,'%' . $query . '%')
+                // OR installations.kode_instalasi LIKE '%$query%';
+                ->orwhere('installations.kode_instalasi', 'LIKE' ,'%' . $query . '%')->get();
+        
+        $data_customer = [];
+        foreach ($customer as $cus) {
+            $usage = Usage::where('kode_instalasi', $cus->kode_instalasi)->orderBy('created_at','DESC')->first();
+
+            $data_customer[] = [
+                'customer' => $cus,
+                'usage' => $usage
+            ];
+        }
+        
+
+        return response()->json($data_customer);
+    }
     public function show(Usage $usage)
     {
         //

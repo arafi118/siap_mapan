@@ -41,8 +41,8 @@
                         <tbody>
                             @foreach ($usages as $usage)
                             <tr>
-                                <td>{{ $usage->id_customer }}</td>
-                                <td>{{ $usage->id_instalasi }}</td>
+                                <td>{{ $usage->customer }}</td>
+                                <td>{{ $usage->kode_instalasi }}</td>
                                 <td>{{ $usage->awal }}</td>
                                 <td>{{ $usage->akhir }}</td>
                                 <td>{{ $usage->jumlah }}</td>
