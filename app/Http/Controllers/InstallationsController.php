@@ -71,8 +71,8 @@ class InstallationsController extends Controller
                     ['rekening_kredit', '67']
                 ]);
             },
-            'village',
-            'installation.package'
+            'installation.village',
+            'installation.package',
         ])->get();
 
         return response()->json($customers);

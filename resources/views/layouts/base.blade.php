@@ -259,62 +259,37 @@
 
     .custom-button:hover {
         background-color: #495057;
-        /* Warna latar belakang saat dihover */
-    }
-
-
-    .form-floating .form-control {
-        height: calc(2.5rem + 1px);
-        /* Tinggi input disesuaikan */
-        padding: 0.75rem;
-        /* Padding yang lebih seragam */
-        text-align: left;
-        /* Membuat teks berada di tengah horizontal */
-    }
-
-    .form-floating>label {
-        position: absolute;
-        top: 50%;
-        /* Posisi di tengah vertikal */
-        left: 0.75rem;
-        /* Posisi kiri */
-        transform: translateY(-50%) scale(1);
-        /* Sesuaikan transform agar di tengah */
-        height: auto;
-        /* Tidak perlu 100% tinggi */
-        padding: 0;
-        /* Hapus padding default */
-        pointer-events: none;
-        border: none;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .form-floating .form-control:focus,
-    .form-floating .form-control:not(:placeholder-shown) {
-        padding-top: 0.25rem;
-        padding-bottom: 0.25rem;
-        text-align: left;
-        /* Teks input kembali ke kiri jika aktif */
-    }
-
-    .form-floating .form-control:focus+label,
-    .form-floating .form-control:not(:placeholder-shown)+label {
-        opacity: 0.65;
-        transform: scale(0.85) translateY(-1rem) translateX(0.15rem);
-    }
-
-    .form-floating .invalid-feedback {
-        color: red;
     }
 
     .twitter-typeahead {
         width: 100%;
+        border-radius: 5px;
     }
 
     .tt-dropdown-menu {
         background: var(--white);
         color: var(--dark);
         width: 100%;
+        border-radius: 10px;
+        /* Membulatkan latar belakang */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        /* Opsional: Tambahkan bayangan untuk visibilitas yang lebih baik */
+        padding: 15px;
+    }
+
+    .tt-suggestion {
+        padding: 5px;
+        /* Mengurangi padding sekitar item saran */
+        cursor: pointer;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 0.5;
+        /* Mengatur tinggi baris untuk mengurangi jarak antar teks */
+    }
+
+    .tt-suggestion:hover {
+        background-color: var(--light-grey);
+        /* Opsional: Ubah latar belakang saat dihover */
     }
 </style>
 
@@ -399,7 +374,7 @@
                                     id: item.id,
                                     installation: item.installation,
                                     name: item.nama +
-                                        ' [' + item.village.nama + ']' +
+                                        ' - ' + item.installation[0].village.name +
                                         ' - ' + item.id +
                                         ' [' + item.nik + ']',
                                     value: item.id
@@ -415,10 +390,12 @@
                     }
                 });
             },
+
             displayKey: 'name',
             autoSelect: true,
             fitToElement: true,
             items: 10
+
         }).bind('typeahead:selected', function(event, item) {
             var installation = item.installation
             var trx = installation[0].transaction
