@@ -468,11 +468,10 @@
             var installation = data.installasion
 
             var nilai_awal = 0;
-            var idcustomer = 0;
-            var idinstallations = 0;
-            if (usage, installation) {
+            var idcustomer = 1;
+            var idinstallations = 4;
+            if (usage) {
                 nilai_awal = usage.akhir
-                idcustomer = installasion.id
             }
 
             $('#awal').val(nilai_awal)
