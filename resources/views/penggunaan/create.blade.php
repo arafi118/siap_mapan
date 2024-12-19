@@ -1,6 +1,5 @@
 @extends('layouts.base')
 @php
-    $ketik_search = 'CariCustommers';
     $label_search = 'Nama/Kode Installasi';
 @endphp
 @section('content')
@@ -12,9 +11,8 @@
 </div>
 @endif
 
-<form action="/usages" method="post" id="FormInputPenggunaan">
+<form action="/usages" method="post" id="FormInputPemakaian">
     @csrf
-    <input type="text" name="pemakaian_id" id="pemakaian_id" hidden>
     <div class="card">
         <div class="alert alert-warning alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -24,40 +22,38 @@
         </div>
         <div class="card-body">
             <!-- Form Inputs -->
-
-            <input type="hidden" name="_block" id="_block" value="{{ $setting->block }}">
-            <input type="hidden" name="_daftar_harga" id="_daftar_harga">
-            <div class="row g-3">
-                <div class="col-md-3 mb-3">
-                   <label for="customer" style="font-size: 13px;height">Nama</label>
-                  <input type="text"
-                        class="typeahead form-control bg-light border-1 small search"
-                        id="cariAnggota" placeholder="{{ $label_search }}">
-                    <div class="invalid-feedback">Masukkan (Kode Installasi / Nama Custommers)</div>
-                </div>                
-                <div class="col-md-2 mb-3">
-                    <label for="awal" class="form-label"style="font-size: 13px;">Awal</label>
-                    <input type="text" name="awal" id="awal" readonly class="form-control form-control-sm hitungan" value="50">
-                    <small class="text-danger" id="msg_awal"></small>
-                </div>
-                <div class="col-md-2 mb-3">
-                    <label for="akhir" class="form-label"style="font-size: 13px;">Akhir</label>
-                    <input type="text" name="akhir" id="akhir" class="form-control form-control-sm hitungan">
-                    <small class="text-danger" id="msg_akhir"></small>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="jumlah" class="form-label"style="font-size: 13px;">Jumlah</label>
-                    <input type="text" readonly name="jumlah" id="jumlah" class="form-control form-control-sm">
-                    <small class="text-danger" id="msg_jumlah"></small>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="tgl_akhir" class="form-label"style="font-size: 13px;">Tgl Akhir</label>
-                    <input type="text" name="tgl_akhir" id="tgl_akhir" class="form-control form-control-sm" value="{{ date('Y-m-d') }}">
-                    <small class="text-danger" id="msg_tgl_akhir"></small>
-                </div>
-            </div>
-        </div>
-        <div class="card-footer text-end">
+            {{-- <input type="hidden" name="_block" id="_block" value="{{ $setting->block }}">
+            <input type="hidden" name="_daftar_harga" id="_daftar_harga"> --}}
+                <div class="row g-3">
+                    <div class="col-md-6 mb-3">
+                    <label for="carianggota">Nama</label>
+                    <input type="text"
+                            class="typeahead form-control bg-light border-1 small search"
+                            id="carianggota" name="customer" placeholder="{{ $label_search }}">
+                        <div class="invalid-feedback">Masukkan (Kode Installasi / Nama Custommers)</div>
+                    </div>                
+                    <div class="col-md-3 mb-3">
+                        <label for="awal" class="form-label">Awal</label>
+                        <input type="text" name="awal" id="awal" readonly class="form-control form-control hitungan" value="">
+                        <small class="text-danger" id="msg_awal"></small>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="akhir" class="form-label">Akhir</label>
+                        <input type="text" name="akhir" id="akhir" class="form-control form-control hitungan">
+                        <small class="text-danger" id="msg_akhir"></small>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="jumlah" class="form-label;">Jumlah</label>
+                        <input type="text" readonly name="jumlah" id="jumlah" class="form-control form-control">
+                        <small class="text-danger" id="msg_jumlah"></small>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <label for="tgl_akhir" class="form-label;">Tgl Akhir</label>
+                        <input type="text" name="tgl_akhir" id="tgl_akhir" class="form-control form-control" value="{{ date('Y-m-d') }}">
+                        <small class="text-danger" id="msg_tgl_akhir"></small>
+                    </div>
+                </div>  
+        <div class="">
             <a href="/usages" class="btn btn-primary btn-sm">Kembali</a>
             <button type="submit" class="btn btn-dark btn-sm" id="SimpanPemakaian">Simpan</button>
         </div>
@@ -77,23 +73,26 @@
 
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            setTimeout(() => {
-                alert.classList.add('d-none');
-            }, 5000); // Notifikasi hilang setelah 5 detik
-        }
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    const alert = document.getElementById('success-alert');
+    if (alert) {
+        setTimeout(() => {
+            alert.classList.add('d-none'); // Menyembunyikan notifikasi dengan menambahkan class 'd-none'
+        }, 5000); // Notifikasi hilang setelah 5 detik
+    }
+});
 
-    $(document).on('change', '#customer', function (e) {
-        var value = $(this).val().split("|")
-        var kode = value[0]
-        $('#kode_instalasi').val(kode)
+$(document).on('change', '#customer', function (e) {
+    var value = $(this).val().split("|");
+    if (value.length > 0) { // Pastikan value memiliki elemen untuk menghindari error
+        var kode = value[0]; // Ambil elemen pertama dari value
+        $('#kode_instalasi').val(kode); // Set elemen dengan ID 'kode_instalasi'
+    }
+});
 
-        harga = value[1]
-        $("#_daftar_harga").val(harga)
-    })
+    //     harga = value[1]
+    //     $("#_daftar_harga").val(harga)
+    // })
 
     // $(document).on('change','.hitungan', function() {
     //     var awal = $('#awal').val()

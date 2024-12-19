@@ -80,7 +80,7 @@
     }
 
     .form-label {
-        font-size: 12px;
+        font-size: 14px;
         /* Atur ukuran sesuai kebutuhan */
         font-weight: normal;
         /* Tambahkan jika ingin teks lebih ringan */
@@ -291,6 +291,7 @@
         background-color: var(--light-grey);
         /* Opsional: Ubah latar belakang saat dihover */
     }
+
 </style>
 
 <body id="page-top">
@@ -357,7 +358,7 @@
             minLength: 1
         }, {
             name: 'states',
-            source: function(query, process) {
+            source: function (query, process) {
                 if (query.length < 2) return;
 
                 $.ajax({
@@ -367,8 +368,8 @@
                         query: query
                     },
                     dataType: 'json',
-                    success: function(result) {
-                        var states = result.map(function(item) {
+                    success: function (result) {
+                        var states = result.map(function (item) {
                             if (item.installation.length > 0) {
                                 return {
                                     id: item.id,
@@ -384,7 +385,7 @@
 
                         process(states);
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
                         process([]);
                     }
@@ -396,12 +397,12 @@
             fitToElement: true,
             items: 10
 
-        }).bind('typeahead:selected', function(event, item) {
+        }).bind('typeahead:selected', function (event, item) {
             var installation = item.installation
             var trx = installation[0].transaction
 
             var sum_total = 0;
-            trx.map(function(item) {
+            trx.map(function (item) {
                 sum_total += item.total;
             })
             // console.log(numFormat.format(installation[0].abodemen))
@@ -421,13 +422,21 @@
         //end cari customors
 
         // Awal script untuk cari Anggota Pemakaian
+<<<<<<< HEAD
         $('#cariAnggota').typeahead({
+=======
+        $('#carianggota').typeahead({
+>>>>>>> 1f144f8e49c49c713f8348d527a58cb03505d0d9
             hint: true,
             highlight: true,
             minLength: 1
         }, {
             name: 'states',
+<<<<<<< HEAD
             source: function(query, process) {
+=======
+            source: function (query, process) {
+>>>>>>> 1f144f8e49c49c713f8348d527a58cb03505d0d9
                 if (query.length < 2) return;
 
                 $.ajax({
@@ -437,19 +446,33 @@
                         query: query
                     },
                     dataType: 'json',
+<<<<<<< HEAD
                     success: function(result) {
                         var states = result.map(function(item) {
                             return {
                                 id: item.kode_instalasi,
                                 name: item.nama + ' [' + item.kode_instalasi + ']',
                                 value: item.kode_instalasi,
+=======
+                    success: function (result) {
+                        var states = result.map(function (item) {
+                            console.log(item)
+                            return {
+                                id: item.customer.kode_instalasi,
+                                name: item.customer.nama + ' [' + item.customer.kode_instalasi + ']',
+                                value: item.customer.kode_instalasi,
+>>>>>>> 1f144f8e49c49c713f8348d527a58cb03505d0d9
                                 data: item
                             };
                         });
 
                         process(states);
                     },
+<<<<<<< HEAD
                     error: function(xhr, status, error) {
+=======
+                    error: function (xhr, status, error) {
+>>>>>>> 1f144f8e49c49c713f8348d527a58cb03505d0d9
                         console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
                         process([]);
                     }
@@ -459,6 +482,7 @@
             autoSelect: true,
             fitToElement: true,
             items: 10
+<<<<<<< HEAD
         }).bind('typeahead:selected', function(event, item) {
             console.log(item.data);
         });
@@ -466,6 +490,22 @@
 
         // Awal script untuk perhitungan awal dan akhir
         $(document).on('change', '.hitungan', function() {
+=======
+        }).bind('typeahead:selected', function (event, item) {
+            var data = item.data
+            var usage = data.usage
+
+            var nilai_awal = 0;
+            if (usage) {
+                nilai_awal = usage.akhir
+            }
+
+            $('#awal').val(nilai_awal)
+        });
+        // End cari Anggota Pemakaian
+
+        $(document).on('change', '.hitungan', function () {
+>>>>>>> 1f144f8e49c49c713f8348d527a58cb03505d0d9
             var awal = parseFloat($('#awal').val()) || 0;
             var akhir = parseFloat($('#akhir').val()) || 0;
 
@@ -482,12 +522,23 @@
             // Validasi jarak terhadap nilai awal
             if (selisih > jarak_awal) {
                 $('#jumlah').val(selisih);
+<<<<<<< HEAD
+=======
+
+                // Pindahkan nilai akhir menjadi nilai awal
+                // $('#awal').val(akhir);
+>>>>>>> 1f144f8e49c49c713f8348d527a58cb03505d0d9
             } else {
                 $('#jumlah').val('');
                 alert('Selisih tidak memenuhi syarat jarak minimum.');
             }
         });
+<<<<<<< HEAD
         // Akhir script untuk perhitungan awal dan akhir
+=======
+
+
+>>>>>>> 1f144f8e49c49c713f8348d527a58cb03505d0d9
     </script>
 
     @yield('script')

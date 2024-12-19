@@ -67,7 +67,7 @@ Route::get('/transactions/pelunasan_instalasi', [TransactionController::class, '
 Route::resource('/transactions', TransactionController::class);
 
 // Usages || Penggunaan
-Route::get('/usages/cari_anggota', [UsageController::class, 'cariAnggota']);
+Route::get('/usages/cari_anggota', [UsageController::class, 'carianggota']);
 Route::resource('/usages', UsageController::class);
 
 
