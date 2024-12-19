@@ -420,7 +420,7 @@
             $("#_total").val(numFormat.format(installation[0].abodemen - sum_total));
         });
         //end cari customors
-
+ 
         // Awal script untuk cari Anggota Pemakaian
         $('#carianggota').typeahead({
             hint: true,
