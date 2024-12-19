@@ -465,13 +465,19 @@
         }).bind('typeahead:selected', function(event, item) {
             var data = item.data
             var usage = data.usage
+            var installation = data.installasion
 
             var nilai_awal = 0;
-            if (usage) {
+            var idcustomer = 0;
+            var idinstallations = 0;
+            if (usage, installation) {
                 nilai_awal = usage.akhir
+                idcustomer = installasion.id
             }
 
             $('#awal').val(nilai_awal)
+            $('#idcustomer').val(idcustomer)
+            $('#idinstallations').val(idinstallations)
         });
         // End cari Anggota Pemakaian
 
