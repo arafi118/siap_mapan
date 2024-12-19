@@ -25,7 +25,7 @@
                                         {{-- <label for="validationServer01">Input with Success</label> --}}
                                         <input type="text" class="form-control is-valid" id="{{ $ketik_search }}"
                                             placeholder="{{ $label_search }}">
-                                        <div class="valid-feedback">
+                                        <div class="valid-feedback" text-white>
                                             Masukkan (Kode Installasi / Nama Custommers)
                                         </div>
                                     </div>
