@@ -419,23 +419,16 @@
             $("#_total").val(numFormat.format(installation[0].abodemen - sum_total));
         });
         //end cari customors
- 
+    </script>
+    <script>
         // Awal script untuk cari Anggota Pemakaian
-<<<<<<< HEAD
         $('#carianggota').typeahead({
-=======
-        $('#cariAnggota').typeahead({
->>>>>>> 46015bf3a5d7fa65e2ce7a4a3def72efc2c731ee
             hint: true,
             highlight: true,
             minLength: 1
         }, {
             name: 'states',
-<<<<<<< HEAD
-            source: function (query, process) {
-=======
             source: function(query, process) {
->>>>>>> 46015bf3a5d7fa65e2ce7a4a3def72efc2c731ee
                 if (query.length < 2) return;
 
                 $.ajax({
@@ -445,33 +438,21 @@
                         query: query
                     },
                     dataType: 'json',
-<<<<<<< HEAD
-                    success: function (result) {
-                        var states = result.map(function (item) {
+                    success: function(result) {
+                        var states = result.map(function(item) {
                             console.log(item)
                             return {
                                 id: item.customer.kode_instalasi,
-                                name: item.customer.nama + ' [' + item.customer.kode_instalasi + ']',
+                                name: item.customer.nama + ' [' + item.customer
+                                    .kode_instalasi + ']',
                                 value: item.customer.kode_instalasi,
-=======
-                    success: function(result) {
-                        var states = result.map(function(item) {
-                            return {
-                                id: item.kode_instalasi,
-                                name: item.nama + ' [' + item.kode_instalasi + ']',
-                                value: item.kode_instalasi,
->>>>>>> 46015bf3a5d7fa65e2ce7a4a3def72efc2c731ee
                                 data: item
                             };
                         });
 
                         process(states);
                     },
-<<<<<<< HEAD
-                    error: function (xhr, status, error) {
-=======
                     error: function(xhr, status, error) {
->>>>>>> 46015bf3a5d7fa65e2ce7a4a3def72efc2c731ee
                         console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
                         process([]);
                     }
@@ -481,8 +462,7 @@
             autoSelect: true,
             fitToElement: true,
             items: 10
-<<<<<<< HEAD
-        }).bind('typeahead:selected', function (event, item) {
+        }).bind('typeahead:selected', function(event, item) {
             var data = item.data
             var usage = data.usage
 
@@ -495,16 +475,7 @@
         });
         // End cari Anggota Pemakaian
 
-        $(document).on('change', '.hitungan', function () {
-=======
-        }).bind('typeahead:selected', function(event, item) {
-            console.log(item.data);
-        });
-        // End cari Anggota Pemakaian
-
-        // Awal script untuk perhitungan awal dan akhir
         $(document).on('change', '.hitungan', function() {
->>>>>>> 46015bf3a5d7fa65e2ce7a4a3def72efc2c731ee
             var awal = parseFloat($('#awal').val()) || 0;
             var akhir = parseFloat($('#akhir').val()) || 0;
 
@@ -521,23 +492,14 @@
             // Validasi jarak terhadap nilai awal
             if (selisih > jarak_awal) {
                 $('#jumlah').val(selisih);
-<<<<<<< HEAD
 
                 // Pindahkan nilai akhir menjadi nilai awal
                 // $('#awal').val(akhir);
-=======
->>>>>>> 46015bf3a5d7fa65e2ce7a4a3def72efc2c731ee
             } else {
                 $('#jumlah').val('');
                 alert('Selisih tidak memenuhi syarat jarak minimum.');
             }
         });
-<<<<<<< HEAD
-
-
-=======
-        // Akhir script untuk perhitungan awal dan akhir
->>>>>>> 46015bf3a5d7fa65e2ce7a4a3def72efc2c731ee
     </script>
 
     @yield('script')
