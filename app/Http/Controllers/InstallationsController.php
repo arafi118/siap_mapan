@@ -187,7 +187,6 @@ class InstallationsController extends Controller
         $biaya_instalasi = $data['total'];
 
         $biaya_instal = $data['abodemen'] - $data['total'];
-        // $biaya_pakai = $data['abodemen'] - $biaya_instal;
 
         $status = '0';
         $jumlah = $biaya_instal;
@@ -222,18 +221,6 @@ class InstallationsController extends Controller
             'keterangan' => 'Biaya istalasi ' . $persen . '%',
         ]);
 
-        // TRANSACTION BOLEH NYICIL
-        // if ($biaya_pakai <= 0) {
-        //     $jumlah_pakai = $biaya_instal;
-        //     $transaksi = Transaction::create([
-        //         'rekening_debit' => '1',
-        //         'rekening_kredit' => '59',
-        //         'total' => $jumlah_pakai,
-        //         'installation_id' => $install->id,
-        //         'keterangan' => 'Biaya istalasi 1 bulan kedepan'
-        //     ]);
-        // }
-
         return response()->json([
             'success' => true,
             'msg' => 'Daftar & Instalasi berhasil disimpan',
@@ -241,11 +228,18 @@ class InstallationsController extends Controller
         ]);
     }
 
-
     /**
-     * Display the specified resource.
+     * Memecah dan menampilkan Detail di Status Instalasi.
      */
     public function show(Installations $installation)
+    {
+        $func = 'detail' . $installation->status;
+        return $this->$func($installation);
+    }
+    /**
+     * Menampilkan Detail dengan status 0.
+     */
+    private function detail0($installation)
     {
         $installation = $installation->with([
             'customer',
@@ -259,82 +253,96 @@ class InstallationsController extends Controller
             ['rekening_kredit', '67']
         ])->sum('total');
 
-        if ($installation->status == 'P' || $installation->status == '0') {
-            $view = 'permohonan';
-        } elseif ($installation->status == 'S') {
-            $view = 'pasang';
-        } elseif ($installation->status == 'A') {
-            $view = 'aktif';
-        } elseif ($installation->status == 'B') {
-            $view = 'blokir';
-        } elseif ($installation->status == 'C') {
-            $view = 'cabut';
-        } elseif ($installation->status == '0') {
-            $view = 'belum_lunas';
-        }
-
-        return view('perguliran.partials/' . $view)->with(compact('installation', 'trx'));
+        return view('perguliran.partials/permohonan')->with(compact('installation', 'trx'));
     }
 
-    public function edit_jenis_paket($id)
-    {
-        $business_id = Session::get('business_id');
-        $pengaturan = Settings::where('business_id', $business_id);
-        $package = Package::where('id', $id)->first();
-
-
-        $tampil_settings = $pengaturan->first();
-        return response()->json([
-            'success' => true,
-            'view' => view('perguliran.partials.edit_jenis_paket')->with(compact('tampil_settings', 'package'))->render()
-        ]);
-    }
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan Detail dengan status P.
      */
-    public function edit(Installations $installation)
+    private function detailP($installation)
     {
-        $paket = Package::all();
-        $business_id = Session::get('business_id');
-        $pengaturan = Settings::where('business_id', $business_id);
-        $installations = $installation->with([
+        $installation = $installation->with([
             'customer',
             'package',
-            'usage',
             'village'
         ])->where('id', $installation->id)->first();
+
         $trx = transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', '1'],
             ['rekening_kredit', '67']
         ])->sum('total');
 
-        $tampil_settings = $pengaturan->first();
-        $title = 'Edit Paket';
-
-        if ($installations->status === '0') {
-            return view('perguliran.partials.pasang')->with(compact('title', 'paket', 'trx', 'installations', 'tampil_settings'));
-        } elseif ($installations->status === 'p') {
-            return view('perguliran.partials.aktif_pasang')->with(compact('title', 'paket', 'trx', 'installations', 'tampil_settings'));
-        } else {
-            return view('perguliran.partials.edit_permohonan')->with(compact('title', 'paket', 'trx', 'installations', 'tampil_settings'));
-        }
+        return view('perguliran.partials/permohonan')->with(compact('installation', 'trx'));
     }
+
+    /**
+     * Menampilkan Detail dengan status S.
+     */
+    private function detailS($installation)
+    {
+        $business_id = Session::get('business_id');
+        $pengaturan = Settings::where('business_id', $business_id);
+
+
+        $tampil_settings = $pengaturan->first();
+        $installation = $installation->with([
+            'customer',
+            'package',
+            'village'
+        ])->where('id', $installation->id)->first();
+
+        $trx = transaction::where([
+            ['installation_id', $installation->id],
+            ['rekening_debit', '1'],
+            ['rekening_kredit', '67']
+        ])->sum('total');
+
+        return view('perguliran.partials/pasang')->with(compact('installation', 'tampil_settings', 'trx'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Installations $installation)
+    {
+        $paket = Package::all();
+        $settings = Settings::first();
+        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $installations = $installation->with([
+            'customer',
+            'package',
+            'village'
+        ])->where('id', $installation->id)->first();
+
+        $desa = Village::all();
+
+        $pilih_desa = 0;
+        $title = 'Register Proposal';
+        return view('perguliran.partials.edit_permohonan')->with(compact('settings', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
+    }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Installations $installation)
     {
+        //fungnsi untuk progres simpan detail
+        $func = 'update' . $installation->status;
+        return $this->$func($request, $installation);
+        //end fungnsi untuk progres simpan detail
+
         $data = $request->only([
             "order",
             "alamat",
             "koordinate"
         ]);
+
         $rules = [
-            'order' => 'required|date', // ensures it's a valid date
-            'alamat' => 'sometimes|string',
-            'koordinate' => 'sometimes|string'
+            'order' => 'required',
+            'alamat' => 'sometimes',
+            'koordinate' => 'sometimes'
         ];
         $validate = Validator::make($data, $rules);
         if ($validate->fails()) {
@@ -342,19 +350,112 @@ class InstallationsController extends Controller
         }
 
         // Update data 
-        $update = Package::where('id', $installation->id)->update([
+        $update = Installations::where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
-            'order_date' => $request->order,
+            'order' => Tanggal::tglNasional($request->order),
             'alamat' => $request->alamat,
             'koordinate' => $request->koordinate
         ]);
-
         return response()->json([
             'success' => true,
             'msg' => 'Edit berhasil disimpan',
             'Editpermohonan' => $update
         ]);
     }
+
+    /**
+     * Update Detail Status P.
+     */
+    private function updateP($request, $installation)
+    {
+        $data = $request->only([
+            "pasang",
+        ]);
+
+        $rules = [
+            'pasang' => 'required',
+        ];
+        $validate = Validator::make($data, $rules);
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        // Update data 
+        $update = Installations::where('id', $installation->id)->update([
+            'business_id' => Session::get('business_id'),
+            'pasang' => Tanggal::tglNasional($request->pasang),
+            'status' => 'S',
+        ]);
+        return response()->json([
+            'success' => true,
+            'msg' => 'Progres Pasang berhasil disimpan',
+            'Pasang' => $installation
+        ]);
+    }
+    /**
+     * Update Detail Status S.
+     */
+    private function updateS($request, $installation)
+    {
+        $data = $request->only([
+            "pasang_baru",
+            "aktif",
+            "total"
+        ]);
+
+        $rules = [
+            'aktif' => 'required',
+        ];
+        $validate = Validator::make($data, $rules);
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        $data['pasang_baru'] = str_replace(',', '', $data['pasang_baru']);
+        $data['pasang_baru'] = str_replace('.00', '', $data['pasang_baru']);
+        $data['pasang_baru'] = floatval($data['pasang_baru']);
+
+        $data['total'] = str_replace(',', '', $data['total']);
+        $data['total'] = str_replace('.00', '', $data['total']);
+        $data['total'] = floatval($data['total']);
+
+        $pasang_baru        = $data['pasang_baru'];
+        $biaya_instalasi = $data['total'];
+
+        $biaya_instal = $pasang_baru - $biaya_instalasi;
+
+        $status = '0';
+        $jumlah = $biaya_instal;
+        if ($jumlah <= 0) {
+            $status = 'A';
+        }
+        // INSTALLATION
+        $instal = Installations::where('id', $installation->id)->update([
+            'business_id' => Session::get('business_id'),
+            'aktif' => Tanggal::tglNasional($request->aktif),
+            'status' => 'A',
+        ]);
+
+        // TRANSACTION TIDAK BOLEH NYICIL
+        $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $pasang_baru;
+        $persen = 100 - ($jumlah / $pasang_baru * 100);
+        $transaksi = Transaction::create([
+            'rekening_debit' => '1',
+            'rekening_kredit' => '59',
+            'tgl_transaksi' => Tanggal::tglNasional($request->aktif),
+            'total' => $jumlah_instal,
+            'installation_id' => $installation->id,
+            'keterangan' => 'Biaya Pemakaian 1 bulan kedepan ' . $persen . '%',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Daftar & Pemakaian awal berhasil disimpan',
+            'msg' => 'Daftar & Pemakaian awal berhasil disimpan',
+            'aktif' => $installation
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      */

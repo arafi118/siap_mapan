@@ -1,33 +1,92 @@
 @extends('layouts.base')
-
+@php
+    $status = $settings->swit_tombol ?? null;
+@endphp
 @section('content')
-    <div class="tab-content">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <!-- Bagian Informasi Customer -->
-                        <div class="alert alert-warning d-flex align-items-center" role="alert">
-                            <!-- Gambar -->
-                            <img src="../../assets/img/user_edit.png" style="max-height: 90px; margin-right: 10px;"
-                                class="img-fluid">
-                            <!-- Konten Teks -->
-                            <div>
-                                <h5 class="alert-heading"><b>Edit Customer an.
-                                        {{ $installations->customer->nama }}</b></h5>
-                                <hr>
-                                <p class="mb-0">
-                                    {{ $installations->village->nama }},
-                                    {{ $installations->alamat }}, [
-                                    {{ $installations->kode_instalasi }}
-                                    ].
-                                </p>
-                            </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <!-- Bagian Informasi Customer -->
+                    <div class="alert alert-info d-flex align-items-center text-black" role="alert">
+                        <!-- Gambar -->
+                        <img src="../../assets/img/user_edit.png" style="max-height: 100px; margin-right: 20px;"
+                            class="img-fluid">
+                        <div class="w-100">
+                            <h3 class="text-black"><b>Edit Custommer an. {{ $installations->customer->nama }}</b></h3>
+                            <p class="text-black">Nik<b> . {{ $installations->customer->nik }}</b></p>
+                            <hr>
                         </div>
                     </div>
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-light">
+                            <tr>
+                                <th colspan="4">Permohonan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                    <span style="float: left;">Tgl Order</span>
+                                    <span class="badge badge-success"
+                                        style="float: right; width: 30%; padding: 5px; text-align: center;">
+                                        {{ $installations->order }}
+                                    </span>
+                                </td>
+                                <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                    <span style="float: left;">Paket Instalasi</span>
+                                    <span class="badge badge-success"
+                                        style="float: right; width: 30%; padding: 5px; text-align: center;">
+                                        {{ $installations->package->kelas }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                    <span style="float: left;">kode instalasi</span>
+                                    <span class="badge badge-success"
+                                        style="float: right; width: 30%; padding: 5px; text-align: center;">
+                                        {{ $installations->kode_instalasi }}
+                                    </span>
+                                </td>
+                                <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                    <span style="float: left;">Abodemen</span>
+                                    <span class="badge badge-success"
+                                        style="float: right; width: 30%; padding: 5px; text-align: center;">
+                                        {{ number_format($installations->abodemen, 2) }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                    <span style="float: left;">Desa</span>
+                                    <span class="badge badge-success"
+                                        style="float: right; width: 30%; padding: 5px; text-align: center;">
+                                        {{ $installations->village->nama }}
+                                    </span>
+                                </td>
+                                <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                    <span style="float: left;">Status Instalasi</span>
+                                    @if ($installations->status === 'P')
+                                        <span class="badge badge-success"
+                                            style="float: right; width: 30%; padding: 5px; text-align: center;">
+                                            PAID
+                                        </span>
+                                    @elseif($installations->status === '0')
+                                        <span class="badge badge-warning"
+                                            style="float: right; width: 30%; padding: 5px; text-align: center;">
+                                            UNPAID
+                                        </span>
+                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="tab-content">
         <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
             <div class="main-card mb-3 card">
                 <div class="card-body">
@@ -38,25 +97,16 @@
                             <div class="card-body">
                                 <div class="alert alert-light" role="alert">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="position-relative mb-3">
                                                 <label for="order">Tanggal Order</label>
                                                 <input type="text" class="form-control date" name="order"
                                                     id="order" aria-describedby="order" placeholder="order"
-                                                    value="{{ $installations->order ? \Carbon\Carbon::parse($installations->order)->format('d/m/Y') : date('d/m/Y') }}">
+                                                    value="{{ date('d/m/Y') }}">
                                                 <small class="text-danger" id="msg_order"></small>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="position-relative mb-3">
-                                                <label for="total">Nominal</label>
-                                                <input type="text" class="form-control total" aria-describedby="total"
-                                                    name="total" id="total" value="{{ number_format($trx, 2) }}"
-                                                    readonly>
-                                                <small class="text-danger" id="msg_package_id"></small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="position-relative mb-3">
                                                 <label for="alamat">Alamat</label>
                                                 <input type="text" class="form-control" id="alamat" name="alamat"
@@ -85,42 +135,47 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="position-relative mb-3">
-                                                <label for="jenis_paket">Paket/Kelas</label>
-                                                <select class="select2 form-control" name="package_id"
-                                                    id="edit_jenis_paket">
-                                                    <option>Pilih Paket/Kelas</option>
-                                                    @foreach ($paket as $p)
-                                                        <option {{ $p->id == $installations->package_id ? 'selected' : '' }}
-                                                            value="{{ $p->id }}">
-                                                            {{ $p->kelas }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <small class="text-danger" id="msg"></small>
+                                                <label for="biaya_instalasi">Nominal</label>
+                                                <input type="text" class="form-control" name="biaya_instalasi"
+                                                    id="biaya_instalasi" aria-describedby="biaya_instalasi"
+                                                    placeholder="biaya_instalasi"value="{{ number_format($installations->biaya_instalasi, 2) }}"
+                                                    disabled>
+                                                <small class="text-danger" id="msg_biaya_instalasi"></small>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row" id="formEditjenis_paket">
                                     </div>
                                 </div>
-                                <button type="submit" id="EditPermohonan" class="btn btn-dark btn-icon-split"
-                                    style="float: right; margin-left: 10px;">
-                                    <span class="icon text-white-50">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </span>
-                                    <span class="text">Edit Perubahan</span>
-                                </button>
-                                <a href="/installations?status=P" class="btn btn-primary btn-icon-split"
-                                    style="float: right;">
-                                    <span class="icon text-white-50">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
-                                            <path
-                                                d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1" />
-                                        </svg>
-                                    </span>
-                                    <span class="text">Kembali</span>
-                                </a>
+                                <hr>
+                                <p class="mb-0">
+                                    Catatan : ( Jika Ada data atau inputan yang kosong bisa di isi ( 0 ) atau ( - ) )
+                                </p>
+
+                                <div class="col-12 d-flex justify-content-end">
+                                    <a href="/installations?status=P" class="btn btn-light btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-sign-turn-slight-left-fill"
+                                                viewBox="0 0 16 16">
+                                                <path
+                                                    d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM6.864 8.368a.25.25 0 0 1-.451-.039l-1.06-2.882a.25.25 0 0 1 .192-.333l3.026-.523a.25.25 0 0 1 .26.371l-.667 1.154.621.373A2.5 2.5 0 0 1 10 8.632V11H9V8.632a1.5 1.5 0 0 0-.728-1.286l-.607-.364-.8 1.386Z" />
+                                            </svg>
+                                        </span>
+                                        <span class="text">Kembali</span>
+                                    </a>
+
+                                    <button class="btn btn-secondary btn-icon-split" type="submit" id="SimpanEdit"
+                                        class="btn btn-dark" style="float: right; margin-left: 10px;">
+                                        <span class="icon text-white-50"><svg xmlns="http://www.w3.org/2000/svg"
+                                                width="16" height="16" fill="currentColor"
+                                                class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
+                                            </svg>
+                                        </span><span class="text" style="float: right;">Simpan Perubahan</span>
+                                    </button>
+                                </div>
                                 <br>
                             </div>
                         </div>
@@ -133,9 +188,14 @@
 
 @section('script')
     <script>
+        $("#abodemen").maskMoney({
+            allowNegative: true
+        });
+
         $("#total").maskMoney({
             allowNegative: true
         });
+
         $(document).ready(function() {
             $('.select2').select2({
                 theme: 'bootstrap4',
@@ -161,14 +221,7 @@
             format: 'd/m/Y'
         });
 
-        $(document).on('change', '#edit_jenis_paket', function() {
-            var edit_jenis_paket = $(this).val()
-            $.get('/installations/edit_jenis_paket/' + edit_jenis_paket, function(result) {
-                $('#formEditjenis_paket').html(result.view)
-            })
-        })
-
-        $(document).on('click', '#EditPermohonan', function(e) {
+        $(document).on('click', '#SimpanEdit', function(e) {
             e.preventDefault();
             $('small').html('');
 
@@ -182,27 +235,21 @@
                 success: function(result) {
                     if (result.success) {
                         Swal.fire({
-                            title: result.msg,
-                            text: "Tambahkan Permohonan Baru?",
+                            position: "top-end",
                             icon: "success",
-                            showDenyButton: true,
-                            confirmButtonText: "Tambahkan",
-                            denyButtonText: `Tidak`
-                        }).then((res) => {
-                            if (res.isConfirmed) {
-                                window.location.reload()
-                            } else {
-                                window.location.href = '/installations/' + result.Editpermohonan
-                                    .id;
-                            }
+                            title: result.msg,
+                            showConfirmButton: false,
+                            timer: 1500
                         });
+
+                        setTimeout(() => {
+                            window.location.href = '/installations?status=P';
+                        }, 1500);
                     }
                 },
                 error: function(result) {
                     const response = result.responseJSON;
-
                     Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
-
                     if (response && typeof response === 'object') {
                         $.each(response, function(key, message) {
                             $('#' + key)

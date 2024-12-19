@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Utils\Tanggal;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class Installations extends Model
 {

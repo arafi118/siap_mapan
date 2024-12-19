@@ -101,16 +101,16 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <a href="/installations/{{ $status_P->id }}"
-                                                        class="btn-sm btn-primary">
-                                                        <i class="fa fa-exclamation-circle"></i>
+                                                        class="btn btn-info btn-sm">
+                                                        <i class="fas fa-info-circle"></i>
                                                     </a>
                                                     <a href="/installations/{{ $status_P->id }}/edit"
-                                                        class="btn-sm btn-warning mx-1">
-                                                        <i class="fas fa-pencil-alt"></i>
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-exclamation-triangle"></i>
                                                     </a>
                                                     <a href="#" data-id="{{ $status_P->id }}"
-                                                        class="btn-sm btn-danger mx-1 Hapus_id">
-                                                        <i class="fas fa-trash-alt"></i>
+                                                        class="btn btn-danger btn-sm Hapus_id">
+                                                        <i class="fas fa-trash"></i>
                                                     </a>
                                                 </td>
                                             </tr>
@@ -137,6 +137,7 @@
                                             <th>alamat</th>
                                             <th>Paket</th>
                                             <th>Tanggal Order</th>
+                                            <th>Status</th>
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -148,6 +149,13 @@
                                                 <td>{{ $status_P->village ? $status_P->village->nama : '' }}</td>
                                                 <td>{{ $status_S->package ? $status_S->package->kelas : '' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($status_S->order)->format('d-m-Y') }}</td>
+                                                <td>
+                                                    @if ($status_S->status === 'S')
+                                                        <span class="badge badge-success">PASANG</span>
+                                                    @elseif($status_P->status === '0')
+                                                        <span class="badge badge-warning">UNPAID</span>
+                                                    @endif
+                                                </td>
 
                                                 <td style="text-align: center;">
                                                     <a href="/installations/{{ $status_S->id }}"
@@ -178,6 +186,7 @@
                                             <th>alamat</th>
                                             <th>Paket</th>
                                             <th>Tanggal Aktif</th>
+                                            <th>Status</th>
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -189,7 +198,13 @@
                                                 <td>{{ $status_A->village ? $status_A->village->nama : '' }}</td>
                                                 <td>{{ $status_A->package ? $status_A->package->kelas : '' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($status_A->order)->format('d-m-Y') }}</td>
-
+                                                <td>
+                                                    @if ($status_A->status === 'A')
+                                                        <span class="badge badge-primary">AKTIF</span>
+                                                    @elseif($status_P->status === '0')
+                                                        <span class="badge badge-warning">UNPAID</span>
+                                                    @endif
+                                                </td>
                                                 <td style="text-align: center;">
                                                     <a href="" class="btn-sm btn-primary"><i
                                                             class="fa fa-exclamation-circle"></i></a>
@@ -218,6 +233,7 @@
                                             <th>alamat</th>
                                             <th>Paket</th>
                                             <th>Tanggal Blokir</th>
+                                            <th>Status</th>
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -229,7 +245,13 @@
                                                 <td>{{ $status_B->village ? $status_B->village->nama : '' }}</td>
                                                 <td>{{ $status_B->package ? $status_B->package->kelas : '' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($status_B->order)->format('d-m-Y') }}</td>
-
+                                                <td>
+                                                    @if ($status_B->status === 'B')
+                                                        <span class="badge badge-light">BLOKIR</span>
+                                                    @elseif($status_P->status === '0')
+                                                        <span class="badge badge-warning">UNPAID</span>
+                                                    @endif
+                                                </td>
                                                 <td style="text-align: center;">
                                                     <a href="" class="btn-sm btn-primary"><i
                                                             class="fa fa-exclamation-circle"></i></a>
@@ -257,6 +279,7 @@
                                             <th>alamat</th>
                                             <th>Paket</th>
                                             <th>Tanggal Cabut</th>
+                                            <th>Status</th>
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -268,7 +291,13 @@
                                                 <td>{{ $status_C->village ? $status_C->village->nama : '' }}</td>
                                                 <td>{{ $status_C->package ? $status_C->package->kelas : '' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($status_C->order)->format('d-m-Y') }}</td>
-
+                                                <td>
+                                                    @if ($status_C->status === 'C')
+                                                        <span class="badge badge-secondary">CABUT</span>
+                                                    @elseif($status_P->status === '0')
+                                                        <span class="badge badge-warning">UNPAID</span>
+                                                    @endif
+                                                </td>
                                                 <td style="text-align: center;">
                                                     <a href="" class="btn-sm btn-primary"><i
                                                             class="fa fa-exclamation-circle"></i></a>

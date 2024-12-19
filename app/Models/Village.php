@@ -12,11 +12,15 @@ class Village extends Model
 
     public function customer()
     {
-            return $this->belongsTo(Customer::class, 'kode', 'desa');
+        return $this->belongsTo(Customer::class, 'kode', 'desa');
     }
 
     public function hamlet()
     {
         return $this->hasMany(Hamlet::class);
+    }
+    public function installations()
+    {
+        return $this->hasMany(Installations::class);
     }
 }

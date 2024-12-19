@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Form -->
-    <form action="/installations/{{ $installation->id }}" method="post" id="status_P">
+    <form action="/installations/{{ $installation->id }}" method="post" id="Form_status_P">
         @csrf
         @method('PUT')
         <div class="row">
@@ -20,9 +20,9 @@
                                 <h4 class="alert-heading"><b>Customer an. {{ $installation->customer->nama }}</b></h4>
                                 <hr>
                                 <p class="mb-0">
-                                    {{ $installation->village->nama }},
+                                    desa.{{ $installation->village->nama }},
                                     {{ $installation->alamat }}, [
-                                    {{ $installation->koordinate }}
+                                    koordinate {{ $installation->koordinate }}
                                     ].
                                 </p>
                             </div>
@@ -58,7 +58,7 @@
                                             <span style="float: left;">Paket Instalasi</span>
                                             <span class="badge badge-success"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                {{ $installation->order }}
+                                                {{ $installation->package->kelas }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
@@ -98,18 +98,18 @@
                         </div>
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
-                                <label for="order">Tanggal Pasang</label>
-                                <input type="text" class="form-control date" name="order" id="order"
+                                <label for="pasang">Tanggal Pasang</label>
+                                <input type="text" class="form-control date" name="pasang" id="pasang"
                                     value="{{ date('d/m/Y') }}">
-                                <small class="text-danger" id="msg_order"></small>
+                                <small class="text-danger" id="msg_pasang"></small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
-                                <label for="order">Biaya Istalasi</label>
-                                <input type="text" class="form-control" name="order" id="order"
+                                <label for="biaya_instalasi">Biaya Istalasi</label>
+                                <input type="text" class="form-control" name="biaya_instalasi" id="biaya_instalasi"
                                     value="{{ number_format($trx, 2) }}" disabled>
-                                <small class="text-danger" id="msg_order"></small>
+                                <small class="text-danger" id="msg_biaya_instalasi"></small>
                             </div>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                         </span>
                         <span class="text">Kembali</span>
                     </a>
-                    <button class="btn btn-secondary btn-icon-split" type="submit" id="SimpanPermohonan"
+                    <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_P"
                         style="float: right; margin-left: 10px;" @if ($installation->status !== 'P') disabled @endif>
                         <span class="icon text-white-50">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -163,6 +163,48 @@
             },
             timepicker: false,
             format: 'd/m/Y'
+        });
+
+        $(document).on('click', '#Simpan_status_P', function(e) {
+            e.preventDefault();
+            $('small').html('');
+
+            var form = $('#Form_status_P');
+            var actionUrl = form.attr('action');
+
+            $.ajax({
+                type: 'POST',
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        Swal.fire({
+                            title: result.msg,
+                            icon: "success",
+                            draggable: true
+                        }).then((res) => {
+                            if (res.isConfirmed) {
+                                window.location.href = '/installations/' + result.Pasang.id;
+                            }
+                        });
+                    }
+                },
+                error: function(result) {
+                    const response = result.responseJSON;
+
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
+
+                    if (response && typeof response === 'object') {
+                        $.each(response, function(key, message) {
+                            $('#' + key)
+                                .closest('.input-group.input-group-static')
+                                .addClass('is-invalid');
+
+                            $('#msg_' + key).html(message);
+                        });
+                    }
+                }
+            });
         });
     </script>
 @endsection

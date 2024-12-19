@@ -404,7 +404,7 @@
             trx.map(function(item) {
                 sum_total += item.total;
             })
-                     // console.log(numFormat.format(installation[0].abodemen))
+            // console.log(numFormat.format(installation[0].abodemen))
             // $("#customername").val(installation[0].customers.nama);
 
             var tagihan = sum_total - installation[0].abodemen;
@@ -419,76 +419,75 @@
             $("#_total").val(numFormat.format(installation[0].abodemen - sum_total));
         });
         //end cari customors
-            
-          // Awal script untuk cari Anggota Pemakaian
-$('#cariAnggota').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: 1
-}, {
-    name: 'states',
-    source: function(query, process) {
-        if (query.length < 2) return;
 
-        $.ajax({
-            url: '/usages/cari_anggota',
-            method: 'GET',
-            data: {
-                query: query
-            },
-            dataType: 'json',
-            success: function(result) {
-                var states = result.map(function(item) {
-                    return {
-                        id: item.kode_instalasi,
-                        name: item.nama + ' [' + item.kode_instalasi + ']',
-                        value: item.kode_instalasi,
-                        data: item
-                    };
+        // Awal script untuk cari Anggota Pemakaian
+        $('#cariAnggota').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: 'states',
+            source: function(query, process) {
+                if (query.length < 2) return;
+
+                $.ajax({
+                    url: '/usages/cari_anggota',
+                    method: 'GET',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        var states = result.map(function(item) {
+                            return {
+                                id: item.kode_instalasi,
+                                name: item.nama + ' [' + item.kode_instalasi + ']',
+                                value: item.kode_instalasi,
+                                data: item
+                            };
+                        });
+
+                        process(states);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
+                        process([]);
+                    }
                 });
-
-                process(states);
             },
-            error: function(xhr, status, error) {
-                console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
-                process([]);
+            displayKey: 'name',
+            autoSelect: true,
+            fitToElement: true,
+            items: 10
+        }).bind('typeahead:selected', function(event, item) {
+            console.log(item.data);
+        });
+        // End cari Anggota Pemakaian
+
+        // Awal script untuk perhitungan awal dan akhir
+        $(document).on('change', '.hitungan', function() {
+            var awal = parseFloat($('#awal').val()) || 0;
+            var akhir = parseFloat($('#akhir').val()) || 0;
+
+            // Validasi nilai akhir harus lebih besar atau sama dengan awal
+            if (akhir < awal || akhir === 0) {
+                alert('Nilai akhir tidak valid. Harus lebih besar atau sama dengan nilai awal.');
+                $('#jumlah').val('');
+                return;
+            }
+
+            var selisih = akhir - awal;
+            var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
+
+            // Validasi jarak terhadap nilai awal
+            if (selisih > jarak_awal) {
+                $('#jumlah').val(selisih);
+            } else {
+                $('#jumlah').val('');
+                alert('Selisih tidak memenuhi syarat jarak minimum.');
             }
         });
-    },
-    displayKey: 'name',
-    autoSelect: true,
-    fitToElement: true,
-    items: 10
-}).bind('typeahead:selected', function(event, item) {
-    console.log(item.data);
-});
-// End cari Anggota Pemakaian
-
-// Awal script untuk perhitungan awal dan akhir
-$(document).on('change', '.hitungan', function() {
-    var awal = parseFloat($('#awal').val()) || 0;
-    var akhir = parseFloat($('#akhir').val()) || 0;
-
-    // Validasi nilai akhir harus lebih besar atau sama dengan awal
-    if (akhir < awal || akhir === 0) {
-        alert('Nilai akhir tidak valid. Harus lebih besar atau sama dengan nilai awal.');
-        $('#jumlah').val('');
-        return;
-    }
-
-    var selisih = akhir - awal;
-    var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
-
-    // Validasi jarak terhadap nilai awal
-    if (selisih > jarak_awal) {
-        $('#jumlah').val(selisih);
-    } else {
-        $('#jumlah').val('');
-        alert('Selisih tidak memenuhi syarat jarak minimum.');
-    }
-});
-// Akhir script untuk perhitungan awal dan akhir
-
+        // Akhir script untuk perhitungan awal dan akhir
     </script>
 
     @yield('script')
