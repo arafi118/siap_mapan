@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Cater;
 use App\Models\Customer;
 use App\Models\Installations;
+use App\Models\Settings;
 use App\Models\Usage;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Utils\Tanggal;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 
 class UsageController extends Controller
@@ -47,43 +45,26 @@ class UsageController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->only([
-            "id_custommers",
-            "id_installations",
-            "awal",
-            "akhir",
-            "jumlah",
-            "tgl_akhir",
-        ]);
-        dd($data);
-        $rules = [
+        $this->validate($request, [
+            'customer' => 'required',
             'awal' => 'required',
             'akhir' => 'required',
             'jumlah' => 'required',
-            'tgl_akhir' => 'required'
-        ];
+            'tgl_akhir' => 'required|date'
+        ]);
 
-        $validate = Validator::make($data, $rules);
-        if ($validate->fails()) {
-            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-        }
 
-        // INSTALLATION
-        $install = Usage::create([
-            'business_id' => Session::get('business_id'),
+        Usage::create([
+
+            'customer' => $request->customer,
             'awal' => $request->awal,
             'akhir' => $request->akhir,
-            'tgl_akhir' => $request->tgl_akhir,
             'jumlah' => $request->jumlah,
-            'kode_instalasi' => $request->id_installations,
-            'customer' => $request->id_custommers,
+            'tgl_akhir' => $request->tgl_akhir
         ]);
 
-        return response()->json([
-            'success' => true,
-            'msg' => 'Daftar & Instalasi berhasil disimpan',
-            'usage' => $install
-        ]);
+
+        return redirect('/usages')->with('berhasil', 'Usage berhasil Ditambahkan!');
     }
 
     /**
@@ -106,8 +87,7 @@ class UsageController extends Controller
 
             $data_customer[] = [
                 'customer' => $cus,
-                'usage' => $usage,
-                'installasion' => $cus
+                'usage' => $usage
             ];
         }
 

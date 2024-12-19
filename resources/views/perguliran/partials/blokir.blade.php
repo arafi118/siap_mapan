@@ -2,9 +2,10 @@
 
 @section('content')
     <!-- Form -->
-    <form action="/installations/{{ $installation->id }}" method="post" id="Form_status_P">
+    <form action="/installations/{{ $installation->id }}" method="post" id="Form_status_S">
         @csrf
         @method('PUT')
+        <input type="text" value="{{ number_format($tampil_settings->pasang_baru, 2) }}" name="pasang_baru" hidden>
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
@@ -33,21 +34,21 @@
                             <table class="table table-bordered table-striped">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th colspan="4">Permohonan</th>
+                                        <th colspan="4">Detail Pasang</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Order</span>
-                                            <span class="badge badge-success"
+                                            <span class="badge badge-Secondary"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
                                                 {{ $installation->order }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Abodemen</span>
-                                            <span class="badge badge-success"
+                                            <span class="badge badge-Secondary"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
                                                 {{ number_format($installation->abodemen, 2) }}
                                             </span>
@@ -55,25 +56,30 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                            <span style="float: left;">Tgl Pasang</span>
+                                            <span class="badge badge-Secondary"
+                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                {{ $installation->pasang }}
+                                            </span>
+                                        </td>
+
+                                        <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                            <span style="float: left;">Status Instalasi</span>
+                                            @if ($installation->status === 'S')
+                                                <span class="badge badge-Secondary"
+                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                    PASANG
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Paket Instalasi</span>
-                                            <span class="badge badge-success"
+                                            <span class="badge badge-Secondary"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
                                                 {{ $installation->package->kelas }}
                                             </span>
-                                        </td>
-                                        <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                            <span style="float: left;">Status Instalasi</span>
-                                            @if ($installation->status === 'P')
-                                                <span class="badge badge-success"
-                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                    PAID
-                                                </span>
-                                            @elseif($installation->status === '0')
-                                                <span class="badge badge-warning"
-                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                    UNPAID
-                                                </span>
-                                            @endif
                                         </td>
                                     </tr>
                                 </tbody>
@@ -98,10 +104,10 @@
                         </div>
                         <div class="col-md-4">
                             <div class="position-relative mb-3">
-                                <label for="pasang">Tanggal Pasang</label>
-                                <input type="text" class="form-control date" name="pasang" id="pasang"
+                                <label for="aktif">Tanggal Pasang Baru</label>
+                                <input type="text" class="form-control date" name="aktif" id="aktif"
                                     value="{{ date('d/m/Y') }}">
-                                <small class="text-danger" id="msg_pasang"></small>
+                                <small class="text-danger" id="msg_aktif"></small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -113,10 +119,26 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="position-relative mb-3">
+                                <label for="pasang_baru">Biaya Pasang Baru</label>
+                                <input type="text" class="form-control"
+                                    value="{{ number_format($tampil_settings->pasang_baru, 2) }} "disabled>
+                                <small class="text-danger"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="position-relative mb-3">
+                                <label for="total">Nominal</label>
+                                <input type="text" class="form-control" name="total" id="total">
+                                <small class="text-danger" id="msg_total"></small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <br>
                 <div class="col-12 d-flex justify-content-end">
-                    <a href="/installations?status=P" class="btn btn-primary btn-icon-split">
+                    <a href="/installations?status=S" class="btn btn-primary btn-icon-split">
                         <span class="icon text-white-50">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
@@ -126,8 +148,8 @@
                         </span>
                         <span class="text">Kembali</span>
                     </a>
-                    <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_P"
-                        style="float: right; margin-left: 10px;" @if ($installation->status !== 'P') disabled @endif>
+                    <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_S"
+                        style="float: right; margin-left: 10px;">
                         <span class="icon text-white-50">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
@@ -135,17 +157,19 @@
                                     d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
                             </svg>
                         </span>
-                        <span class="text" style="float: right;">Simpan &
-                            Pasang</span>
+                        <span class="text" style="float: right;">Aktifkan Sekarang</span>
                     </button>
                 </div>
+                <br>
             </div>
         </div>
-
     </form>
 @endsection
 @section('script')
     <script>
+        $("#total").maskMoney({
+            allowNegative: true
+        });
         jQuery.datetimepicker.setLocale('de');
         $('.date').datetimepicker({
             i18n: {
@@ -165,11 +189,11 @@
             format: 'd/m/Y'
         });
 
-        $(document).on('click', '#Simpan_status_P', function(e) {
+        $(document).on('click', '#Simpan_status_S', function(e) {
             e.preventDefault();
             $('small').html('');
 
-            var form = $('#Form_status_P');
+            var form = $('#Form_status_S');
             var actionUrl = form.attr('action');
 
             $.ajax({
@@ -184,7 +208,7 @@
                             draggable: true
                         }).then((res) => {
                             if (res.isConfirmed) {
-                                window.location.href = '/installations/' + result.aktif.id;
+                                window.location.href = '/installations/' + result.Pasang.id;
                             }
                         });
                     }
