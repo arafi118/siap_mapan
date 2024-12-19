@@ -13,6 +13,11 @@ class Usage extends Model
           
     public function installation()
     {
-            return $this->belongsTo(Installations::class);
+            return $this->belongsTo(Installations::class, 'kode_instalasi','kode_instalasi');
+    }
+
+    public function customers()
+    {
+        return $this->belongsTo(Customer::class, 'customer', 'id');
     }
 }

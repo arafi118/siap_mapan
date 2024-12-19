@@ -462,7 +462,15 @@
             fitToElement: true,
             items: 10
         }).bind('typeahead:selected', function (event, item) {
-            console.log(item.data);
+            var data = item.data
+            var usage = data.usage
+
+            var nilai_awal = 0;
+            if (usage) {
+                nilai_awal = usage.akhir
+            }
+
+            $('#awal').val(nilai_awal)
         });
         // End cari Anggota Pemakaian
 
@@ -485,7 +493,7 @@
                 $('#jumlah').val(selisih);
 
                 // Pindahkan nilai akhir menjadi nilai awal
-                $('#awal').val(akhir);
+                // $('#awal').val(akhir);
             } else {
                 $('#jumlah').val('');
                 alert('Selisih tidak memenuhi syarat jarak minimum.');

@@ -17,11 +17,13 @@ class UsageController extends Controller
      */
     public function index()
     {
-        $customer = Installations::with('customer','package')->orderBy('id', 'ASC')->get();
-        $usages = Usage::all();
+        $usages = Usage::with([
+            'customers',
+            'installation'
+        ])->get();
 
         $title = 'Data Pemakaian';
-        return view('penggunaan.index')->with(compact('title','usages','customer'));
+        return view('penggunaan.index')->with(compact('title','usages'));
     }
 
     /**
@@ -30,8 +32,7 @@ class UsageController extends Controller
     public function create()
     {
         // where('status','A')->
-        $customer = Installations::with('customer','package')->orderBy('id', 'ASC')->get();
-        $setting = Settings::where('business_id', Session::get('business_id'))->first();
+        $customer = Installations::with('customer')->orderBy('id', 'ASC')->get();
         $caters = Cater::all();
         $installasi = Installations::orderBy('id', 'ASC')->get();
         $pilih_customer = 0;
@@ -39,21 +40,22 @@ class UsageController extends Controller
      
 
         $title = 'Register Pemakaian';
-        return view('penggunaan.create')->with(compact('customer', 'setting','pilih_customer','caters','title'));
+        return view('penggunaan.create')->with(compact('customer','pilih_customer','caters','title'));
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
             'customer' => 'required',
-            'awal' => 'required|numeric',
-            'akhir' => 'required|numeric',
-            'jumlah' => 'required|numeric',
+            'awal' => 'required',
+            'akhir' => 'required',
+            'jumlah' => 'required',
             'tgl_akhir' => 'required|date'
         ]);
         
 
         Usage::create([
+
             'customer' => $request->customer,
             'awal' => $request->awal,
             'akhir' => $request->akhir,

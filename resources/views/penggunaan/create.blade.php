@@ -13,7 +13,6 @@
 
 <form action="/usages" method="post" id="FormInputPemakaian">
     @csrf
-    <input type="text" name="pemakaian_id" id="pemakaian_id" hidden>
     <div class="card">
         <div class="alert alert-warning alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -23,14 +22,14 @@
         </div>
         <div class="card-body">
             <!-- Form Inputs -->
-            <input type="hidden" name="_block" id="_block" value="{{ $setting->block }}">
-            <input type="hidden" name="_daftar_harga" id="_daftar_harga">
+            {{-- <input type="hidden" name="_block" id="_block" value="{{ $setting->block }}">
+            <input type="hidden" name="_daftar_harga" id="_daftar_harga"> --}}
                 <div class="row g-3">
                     <div class="col-md-6 mb-3">
                     <label for="carianggota">Nama</label>
                     <input type="text"
                             class="typeahead form-control bg-light border-1 small search"
-                            id="carianggota" name="carianggota" placeholder="{{ $label_search }}">
+                            id="carianggota" name="customer" placeholder="{{ $label_search }}">
                         <div class="invalid-feedback">Masukkan (Kode Installasi / Nama Custommers)</div>
                     </div>                
                     <div class="col-md-3 mb-3">
