@@ -68,8 +68,9 @@ class HamletController extends Controller
      */
     public function edit(Hamlet $hamlet)
     {
+        $hamlets = Hamlet::with('village')->get();
         $title = 'Edit Dusun';
-        return view('dusun.edit')->with(compact('hamlet','title'));
+        return view('dusun.edit')->with(compact('hamlets','title','hamlet'));
     }
 
     /**
@@ -77,27 +78,25 @@ class HamletController extends Controller
      */
     public function update(Request $request, Hamlet $hamlet)
     {
-         // Validasi input
-         $validasi = [
+        // Validasi input
+        $request->validate([
             'id_desa' => 'required',
             'dusun' => 'required',
             'alamat' => 'required',
             'hp' => 'required'
-        ];
-
-        $this->validate($request, $validasi);
+        ]);
     
-        // Update data 
-        $update = $hamlet::where('id', $hamlet->id)->update([
+        // Update data
+        $hamlet->update([
             'id_desa' => $request->id_desa,
             'dusun' => $request->dusun,
             'alamat' => $request->alamat,
             'hp' => $request->hp
         ]);
     
-        return redirect('/hamlets')->with('Berhasil', 'Dusun berhasil diperbarui');
-
+        return redirect('/hamlets')->with('success', 'Dusun berhasil diperbarui');
     }
+    
 
     /**
      * Remove the specified resource from storage.

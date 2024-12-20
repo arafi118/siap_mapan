@@ -1,12 +1,6 @@
 @extends('layouts.base')
 
 @section('content')
-@php
-$status = '0';
-if ($customer->status == '0') {
-$status = '1';
-}
-@endphp
 <div class="row">
     <!-- Datatables -->
     <div class="col-lg-12">

@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Installations;
 use App\Models\Settings;
 use App\Models\Usage;
+use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -45,24 +46,32 @@ class UsageController extends Controller
     {
         $this->validate($request, [
             'customer' => 'required',
-            'awal' => 'required',
-            'akhir' => 'required',
-            'jumlah' => 'required',
+            'awal' => 'numeric',
+            'akhir' => 'numeric',
+            'kode_instalasi' => 'numeric',
+            'jumlah' => 'numeric',
             'tgl_akhir' => 'required|date'
         ]);
+<<<<<<< HEAD
 
+=======
+    
+        // Mengubah format tanggal dari d/m/Y ke Y-m-d
+        $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
+    
+>>>>>>> 7f3cf7d35e075f563c1a92431477d3ea9841b7d0
         Usage::create([
-
-            'customer' => $request->customer,
+            'customer' => $request->customer_id,
             'awal' => $request->awal,
             'akhir' => $request->akhir,
             'jumlah' => $request->jumlah,
-            'tgl_akhir' => $request->tgl_akhir
+            'kode_instalasi' => $request->kode_instalasi,
+            'tgl_akhir' => $tgl_akhir
         ]);
-
-
-        return redirect('/usages')->with('berhasil', 'Usage berhasil Ditambahkan!');
+    
+        return redirect('/usages')->with('berhasil','Pemakaian berhasil Ditambahkan!');
     }
+    
 
     /**
      * Display the specified resource.
@@ -101,7 +110,12 @@ class UsageController extends Controller
      */
     public function edit(Usage $usage)
     {
-        //
+        $usages = Usage::with([
+            'customers',
+            'installation'
+        ])->get();
+        $title = 'Data Pemakaian';
+        return view('penggunaan.edit')->with(compact('title','usage','usages'));
     }
 
     /**
@@ -109,14 +123,29 @@ class UsageController extends Controller
      */
     public function update(Request $request, Usage $usage)
     {
-        //
+        $this->validate($request, [
+             
+            'tgl_akhir' => 'required|date'
+        ]);
+    
+        // Mengubah format tanggal dari d/m/Y ke Y-m-d
+        $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
+    
+        $usage->update([
+             
+            'tgl_akhir' => $tgl_akhir
+        ]);
+    
+        return redirect('/usages')->with('berhasil', 'Usage berhasil diperbarui!');
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Usage $usage)
     {
-        //
+        $usage->delete();
+        return redirect('/usages')->with('success', 'Pemakaian berhasil dihapus');
     }
 }

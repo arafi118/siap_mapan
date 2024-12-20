@@ -161,7 +161,7 @@ class VillageController extends Controller
         $this->validate($request, $validasi);
     
         // Update data 
-        $update = $village::where('id', $village->id)->update([
+        $update = Village::where('id', $village->id)->update([
             'kode' => $request->kode,
             'nama' => $request->nama,
             'alamat' => $request->alamat,
