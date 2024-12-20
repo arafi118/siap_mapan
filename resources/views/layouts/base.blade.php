@@ -440,7 +440,6 @@
                     dataType: 'json',
                     success: function(result) {
                         var states = result.map(function(item) {
-                            console.log(item)
                             return {
                                 id: item.customer.kode_instalasi,
                                 name: item.customer.nama + ' [' + item.customer
@@ -472,6 +471,7 @@
             }
 
             $('#awal').val(nilai_awal)
+            $('#customer_id').val(data.customer.customer_id)
         });
         // End cari Anggota Pemakaian
 

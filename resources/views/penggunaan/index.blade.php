@@ -41,7 +41,7 @@
                         <tbody>
                             @foreach ($usages as $usage)
                             <tr>
-                                <td>{{ $usage->customers->nama }}</td>
+                                <td>{{ ($usage->customers) ? $usage->customers->nama:'' }}</td>
                                 {{-- <td>{{ ($usage->kode_instalasi) ?$usage->installations->kode_instalasi:'' }}</td> --}}
                                 <td>{{ $usage->kode_instalasi }}</td> 
                                 <td>{{ $usage->awal }}</td>
@@ -49,10 +49,10 @@
                                 <td>{{ $usage->jumlah }}</td>
                                 <td>{{ $usage->tgl_akhir }}</td>
                                 <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                    <a href="" class="btn btn-warning btn-sm">
+                                    <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
-                                    <form action="" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pemakaian ini?');" style="margin: 0;">
+                                    <form action="/usages/{{ $usage->id }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pemakaian ini?');" style="margin: 0;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">
