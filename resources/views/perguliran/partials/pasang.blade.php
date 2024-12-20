@@ -11,7 +11,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <!-- Bagian Informasi Customer -->
-                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
                             <!-- Gambar -->
                             <img src="../../assets/img/user.png" style="max-height: 150px; margin-right: 20px;"
                                 class="img-fluid">

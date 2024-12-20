@@ -206,7 +206,8 @@
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="" class="btn-sm btn-primary"><i
+                                                    <a href="/installations/{{ $status_A->id }}"
+                                                        class="btn-sm btn-primary"><i
                                                             class="fa fa-exclamation-circle"></i></a>
                                                 </td>
                                             </tr>
@@ -253,7 +254,8 @@
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="" class="btn-sm btn-primary"><i
+                                                    <a
+                                                        href="/installations/{{ $status_B->id }}"class="btn-sm btn-primary"><i
                                                             class="fa fa-exclamation-circle"></i></a>
                                                 </td>
                                             </tr>
@@ -299,7 +301,8 @@
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="" class="btn-sm btn-primary"><i
+                                                    <a href="/installations/{{ $status_C->id }}"
+                                                        class="btn-sm btn-primary"><i
                                                             class="fa fa-exclamation-circle"></i></a>
                                                 </td>
                                             </tr>

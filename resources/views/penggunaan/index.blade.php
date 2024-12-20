@@ -1,12 +1,12 @@
 @extends('layouts.base')
 
 @section('content')
-@if (session('success'))
-<div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
-    <li class="	fas fa-check-circle"></li>
-    {{ session('success') }}
-</div>
-@endif
+    @if (session('success'))
+        <div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            <li class="	fas fa-check-circle"></li>
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="row">
         <!-- Datatables -->
         <div class="col-lg-12">
@@ -64,76 +64,75 @@
                             @endforeach
                         </tbody>
                     </table>
-                    
+
                 </div>
             </div>
         </div>
     </div>
-<!-- Modal Logout -->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to logout?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                <a href="login.html" class="btn btn-primary">Logout</a>
+    <!-- Modal Logout -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to logout?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+                    <a href="login.html" class="btn btn-primary">Logout</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
 @section('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#TbPemakain').DataTable(); // ID From dataTable 
         });
-
     </script>
 
-@if (Session::has('berhasil'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: '{{ Session::get('berhasil') }}',
-            showConfirmButton: false,
-            timer: 2000
-        });
-    </script>
+    @if (Session::has('berhasil'))
         <script>
-        // Menghilangkan notifikasi setelah 5 detik
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ Session::get('berhasil') }}',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        </script>
+        <script>
+            // Menghilangkan notifikasi setelah 5 detik
+            document.addEventListener('DOMContentLoaded', function() {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 2000); // 2000ms = 2 detik
+                }
+            });
+        </script>
+    @endif
+    <script>
+        // Tunggu hingga DOM selesai dimuat
         document.addEventListener('DOMContentLoaded', function() {
+            // Pilih elemen notifikasi
             const alert = document.getElementById('success-alert');
             if (alert) {
+                // Atur timer untuk menghilangkan notifikasi setelah 3 detik
                 setTimeout(() => {
-                    alert.style.display = 'none';
-                }, 2000); // 2000ms = 2 detik
+                    alert.style.transition = 'opacity 0.5s'; // Animasi hilang
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500); // Hapus elemen setelah animasi selesai
+                }, 3000);
             }
         });
-        </script>
-@endif
-<script>
-    // Tunggu hingga DOM selesai dimuat
-    document.addEventListener('DOMContentLoaded', function () {
-        // Pilih elemen notifikasi
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            // Atur timer untuk menghilangkan notifikasi setelah 3 detik
-            setTimeout(() => {
-                alert.style.transition = 'opacity 0.5s'; // Animasi hilang
-                alert.style.opacity = '0'; 
-                setTimeout(() => alert.remove(), 500); // Hapus elemen setelah animasi selesai
-            }, 3000);
-        }
-    });
-</script>
+    </script>
 @endsection
