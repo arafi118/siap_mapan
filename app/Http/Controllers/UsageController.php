@@ -37,8 +37,6 @@ class UsageController extends Controller
         $installasi = Installations::orderBy('id', 'ASC')->get();
         $pilih_customer = 0;
 
-
-
         $title = 'Register Pemakaian';
         return view('penggunaan.create')->with(compact('customer', 'pilih_customer', 'caters', 'title'));
     }
@@ -52,7 +50,6 @@ class UsageController extends Controller
             'jumlah' => 'required',
             'tgl_akhir' => 'required|date'
         ]);
-
 
         Usage::create([
 

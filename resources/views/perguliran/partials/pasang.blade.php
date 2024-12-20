@@ -208,7 +208,7 @@
                             draggable: true
                         }).then((res) => {
                             if (res.isConfirmed) {
-                                window.location.href = '/installations/' + result.Pasang.id;
+                                window.location.href = '/installations/' + result.aktif.id;
                             }
                         });
                     }

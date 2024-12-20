@@ -152,8 +152,6 @@
                                                 <td>
                                                     @if ($status_S->status === 'S')
                                                         <span class="badge badge-success">PASANG</span>
-                                                    @elseif($status_P->status === '0')
-                                                        <span class="badge badge-warning">UNPAID</span>
                                                     @endif
                                                 </td>
 
@@ -201,8 +199,6 @@
                                                 <td>
                                                     @if ($status_A->status === 'A')
                                                         <span class="badge badge-primary">AKTIF</span>
-                                                    @elseif($status_P->status === '0')
-                                                        <span class="badge badge-warning">UNPAID</span>
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
@@ -248,9 +244,7 @@
                                                 <td>{{ \Carbon\Carbon::parse($status_B->order)->format('d-m-Y') }}</td>
                                                 <td>
                                                     @if ($status_B->status === 'B')
-                                                        <span class="badge badge-light">BLOKIR</span>
-                                                    @elseif($status_P->status === '0')
-                                                        <span class="badge badge-warning">UNPAID</span>
+                                                        <span class="badge badge-warning">BLOKIR</span>
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
@@ -295,9 +289,7 @@
                                                 <td>{{ \Carbon\Carbon::parse($status_C->order)->format('d-m-Y') }}</td>
                                                 <td>
                                                     @if ($status_C->status === 'C')
-                                                        <span class="badge badge-secondary">CABUT</span>
-                                                    @elseif($status_P->status === '0')
-                                                        <span class="badge badge-warning">UNPAID</span>
+                                                        <span class="badge badge-warning">CABUT</span>
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">

@@ -41,14 +41,14 @@
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Order</span>
-                                            <span class="badge badge-Secondary"
+                                            <span class="badge badge-warning"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
                                                 {{ $installation->order }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Abodemen</span>
-                                            <span class="badge badge-Secondary"
+                                            <span class="badge badge-warning"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
                                                 {{ number_format($installation->abodemen, 2) }}
                                             </span>
@@ -57,7 +57,7 @@
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Pasang</span>
-                                            <span class="badge badge-Secondary"
+                                            <span class="badge badge-warning"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
                                                 {{ $installation->pasang }}
                                             </span>
@@ -65,10 +65,10 @@
 
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Status Instalasi</span>
-                                            @if ($installation->status === 'S')
-                                                <span class="badge badge-Secondary"
+                                            @if ($installation->status === 'B')
+                                                <span class="badge badge-warning"
                                                     style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                    PASANG
+                                                    BLOKIR
                                                 </span>
                                             @endif
                                         </td>
@@ -76,7 +76,7 @@
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Paket Instalasi</span>
-                                            <span class="badge badge-Secondary"
+                                            <span class="badge badge-warning"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
                                                 {{ $installation->package->kelas }}
                                             </span>
@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 <div class="col-12 d-flex justify-content-end">
-                    <a href="/installations?status=S" class="btn btn-primary btn-icon-split">
+                    <a href="/installations?status=B" class="btn btn-primary btn-icon-split">
                         <span class="icon text-white-50">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
