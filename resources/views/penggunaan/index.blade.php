@@ -52,13 +52,9 @@
                                     <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
-                                    <form action="/usages/{{ $usage->id }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pemakaian ini?');" style="margin: 0;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
+                                    <a href="#" data-id="{{ $usage->id }}"
+                                        class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i>
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach
@@ -69,27 +65,11 @@
             </div>
         </div>
     </div>
-    <!-- Modal Logout -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to logout?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                    <a href="login.html" class="btn btn-primary">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+ 
+    <form action="" method="post" id="FormHapusPemakaian">
+        @method('DELETE')
+        @csrf
+    </form>
 @endsection
 @section('script')
     <script>
@@ -133,6 +113,61 @@
                     setTimeout(() => alert.remove(), 500); // Hapus elemen setelah animasi selesai
                 }, 3000);
             }
+        });
+        $(document).on('click', '.Hapus_pemakaian', function(e) {
+            e.preventDefault();
+
+            var hapus_pemakaian = $(this).attr('data-id'); // Ambil ID yang terkait dengan tombol hapus
+            var actionUrl = '/usages/' + hapus_pemakaian; // URL endpoint untuk proses hapus
+
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Data Akan dihapus secara permanen dari aplikasi tidak bisa dikembalikan!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Hapus",
+                cancelButtonText: "Batal",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var form = $('#FormHapusPemakaian')
+                    $.ajax({
+                        type: form.attr('method'), // Gunakan metode HTTP DELETE
+                        url: actionUrl,
+                        data: form.serialize(),
+                        success: function(response) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: response.message || "Data berhasil dihapus.",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.location.reload()
+                                } else {
+                                    window.location.href = '/usages/';
+                                }
+                            });
+                        },
+                        error: function(response) {
+                            const errorMsg = "Terjadi kesalahan.";
+                            Swal.fire({
+                                title: "Error",
+                                text: errorMsg,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        title: "Dibatalkan",
+                        text: "Data tidak jadi dihapus.",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
+                }
+            });
         });
     </script>
 @endsection

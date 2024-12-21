@@ -2,14 +2,7 @@
 
 @section('content')
 
-<!-- Row -->
-<!-- Row -->
-@if (session('success'))
-<div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
-    <li class="	fas fa-check-circle"></li>
-    {{ session('success') }}
-</div>
-@endif
+
 <form action="/customers" method="post" id="HapusPenduduk">
     @csrf
 <div class="row">
@@ -45,13 +38,9 @@
                                 <a href="/customers/{{ $customer->nik }}/edit" class="btn btn-warning btn-sm">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form action="/customers/{{ $customer->nik }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus desa ini?');" style="margin: 0;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
+                                <a href="#" data-id="{{ $customer->nik }}"
+                                    class="btn-sm btn-danger mx-1 Hapus_pelanggan"><i class="fas fa-trash-alt"></i>
+                                </a>
                             </td>          
                         </tr>
                         @endforeach
@@ -68,26 +57,11 @@
 <!-- Documentation Link -->
 
 <!-- Modal Logout -->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to logout?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                <a href="login.html" class="btn btn-primary">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
+
+<form action="" method="post" id="FormHapusPelanggan">
+    @method('DELETE')
+    @csrf
+</form>
 @endsection
 @section('script')
 <script>
@@ -144,43 +118,65 @@
         window.location.href = '/customers' + data.nik;
     });
 </script>
+<script>
+  
 
-@if (Session::has('berhasil'))
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Berhasil',
-        text: '{{ Session::get('berhasil') }}',
-        showConfirmButton: false,
-        timer: 2000
-    });
-</script>
-    <script>
-    // Menghilangkan notifikasi setelah 5 detik
-    document.addEventListener('DOMContentLoaded', function() {
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 2000); // 2000ms = 2 detik
-        }
-    });
-    </script>
-@endif
-<script>
-    // Tunggu hingga DOM selesai dimuat
-    document.addEventListener('DOMContentLoaded', function () {
-        // Pilih elemen notifikasi
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            // Atur timer untuk menghilangkan notifikasi setelah 3 detik
-            setTimeout(() => {
-                alert.style.transition = 'opacity 0.5s'; // Animasi hilang
-                alert.style.opacity = '0'; 
-                setTimeout(() => alert.remove(), 500); // Hapus elemen setelah animasi selesai
-            }, 2000);
-        }
-    });
+        // Event untuk tombol hapus pelanggan
+        $(document).on('click', '.Hapus_pelanggan', function(e) {
+            e.preventDefault();
+
+            var hapus_pelanggan = $(this).attr('data-id'); // Ambil ID yang terkait dengan tombol hapus
+            var actionUrl = '/customers/' + hapus_pelanggan; // URL endpoint untuk proses hapus
+
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Data Akan dihapus secara permanen dari aplikasi tidak bisa dikembalikan!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Hapus",
+                cancelButtonText: "Batal",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var form = $('#FormHapusPelanggan')
+                    $.ajax({
+                        type: form.attr('method'), // Gunakan metode HTTP DELETE
+                        url: actionUrl,
+                        data: form.serialize(),
+                        success: function(response) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: response.message || "Data berhasil dihapus.",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.location.reload()
+                                } else {
+                                    window.location.href = '/customers/';
+                                }
+                            });
+                        },
+                        error: function(response) {
+                            const errorMsg = "Terjadi kesalahan.";
+                            Swal.fire({
+                                title: "Error",
+                                text: errorMsg,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        title: "Dibatalkan",
+                        text: "Data tidak jadi dihapus.",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
+                }
+            });
+        });
 </script>
 
 @endsection

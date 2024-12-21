@@ -48,14 +48,14 @@ class UsageController extends Controller
             'customer' => 'required',
             'awal' => 'numeric',
             'akhir' => 'numeric',
-            'kode_instalasi' => 'numeric',
+            'kode_instalasi' => 'required',
             'jumlah' => 'numeric',
-            'tgl_akhir' => 'required|date'
+            'tgl_akhir'
         ]);
-
+    
         // Mengubah format tanggal dari d/m/Y ke Y-m-d
         $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
-
+    
         Usage::create([
             'customer' => $request->customer_id,
             'awal' => $request->awal,
@@ -64,10 +64,10 @@ class UsageController extends Controller
             'kode_instalasi' => $request->kode_instalasi,
             'tgl_akhir' => $tgl_akhir
         ]);
-
-        return redirect('/usages')->with('berhasil', 'Pemakaian berhasil Ditambahkan!');
+    
+        return redirect('/usages')->with('berhasil','Pemakaian berhasil Ditambahkan!');
     }
-
+    
 
     /**
      * Display the specified resource.
@@ -111,7 +111,7 @@ class UsageController extends Controller
             'installation'
         ])->get();
         $title = 'Data Pemakaian';
-        return view('penggunaan.edit')->with(compact('title', 'usage', 'usages'));
+        return view('penggunaan.edit')->with(compact('title','usage','usages'));
     }
 
     /**
@@ -120,21 +120,21 @@ class UsageController extends Controller
     public function update(Request $request, Usage $usage)
     {
         $this->validate($request, [
-
+             
             'tgl_akhir' => 'required|date'
         ]);
-
+    
         // Mengubah format tanggal dari d/m/Y ke Y-m-d
         $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
-
+    
         $usage->update([
-
+             
             'tgl_akhir' => $tgl_akhir
         ]);
-
+    
         return redirect('/usages')->with('berhasil', 'Usage berhasil diperbarui!');
     }
-
+    
 
     /**
      * Remove the specified resource from storage.

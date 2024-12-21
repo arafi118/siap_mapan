@@ -422,84 +422,79 @@
     </script>
     <script>
         // Awal script untuk cari Anggota Pemakaian
-        $('#carianggota').typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 1
-        }, {
-            name: 'states',
-            source: function(query, process) {
-                if (query.length < 2) return;
+    $('#carianggota').typeahead({
+    hint: true,
+    highlight: true,
+    minLength: 2 // Minimal karakter untuk memulai pencarian
+}, {
+    name: 'states',
+    source: function(query, process) {
+        if (query.length < 2) return; // Hindari pengiriman permintaan jika terlalu pendek
 
-                $.ajax({
-                    url: '/usages/cari_anggota',
-                    method: 'GET',
-                    data: {
-                        query: query
-                    },
-                    dataType: 'json',
-                    success: function(result) {
-                        var states = result.map(function(item) {
-                            return {
-                                id: item.customer.kode_instalasi,
-                                name: item.customer.nama + ' [' + item.customer
-                                    .kode_instalasi + ']',
-                                value: item.customer.kode_instalasi,
-                                data: item
-                            };
-                        });
-
-                        process(states);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
-                        process([]);
-                    }
+        $.ajax({
+            url: '/usages/cari_anggota',
+            method: 'GET',
+            data: { query: query },
+            dataType: 'json',
+            success: function(result) {
+                var states = result.map(function(item) {
+                    return {
+                        id: item.customer.kode_instalasi,
+                        name: `${item.customer.nama} [${item.customer.kode_instalasi}]`,
+                        value: item.customer.kode_instalasi,
+                        data: item
+                    };
                 });
+
+                process(states);
             },
-            displayKey: 'name',
-            autoSelect: true,
-            fitToElement: true,
-            items: 10
-        }).bind('typeahead:selected', function(event, item) {
-            var data = item.data
-            var usage = data.usage
-
-            var nilai_awal = 0;
-            if (usage) {
-                nilai_awal = usage.akhir
-            }
-
-            $('#awal').val(nilai_awal)
-            $('#customer_id').val(data.customer.customer_id)
-        });
-        // End cari Anggota Pemakaian
-
-        $(document).on('change', '.hitungan', function() {
-            var awal = parseFloat($('#awal').val()) || 0;
-            var akhir = parseFloat($('#akhir').val()) || 0;
-
-            // Validasi nilai akhir harus lebih besar atau sama dengan awal
-            if (akhir < awal || akhir === 0) {
-                alert('Nilai akhir tidak valid. Harus lebih besar atau sama dengan nilai awal.');
-                $('#jumlah').val('');
-                return;
-            }
-
-            var selisih = akhir - awal;
-            var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
-
-            // Validasi jarak terhadap nilai awal
-            if (selisih > jarak_awal) {
-                $('#jumlah').val(selisih);
-
-                // Pindahkan nilai akhir menjadi nilai awal
-                // $('#awal').val(akhir);
-            } else {
-                $('#jumlah').val('');
-                alert('Selisih tidak memenuhi syarat jarak minimum.');
+            error: function(xhr, status, error) {
+                console.error("Terjadi kesalahan saat memanggil pelanggan:", error);
+                process([]); // Tetap proses dengan data kosong jika ada error
             }
         });
+    },
+    displayKey: 'name',
+    autoSelect: true,
+    fitToElement: true,
+    items: 10
+}).bind('typeahead:selected', function(event, item) {
+    var data = item.data;
+    var usage = data.usage;
+
+    // Default nilai awal adalah 0 jika tidak ada data penggunaan sebelumnya
+    var nilai_awal = usage ? usage.akhir || 0 : 0;
+
+    // Set nilai awal dan customer_id di form
+    $('#awal').val(nilai_awal);
+    $('#customer_id').val(data.customer.customer_id);
+    $('#kode_instalasi').val(data.customer.kode_instalasi);
+});
+
+$(document).on('change', '.hitungan', function() {
+    var awal = parseFloat($('#awal').val()) || 0;
+    var akhir = parseFloat($('#akhir').val()) || 0;
+    var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
+
+    if (akhir <= awal || akhir === 0) {
+        alert('Nilai akhir tidak valid. Harus lebih besar dari nilai awal.');
+        $('#jumlah').val('');
+        return;
+    }
+
+    var selisih = akhir - awal;
+
+    if (selisih >= jarak_awal) {
+        $('#jumlah').val(selisih);
+        $('#awal').val(awal); 
+    } else {
+        $('#jumlah').val();
+        alert('Selisih tidak memenuhi syarat jarak minimum.');
+    }
+});
+
+
+       
     </script>
 
     @yield('script')

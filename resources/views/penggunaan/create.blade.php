@@ -26,6 +26,7 @@
             <input type="hidden" name="_daftar_harga" id="_daftar_harga"> --}}
 
             <input type="hidden" name="customer_id" id="customer_id">
+            <input type="hidden" name="kode_instalasi" id="kode_instalasi">
             <div class="row g-3">
                 <div class="col-md-6 mb-3">
                     <label for="carianggota" class="form-label">Nama</label>
@@ -90,21 +91,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-$(document).on('change', '#customer', function (e) {
-    var value = $(this).val().split("|");
-    if (value.length > 0) { // Pastikan value memiliki elemen untuk menghindari error
-        var kode = value[0]; // Ambil elemen pertama dari value
-        $('#kode_instalasi').val(kode); // Set elemen dengan ID 'kode_instalasi'
-    }
-});
+$(document).on('change','.hitungan', function() {
+       var awal = $('#awal').val()
+       var akhir = $('#akhir').val()
 
-$(document).on('change', '#customer', function (e) {
-    var value = $(this).val().split("|");
-    if (value.length > 0) { // Pastikan value memiliki elemen untuk menghindari error
-        var kode = value[0]; // Ambil elemen pertama dari value
-        $('#kode_instalasi').val(kode); // Set elemen dengan ID 'kode_instalasi'
-    }
-});
+       if (akhir - awal < 0 || akhir == '') {
+           return;
+       }
+    });
 jQuery.datetimepicker.setLocale('de');
         $('.date').datetimepicker({
             i18n: {

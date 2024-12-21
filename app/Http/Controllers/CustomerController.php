@@ -148,5 +148,6 @@ class CustomerController extends Controller
     
         // Redirect ke halaman customer dengan pesan sukses
         return redirect('/customers')->with('success', 'Customer berhasil dihapus');
+        
     }
 }
