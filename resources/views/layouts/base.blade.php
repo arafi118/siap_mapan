@@ -368,17 +368,20 @@
                     },
                     dataType: 'json',
                     success: function(result) {
-                        var states = result.map(function(item) {
+                        var states = [];
+                        result.map(function(item) {
                             if (item.installation.length > 0) {
-                                return {
-                                    id: item.id,
-                                    installation: item.installation,
-                                    name: item.nama +
-                                        ' - ' + item.installation[0].village.name +
-                                        ' - ' + item.id +
-                                        ' [' + item.nik + ']',
-                                    value: item.id
-                                };
+                                item.installation.map(function(instal) {
+                                    states.push({
+                                        id: instal.id,
+                                        installation: instal,
+                                        name: item.nama +
+                                            ' - ' + instal.village.nama +
+                                            ' - ' + instal.id +
+                                            ' [' + item.nik + ']',
+                                        value: instal.id
+                                    })
+                                })
                             }
                         });
 
@@ -398,103 +401,102 @@
 
         }).bind('typeahead:selected', function(event, item) {
             var installation = item.installation
-            var trx = installation[0].transaction
+            var trx = installation.transaction
 
             var sum_total = 0;
             trx.map(function(item) {
                 sum_total += item.total;
             })
-            // console.log(numFormat.format(installation[0].abodemen))
-            // $("#customername").val(installation[0].customers.nama);
+            // console.log(numFormat.format(installation.abodemen))
+            // $("#customername").val(installation.customers.nama);
 
-            var tagihan = sum_total - installation[0].abodemen;
-            $("#transaction_id").val(installation[0].id);
-            $("#order").val(installation[0].order);
-            $("#kode_instalasi").val(installation[0].kode_instalasi);
-            $("#alamat").val(installation[0].alamat);
-            $("#package").val(installation[0].package.kelas);
-            $("#abodemen").val(numFormat.format(installation[0].abodemen));
+            var tagihan = sum_total - installation.abodemen;
+            $("#transaction_id").val(installation.id);
+            $("#order").val(installation.order);
+            $("#kode_instalasi").val(installation.kode_instalasi);
+            $("#alamat").val(installation.alamat);
+            $("#package").val(installation.package.kelas);
+            $("#abodemen").val(numFormat.format(installation.abodemen));
             $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
             $("#tagihan").val(numFormat.format(tagihan));
-            $("#_total").val(numFormat.format(installation[0].abodemen - sum_total));
+            $("#_total").val(numFormat.format(installation.abodemen - sum_total));
         });
         //end cari customors
     </script>
     <script>
         // Awal script untuk cari Anggota Pemakaian
-    $('#carianggota').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: 2 // Minimal karakter untuk memulai pencarian
-}, {
-    name: 'states',
-    source: function(query, process) {
-        if (query.length < 2) return; // Hindari pengiriman permintaan jika terlalu pendek
+        $('#carianggota').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 2 // Minimal karakter untuk memulai pencarian
+        }, {
+            name: 'states',
+            source: function(query, process) {
+                if (query.length < 2) return; // Hindari pengiriman permintaan jika terlalu pendek
 
-        $.ajax({
-            url: '/usages/cari_anggota',
-            method: 'GET',
-            data: { query: query },
-            dataType: 'json',
-            success: function(result) {
-                var states = result.map(function(item) {
-                    return {
-                        id: item.customer.kode_instalasi,
-                        name: `${item.customer.nama} [${item.customer.kode_instalasi}]`,
-                        value: item.customer.kode_instalasi,
-                        data: item
-                    };
+                $.ajax({
+                    url: '/usages/cari_anggota',
+                    method: 'GET',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        var states = result.map(function(item) {
+                            return {
+                                id: item.customer.kode_instalasi,
+                                name: `${item.customer.nama} [${item.customer.kode_instalasi}]`,
+                                value: item.customer.kode_instalasi,
+                                data: item
+                            };
+                        });
+
+                        process(states);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Terjadi kesalahan saat memanggil pelanggan:", error);
+                        process([]); // Tetap proses dengan data kosong jika ada error
+                    }
                 });
-
-                process(states);
             },
-            error: function(xhr, status, error) {
-                console.error("Terjadi kesalahan saat memanggil pelanggan:", error);
-                process([]); // Tetap proses dengan data kosong jika ada error
+            displayKey: 'name',
+            autoSelect: true,
+            fitToElement: true,
+            items: 10
+        }).bind('typeahead:selected', function(event, item) {
+            var data = item.data;
+            var usage = data.usage;
+
+            // Default nilai awal adalah 0 jika tidak ada data penggunaan sebelumnya
+            var nilai_awal = usage ? usage.akhir || 0 : 0;
+
+            // Set nilai awal dan customer_id di form
+            $('#awal').val(nilai_awal);
+            $('#customer_id').val(data.customer.customer_id);
+            $('#kode_instalasi').val(data.customer.kode_instalasi);
+        });
+
+        $(document).on('change', '.hitungan', function() {
+            var awal = parseFloat($('#awal').val()) || 0;
+            var akhir = parseFloat($('#akhir').val()) || 0;
+            var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
+
+            if (akhir <= awal || akhir === 0) {
+                alert('Nilai akhir tidak valid. Harus lebih besar dari nilai awal.');
+                $('#jumlah').val('');
+                return;
+            }
+
+            var selisih = akhir - awal;
+
+            if (selisih >= jarak_awal) {
+                $('#jumlah').val(selisih);
+                $('#awal').val(awal);
+            } else {
+                $('#jumlah').val();
+                alert('Selisih tidak memenuhi syarat jarak minimum.');
             }
         });
-    },
-    displayKey: 'name',
-    autoSelect: true,
-    fitToElement: true,
-    items: 10
-}).bind('typeahead:selected', function(event, item) {
-    var data = item.data;
-    var usage = data.usage;
-
-    // Default nilai awal adalah 0 jika tidak ada data penggunaan sebelumnya
-    var nilai_awal = usage ? usage.akhir || 0 : 0;
-
-    // Set nilai awal dan customer_id di form
-    $('#awal').val(nilai_awal);
-    $('#customer_id').val(data.customer.customer_id);
-    $('#kode_instalasi').val(data.customer.kode_instalasi);
-});
-
-$(document).on('change', '.hitungan', function() {
-    var awal = parseFloat($('#awal').val()) || 0;
-    var akhir = parseFloat($('#akhir').val()) || 0;
-    var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
-
-    if (akhir <= awal || akhir === 0) {
-        alert('Nilai akhir tidak valid. Harus lebih besar dari nilai awal.');
-        $('#jumlah').val('');
-        return;
-    }
-
-    var selisih = akhir - awal;
-
-    if (selisih >= jarak_awal) {
-        $('#jumlah').val(selisih);
-        $('#awal').val(awal); 
-    } else {
-        $('#jumlah').val();
-        alert('Selisih tidak memenuhi syarat jarak minimum.');
-    }
-});
-
-
-       
     </script>
 
     @yield('script')
