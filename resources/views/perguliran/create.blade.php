@@ -3,61 +3,67 @@
     $status = $settings->swit_tombol ?? null;
 @endphp
 @section('content')
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <!-- Bagian Informasi Customer -->
-                    <div class="alert alert-info d-flex align-items-center" role="alert">
-                        <!-- Gambar -->
-                        <img src="../../assets/img/reg3.png" style="max-height: 150px; margin-right: 20px;" class="img-fluid">
-                        <div class="w-100">
-                            <div class="col-12 d-flex justify-content-end">
+    <form action="/installations" method="post" id="FormRegisterPermohonan">
+        @csrf
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <!-- Bagian Informasi Customer -->
+                        <div class="alert alert-info d-flex align-items-center" role="alert">
+                            <!-- Gambar -->
+                            <img src="../../assets/img/reg3.png" style="max-height: 150px; margin-right: 20px;"
+                                class="img-fluid">
+                            <div class="w-100">
+                                <h3 class="alert-heading"><b>Register Instalasi</b></h3>
+                                <p>"Lengkapi data dan klik tombol ' <b>SIMPAN</b> ' untuk menyelesaikan pendaftaran."</p>
+                                <hr>
 
-                                <a href="/villages/create" class="btn btn-success" id="RegisterDesa"
-                                    style="background-color: #81d700;">
-                                    <span class="icon text-white-50"><svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                            height="16" fill="currentColor" class="bi bi-sign-intersection-fill"
-                                            viewBox="0 0 16 16">
-                                            <path
-                                                d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
-                                        </svg>
-                                    </span>&nbsp;
-                                    <span class="text" style="float: right;">Register Desa</span>
-                                </a>
+                                <div class="row align-items-center mb-3">
+                                    <!-- Select Customer -->
+                                    <div class="col-md-9">
+                                        <div class="position-relative">
+                                            <select class="select2 form-control" name="customer_id" id="customer_id">
+                                                @foreach ($customer as $anggota)
+                                                    <option value="{{ $anggota->id }}">
+                                                        {{ $anggota->nik }} {{ $anggota->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Tombol Register Desa -->
+                                    <div class="col-md-3 text-end">
+                                        <a href="/villages/create" class="btn btn-success" id="RegisterDesa"
+                                            style="background-color: #81d700;">
+                                            <span class="icon text-white-50">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-sign-intersection-fill"
+                                                    viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
+                                                </svg>
+                                            </span>&nbsp;
+                                            <span class="text">Register Desa</span>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <hr>
-                            <h3 class="alert-heading"><b>Register Instalasi</b></h3>
-                            <p>"Lengkapi data dan klik tombol ' <b>SIMPAN</b> ' untuk menyelesaikan pendaftaran."</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="tab-content">
-        <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
-            <div class="main-card mb-3 card">
-                <div class="card-body">
-                    <form action="/installations" method="post" id="FormRegisterPermohonan">
-                        @csrf
+
+        <div class="tab-content">
+            <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                <div class="main-card mb-3 card">
+                    <div class="card-body" id="container">
                         <div class="row">
                             <div class="card-body">
                                 <div class="alert alert-light" role="alert">
                                     <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="position-relative mb-3">
-                                                <label for="customer_id">Customer</label>
-                                                <select class="select2 form-control" name="customer_id" id="customer_id">
-                                                    @foreach ($customer as $anggota)
-                                                        <option value="{{ $anggota->id }}">
-                                                            {{ $anggota->nik }} {{ $anggota->nama }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="position-relative mb-3">
                                                 <label for="order">Tanggal Order</label>
                                                 <input type="text" class="form-control date" name="order"
@@ -66,9 +72,7 @@
                                                 <small class="text-danger" id="msg_order"></small>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="position-relative mb-3">
                                                 <label for="desa">Nama/Desa</label>
                                                 <select class="select2 form-control" name="desa" id="desa">
@@ -83,7 +87,7 @@
                                                 <small class="text-danger" id="msg_desa"></small>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <div class="position-relative mb-3">
                                                 <label for="alamat">Alamat</label>
                                                 <input type="text" class="form-control" id="alamat" name="alamat"
@@ -166,11 +170,11 @@
                                 <br>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 @endsection
 
 @section('script')
@@ -272,5 +276,15 @@
                 }
             });
         });
+
+        $(document).on('change', '#customer_id', function() {
+            $.ajax({
+                url: '/installations/reg_notifikasi/' + $(this).val(),
+                type: 'GET',
+                success: function(result) {
+                    $('#container').html(result)
+                }
+            })
+        })
     </script>
 @endsection

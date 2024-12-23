@@ -62,9 +62,7 @@ class InstallationsController extends Controller
             $q->where('nama', 'LIKE', "%{$query}%")
                 ->orWhere('nik', 'LIKE', "%{$query}%");
         })->with([
-            'installation' => function ($query) {
-                $query->where('status', '0');
-            },
+            'installation',
             'installation.transaction' => function ($query) {
                 $query->where([
                     ['rekening_debit', '1'],
@@ -142,8 +140,43 @@ class InstallationsController extends Controller
         $desa = Village::all();
 
         $pilih_desa = 0;
-        $title = 'Register Proposal';
+        $title = 'Register Installlation';
         return view('perguliran.create')->with(compact('settings', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
+    }
+
+    public function reg_notifikasi($customer_id)
+    {
+        $paket = Package::all();
+        $installations = Installations::all();
+        $REG_status = Installations::select(
+            'status',
+            'customer_id',
+            'package_id',
+            'abodemen',
+            'koordinate',
+            'kode_instalasi',
+            'blokir',
+            'cabut',
+            'alamat'
+        )->with(
+            'customer',
+            'package'
+        )->where('customer_id', $customer_id)->orderBy('created_at', 'DESC')->first();
+
+        $settings = Settings::first();
+        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $desa = Village::all();
+
+        $pilih_desa = 0;
+        $title = 'Register Installlation';
+
+        if ($REG_status && ($REG_status->status == 'B' || $REG_status->status == 'C')) {
+            $view = view('perguliran.partials.tangungan_pinjaman')->with(compact('REG_status', 'title'));
+        } else {
+            $view = view('perguliran.partials.form_installation')->with(compact('settings', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
+        }
+
+        return response()->json($view->render());
     }
 
     public function store(Request $request)

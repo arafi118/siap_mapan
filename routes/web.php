@@ -52,6 +52,7 @@ Route::resource('/customers', CustomerController::class);
 // DELETE /customers/{customer}           destroy
 
 // Installations || Instalasi
+Route::get('/installations/reg_notifikasi/{customer_id}', [InstallationsController::class, 'reg_notifikasi']);
 Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'jenis_paket']);
 Route::get('/installations/kode_instalasi', [InstallationsController::class, 'kode_instalasi']);
 Route::get('/installations/cari_Custommers', [InstallationsController::class, 'cariCustomers']);
