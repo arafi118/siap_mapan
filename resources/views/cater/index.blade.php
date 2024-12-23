@@ -12,46 +12,46 @@
         <div class="col-lg-12">
             <div class="card mb-4">
                 <div class="table-responsive p-3">
-                    <table class="table align-items-center table-flush" id="TbDesa">
+                    <table class="table align-items-center table-flush" id="TbCater">
                         <thead class="thead-light">
                             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                                 <!-- Data Desa -->
                                 <div style="display: flex; align-items: center;">
-                                    <i class="fas fa-home" style="font-size: 30px; margin-right: 9px;"></i>
-                                    <b>Data Desa</b>
+                                    <i class="far fa-clipboard" style="font-size: 30px; margin-right: 9px;"></i>
+                                    <b>Data Cater</b>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end;">
+                                    <a href="/caters/create" class="btn btn-primary" id="RegisterCater"
+                                        style="display: inline-block; width: 130px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;">
+                                        <i class="fas fa-plus"></i> Register Cater
+                                    </a>
                                 </div>
                             </div>
                             <div>&nbsp;</div>
                             <tr>
-                                <th>KODE</th>
-                                <th>NAMA DESA</th>
-                                <th>AWAL</th>
-                                <th>AKHIR</th>
-                                <th>AKHIR</th>
-                                <th>AKHIR</th>
+                                <th>NAMA</th>
+                                <th>ALAMAT</th>
+                                <th>TELPON</th>
+                                <th>JABATAN</th>
                                 <th style="text-align: center;">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($villages as $village)
+                            @foreach ($caters as $cater)
                             <tr>
-                                <td>{{ $village->kode }}</td>
-                                <td>{{ $village->nama }}</td>
+                                <td>{{ $cater->nama}}</td>
+                                <td>{{ $cater->alamat}}</td>
                                 <td style="padding: 3px; word-wrap: break-word; max-width: 200px;">
-                                    {{ $village->alamat }}
+                                    {{ $cater->telpon }}
                                 </td>
-                                <td>{{ $village->hp }}</td>
+                                <td>{{ $cater->position->nama_jabatan}}</td>
                                 <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                    <a href="/villages/{{ $village->id }}/edit" class="btn btn-warning btn-sm">
+                                    <a href="/caters/{{ $cater->id }}/edit" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
-                                    <form action="/villages/{{ $village->id }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus desa ini?');" style="margin: 0;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
+                                    <a href="#" data-id="{{ $cater->id }}"
+                                        class="btn-sm btn-danger mx-1 Hapus_cater"><i class="fas fa-trash-alt"></i>
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach
@@ -62,36 +62,15 @@
             </div>
         </div>
     </div>
-<!--Row-->
-
-<!-- Documentation Link -->
-
-<!-- Modal Logout -->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to logout?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                <a href="login.html" class="btn btn-primary">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
+    <form action="" method="post" id="FormHapusCater">
+        @method('DELETE')
+        @csrf
+    </form>
 @endsection
 @section('script')
     <script>
         $(document).ready(function () {
-            $('#TbDesa').DataTable(); // ID From dataTable 
+            $('#TbCater').DataTable(); // ID From dataTable 
         });
 
     </script>
@@ -119,18 +98,60 @@
         </script>
 @endif
 <script>
-    // Tunggu hingga DOM selesai dimuat
-    document.addEventListener('DOMContentLoaded', function () {
-        // Pilih elemen notifikasi
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            // Atur timer untuk menghilangkan notifikasi setelah 3 detik
-            setTimeout(() => {
-                alert.style.transition = 'opacity 0.5s'; // Animasi hilang
-                alert.style.opacity = '0'; 
-                setTimeout(() => alert.remove(), 500); // Hapus elemen setelah animasi selesai
-            }, 3000);
-        }
-    });
+   $(document).on('click', '.Hapus_cater', function(e) {
+            e.preventDefault();
+
+            var hapus_cater = $(this).attr('data-id'); // Ambil ID yang terkait dengan tombol hapus
+            var actionUrl = '/caters/' + hapus_cater; // URL endpoint untuk proses hapus
+
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Data Akan dihapus secara permanen dari aplikasi tidak bisa dikembalikan!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Hapus",
+                cancelButtonText: "Batal",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var form = $('#FormHapusCater')
+                    $.ajax({
+                        type: form.attr('method'), // Gunakan metode HTTP DELETE
+                        url: actionUrl,
+                        data: form.serialize(),
+                        success: function(response) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: response.message || "Data berhasil dihapus.",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.location.reload()
+                                } else {
+                                    window.location.href = '/caters/';
+                                }
+                            });
+                        },
+                        error: function(response) {
+                            const errorMsg = "Terjadi kesalahan.";
+                            Swal.fire({
+                                title: "Error",
+                                text: errorMsg,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        title: "Dibatalkan",
+                        text: "Data tidak jadi dihapus.",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
+                }
+            });
+        });
 </script>
 @endsection

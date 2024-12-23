@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\CaterController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HamletController;
 use App\Http\Controllers\InstallationsController;
@@ -85,6 +86,9 @@ Route::delete('/villages/{village}', [VillageController::class, 'destroy']);
 // Dusun
 Route::resource('/hamlets', HamletController::class);
 Route::delete('/hamlets/{hamlet}', [HamletController::class, 'destroy']);
+
+// Dusun
+Route::resource('/caters', CaterController::class);
 
 
 

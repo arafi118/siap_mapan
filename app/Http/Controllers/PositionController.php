@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cater;
-use App\Models\jabatan;
+use App\Models\Position;
 use Illuminate\Http\Request;
 
-class CaterController extends Controller
+class PositionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $caters = Cater::with([
-            'position'
-        ])->get();
-        $title = 'Data Cater';
-        return view('cater.index')->with(compact('title','caters'));   
+        //
     }
 
     /**
@@ -39,7 +34,7 @@ class CaterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cater $cater)
+    public function show(Position $position)
     {
         //
     }
@@ -47,7 +42,7 @@ class CaterController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cater $cater)
+    public function edit(Position $position)
     {
         //
     }
@@ -55,7 +50,7 @@ class CaterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cater $cater)
+    public function update(Request $request, Position $position)
     {
         //
     }
@@ -63,7 +58,7 @@ class CaterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cater $cater)
+    public function destroy(Position $position)
     {
         //
     }
