@@ -88,7 +88,7 @@ Route::delete('/villages/{village}', [VillageController::class, 'destroy']);
 Route::resource('/hamlets', HamletController::class);
 Route::delete('/hamlets/{hamlet}', [HamletController::class, 'destroy']);
 
-// Dusun
+// Cater
 Route::resource('/caters', CaterController::class);
 
 

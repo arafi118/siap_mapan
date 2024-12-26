@@ -59,9 +59,9 @@
                     <input type="text" class="form-control date" name="tgl_akhir"
                            id="tgl_akhir" aria-describedby="tgl_akhir" placeholder="Tgl Akhir"
                            value="{{ date('d/m/Y') }}">
-                    <small class="text-danger" id="msg_tgl_akhir"></small>
+                    <small class="text-danger">{{ $errors->first('tgl_akhir') }}</small>
                 </div>
-            </div>            
+            </div> 
         <div class="">
             <a href="/usages" class="btn btn-primary btn-sm">Kembali</a>
             <button type="submit" class="btn btn-dark btn-sm" id="SimpanPemakaian">Simpan</button>

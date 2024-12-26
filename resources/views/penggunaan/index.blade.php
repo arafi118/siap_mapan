@@ -22,8 +22,8 @@
                                 </div>
                                 <div style="display: flex; justify-content: flex-end;">
                                     <a href="/usages/create" class="btn btn-primary" id="RegisterDusun"
-                                        style="display: inline-block; width: 150px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;">
-                                        <i class="fas fa-plus"></i> Register Pemakaian
+                                        style="display: inline-block; width: 240px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;">
+                                        <i class="fas fa-plus"></i> Input Data Pemakaian
                                     </a>
                                 </div>
                             </div>
@@ -35,7 +35,7 @@
                                 <th>AKHIR</th>
                                 <th>JUMLAH</th>
                                 <th>TGL AKHIR</th>
-                                <th style="text-align: center;">AKSI</th>
+                                {{-- <th style="text-align: center;">AKSI</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -48,14 +48,14 @@
                                 <td>{{ $usage->akhir }}</td>
                                 <td>{{ $usage->jumlah }}</td>
                                 <td>{{ $usage->tgl_akhir }}</td>
-                                <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                {{-- <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
                                     <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
                                     <a href="#" data-id="{{ $usage->id }}"
                                         class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i>
                                     </a>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
