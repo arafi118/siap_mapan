@@ -21,7 +21,6 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="/pengaturan">Personalisasi SOP</a>
                 <a class="collapse-item" href="/packages">Kelas & Biaya Pemakaian</a>
-                <a class="collapse-item" href="/packages/create">Tambah paket</a>
                 <a class="collapse-item" href="/accounts">Rekening</a>
             </div>
         </div>
@@ -70,7 +69,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="/transactions/pelunasan_instalasi">Tagihan Instalasi</a>
                 <a class="collapse-item" href="/transactions">Jurnal Umum</a>
-                <a class="collapse-item" href="/transactions/tagihan_bulanan">Tagihan Bulanan</a>
+                <a class="collapse-item" href="/transactions/">Tagihan Bulanan</a>
             </div>
         </div>
     </li>

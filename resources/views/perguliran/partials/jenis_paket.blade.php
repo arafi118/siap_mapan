@@ -45,16 +45,14 @@
             value="{{ number_format($tampil_settings->denda, 2) }}">
     </div>
 </div>
-@section('script')
-    <script>
-        $(".abodemen").maskMoney({
-            allowNegative: true
-        });
+<script>
+    $(".abodemen").maskMoney({
+        allowNegative: true
+    });
 
-        $(document).ready(function() {
-            $('.select2').select2({
-                theme: 'bootstrap4',
-            });
+    $(document).ready(function() {
+        $('.select2').select2({
+            theme: 'bootstrap4',
         });
-    </script>
-@endsection
+    });
+</script>

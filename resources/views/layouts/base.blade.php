@@ -414,7 +414,7 @@
             $("#transaction_id").val(installation.id);
             $("#order").val(installation.order);
             $("#kode_instalasi").val(installation.kode_instalasi);
-            $("#alamat").val(installation.alamat);
+            $("#alamat").val(installation.village.nama);
             $("#package").val(installation.package.kelas);
             $("#abodemen").val(numFormat.format(installation.abodemen));
             $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
@@ -423,6 +423,91 @@
         });
         //end cari customors
     </script>
+
+    <script>
+        var numFormat = new Intl.NumberFormat('en-EN', {
+            minimumFractionDigits: 2
+        })
+
+        //Tagihan Bulanan (Aktif)
+        $('#TagihanBulanan').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: 'states',
+            source: function(query, process) {
+                if (query.length < 2) return;
+
+                $.ajax({
+                    url: '/installations/Tagihan_bulanan',
+                    method: 'GET',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        var states = [];
+                        result.map(function(item) {
+                            if (item.installation.length > 0) {
+                                item.installation.map(function(instal) {
+                                    states.push({
+                                        id: instal.id,
+                                        installation: instal,
+                                        name: item.nama +
+                                            ' - ' + instal.village.nama +
+                                            ' - ' + instal.id +
+                                            ' [' + item.nik + ']',
+                                        value: instal.id
+                                    })
+                                })
+                            }
+                        });
+
+                        process(states);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
+                        process([]);
+                    }
+                });
+            },
+
+            displayKey: 'name',
+            autoSelect: true,
+            fitToElement: true,
+            items: 10
+
+        }).bind('typeahead:selected', function(event, item) {
+            var installation = item.installation
+            var trx = installation.transaction
+
+            var sum_total = 0;
+            trx.map(function(item) {
+                sum_total += item.total;
+            })
+            // console.log(numFormat.format(installation.abodemen))
+            // $("#customername").val(installation.customers.nama);
+
+            var tagihan = sum_total - installation.abodemen;
+            if (!trx || tagihan > 0) {
+                window.location.href = '/transactions/pelunasan_instalasi'
+                return 0;
+            }
+
+            $("#id_transaction").val(installation.id);
+            $("#aktif").val(installation.aktif);
+            $("#kode_instalasi").val(installation.kode_instalasi);
+            $("#desa").val(installation.village.nama);
+            $("#package").val(installation.package.kelas);
+            $("#abodemen").val(numFormat.format(installation.abodemen));
+            $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
+            $("#tagihan").val(numFormat.format(tagihan));
+            $("#_total").val(numFormat.format(installation.abodemen - sum_total));
+        });
+        //end cari customors
+    </script>
+
     <script>
         // Awal script untuk cari Anggota Pemakaian
         $('#carianggota').typeahead({

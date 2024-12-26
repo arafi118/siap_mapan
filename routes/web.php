@@ -57,6 +57,7 @@ Route::get('/installations/reg_notifikasi/{customer_id}', [InstallationsControll
 Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'jenis_paket']);
 Route::get('/installations/kode_instalasi', [InstallationsController::class, 'kode_instalasi']);
 Route::get('/installations/cari_Custommers', [InstallationsController::class, 'cariCustomers']);
+Route::get('/installations/Tagihan_bulanan', [InstallationsController::class, 'CariTagihan']);
 Route::resource('/installations', InstallationsController::class);
 
 

@@ -10,7 +10,8 @@
                      <!-- Konten Teks -->
                      <div>
                          <div>
-                             <h4 class="alert-heading">Customer an. {{ $REG_status->customer->nama }} <b></b>
+                             <h4 class="alert-heading">Customer an. {{ $REG_status->customer->nama }} <b> Loan id
+                                     ( {{ $REG_status->id }} )</b>
                                  masih
                                  memiliki pinjaman dengan status
                                  <b>

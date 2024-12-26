@@ -1,17 +1,17 @@
 @php
     $status = Request::get('status');
 
-    $tombolP = '';
-    $tombolS = '';
+    $tombolR = '';
+    $tombolI = '';
     $tombolA = '';
     $tombolB = '';
     $tombolC = '';
     switch ($status) {
-        case 'P':
-            $tombolP = 'active';
+        case 'R':
+            $tombolR = 'active';
             break;
-        case 'S':
-            $tombolS = 'active';
+        case 'I':
+            $tombolI = 'active';
             break;
         case 'A':
             $tombolA = 'active';
@@ -24,7 +24,7 @@
             break;
 
         default:
-            $tombolP = 'active';
+            $tombolR = 'active';
             break;
     }
 @endphp
@@ -38,24 +38,24 @@
                 <div class="card-body">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a class="nav-link {{ $tombolP }}" data-status="P" data-toggle="tab" data-target="#Permohonan"
-                                href="#"><b>Permohonan (P)</b></a>
+                            <a class="nav-link {{ $tombolR }}" data-status="R" data-toggle="tab" data-target="#Permohonan"
+                                href="#"><b>Permohonan ( R )</b></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ $tombolS }}" data-status="S" data-toggle="tab" data-target="#Pasang"
-                                href="#"><b>Pasang (S)</b></a>
+                            <a class="nav-link {{ $tombolI }}" data-status="I" data-toggle="tab" data-target="#Pasang"
+                                href="#"><b>Pasang ( I )</b></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ $tombolA }}" data-status="A" data-toggle="tab" data-target="#Aktif"
-                                href="#"><b>Aktif (A)</b></a>
+                                href="#"><b>Aktif ( A )</b></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ $tombolB }}" data-status="B" data-toggle="tab" data-target="#Blokir"
-                                href="#"><b>Blokir (B)</b></a>
+                                href="#"><b>Blokir ( B )</b></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ $tombolC }}" data-status="C" data-toggle="tab" data-target="#Cabut"
-                                href="#"><b>Cabut (C)</b></a>
+                                href="#"><b>Cabut ( C )</b></a>
                         </li>
                     </ul>
                 </div>
@@ -66,7 +66,7 @@
     <div class="container-fluid" id="container-wrapper">
         <div id="tabsContent" class="tab-content">
             <!-- Permohonan Tab -->
-            <div id="Permohonan" role="tab" class="tab-pane {{ $tombolP }}">
+            <div id="Permohonan" role="tab" class="tab-pane {{ $tombolR }}">
                 <!-- Content for Permohonan -->
                 <div class="row">
                     <div class="col-lg-12">
@@ -85,30 +85,30 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($status_P as $status_P)
+                                        @foreach ($status_R as $status_R)
                                             <tr>
-                                                <td>{{ $status_P->kode_instalasi }}</td>
-                                                <td>{{ $status_P->customer ? $status_P->customer->nama : '' }}</td>
-                                                <td>{{ $status_P->village ? $status_P->village->nama : '' }}</td>
-                                                <td>{{ $status_P->package ? $status_P->package->kelas : '' }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($status_P->order)->format('d-m-Y') }}</td>
+                                                <td>{{ $status_R->kode_instalasi }}</td>
+                                                <td>{{ $status_R->customer ? $status_R->customer->nama : '' }}</td>
+                                                <td>{{ $status_R->village ? $status_R->village->nama : '' }}</td>
+                                                <td>{{ $status_R->package ? $status_R->package->kelas : '' }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($status_R->order)->format('d-m-Y') }}</td>
                                                 <td>
-                                                    @if ($status_P->status === 'P')
+                                                    @if ($status_R->status === 'R')
                                                         <span class="badge badge-success">PAID</span>
-                                                    @elseif($status_P->status === '0')
+                                                    @elseif($status_R->status === '0')
                                                         <span class="badge badge-warning">UNPAID</span>
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="/installations/{{ $status_P->id }}"
+                                                    <a href="/installations/{{ $status_R->id }}"
                                                         class="btn btn-info btn-sm">
                                                         <i class="fas fa-info-circle"></i>
                                                     </a>
-                                                    <a href="/installations/{{ $status_P->id }}/edit"
+                                                    <a href="/installations/{{ $status_R->id }}/edit"
                                                         class="btn btn-warning btn-sm">
                                                         <i class="fas fa-exclamation-triangle"></i>
                                                     </a>
-                                                    <a href="#" data-id="{{ $status_P->id }}"
+                                                    <a href="#" data-id="{{ $status_R->id }}"
                                                         class="btn btn-danger btn-sm Hapus_id">
                                                         <i class="fas fa-trash"></i>
                                                     </a>
@@ -124,7 +124,7 @@
             </div>
 
             <!-- Pasang Tab -->
-            <div id="Pasang" role="tab" class="tab-pane {{ $tombolS }}">
+            <div id="Pasang" role="tab" class="tab-pane {{ $tombolI }}">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card mb-4">
@@ -142,21 +142,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($status_S as $status_S)
+                                        @foreach ($status_I as $status_I)
                                             <tr>
-                                                <td>{{ $status_S->kode_instalasi }}</td>
-                                                <td>{{ $status_S->customer ? $status_S->customer->nama : '' }}</td>
-                                                <td>{{ $status_P->village ? $status_P->village->nama : '' }}</td>
-                                                <td>{{ $status_S->package ? $status_S->package->kelas : '' }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($status_S->order)->format('d-m-Y') }}</td>
+                                                <td>{{ $status_I->kode_instalasi }}</td>
+                                                <td>{{ $status_I->customer ? $status_I->customer->nama : '' }}</td>
+                                                <td>{{ $status_I->village ? $status_I->village->nama : '' }}</td>
+                                                <td>{{ $status_I->package ? $status_I->package->kelas : '' }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($status_I->order)->format('d-m-Y') }}</td>
                                                 <td>
-                                                    @if ($status_S->status === 'S')
+                                                    @if ($status_I->status === 'I')
                                                         <span class="badge badge-success">PASANG</span>
                                                     @endif
                                                 </td>
 
                                                 <td style="text-align: center;">
-                                                    <a href="/installations/{{ $status_S->id }}"
+                                                    <a href="/installations/{{ $status_I->id }}"
                                                         class="btn-sm btn-primary"><i
                                                             class="fa fa-exclamation-circle"></i></a>
                                                 </td>
@@ -289,7 +289,7 @@
                                                 <td>{{ \Carbon\Carbon::parse($status_C->order)->format('d-m-Y') }}</td>
                                                 <td>
                                                     @if ($status_C->status === 'C')
-                                                        <span class="badge badge-warning">CABUT</span>
+                                                        <span class="badge badge-danger">CABUT</span>
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">

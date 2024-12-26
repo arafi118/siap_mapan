@@ -13,7 +13,9 @@
                         <img src="../../assets/img/user_edit.png" style="max-height: 100px; margin-right: 20px;"
                             class="img-fluid">
                         <div class="w-100">
-                            <h3 class="text-black"><b>Edit Custommer an. {{ $installations->customer->nama }}</b></h3>
+                            <h3 class="text-black"><b>Edit Custommer an. {{ $installations->customer->nama }}</b> Loan id
+                                <b>( {{ $installations->id }} )</b>
+                            </h3>
                             <p class="text-black">Nik<b> . {{ $installations->customer->nik }}</b></p>
                             <hr>
                         </div>
@@ -67,7 +69,7 @@
                                 </td>
                                 <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                     <span style="float: left;">Status Instalasi</span>
-                                    @if ($installations->status === 'P')
+                                    @if ($installations->status === 'R')
                                         <span class="badge badge-success"
                                             style="float: right; width: 30%; padding: 5px; text-align: center;">
                                             PAID
@@ -93,6 +95,7 @@
                     <form action="/installations/{{ $installations->id }}" method="post" id="FormEditPermohonan">
                         @csrf
                         @method('PUT')
+                        <input type="text" name="status" id="status" value="EditData" hidden>
                         <div class="row">
                             <div class="card-body">
                                 <div class="alert alert-light" role="alert">
@@ -153,7 +156,7 @@
                                 </p>
 
                                 <div class="col-12 d-flex justify-content-end">
-                                    <a href="/installations?status=P" class="btn btn-light btn-icon-split">
+                                    <a href="/installations?status=R" class="btn btn-light btn-icon-split">
                                         <span class="icon text-white-50">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-sign-turn-slight-left-fill"

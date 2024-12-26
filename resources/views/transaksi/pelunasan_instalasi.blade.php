@@ -90,7 +90,8 @@
                                     <div class="col-md-4">
                                         <div class="position-relative mb-3">
                                             <label for="abodemen">Abodemen</label>
-                                            <input type="text" class="form-control" id="abodemen" name="abodemen">
+                                            <input type="text" class="form-control" id="abodemen" name="abodemen"
+                                                readonly>
                                             <small class="text-danger" id="msg_abodemen"></small>
                                         </div>
                                     </div>
@@ -98,7 +99,7 @@
                                         <div class="position-relative mb-3">
                                             <label for="biaya_sudah_dibayar">Biaya sudah dibayar</label>
                                             <input type="text" class="form-control" name="biaya_sudah_dibayar"
-                                                id="biaya_sudah_dibayar">
+                                                id="biaya_sudah_dibayar" readonly>
                                             <small class="text-danger"></small>
                                         </div>
                                     </div>
@@ -107,7 +108,7 @@
                                     <div class="col-md-4">
                                         <div class="position-relative mb-3">
                                             <label for="tagihan">Tagihan</label>
-                                            <input type="text" class="form-control" id="tagihan">
+                                            <input type="text" class="form-control" id="tagihan" readonly>
                                             <small class="text-danger"></small>
                                         </div>
                                     </div>
@@ -122,7 +123,7 @@
                                     <div class="col-md-4">
                                         <div class="position-relative mb-3">
                                             <label for="total">Total</label>
-                                            <input type="text" class="form-control" id="_total" disabled>
+                                            <input type="text" class="form-control" id="_total" readonly>
                                             <small class="text-danger"></small>
                                         </div>
                                     </div>

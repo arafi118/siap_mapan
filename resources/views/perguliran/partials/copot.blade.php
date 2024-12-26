@@ -2,9 +2,10 @@
 
 @section('content')
     <!-- Form -->
-    <form action="/installations/{{ $installation->id }}" method="post" id="Form_status_S">
+    <form action="/installations/{{ $installation->id }}" method="post" id="Form_status_C">
         @csrf
         @method('PUT')
+        <input type="text" name="status" id="status" value="{{ $installation->status }}" hidden>
         <input type="text" value="{{ number_format($tampil_settings->pasang_baru, 2) }}" name="pasang_baru" hidden>
         <div class="row">
             <div class="col-lg-12">
@@ -40,15 +41,15 @@
                                 <tbody>
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                            <span style="float: left;">Tgl Order</span>
-                                            <span class="badge badge-warning"
+                                            <span style="float: left;">Kode Instalasi</span>
+                                            <span class="badge badge-danger"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                {{ $installation->order }}
+                                                {{ $installation->kode_instalasi }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Abodemen</span>
-                                            <span class="badge badge-warning"
+                                            <span class="badge badge-danger"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
                                                 {{ number_format($installation->abodemen, 2) }}
                                             </span>
@@ -56,30 +57,36 @@
                                     </tr>
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                            <span style="float: left;">Tgl Pasang</span>
-                                            <span class="badge badge-warning"
+                                            <span style="float: left;">Tgl Order</span>
+                                            <span class="badge badge-danger"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                {{ $installation->pasang }}
+                                                {{ $installation->order }}
                                             </span>
                                         </td>
-
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                            <span style="float: left;">Status Instalasi</span>
-                                            @if ($installation->status === 'S')
-                                                <span class="badge badge-warning"
-                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                    PASANG
-                                                </span>
-                                            @endif
+                                            <span style="float: left;">Paket Instalasi</span>
+                                            <span class="badge badge-danger"
+                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                {{ $installation->package->kelas }}
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                            <span style="float: left;">Paket Instalasi</span>
-                                            <span class="badge badge-warning"
+                                            <span style="float: left;">Tgl Pasang</span>
+                                            <span class="badge badge-danger"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                {{ $installation->package->kelas }}
+                                                {{ $installation->pasang }}
                                             </span>
+                                        </td>
+                                        <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
+                                            <span style="float: left;">Status Instalasi</span>
+                                            @if ($installation->status === 'C')
+                                                <span class="badge badge-secondary"
+                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                    Copot
+                                                </span>
+                                            @endif
                                         </td>
                                     </tr>
                                 </tbody>
@@ -88,80 +95,18 @@
                     </div>
                 </div>
             </div>
-
         </div>
-        <div class="row">
-            <div class="card-body">
-                <div class="alert alert-light" role="alert">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="position-relative mb-3">
-                                <label for="kode_instalasi">Kode Instalasi</label>
-                                <input type="text" class="form-control date" name="kode_instalasi" id="kode_instalasi"
-                                    value="{{ $installation->kode_instalasi }}" disabled>
-                                <small class="text-danger" id="msg_kode_instalasi"></small>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="position-relative mb-3">
-                                <label for="aktif">Tanggal Pasang Baru</label>
-                                <input type="text" class="form-control date" name="aktif" id="aktif"
-                                    value="{{ date('d/m/Y') }}">
-                                <small class="text-danger" id="msg_aktif"></small>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="position-relative mb-3">
-                                <label for="biaya_instalasi">Biaya Istalasi</label>
-                                <input type="text" class="form-control" name="biaya_instalasi" id="biaya_instalasi"
-                                    value="{{ number_format($trx, 2) }}" disabled>
-                                <small class="text-danger" id="msg_biaya_instalasi"></small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="position-relative mb-3">
-                                <label for="pasang_baru">Biaya Pasang Baru</label>
-                                <input type="text" class="form-control"
-                                    value="{{ number_format($tampil_settings->pasang_baru, 2) }} "disabled>
-                                <small class="text-danger"></small>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="position-relative mb-3">
-                                <label for="total">Nominal</label>
-                                <input type="text" class="form-control" name="total" id="total">
-                                <small class="text-danger" id="msg_total"></small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 d-flex justify-content-end">
-                    <a href="/installations?status=C" class="btn btn-primary btn-icon-split">
-                        <span class="icon text-white-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM6.864 8.368a.25.25 0 0 1-.451-.039l-1.06-2.882a.25.25 0 0 1 .192-.333l3.026-.523a.25.25 0 0 1 .26.371l-.667 1.154.621.373A2.5 2.5 0 0 1 10 8.632V11H9V8.632a1.5 1.5 0 0 0-.728-1.286l-.607-.364-.8 1.386Z" />
-                            </svg>
-                        </span>
-                        <span class="text">Kembali</span>
-                    </a>
-                    <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_S"
-                        style="float: right; margin-left: 10px;">
-                        <span class="icon text-white-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
-                            </svg>
-                        </span>
-                        <span class="text" style="float: right;">Aktifkan Sekarang</span>
-                    </button>
-                </div>
-                <br>
-            </div>
+        <div class="col-12 d-flex justify-content-end">
+            <a href="/installations?status=C" class="btn btn-light btn-icon-split">
+                <span class="icon text-white-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM6.864 8.368a.25.25 0 0 1-.451-.039l-1.06-2.882a.25.25 0 0 1 .192-.333l3.026-.523a.25.25 0 0 1 .26.371l-.667 1.154.621.373A2.5 2.5 0 0 1 10 8.632V11H9V8.632a1.5 1.5 0 0 0-.728-1.286l-.607-.364-.8 1.386Z" />
+                    </svg>
+                </span>
+                <span class="text">Kembali</span>
+            </a>
         </div>
     </form>
 @endsection
@@ -189,11 +134,11 @@
             format: 'd/m/Y'
         });
 
-        $(document).on('click', '#Simpan_status_S', function(e) {
+        $(document).on('click', '#Simpan_status_C', function(e) {
             e.preventDefault();
             $('small').html('');
 
-            var form = $('#Form_status_S');
+            var form = $('#Form_status_C');
             var actionUrl = form.attr('action');
 
             $.ajax({
