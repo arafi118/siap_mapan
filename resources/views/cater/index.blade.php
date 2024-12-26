@@ -20,19 +20,22 @@
                                     <i class="far fa-clipboard" style="font-size: 30px; margin-right: 9px;"></i>
                                     <b>Data Cater</b>
                                 </div>
-                                <div style="display: flex; justify-content: flex-end;">
+                                {{-- <div style="display: flex; justify-content: flex-end;">
                                     <a href="/caters/create" class="btn btn-primary" id="RegisterCater"
                                         style="display: inline-block; width: 130px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;">
                                         <i class="fas fa-plus"></i> Register Cater
                                     </a>
-                                </div>
+                                </div> --}}
                             </div>
                             <div>&nbsp;</div>
                             <tr>
                                 <th>NAMA</th>
                                 <th>ALAMAT</th>
                                 <th>TELPON</th>
+                                <th>JENIS KELAMIN</th>
                                 <th>JABATAN</th>
+                                <th>USERNAME</th>
+                                <th>PASSWORD</th>
                                 <th style="text-align: center;">AKSI</th>
                             </tr>
                         </thead>
@@ -41,10 +44,13 @@
                             <tr>
                                 <td>{{ $cater->nama}}</td>
                                 <td>{{ $cater->alamat}}</td>
-                                <td style="padding: 3px; word-wrap: break-word; max-width: 200px;">
+                                <td>
                                     {{ $cater->telpon }}
                                 </td>
+                                <td>{{ $cater->jenis_kelamin }}</td>
                                 <td>{{ $cater->position->nama_jabatan}}</td>
+                                <td>{{ $cater->username }}</td>
+                                <td>{{ $cater->password }}</td>
                                 <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
                                     <a href="/caters/{{ $cater->id }}/edit" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pencil-alt"></i>

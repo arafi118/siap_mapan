@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Cater;
 use App\Models\jabatan;
+use App\Models\Position;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CaterController extends Controller
 {
@@ -25,7 +27,10 @@ class CaterController extends Controller
      */
     public function create()
     {
-        //
+        $positions = Position::all();
+
+        $title = 'Register Cater';
+        return view('cater.create')->with(compact('positions', 'title'));
     }
 
     /**
@@ -33,7 +38,31 @@ class CaterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'nama' => 'required',
+            'alamat' => 'required',
+            'telpon' => 'required',
+            'jabatan' => 'required',
+            'username' => 'required',
+            'password' => 'required',
+            'jenis_kelamin' =>'required'
+
+
+         ]);
+
+        Cater::create([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'telpon' => $request->telpon,
+            'jabatan' => $request->jabatan,
+            'username' => $request->username,
+            'password' => $request->password,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'business_id' => Session::get('business_id')
+          
+        ]);
+
+        return redirect('/caters')->with('berhasil','Cater berhasil Ditambahkan!');
     }
 
     /**
@@ -49,22 +78,47 @@ class CaterController extends Controller
      */
     public function edit(Cater $cater)
     {
-        //
+        $caters = Cater::with('position')->get();
+        $title = 'Edit Cater';
+        return view('cater.edit')->with(compact('title', 'caters', 'cater'));
     }
-
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Cater $cater)
     {
-        //
+        // Validasi input
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'telpon' => 'required|string|max:15',
+            'jabatan' => 'required|string', 
+            'username' => 'required|string|max:255',
+            'password' => 'required|string',
+            'jenis_kelamin' => 'required|string|in:L,P', // Contoh validasi pilihan
+        ]);
+    
+        // Update data
+        $cater->update([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'telpon' => $request->telpon,
+            'jabatan' => $request->jabatan, // Pastikan data sesuai tipe
+            'username' => $request->username,
+            'password' => bcrypt($request->password), // Enkripsi password
+            'jenis_kelamin' => $request->jenis_kelamin,
+        ]);
+    
+        return redirect('/caters')->with('success', 'Cater berhasil diperbarui');
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Cater $cater)
     {
-        //
+        $cater->delete();
+        return redirect('/caters')->with('success', 'Cater berhasil dihapus');
+
     }
 }

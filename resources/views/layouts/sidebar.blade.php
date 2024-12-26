@@ -37,6 +37,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="/customers/create">Register Pelanggan</a>
                 <a class="collapse-item" href="/customers">Data Pelanggan</a>
+                <a class="collapse-item" href="/caters/create">Register Cater</a>
                 <a class="collapse-item" href="/caters">Data Cater</a>
                 <a class="collapse-item" href="/villages">Data Desa</a>
                 <a class="collapse-item" href="/hamlets">Data Dusun</a>
