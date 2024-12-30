@@ -8,6 +8,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HamletController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\Pelaporan;
+use App\Http\Controllers\PelaporanController;
 use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
@@ -101,3 +103,7 @@ Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru'])
 Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
 
 Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);
+
+Route::get('/pelaporan', [PelaporanController::class, 'index']);
+Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan']);
+
