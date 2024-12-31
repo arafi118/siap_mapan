@@ -32,7 +32,7 @@
                                 <th>NAMA</th>
                                 <th>ALAMAT</th>
                                 <th>TELPON</th>
-                                <th>JENIS KELAMIN</th>
+                                {{-- <th>JENIS KELAMIN</th> --}}
                                 <th>JABATAN</th>
                                 <th>USERNAME</th>
                                 <th>PASSWORD</th>
@@ -44,10 +44,8 @@
                             <tr>
                                 <td>{{ $cater->nama}}</td>
                                 <td>{{ $cater->alamat}}</td>
-                                <td>
-                                    {{ $cater->telpon }}
-                                </td>
-                                <td>{{ $cater->jenis_kelamin }}</td>
+                                <td>{{ $cater->telpon }}</td>
+                                {{-- <td>{{ $cater->jenis_kelamin }}</td> --}}
                                 <td>{{ $cater->position->nama_jabatan}}</td>
                                 <td>{{ $cater->username }}</td>
                                 <td>{{ $cater->password }}</td>

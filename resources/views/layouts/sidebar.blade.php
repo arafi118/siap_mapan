@@ -77,7 +77,7 @@
 
     <hr class="sidebar-divider">
     <li class="nav-item">
-        <a class="nav-link" href="laporan.blade.php">
+        <a class="nav-link" href="/pelaporan">
             <i class="fa fa-print"></i>
             <span>Laporan</span>
         </a>

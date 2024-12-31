@@ -89,13 +89,13 @@ class CaterController extends Controller
     {
         // Validasi input
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'telpon' => 'required|string|max:15',
-            'jabatan' => 'required|string', 
-            'username' => 'required|string|max:255',
-            'password' => 'required|string',
-            'jenis_kelamin' => 'required|string|in:L,P', // Contoh validasi pilihan
+            'nama' => 'required',
+            'alamat' => 'required',
+            'telpon' => 'required',
+            'jabatan' => 'required',
+            'username' => 'required',
+            'password' => 'required',
+            'jenis_kelamin' =>'required'
         ]);
     
         // Update data

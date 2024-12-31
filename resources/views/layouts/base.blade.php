@@ -23,6 +23,23 @@
     <!-- Bootstrap DatePicker -->
 </head>
 <style>
+    /* laporan */
+        .form-group {
+    margin-bottom: 1rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+
+    .text-end {
+        text-align: right;
+    }
+
+    button {
+        margin-top: 10px;
+    }
+
     .btn-white-custom {
         display: flex;
         align-items: center;
