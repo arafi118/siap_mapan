@@ -68,9 +68,9 @@
         </a>
         <div id="collapseTable" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="/transactions/pelunasan_instalasi">Tagihan Instalasi</a>
                 <a class="collapse-item" href="/transactions">Jurnal Umum</a>
-                <a class="collapse-item" href="/transactions/">Tagihan Bulanan</a>
+                <a class="collapse-item" href="/transactions/pelunasan_instalasi">Tagihan Instalasi</a>
+                <a class="collapse-item" href="/transactions/tagihan_bulanan">Tagihan Bulanan</a>
             </div>
         </div>
     </li>

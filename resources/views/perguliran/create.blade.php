@@ -229,6 +229,7 @@
             })
         })
 
+        //simpan
         $(document).on('click', '#SimpanPermohonan', function(e) {
             e.preventDefault();
             $('small').html('');
@@ -277,6 +278,7 @@
             });
         });
 
+        //notifikasi
         $(document).on('change', '#customer_id', function() {
             $.ajax({
                 url: '/installations/reg_notifikasi/' + $(this).val(),

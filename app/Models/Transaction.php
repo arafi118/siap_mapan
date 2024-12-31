@@ -25,7 +25,7 @@ class Transaction extends Model
     }
     public function usage()
     {
-        return $this->hasOne(Usage::class, 'installation_id');
+        return $this->hasOne(Usage::class, 'kode_instalasi', 'id');
     }
     public function Installations()
     {

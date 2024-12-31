@@ -4,9 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\Customer;
+use App\Models\Installations;
 use App\Models\Family;
 use App\Models\Village;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Utils\Tanggal;
+use App\Utils\Keuangan;
+
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 
 class CustomerController extends Controller
@@ -16,10 +22,10 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::all();
+        $customers = Customer::with('installation')->get();
 
         $title = 'Data penduduk';
-        return view('pelanggan.index')->with(compact('title','customers'));
+        return view('pelanggan.index')->with(compact('title', 'customers'));
     }
 
     /**
@@ -31,7 +37,7 @@ class CustomerController extends Controller
         $hubungan = Family::orderBy('id', 'ASC')->get();
 
         $title = 'Register Penduduk';
-        return view('pelanggan.create')->with(compact('desa', 'hubungan','title'));
+        return view('pelanggan.create')->with(compact('desa', 'hubungan', 'title'));
     }
 
     /**
@@ -39,8 +45,21 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $this->validate($request,[
+        $data = $request->only([
+            "nik",
+            "nama_lengkap",
+            "nama_panggilan",
+            "alamat",
+            "tempat_lahir",
+            "tgl_lahir",
+            "jenis_kelamin",
+            "no_kk",
+            "domisi",
+            "desa",
+            "no_telp",
+        ]);
+
+        $rules = [
             'nik' => 'required|unique:customers',
             'nama_lengkap' => 'required',
             'nama_panggilan' => 'required',
@@ -52,16 +71,22 @@ class CustomerController extends Controller
             'domisi' => 'required',
             'desa' => 'required',
             'no_telp' => 'required',
-         ]);
+        ];
 
-        //  CARA 1
-        Customer::create([
+        $validate = Validator::make($data, $rules);
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+
+        $create = Customer::create([
+            'business_id' => Session::get('business_id'),
             'nik' => $request->nik,
             'nama' => $request->nama_lengkap,
             'nama_panggilan' => $request->nama_panggilan,
             'alamat' => $request->alamat,
             'tempat_lahir' => $request->tempat_lahir,
-            'tgl_lahir' => $request->tgl_lahir,
+            'tgl_lahir' =>  Tanggal::tglNasional($request->tgl_lahir),
             'jk' => $request->jenis_kelamin,
             'kk' => $request->no_kk,
             'domisi' => $request->domisi,
@@ -69,7 +94,11 @@ class CustomerController extends Controller
             'hp' => $request->no_telp
         ]);
 
-        return redirect('/customers')->with('berhasil','Customer berhasil Ditambahkan!');
+        return response()->json([
+            'success' => true,
+            'msg' => 'Customer berhasil Ditambahkan!',
+            'installation' => $create
+        ]);
     }
 
     /**
@@ -78,9 +107,9 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         // Menghapus customer berdasarkan id yang diterima
-       
+
     }
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -91,7 +120,7 @@ class CustomerController extends Controller
         $hubungan = Family::orderBy('id', 'ASC')->get();
 
         $title = 'Edit Pelanggan';
-        return view('pelanggan.edit')->with(compact('desa', 'hubungan','customer','title'));
+        return view('pelanggan.edit')->with(compact('desa', 'hubungan', 'customer', 'title'));
     }
 
     /**
@@ -119,7 +148,7 @@ class CustomerController extends Controller
         }
 
         $this->validate($request, $validasi);
-    
+
         // Update data customer
         $update = Customer::where('id', $customer->id)->update([
             'nik' => $request->nik,
@@ -134,20 +163,32 @@ class CustomerController extends Controller
             'desa' => $request->desa,
             'hp' => $request->no_telp
         ]);
-    
-        return redirect('/customers')->with('Berhasil', 'Customer berhasil diperbarui');
 
+        return redirect('/customers')->with('Berhasil', 'Customer berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
+
     public function destroy(Customer $customer)
     {
+        // Cek jika customer masih memiliki status di tabel installations
+        $Cek_Instal = Installations::where('customer_id', $customer->id)->exists();
+
+        if ($Cek_Instal) {
+            return response()->json([
+                'success' => false, // Operasi gagal karena ada status Pemakaian
+                'msg' => 'Customer tidak dapat dihapus karena masih memiliki status Pemakaian.',
+            ]);
+        }
+
+        // Hapus customer
         $customer->delete();
-    
-        // Redirect ke halaman customer dengan pesan sukses
-        return redirect('/customers')->with('success', 'Customer berhasil dihapus');
-        
+
+        return response()->json([
+            'success' => true, // Operasi berhasil
+            'msg' => 'Customer berhasil dihapus.',
+        ]);
     }
 }

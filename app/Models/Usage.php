@@ -10,14 +10,29 @@ class Usage extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
-          
+
     public function installation()
     {
-            return $this->belongsTo(Installations::class, 'kode_instalasi','kode_instalasi');
+        return $this->belongsTo(Installations::class, 'kode_instalasi', 'kode_instalasi');
+    }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'package_id', 'id');
     }
 
     public function customers()
     {
         return $this->belongsTo(Customer::class, 'customer', 'id');
+    }
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class, 'installation_id');
+    }
+
+    public function usage()
+    {
+        return $this->hasMany(Usage::class, 'kode_instalasi', 'kode_instalasi');
     }
 }

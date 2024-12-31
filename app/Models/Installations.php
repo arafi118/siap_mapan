@@ -15,17 +15,25 @@ class Installations extends Model
     protected $guarded = ['id'];
 
     /**
-     * BelongsTo => Tabel relasi punya banyak installasi
-     * HasMany => Tabel installasi punya banyak relasi
+     * ===========================================================
+     * BelongsTo    => Tabel relasi punya banyak installasi
+     * HasMany      => Tabel installasi punya banyak relasi
+     * HasOne       => Dari banyaknya data HasMany hanya akan diambil 1
+     * ===========================================================
+     * $this->belongsTo(Model, Pengghubung Pada Model, Kunci Pemilik)
+     * ===========================================================
+     * $this->hasMany(Model, Pengghubung Pada Model, Kunci Pemilik)
+     * $this->hasOne(Model, Pengghubung Pada Model, Kunci Pemilik)
+     * ===========================================================
      */
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
     public function package()
     {
-        return $this->belongsTo(Package::class);
+        return $this->belongsTo(Package::class, 'package_id');
     }
     public function village()
     {
@@ -33,10 +41,15 @@ class Installations extends Model
     }
     public function usage()
     {
-        return $this->hasOne(Usage::class, 'installation_id');
+        return $this->hasMany(Usage::class, 'kode_instalasi', 'kode_instalasi');
     }
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'installation_id');
+    }
+
+    public function settings()
+    {
+        return $this->hasOne(Settings::class, 'business_id', 'business_id');
     }
 }

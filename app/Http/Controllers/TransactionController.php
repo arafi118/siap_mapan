@@ -45,6 +45,19 @@ class TransactionController extends Controller
         return view('transaksi.pelunasan_instalasi')->with(compact('title', 'transactions', 'status_0'));
     }
 
+    public function tagihan_bulanan()
+    {
+        $transactions = Transaction::all();
+        $installations = Installations::all();
+        $status_0 = Installations::where('status', '0')->with(
+            'customer',
+            'village',
+            'package'
+        )->get();
+        $title = 'Pelunasan Instalasi';
+        return view('transaksi.tagihan_bulanan')->with(compact('title', 'transactions', 'status_0'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -57,63 +70,118 @@ class TransactionController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    { {
-            $data = $request->only([
-                "tgl_transaksi",
-                "transaction_id",
-                "abodemen",
-                "biaya_sudah_dibayar",
-                "pembayaran",
-            ]);
+    {
+        $func = 'Create' . $request->clay;
+        return $this->$func($request);
+    }
 
-            $data['abodemen'] = str_replace(',', '', $data['abodemen']);
-            $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
-            $data['abodemen'] = floatval($data['abodemen']);
+    /**
+     * Create data Pelunasan Instalasi.
+     */
+    private function Createpelunasaninstalasi($request)
+    {
+        $data = $request->only([
+            "tgl_transaksi",
+            "transaction_id",
+            "abodemen",
+            "biaya_sudah_dibayar",
+            "pembayaran",
+        ]);
 
-            $data['biaya_sudah_dibayar'] = str_replace(',', '', $data['biaya_sudah_dibayar']);
-            $data['biaya_sudah_dibayar'] = str_replace('.00', '', $data['biaya_sudah_dibayar']);
-            $data['biaya_sudah_dibayar'] = floatval($data['biaya_sudah_dibayar']);
+        $data['abodemen'] = str_replace(',', '', $data['abodemen']);
+        $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
+        $data['abodemen'] = floatval($data['abodemen']);
 
-            $data['pembayaran'] = str_replace(',', '', $data['pembayaran']);
-            $data['pembayaran'] = str_replace('.00', '', $data['pembayaran']);
-            $data['pembayaran'] = floatval($data['pembayaran']);
+        $data['biaya_sudah_dibayar'] = str_replace(',', '', $data['biaya_sudah_dibayar']);
+        $data['biaya_sudah_dibayar'] = str_replace('.00', '', $data['biaya_sudah_dibayar']);
+        $data['biaya_sudah_dibayar'] = floatval($data['biaya_sudah_dibayar']);
 
-            $abodemen = $data['abodemen'];
-            $biaya_sudah_dibayar = $data['biaya_sudah_dibayar'] ?? null;
-            $biaya_instalasi = $data['pembayaran'];
+        $data['pembayaran'] = str_replace(',', '', $data['pembayaran']);
+        $data['pembayaran'] = str_replace('.00', '', $data['pembayaran']);
+        $data['pembayaran'] = floatval($data['pembayaran']);
 
-            $penjumlahantrx = $biaya_sudah_dibayar + $biaya_instalasi;
-            $biaya_instal = $data['abodemen'] - $penjumlahantrx;
+        $abodemen = $data['abodemen'];
+        $biaya_sudah_dibayar = $data['biaya_sudah_dibayar'] ?? null;
+        $biaya_instalasi = $data['pembayaran'];
 
-            // TRANSACTION TIDAK BOLEH NYICIL
-            $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $biaya_sudah_dibayar;
-            if (empty($biaya_sudah_dibayar)) {
-                $persen = $biaya_instal * 100;
-            } else {
-                $persen = 100 - ($biaya_instal / $biaya_sudah_dibayar * 100);
-            }
-            $persen = ($penjumlahantrx / $abodemen) * 100;
-            $transaksi = Transaction::create([
-                'rekening_debit' => '1',
-                'rekening_kredit' => '67',
-                'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
-                'total' => $jumlah_instal,
-                'installation_id' => $request->transaction_id,
-                'keterangan' => 'Biaya istalasi ' . $persen . '%',
-            ]);
+        $penjumlahantrx = $biaya_sudah_dibayar + $biaya_instalasi;
+        $biaya_instal = $data['abodemen'] - $penjumlahantrx;
 
-            if ($biaya_instal <= 0) {
-                Installations::where('id', $request->transaction_id)->update([
-                    'status' => 'R',
-                ]);
-            }
+        // TRANSACTION TIDAK BOLEH NYICIL
+        $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $biaya_sudah_dibayar;
+        if (empty($biaya_sudah_dibayar)) {
+            $persen = $biaya_instal * 100;
+        } else {
+            $persen = 100 - ($biaya_instal / $biaya_sudah_dibayar * 100);
+        }
+        $persen = ($penjumlahantrx / $abodemen) * 100;
+        $transaksi = Transaction::create([
+            'rekening_debit' => '1',
+            'rekening_kredit' => '67',
+            'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
+            'total' => $jumlah_instal,
+            'installation_id' => $request->transaction_id,
+            'keterangan' => 'Biaya istalasi ' . $persen . '%',
+        ]);
 
-            return response()->json([
-                'success' => true,
-                'msg' => 'Pembayaran berhasil disimpan',
-                'transaksi' => $transaksi
+        if ($biaya_instal <= 0) {
+            Installations::where('id', $request->transaction_id)->update([
+                'status' => 'R',
             ]);
         }
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Pembayaran berhasil disimpan',
+            'transaksi' => $transaksi
+        ]);
+    }
+
+    /**
+     * Create data Pelunasan Instalasi.
+     */
+    private function CreateTagihanBulanan($request)
+    {
+        $data = $request->only([
+            "tgl_transaksi",
+            "id_trx",
+            "id_usage",
+            "pembayaran",
+            "tagihan",
+            "keterangan",
+        ]);
+        $data['tagihan'] = str_replace(',', '', $data['tagihan']);
+        $data['tagihan'] = str_replace('.00', '', $data['tagihan']);
+        $data['tagihan'] = floatval($data['tagihan']);
+
+        $data['pembayaran'] = str_replace(',', '', $data['pembayaran']);
+        $data['pembayaran'] = str_replace('.00', '', $data['pembayaran']);
+        $data['pembayaran'] = floatval($data['pembayaran']);
+
+        $biaya_tagihan = $data['tagihan'];
+        $biaya_instalasi = $data['pembayaran'];
+        // TRANSACTION TAGIHAN BULANAN
+        $transaksi = Transaction::create([
+            'rekening_debit' => '1',
+            'rekening_kredit' => '59',
+            'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
+            'total' => $biaya_instalasi,
+            'installation_id' => $request->id_trx,
+            'usage_id' => $request->id_usage,
+            'keterangan' => $request->keterangan
+        ]);
+
+        if ($biaya_tagihan == $biaya_instalasi) {
+            Usage::where('id', $request->id_usage)->update([
+                'status' => 'PAID',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Pembayaran berhasil disimpan',
+            'transaksi' => $transaksi
+        ]);
     }
 
     /**

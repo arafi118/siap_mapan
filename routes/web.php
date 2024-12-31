@@ -56,8 +56,9 @@ Route::resource('/customers', CustomerController::class);
 Route::get('/installations/reg_notifikasi/{customer_id}', [InstallationsController::class, 'reg_notifikasi']);
 Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'jenis_paket']);
 Route::get('/installations/kode_instalasi', [InstallationsController::class, 'kode_instalasi']);
-Route::get('/installations/cari_Custommers', [InstallationsController::class, 'cariCustomers']);
-Route::get('/installations/Tagihan_bulanan', [InstallationsController::class, 'CariTagihan']);
+Route::get('/installations/CariPelunasan_Instalasi', [InstallationsController::class, 'CariPelunasanInstalasi']);
+Route::get('/installations/CariTagihan_bulanan', [InstallationsController::class, 'CariTagihanbulanan']);
+Route::get('/installations/usage/{kode_instalasi}', [InstallationsController::class, 'usage']);
 Route::resource('/installations', InstallationsController::class);
 
 
@@ -66,6 +67,7 @@ Route::get('/packages/block_paket', [PackageController::class, 'block_paket']);
 Route::resource('/packages', PackageController::class);
 
 // Transactions || Transaksi
+Route::get('/transactions/tagihan_bulanan', [TransactionController::class, 'tagihan_bulanan']);
 Route::get('/transactions/pelunasan_instalasi', [TransactionController::class, 'pelunasan_instalasi']);
 Route::resource('/transactions', TransactionController::class);
 

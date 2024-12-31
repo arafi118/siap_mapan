@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Session;
 class InstallationsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * index menampilkan data per status.
      */
     public function index()
     {
@@ -54,7 +54,10 @@ class InstallationsController extends Controller
         return view('perguliran.index')->with(compact('title', 'installations', 'status_R', 'status_I', 'status_A', 'status_B', 'status_C'));
     }
 
-    public function cariCustomers(Request $request)
+    /**
+     * cari custommer trx instalasi.
+     */
+    public function CariPelunasanInstalasi(Request $request)
     {
         $query = $request->input('query');
 
@@ -76,7 +79,10 @@ class InstallationsController extends Controller
         return response()->json($customers);
     }
 
-    public function CariTagihan(Request $request)
+    /**
+     * cari custommers trx tagihan bulanan .
+     */
+    public function CariTagihanbulanan(Request $request)
     {
         $query = $request->input('query');
 
@@ -88,17 +94,53 @@ class InstallationsController extends Controller
             'installation.transaction' => function ($query) {
                 $query->where([
                     ['rekening_debit', '1'],
-                    ['rekening_kredit', '59']
+                    ['rekening_kredit', '67']
                 ]);
             },
-
             'installation.village',
+            'installation.customer',
+            'installation.settings',
             'installation.package',
         ])->get();
 
         return response()->json($customers);
     }
 
+    /**
+     * cari & menampilkan data custommers trx tagihan bulanan .
+     */
+    public function usage($kode_instalasi)
+    {
+        $business_id = Session::get('business_id');
+        $installations = Installations::where('kode_instalasi', $kode_instalasi)->with(
+            'package'
+        )->first();
+
+        $pengaturan = Settings::where('business_id', $business_id);
+        $trx_settings = $pengaturan->first();
+        $package = Package::all();
+
+        $usages = Usage::where([
+            ['kode_instalasi', $kode_instalasi],
+            ['status', 'NOT LIKE', 'PAID']
+        ])->with([
+            'transaction' => function ($query) {
+                $query->where([
+                    ['rekening_debit', '1'],
+                    ['rekening_kredit', '59']
+                ])->sum('total');
+            }
+
+        ])->get();
+        return response()->json([
+            'success' => true,
+            'view' => view('transaksi.partials.usage')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
+        ]);
+    }
+
+    /**
+     * kode instalasi register instalasi.
+     */
     public function kode_instalasi()
     {
         $kd_desa = request()->get('kode');
@@ -136,6 +178,9 @@ class InstallationsController extends Controller
         ], Response::HTTP_ACCEPTED);
     }
 
+    /**
+     * jenis paket register instalasi.
+     */
     public function jenis_paket($id)
     {
         $business_id = Session::get('business_id');
@@ -151,7 +196,7 @@ class InstallationsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * register instalasi.
      */
 
     public function create()
@@ -170,6 +215,9 @@ class InstallationsController extends Controller
         return view('perguliran.create')->with(compact('settings', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
     }
 
+    /**
+     * register notifikasi jika belum lunas / blokir.
+     */
     public function reg_notifikasi($customer_id)
     {
         $paket = Package::all();
@@ -209,6 +257,9 @@ class InstallationsController extends Controller
         return response()->json($view->render());
     }
 
+    /**
+     * proses simpan register instalasi.
+     */
     public function store(Request $request)
     {
         $data = $request->only([
@@ -257,7 +308,7 @@ class InstallationsController extends Controller
             $status = 'R';
         }
 
-        // INSTALLATION
+        // INSTALLATION = simpan database 
         $install = Installations::create([
             'business_id' => Session::get('business_id'),
             'kode_instalasi' => $request->kode_instalasi,
@@ -272,7 +323,7 @@ class InstallationsController extends Controller
             'status' => $status,
         ]);
 
-        // TRANSACTION TIDAK BOLEH NYICIL
+        // TRANSACTION = simpan database
         $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $abodemen;
         $persen = 100 - ($jumlah / $abodemen * 100);
         if ($jumlah_instal > 0) {
@@ -473,9 +524,9 @@ class InstallationsController extends Controller
      */
     public function update(Request $request, Installations $installation)
     {
-        //progres simpan detail
-        $func = 'update' . $request->status;
-        return $this->$func($request, $installation);
+        //progres simpan detail| $request->status = 0
+        $func = 'update' . $request->status; // update0
+        return $this->$func($request, $installation); // $this->update0()
         //end progres simpan detail
     }
 
@@ -669,7 +720,7 @@ class InstallationsController extends Controller
         ]);
     }
     /**
-     * Remove the specified resource from storage.
+     * menghapus data instalasi status R.
      */
     public function destroy(Installations $installation)
     {

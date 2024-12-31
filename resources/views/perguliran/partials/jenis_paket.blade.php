@@ -35,14 +35,14 @@
     <label for="abodemen">Abodemen</label>
     <div class="input-group mb-3">
         <input type="text" class="form-control abodemen" name="abodemen" id="abodemen"
-            aria-describedby="basic-addon2" value="{{ number_format($tampil_settings->abodemen, 2) }}">
+            aria-describedby="basic-addon2" value="{{ number_format($package->abodemen, 2) }}">
     </div>
 </div>
 <div class="col-md-6">
     <label for="denda">Denda</label>
     <div class="input-group mb-3">
         <input type="text" class="form-control"aria-describedby="basic-addon2" readonly
-            value="{{ number_format($tampil_settings->denda, 2) }}">
+            value="{{ number_format($package->denda, 2) }}">
     </div>
 </div>
 <script>

@@ -351,7 +351,7 @@
         })
 
         //cari customors
-        $('#CariCustommers').typeahead({
+        $('#PelunasanInstalasi').typeahead({
             hint: true,
             highlight: true,
             minLength: 1
@@ -361,7 +361,7 @@
                 if (query.length < 2) return;
 
                 $.ajax({
-                    url: '/installations/cari_Custommers',
+                    url: '/installations/CariPelunasan_Instalasi',
                     method: 'GET',
                     data: {
                         query: query
@@ -377,7 +377,7 @@
                                         installation: instal,
                                         name: item.nama +
                                             ' - ' + instal.village.nama +
-                                            ' - ' + instal.id +
+                                            ' - ' + instal.kode_instalasi +
                                             ' [' + item.nik + ']',
                                         value: instal.id
                                     })
@@ -440,7 +440,7 @@
                 if (query.length < 2) return;
 
                 $.ajax({
-                    url: '/installations/Tagihan_bulanan',
+                    url: '/installations/CariTagihan_bulanan',
                     method: 'GET',
                     data: {
                         query: query
@@ -456,7 +456,7 @@
                                         installation: instal,
                                         name: item.nama +
                                             ' - ' + instal.village.nama +
-                                            ' - ' + instal.id +
+                                            ' - ' + instal.kode_instalasi +
                                             ' [' + item.nik + ']',
                                         value: instal.id
                                     })
@@ -486,26 +486,23 @@
             trx.map(function(item) {
                 sum_total += item.total;
             })
-            // console.log(numFormat.format(installation.abodemen))
-            // $("#customername").val(installation.customers.nama);
 
-            var tagihan = sum_total - installation.abodemen;
-            if (!trx || tagihan > 0) {
-                window.location.href = '/transactions/pelunasan_instalasi'
-                return 0;
-            }
+            // if (!trx || tagihan > 0) {
+            //     window.location.href = '/transactions/pelunasan_instalasi'
+            //     return 0;
+            // }
 
-            $("#id_transaction").val(installation.id);
-            $("#aktif").val(installation.aktif);
-            $("#kode_instalasi").val(installation.kode_instalasi);
-            $("#desa").val(installation.village.nama);
-            $("#package").val(installation.package.kelas);
-            $("#abodemen").val(numFormat.format(installation.abodemen));
-            $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
-            $("#tagihan").val(numFormat.format(tagihan));
-            $("#_total").val(numFormat.format(installation.abodemen - sum_total));
+            $.get('/installations/usage/' + installation.kode_instalasi, (result) => {
+                if (result.success) {
+                    $('#accordion').html(result.view)
+                }
+            })
+
+            $("#id_trx").val(installation.id);
+            $("#tagihan").val(numFormat.format(installation.settings.pasang_baru));
+            $("#_total").val(numFormat.format(installation.settings.pasang_baru));
         });
-        //end cari customors
+        //end cari Tagihan perbulan
     </script>
 
     <script>

@@ -42,10 +42,10 @@
                                 <tbody>
                                     <tr>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                            <span style="float: left;">Loan id</span>
+                                            <span style="float: left;">kode instalasi</span>
                                             <span class="badge badge-success"
                                                 style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                {{ $installation->id }}
+                                                {{ $installation->kode_instalasi }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">

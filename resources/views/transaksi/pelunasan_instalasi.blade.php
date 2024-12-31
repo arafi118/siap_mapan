@@ -1,13 +1,15 @@
 @extends('layouts.base')
 @php
-    $ketik_search = 'CariCustommers';
+    $ketik_search = 'PelunasanInstalasi';
     $label_search = 'Installations (Kode Installasi / Nama Custommers)';
 @endphp
 @section('content')
     <div class="container-fluid" id="container-wrapper">
         <form action="/transactions" method="post" id="FormPembayaran">
             @csrf
-            <input type="text" name="transaction_id" id="transaction_id" hidden>
+            <input type="hidden" name="clay" id="clay" value="pelunasaninstalasi">
+            <input type="hidden" name="transaction_id" id="transaction_id">
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card mb-4">
@@ -196,7 +198,6 @@
                 return parseFloat(cleanNumber); // Convert back to number
             }
 
-
             var jumlah = cleanNumber($(this).val());
             var jumlah_bayar = cleanNumber($("#biaya_sudah_dibayar").val());
             var abodemen = cleanNumber($("#abodemen").val());
@@ -205,8 +206,16 @@
             $("#_total").val(numFormat.format(total));
         });
 
+        var installation_id = "{{ Request::get('pinkel') ?: 0 }}"
 
+        if (installation_id > 0) {
 
+            $.get('/transaksi/form_angsuran_individu/' + installation_id, function(result) {
+                installtaion(false, result)
+
+                $('#loan-id').html(installation_id)
+            })
+        }
 
         //simpan
         $(document).on('click', '#simpanpembayaran', function(e) {
@@ -233,7 +242,7 @@
                             if (res.isConfirmed) {
                                 window.location.reload()
                             } else {
-                                window.location.href = '/installations?status=P';
+                                window.location.href = '/installations?status=R';
                             }
                         });
                     }
