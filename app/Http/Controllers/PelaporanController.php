@@ -6,10 +6,12 @@ use App\Models\Account;
 use App\Models\Business;
 use App\Models\Calk;
 use App\Models\JenisLaporan;
+use App\Models\JenisLaporanPinjaman;
 use App\Models\User;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PelaporanController extends Controller
 {
@@ -24,82 +26,192 @@ class PelaporanController extends Controller
     }
     public function subLaporan($file)
     {
-        if ($file == 3) {
-            $accounts = Account::orderBy('kode_akun', 'ASC')->get();
-            return view('pelaporan.partials.sub_laporan')->with(compact('file', 'accounts'));
-        }
+        $sub_laporan = [
+            0 => [
+                'value' => '',
+                'title' => 'Pilih Sub Laporan'
+            ]
+        ];
 
-        if ($file == 'calk') {
-            $tahun = request()->get('tahun');
-            $bulan = request()->get('bulan');
-
-            $calk = Calk::where([
-                ['business_id',Session::get('business_id')],
-                ['tanggal', 'LIKE', $tahun . '-' . $bulan . '%']
-            ])->first();
-
-            $keterangan = '';
-            if ($calk) {
-                $keterangan = $calk->catatan;
+        if ($file == 'buku_besar') {
+            $accounts = Account::all();
+            foreach ($accounts as $acc) {
+                $sub_laporan[] = [
+                    'value' => $acc->kode_akun,
+                    'title' => $acc->kode_akun .'. ' . $acc->nama_akun
+                ];
             }
-
-            return view('pelaporan.partials.sub_laporan')->with(compact('file', 'keterangan'));
         }
 
-        if ($file == 14) {
-            $data = [
+        if ($file == 'e_budgeting') {
+            $sub_laporan = [
                 0 => [
+                    'title' => 'Pilih Sub Laporan',
+                    'value' => ''
+                ],
+                1 => [
                     'title' => '01. Januari - Maret',
-                    'id' => '1,2,3'
+                    'value' => '1,2,3'
                 ],
-                1 => [
+                2 => [
                     'title' => '02. April - Juni',
-                    'id' => '4,5,6'
+                    'value' => '4,5,6'
                 ],
-                2 => [
+                3 => [
                     'title' => '03. Juli - September',
-                    'id' => '7,8,9'
-                ],
-                3 => [
-                    'title' => '04. Oktober - Desember',
-                    'id' => '10,11,12'
-                ]
-            ];
-
-            return view('pelaporan.partials.sub_laporan')->with(compact('file', 'data'));
-        }
-
-        if ($file == 'tutup_buku') {
-            $data = [
-                0 => [
-                    'title' => 'Pengalokasian Laba',
-                    'file' => 'alokasi_laba'
-                ],
-                1 => [
-                    'title' => 'Jurnal Tutup Buku',
-                    'file' => 'jurnal_tutup_buku'
-                ],
-                2 => [
-                    'title' => 'Neraca',
-                    'file' => 'neraca_tutup_buku'
-                ],
-                3 => [
-                    'title' => 'Laba Rugi',
-                    'file' => 'laba_rugi_tutup_buku'
+                    'value' => '7,8,9'
                 ],
                 4 => [
-                    'title' => 'CALK',
-                    'file' => 'CALK_tutup_buku'
+                    'title' => '04. Oktober - Desember',
+                    'value' => '10,11,12'
                 ]
             ];
-
-            return view('pelaporan.partials.sub_laporan')->with(compact('file', 'data'));
+        }
+        if ($file == 'piutang_pelanggan') {
+            $laporan_pinj = JenisLaporanPinjaman::all();
+            foreach ($laporan_pinj as $lp) {
+                $sub_laporan[] = [
+                    'value' => $lp->file,
+                    'title' => $lp->nama_laporan
+                ];
+            }
         }
 
-        return view('pelaporan.partials.sub_laporan')->with(compact('file'));
-    }
+        return view('pelaporan.partials.sub_laporan')->with(compact('sub_laporan'));
+}
+
     public function preview(Request $request, $business_id = null)
     {
-        // 
+        $data = $request->only([
+            'tahun',
+            'bulan',
+            'hari',
+            'laporan',
+            'sub_laporan',
+            'type'
+        ]);
+
+        $laporan = $request->laporan;
+        return $this->$laporan($data);
     }
+    
+    private function cover(array $data)
+    {
+        $data['title'] = 'Cover';
+        $view = view('pelaporan.partials.views.cover', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function surat_pengantar(array $data)
+    {
+        $data['title'] = 'Surat Pengantar';
+        $view = view('pelaporan.partials.views.surat_pengantar', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+
+    }
+    private function jurnal_transaksi(array $data)
+    {
+        $data['title'] = 'Jurnal Transaksi';
+        $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function buku_besar(array $data)
+    {
+        $data['title'] = 'Buku Besar';
+        $data['kode_akun'] = $data['sub_laporan'];
+        $view = view('pelaporan.partials.views.buku_besar', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+ 
+    }
+
+
+    private function neraca_saldo(array $data)
+    {
+       $data['title'] = 'Neraca Saldo';
+       $view = view('pelaporan.partials.views.neraca_saldo', $data)->render();
+       $pdf = PDF::loadHTML($view);
+       return $pdf->stream();
+    }
+    private function neraca(array $data)
+    {
+        $data['title'] = 'Neraca';
+        $view = view('pelaporan.partials.views.neraca', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function laba_rugi(array $data)
+    {
+        $data['title'] = 'Laba Rugi';
+        $view = view('pelaporan.partials.views.laba_rugi', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function arus_kas(array $data)
+    {
+        $data['title'] = 'Laporan Arus Kas';
+        $view = view('pelaporan.partials.views.arus_kas', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function LPM(array $data)
+    {
+        $data['title'] = 'Laporan Perubahan Modal';
+        $view = view('pelaporan.partials.views.laporan_perubahan_modal', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+
+    }
+    private function calk(array $data)
+    {
+        $data['title'] = 'Laba Rugi';
+        $view = view('pelaporan.partials.views.calk', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function piutang_pelanggan(array $data)
+    {
+        $data['title'] = 'Daftar Piutang Pelanggan';
+        $view = view('pelaporan.partials.views.piutang_pelanggan', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    
+    }
+    private function daftar_tagihan_pelanggan(array $data)
+    {
+
+    }
+    private function daftar_piutang_pelanggan(array $data)
+    {
+
+    }
+    private function ati(array $data)
+    {
+        $data['title'] = 'Daftar Aset Tetap';
+        $view = view('pelaporan.partials.views.aset_tetap', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+
+    }
+    private function aset_tak_berwujud(array $data)
+    {
+        $data['title'] = 'Daftar Aset Tak Berwujud';
+        $view = view('pelaporan.partials.views.aset_tak_berwujud', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function e_budgeting(array $data)
+    {
+        $data['nama_akun'] = $data['sub_laporan'];
+        $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function awal_tahun(array $data)
+    {
+
+    }
+
 }

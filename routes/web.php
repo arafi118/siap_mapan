@@ -102,4 +102,5 @@ Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket'])
 Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);
 
 Route::get('/pelaporan', [PelaporanController::class, 'index']);
+Route::post('/pelaporan/preview', [PelaporanController::class, 'preview']);
 Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan']);

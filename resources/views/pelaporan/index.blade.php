@@ -11,7 +11,7 @@ $thn_awal = explode('-', $busines->created_at)[0];
 
     <div class="main-card mb-3 card">
         <div class="card-body">
-            <form action="" class="needs-validation" novalidate method="post" id="FormPelaporan" target="_blank">
+            <form action="/pelaporan/preview" class="needs-validation" novalidate method="post" id="FormPelaporan" target="_blank">
                 @csrf
                 <div class="row mb-3">
                     <div class="col-md-4">
