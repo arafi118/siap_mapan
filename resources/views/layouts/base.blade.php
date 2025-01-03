@@ -24,8 +24,8 @@
 </head>
 <style>
     /* laporan */
-        .form-group {
-    margin-bottom: 1rem;
+    .form-group {
+        margin-bottom: 1rem;
     }
 
     .mb-3 {
@@ -466,19 +466,14 @@
                     success: function(result) {
                         var states = [];
                         result.map(function(item) {
-                            if (item.installation.length > 0) {
-                                item.installation.map(function(instal) {
-                                    states.push({
-                                        id: instal.id,
-                                        installation: instal,
-                                        name: item.nama +
-                                            ' - ' + instal.village.nama +
-                                            ' - ' + instal.kode_instalasi +
-                                            ' [' + item.nik + ']',
-                                        value: instal.id
-                                    })
-                                })
-                            }
+                            states.push({
+                                kode_instalasi: item.kode_instalasi,
+                                name: item.nama +
+                                    ' - ' + item.kode_instalasi +
+                                    ' [' + item.nik + ']',
+                                value: item.kode_instalasi,
+                                item: item,
+                            })
                         });
 
                         process(states);
@@ -496,28 +491,13 @@
             items: 10
 
         }).bind('typeahead:selected', function(event, item) {
-            var installation = item.installation
-            var trx = installation.transaction
-
-            var sum_total = 0;
-            trx.map(function(item) {
-                sum_total += item.total;
-            })
-
-            // if (!trx || tagihan > 0) {
-            //     window.location.href = '/transactions/pelunasan_instalasi'
-            //     return 0;
-            // }
-
-            $.get('/installations/usage/' + installation.kode_instalasi, (result) => {
+            $.get('/installations/usage/' + item.kode_instalasi, (result) => {
                 if (result.success) {
+                    $('#accordion').html(result.view)
+                } else {
                     $('#accordion').html(result.view)
                 }
             })
-
-            $("#id_trx").val(installation.id);
-            $("#tagihan").val(numFormat.format(installation.settings.pasang_baru));
-            $("#_total").val(numFormat.format(installation.settings.pasang_baru));
         });
         //end cari Tagihan perbulan
     </script>

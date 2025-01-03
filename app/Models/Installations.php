@@ -33,7 +33,7 @@ class Installations extends Model
     }
     public function package()
     {
-        return $this->belongsTo(Package::class, 'package_id');
+        return $this->belongsTo(Package::class, 'package_id', 'id');
     }
     public function village()
     {
@@ -45,9 +45,8 @@ class Installations extends Model
     }
     public function transaction()
     {
-        return $this->hasMany(Transaction::class, 'installation_id');
+        return $this->hasMany(Transaction::class, 'installation_id', 'id');
     }
-
     public function settings()
     {
         return $this->hasOne(Settings::class, 'business_id', 'business_id');

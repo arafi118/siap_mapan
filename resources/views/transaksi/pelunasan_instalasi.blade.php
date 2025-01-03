@@ -203,17 +203,18 @@
             var abodemen = cleanNumber($("#abodemen").val());
             var total = abodemen - (jumlah + jumlah_bayar);
 
-            $("#_total").val(numFormat.format(total));
+            $("#_total").val(numFormat.format(Math.abs(total)));
         });
 
-        var installation_id = "{{ Request::get('pinkel') ?: 0 }}"
+        //isi search tagihan to pelunasan
+        var installation_id = "";
 
         if (installation_id > 0) {
 
-            $.get('/transaksi/form_angsuran_individu/' + installation_id, function(result) {
+            $.get('/transaksi/pelunasan_instalasi/' + installation_id, function(result) {
                 installtaion(false, result)
 
-                $('#loan-id').html(installation_id)
+                $('#id_instal').html(installation_id)
             })
         }
 
@@ -242,7 +243,7 @@
                             if (res.isConfirmed) {
                                 window.location.reload()
                             } else {
-                                window.location.href = '/installations?status=R';
+                                window.location.href = '#';
                             }
                         });
                     }

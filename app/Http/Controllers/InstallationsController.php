@@ -84,26 +84,33 @@ class InstallationsController extends Controller
      */
     public function CariTagihanbulanan(Request $request)
     {
-        $query = $request->input('query');
+        $params = $request->input('query');
 
-        $customers = Customer::where(function ($q) use ($query) {
-            $q->where('nama', 'LIKE', "%{$query}%")
-                ->orWhere('nik', 'LIKE', "%{$query}%");
-        })->with([
-            'installation',
-            'installation.transaction' => function ($query) {
-                $query->where([
-                    ['rekening_debit', '1'],
-                    ['rekening_kredit', '67']
-                ]);
-            },
-            'installation.village',
-            'installation.customer',
-            'installation.settings',
-            'installation.package',
-        ])->get();
+        // $customers = Customer::where(function ($q) use ($query) {
+        //     $q->where('nama', 'LIKE', "%{$query}%")
+        //         ->orWhere('nik', 'LIKE', "%{$query}%");
+        // })->with([
+        //     'installation',
+        //     'installation.transaction' => function ($query) {
+        //         $query->where([
+        //             ['rekening_debit', '1'],
+        //             ['rekening_kredit', '67']
+        //         ]);
+        //     },
+        //     'installation.village',
+        //     'installation.customer',
+        //     'installation.settings',
+        //     'installation.package',
+        // ])->get();
 
-        return response()->json($customers);
+        // SELECT * FROM installations JOIN customers ON customers.id=installations.customer_id
+        $installations = Installations::join('customers', 'customers.id', 'installations.customer_id')->where(function ($query) use ($params) {
+            $query->where('customers.nama', 'LIKE', "%{$params}%")
+                ->orWhere('customers.nik', 'LIKE', "%{$params}%")
+                ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
+        })->whereNotIn('installations.status', ['B', 'C'])->get();
+
+        return response()->json($installations);
     }
 
     /**
@@ -112,30 +119,52 @@ class InstallationsController extends Controller
     public function usage($kode_instalasi)
     {
         $business_id = Session::get('business_id');
-        $installations = Installations::where('kode_instalasi', $kode_instalasi)->with(
-            'package'
-        )->first();
+        $installations = Installations::where('kode_instalasi', $kode_instalasi)
+            ->with([
+                'package',
+                'customer',
+                'village',
+                'settings'
+            ])
+            ->withSum([
+                'transaction' => function ($query) {
+                    $query->where([
+                        ['rekening_debit', '1'],
+                        ['rekening_kredit', '67']
+                    ]);
+                },
+            ], 'total')->first();
 
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
         $package = Package::all();
+        $usages = Usage::all();
 
         $usages = Usage::where([
             ['kode_instalasi', $kode_instalasi],
             ['status', 'NOT LIKE', 'PAID']
-        ])->with([
-            'transaction' => function ($query) {
-                $query->where([
-                    ['rekening_debit', '1'],
-                    ['rekening_kredit', '59']
-                ])->sum('total');
-            }
-
         ])->get();
-        return response()->json([
-            'success' => true,
-            'view' => view('transaksi.partials.usage')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
-        ]);
+
+        $jumlah_trx = $installations->transaction_sum_total;
+        $abodemen = $installations->abodemen;
+
+        if ($jumlah_trx == $abodemen) {
+            return response()->json([
+                'success' => true,
+                'view' => view('transaksi.partials.usage')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'view' => view('transaksi.partials.installations')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
+            ]);
+        }
+
+
+        // return response()->json([
+        //     'success' => true,
+        //     'view' => view('transaksi.partials.usage')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
+        // ]);
     }
 
     /**

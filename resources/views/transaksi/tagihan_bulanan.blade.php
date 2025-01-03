@@ -25,24 +25,23 @@
         </div>
     </div>
 @endsection
-@section('modal')
-@endsection
 @section('script')
     <script>
-        //hitung _total
+        //hitung total (tagihan bulanan)
         $(document).on('change', '#pembayaran', function() {
             function cleanNumber(value) {
-                let cleanNumber = value.toString().replace(/,/g, ''); // Remove commas
-                return parseFloat(cleanNumber); // Convert back to number
+                let cleanNumber = value.toString().replace(/,/g, '');
+                return parseFloat(cleanNumber);
             }
             var jumlah = cleanNumber($(this).val());
             var jumlah_bayar = cleanNumber($("#tagihan").val());
             var total = (jumlah - jumlah_bayar);
 
-            $("#total").val(numFormat.format(total));
+            $("#total").val(numFormat.format(Math.abs(total)));
+
         });
 
-        //simpan data
+        //simpan data pembayaran tagihan bulanan
         $(document).on('click', '.SimpanTagihan', function(e) {
             e.preventDefault();
             $('small').html('');
@@ -65,6 +64,54 @@
                     }
                 },
 
+                error: function(result) {
+                    const response = result.responseJSON;
+
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
+
+                    if (response && typeof response === 'object') {
+                        $.each(response, function(key, message) {
+                            $('#' + key)
+                                .closest('.input-group.input-group-static')
+                                .addClass('is-invalid');
+
+                            $('#msg_' + key).html(message);
+                        });
+                    }
+                }
+            });
+        });
+
+        //simpan pembayaran installations
+        $(document).on('click', '#simpanpembayaran', function(e) {
+            e.preventDefault();
+            $('small').html('');
+
+            var form = $('#FormPembayaran');
+            var actionUrl = form.attr('action');
+
+            $.ajax({
+                type: 'POST',
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        Swal.fire({
+                            title: result.msg,
+                            text: "Lanjut Pembayaran Tagihan?",
+                            icon: "success",
+                            showDenyButton: true,
+                            confirmButtonText: "Lanjutkan",
+                            denyButtonText: `Tidak`
+                        }).then((res) => {
+                            if (res.isConfirmed) {
+                                window.location.reload()
+                            } else {
+                                window.location.href = '#';
+                            }
+                        });
+                    }
+                },
                 error: function(result) {
                     const response = result.responseJSON;
 
