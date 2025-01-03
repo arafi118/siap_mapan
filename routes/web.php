@@ -5,19 +5,17 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CaterController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HamletController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
-use App\Http\Controllers\Pelaporan;
 use App\Http\Controllers\PelaporanController;
 use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VillageController;
-use App\Models\Installations;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,10 +28,7 @@ use Illuminate\Support\Facades\Session;
 |
 */
 
-Route::get('/', function () {
-    Session::put('business_id', '1');
-    return view('welcome')->with('title', 'Dashboard');
-});
+Route::get('/', [DashboardController::class, 'index']);
 
 // Auth
 Route::post('/auth', [AuthController::class, 'login']);
@@ -108,4 +103,3 @@ Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat
 
 Route::get('/pelaporan', [PelaporanController::class, 'index']);
 Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan']);
-
