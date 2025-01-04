@@ -13,7 +13,7 @@ class Usage extends Model
 
     public function installation()
     {
-        return $this->belongsTo(Installations::class, 'kode_instalasi', 'kode_instalasi');
+        return $this->belongsTo(Installations::class, 'id_instalasi', 'id');
     }
 
     public function package()
@@ -33,6 +33,6 @@ class Usage extends Model
 
     public function usage()
     {
-        return $this->hasMany(Usage::class, 'kode_instalasi', 'kode_instalasi');
+        return $this->hasMany(Usage::class, 'id_instalasi', 'id');
     }
 }

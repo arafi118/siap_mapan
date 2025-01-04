@@ -41,7 +41,7 @@ class Installations extends Model
     }
     public function usage()
     {
-        return $this->hasMany(Usage::class, 'kode_instalasi', 'kode_instalasi');
+        return $this->hasMany(Usage::class, 'id_instalasi', 'id');
     }
     public function transaction()
     {

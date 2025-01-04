@@ -86,24 +86,6 @@ class InstallationsController extends Controller
     {
         $params = $request->input('query');
 
-        // $customers = Customer::where(function ($q) use ($query) {
-        //     $q->where('nama', 'LIKE', "%{$query}%")
-        //         ->orWhere('nik', 'LIKE', "%{$query}%");
-        // })->with([
-        //     'installation',
-        //     'installation.transaction' => function ($query) {
-        //         $query->where([
-        //             ['rekening_debit', '1'],
-        //             ['rekening_kredit', '67']
-        //         ]);
-        //     },
-        //     'installation.village',
-        //     'installation.customer',
-        //     'installation.settings',
-        //     'installation.package',
-        // ])->get();
-
-        // SELECT * FROM installations JOIN customers ON customers.id=installations.customer_id
         $installations = Installations::join('customers', 'customers.id', 'installations.customer_id')->where(function ($query) use ($params) {
             $query->where('customers.nama', 'LIKE', "%{$params}%")
                 ->orWhere('customers.nik', 'LIKE', "%{$params}%")
@@ -141,7 +123,7 @@ class InstallationsController extends Controller
         $usages = Usage::all();
 
         $usages = Usage::where([
-            ['kode_instalasi', $kode_instalasi],
+            ['id_instalasi', $installations->id],
             ['status', 'NOT LIKE', 'PAID']
         ])->get();
 

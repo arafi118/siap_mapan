@@ -1,10 +1,10 @@
 @php
     use App\Utils\Tanggal;
-@endphp
-@php
+
     $biaya_sudah_dibayar = $installations->transaction_sum_total;
     $abodemen = $installations->abodemen;
     $tagihan = $biaya_sudah_dibayar - $abodemen;
+
 @endphp
 
 <div class="container-fluid" id="container-wrapper">

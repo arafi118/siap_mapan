@@ -91,7 +91,7 @@
                                             <div class="position-relative mb-3">
                                                 <label for="kode_instalasi">Kode Instalasi</label>
                                                 <input type="text" class="form-control" id="kode_instalasi"
-                                                    value="{{ $usage->kode_instalasi }}" name="kode_instalasi"
+                                                    value="{{ $installations->kode_instalasi }}" name="kode_instalasi"
                                                     readonly>
                                                 <small class="text-danger" id="msg_kode_instalasi"></small>
                                             </div>

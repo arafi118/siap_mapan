@@ -21,9 +21,8 @@
                                     <b>Data Pemakaian</b>
                                 </div>
                                 <div style="display: flex; justify-content: flex-end;">
-                                    <a href="/usages/create" class="btn btn-primary" id="RegisterDusun"
-                                        style="display: inline-block; width: 240px; height: 30px; text-align: center; line-height: 18px; font-size: 12px;">
-                                        <i class="fas fa-plus"></i> Input Data Pemakaian
+                                    <a href="/usages/create" class="btn btn-primary" id="RegisterDusun">
+                                        <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
                                     </a>
                                 </div>
                             </div>
@@ -40,23 +39,22 @@
                         </thead>
                         <tbody>
                             @foreach ($usages as $usage)
-                            <tr>
-                                <td>{{ ($usage->customers) ? $usage->customers->nama:'' }}</td>
-                                {{-- <td>{{ ($usage->kode_instalasi) ?$usage->installations->kode_instalasi:'' }}</td> --}}
-                                <td>{{ $usage->kode_instalasi }}</td> 
-                                <td>{{ $usage->awal }}</td>
-                                <td>{{ $usage->akhir }}</td>
-                                <td>{{ $usage->jumlah }}</td>
-                                <td>{{ $usage->tgl_akhir }}</td>
-                                {{-- <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                    <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    <a href="#" data-id="{{ $usage->id }}"
-                                        class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </td> --}}
-                            </tr>
+                                <tr>
+                                    <td>{{ $usage->customers ? $usage->customers->nama : '' }}</td>
+                                    <td>{{ $usage->installation ? $usage->installation->kode_instalasi : '' }}</td>
+                                    <td>{{ $usage->awal }}</td>
+                                    <td>{{ $usage->akhir }}</td>
+                                    <td>{{ $usage->jumlah }}</td>
+                                    <td>{{ $usage->tgl_akhir }}</td>
+                                    {{-- <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                        <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a href="#" data-id="{{ $usage->id }}"
+                                            class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td> --}}
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -65,7 +63,7 @@
             </div>
         </div>
     </div>
- 
+
     <form action="" method="post" id="FormHapusPemakaian">
         @method('DELETE')
         @csrf
