@@ -49,38 +49,38 @@ class UsageController extends Controller
             'customer' => 'required',
             'awal' => 'numeric',
             'akhir' => 'numeric',
-            'kode_instalasi' => 'required',
+            'id_instalasi' => 'required',
             'jumlah' => 'numeric',
             'tgl_akhir' => 'required|date_format:d/m/Y'
         ]);
-    
+
         // Konversi format tanggal
         $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
-    
+
         // Cek duplikasi data
         $existingUsage = Usage::where('tgl_akhir', $tgl_akhir)
             ->where('customer', $request->customer_id)
             ->first();
-    
+
         if ($existingUsage) {
             return redirect()->back()->withErrors([
                 'tgl_akhir' => 'Tanggal akhir sudah ada untuk pelanggan ini.'
             ])->withInput();
         }
-    
+
         // Simpan data
         Usage::create([
             'customer' => $request->customer_id,
             'awal' => $request->awal,
             'akhir' => $request->akhir,
             'jumlah' => $request->jumlah,
-            'kode_instalasi' => $request->kode_instalasi,
+            'id_instalasi' => $request->id_instalasi,
             'tgl_akhir' => $tgl_akhir,
         ]);
-    
+
         return redirect('/usages')->with('berhasil', 'Pemakaian berhasil ditambahkan!');
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -89,16 +89,13 @@ class UsageController extends Controller
     {
         $query = $request->input('query');
 
-        // SELECT * FROM customers JOIN installations ON customers.id = installations.customer_id
         $customer = Customer::join('installations', 'customers.id', 'installations.customer_id')
-            // WHERE customers.nama LIKE '%$query%'
             ->where('customers.nama', 'LIKE', '%' . $query . '%')
-            // OR installations.kode_instalasi LIKE '%$query%';
             ->orwhere('installations.kode_instalasi', 'LIKE', '%' . $query . '%')->get();
 
         $data_customer = [];
         foreach ($customer as $cus) {
-            $usage = Usage::where('kode_instalasi', $cus->kode_instalasi)->orderBy('created_at', 'DESC')->first();
+            $usage = Usage::where('id_instalasi', $cus->id)->orderBy('created_at', 'DESC')->first();
 
             $data_customer[] = [
                 'customer' => $cus,
@@ -124,7 +121,7 @@ class UsageController extends Controller
             'installation'
         ])->get();
         $title = 'Data Pemakaian';
-        return view('penggunaan.edit')->with(compact('title','usage','usages'));
+        return view('penggunaan.edit')->with(compact('title', 'usage', 'usages'));
     }
 
     /**
@@ -133,21 +130,21 @@ class UsageController extends Controller
     public function update(Request $request, Usage $usage)
     {
         $this->validate($request, [
-             
+
             'tgl_akhir' => 'required|date'
         ]);
-    
+
         // Mengubah format tanggal dari d/m/Y ke Y-m-d
         $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
-    
+
         $usage->update([
-             
+
             'tgl_akhir' => $tgl_akhir
         ]);
-    
+
         return redirect('/usages')->with('berhasil', 'Usage berhasil diperbarui!');
     }
-    
+
 
     /**
      * Remove the specified resource from storage.

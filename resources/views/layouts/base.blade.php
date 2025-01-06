@@ -267,7 +267,7 @@
             // Set nilai awal dan customer_id di form
             $('#awal').val(nilai_awal);
             $('#customer_id').val(data.customer.customer_id);
-            $('#kode_instalasi').val(data.customer.kode_instalasi);
+            $('#id_instalasi').val(data.customer.id);
         });
 
         $(document).on('change', '.hitungan', function() {
@@ -276,7 +276,13 @@
             var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
 
             if (akhir <= awal || akhir === 0) {
-                alert('Nilai akhir tidak valid. Harus lebih besar dari nilai awal.');
+                // Menggunakan SweetAlert2 untuk menampilkan pesan kesalahan
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Nilai akhir tidak valid',
+                    text: 'Nilai akhir harus lebih besar dari nilai awal.',
+                    confirmButtonText: 'Coba lagi'
+                });
                 $('#jumlah').val('');
                 return;
             }
