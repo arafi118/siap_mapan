@@ -91,12 +91,41 @@ class PelaporanController extends Controller
             'type'
         ]);
 
+        if ($data['tahun'] == null) {
+            abort(404);
+        }
+
+        $data['bulanan'] = true;
+        if ($data['bulan'] == null) {
+            $data['bulanan'] = false;
+            $data['bulan'] = '12';
+        }
+
+        $data['harian'] = true;
+        if ($data['hari'] == null) {
+            $data['harian'] = false;
+            $data['hari'] = date('t', strtotime($data['tahun'] . '-' . $data['bulan'] . '-01'));
+        }
+
+        $data['tgl_kondisi'] = $data['tahun'] . '-' . $data['bulan'] . '-' . $data['hari'];
         $laporan = $request->laporan;
         return $this->$laporan($data);
     }
     
     private function cover(array $data)
     {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
         $data['title'] = 'Cover';
         $view = view('pelaporan.partials.views.cover', $data)->render();
         $pdf = PDF::loadHTML($view);
@@ -104,6 +133,18 @@ class PelaporanController extends Controller
     }
     private function surat_pengantar(array $data)
     {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
         $data['title'] = 'Surat Pengantar';
         $view = view('pelaporan.partials.views.surat_pengantar', $data)->render();
         $pdf = PDF::loadHTML($view);
@@ -112,6 +153,19 @@ class PelaporanController extends Controller
     }
     private function jurnal_transaksi(array $data)
     {
+       
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        } 
         $data['title'] = 'Jurnal Transaksi';
         $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
         $pdf = PDF::loadHTML($view);
@@ -130,9 +184,20 @@ class PelaporanController extends Controller
 
     private function neraca_saldo(array $data)
     {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
        $data['title'] = 'Neraca Saldo';
        $view = view('pelaporan.partials.views.neraca_saldo', $data)->render();
-       $pdf = PDF::loadHTML($view);
+       $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
        return $pdf->stream();
     }
     private function neraca(array $data)
@@ -158,6 +223,19 @@ class PelaporanController extends Controller
     }
     private function LPM(array $data)
     {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['accounts'] = Account::where('lev1', '3')->get();
         $data['title'] = 'Laporan Perubahan Modal';
         $view = view('pelaporan.partials.views.laporan_perubahan_modal', $data)->render();
         $pdf = PDF::loadHTML($view);
@@ -191,15 +269,27 @@ class PelaporanController extends Controller
     {
         $data['title'] = 'Daftar Aset Tetap';
         $view = view('pelaporan.partials.views.aset_tetap', $data)->render();
-        $pdf = PDF::loadHTML($view);
+        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
         return $pdf->stream();
 
     }
-    private function aset_tak_berwujud(array $data)
+    private function atb(array $data)
     {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
         $data['title'] = 'Daftar Aset Tak Berwujud';
         $view = view('pelaporan.partials.views.aset_tak_berwujud', $data)->render();
-        $pdf = PDF::loadHTML($view);
+        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
         return $pdf->stream();
     }
     private function e_budgeting(array $data)

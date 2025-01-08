@@ -3,11 +3,36 @@
     use App\Utils\Inventaris;
 @endphp
 <title>{{ $title }}</title>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 11px;
+        table-layout: fixed;
+    }
+    th, td {
+        border: 1px solid black; /* Garis untuk tabel utama */
+        padding: 5px;
+        text-align: center;
+    }
+    th {
+        background-color: rgb(232, 232, 232);
+        font-weight: bold;
+    }
+    .header-table td {
+        border: none; /* Tidak ada garis untuk tabel header */
+    }
+    .p th, .p td {
+        border: 0.1px solid rgb(0, 0, 0); /* Garis tipis untuk tabel jumlah */
+    }
+</style>
+
+<!-- Header Judul -->
+<table class="header-table" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px;">
-                <b>Daftar </b>
+                <b>Daftar</b>
             </div>
             <div style="font-size: 16px;">
                 <b></b>
@@ -15,61 +40,83 @@
         </td>
     </tr>
     <tr>
-        <td colspan="3" height="5"></td>
+        <td colspan="3" height="10"></td>
+    </tr>
+</table>
+<!-- Tabel Utama -->
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px; table-layout: fixed;">
+    <!-- Header -->
+    <tr style="background: rgb(232, 232, 232);">
+        <th rowspan="2" width="3%">No</th>
+        <th rowspan="2" width="6%">Tgl Beli</th>
+        <th rowspan="2" width="20%">Nama Barang</th>
+        <th rowspan="2" width="3%">Id</th>
+        <th rowspan="2" width="5%">Kondisi</th>
+        <th rowspan="2" width="3%">Unit</th>
+        <th rowspan="2" width="8%">Harga Satuan</th>
+        <th rowspan="2" width="8%">Harga Perolehan</th>
+        <th rowspan="2" width="4%">Umur Eko.</th>
+        <th rowspan="2" width="8%">Amortisasi</th>
+        <th colspan="2" width="12%">Tahun Ini</th>
+        <th colspan="2" width="12%">s.d. Tahun Ini</th>
+        <th rowspan="2" width="8%">Nilai Buku</th>
+    </tr>
+    <tr style="background: rgb(232, 232, 232);">
+        <th width="4%">Umur</th>
+        <th width="8%">Biaya</th>
+        <th width="4%">Umur</th>
+        <th style="border: 1px solid black;" width="8%">Biaya</th>
     </tr>
 
-</table>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px; table-layout: fixed;">
-    <tr style="background: rgb(232, 232, 232)">
-        <th class="t l b" rowspan="2" width="3%">No</th>
-        <th class="t l b" rowspan="2" width="6%">Tgl Beli</th>
-        <th class="t l b" rowspan="2" width="20%">Nama Barang</th>
-        <th class="t l b" rowspan="2" width="3%">Id</th>
-        <th class="t l b" rowspan="2" width="5%">Kondisi</th>
-        <th class="t l b" rowspan="2" width="3%">Unit</th>
-        <th class="t l b" rowspan="2" width="8%">Harga Satuan</th>
-        <th class="t l b" rowspan="2" width="8%">Harga Perolehan</th>
-        <th class="t l b" rowspan="2" width="4%">Umur Eko.</th>
-        <th class="t l b" rowspan="2" width="8%">Amortisasi</th>
-        <th class="t l b" colspan="2" width="12%">Tahun Ini</th>
-        <th class="t l b" colspan="2" width="12%">s.d. Tahun Ini</th>
-        <th class="t l b r" rowspan="2" width="8%">Nilai Buku</th>
-    </tr>
-    <tr style="background: rgb(232, 232, 232)">
-        <th class="t l b" width="4%">Umur</th>
-        <th class="t l b" width="8%">Biaya</th>
-        <th class="t l b" width="4%">Umur</th>
-        <th class="t l b r" width="8%">Biaya</th>
-    </tr>
+    <!-- Baris Data -->
     <tr>
-        <td colspan="15" style="padding: 0px !important">
-            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
-                style="font-size: 10px; table-layout: fixed;">
+        <td>1</td>
+        <td>01-01-2023</td>
+        <td>Nama Barang Contoh</td>
+        <td>123</td>
+        <td>Baik</td>
+        <td>5</td>
+        <td>10,000</td>
+        <td>50,000</td>
+        <td>5</td>
+        <td>2,000</td>
+        <td>1</td>
+        <td>2,000</td>
+        <td>5</td>
+        <td>10,000</td>
+        <td>40,000</td>
+    </tr>
+
+    <!-- Baris Jumlah -->
+    <tr>
+        <td colspan="15" style="padding: 0px !important;">
+            <table class="p" border="1" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px; table-layout: fixed; border-collapse: collapse;">
                 <tr>
-                    <td class="t l b" width="37%" height="15">
-                        Jumlah
-                    </td>
-                    <td class="t l b" width="3%" align="center"> </td>
-                    <td class="t l b" width="8%">&nbsp;</td>
-                    <td class="t l b" width="8%" align="right"> </td>
-                    <td class="t l b" width="4%">&nbsp;</td>
-                    <td class="t l b" width="8%">&nbsp;</td>
-                    <td class="t l b" width="12%" align="right">
-                        
-                    </td>
-                    <td class="t l b" width="12%" align="right">
-                        
-                    </td>
-                    <td class="t l b r" width="8%" align="right">
-                      
-                    </td>
+                    <td colspan="5"width="37%" align="left" height="15">Jumlah Daftar ___(Hapus, Hilang, Jual) s.d. Tahun __</td>
+                    <td width="3%">5</td>
+                    <td width="8%">10,000</td>
+                    <td width="8%" align="right">50,000</td>
+                    <td width="4%">5</td>
+                    <td width="8%">2,000</td>
+                    <td width="12%" align="right">10,000</td>
+                    <td width="12%" align="right">50,000</td>
+                    <td width="8%" align="right">40,000</td>
                 </tr>
                 <tr>
-                    <td colspan="9">
-                        <div style="margin-top: 16px;"></div>
-                    </td>
+                    <td colspan="5" height="15" align="left">Jumlah</td>
+                    <td width="3%">5</td>
+                    <td width="3%">5</td>
+                    <td width="8%">10,000</td>
+                    <td  colspan="4"width="8%" align="right">50,000</td>
+                    <td width="8%" align="right">40,000</td>
                 </tr>
             </table>
         </td>
     </tr>
 </table>
+
+
+
+        
+
+
