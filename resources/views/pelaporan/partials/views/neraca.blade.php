@@ -1,5 +1,5 @@
 <title>{{ $title }}</title>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px;">
@@ -19,7 +19,7 @@
         <td align="right" width="20%">Saldo</td>
     </tr>
     <tr>
-        <td colspan="3" height="1"></td>
+        <td colspan="3" height="3"></td>
     </tr>
         <tr style="background: rgb(74, 74, 74); color: #fff;">
             <td height="20" colspan="3" align="center">

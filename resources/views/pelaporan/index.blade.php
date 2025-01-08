@@ -2,7 +2,6 @@
 $thn_awal = explode('-', $busines->created_at)[0];
 @endphp
 
-
 @extends('layouts.base')
 
 @section('content')

@@ -1,5 +1,5 @@
 <title>{{ $title }}</title>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px;">
@@ -15,7 +15,7 @@
     </tr>
 
 </table>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
     <tr style="background: rgb(200, 200, 200)">
         <th colspan="2">Nama Akun</th>
         <th>Jumlah</th>
@@ -48,7 +48,7 @@
     <tr>
         <td colspan="3" style="padding: 0px !important;">
             <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
-                style="font-size: 11px;">
+                style="font-size: 13px;">
                 <tr style="background: rgb(128, 128, 128)">
                     <td width="5%" align="center">&nbsp;</td>
                     <td width="80%">Kenaikan (Penurunan) Kas</td>

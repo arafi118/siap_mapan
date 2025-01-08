@@ -1,8 +1,11 @@
 @php
 use App\Utils\Tanggal;
 @endphp
+
 <title>{{ $title }}</title>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+
+<!-- Header Judul -->
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
     <tr>
         <td colspan="7" align="center">
             <div style="font-size: 18px;">
@@ -14,11 +17,14 @@ use App\Utils\Tanggal;
         </td>
     </tr>
 </table>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+
+<!-- Tabel Utama -->
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
     <tr>
         <td colspan="7" height="5"></td>
     </tr>
-    <tr style="background: rgb(74, 74, 74); font-weight: bold; color: #fff;">
+    <!-- Header Tabel -->
+    <tr style="background: rgb(90, 90, 90); font-weight: bold; color: #fff;">
         <td height="15" align="center" width="4%">No</td>
         <td align="center" width="10%">Tanggal</td>
         <td align="center" width="8%">Ref ID.</td>
@@ -29,65 +35,61 @@ use App\Utils\Tanggal;
         <td align="center" width="5%">Ins</td>
     </tr>
 
-    <tr style="">
-        <td height="15" align="center">.....</td>
-        <td align="center">....</td>
-        <td align="left">....</td>
-        <td align="center">....</td>
-        <td align="left">....</td>
-        <td align="right">....</td>
-        <td align="right">&nbsp;</td>
-        <td align="center">....</td>
-
-    </tr>
-
-
-    <tr style="">
-        <td height="15" align="center">&nbsp;</td>
+    <!-- Baris Data -->
+    <tr>
+        <td height="15" align="center"></td>
+        <td align="center">AA</td>
+        <td align="center">AA</td>
+        <td align="center">AA</td>
+        <td align="center">AA</td>
+        <td align="center">AA</td>
         <td align="center">&nbsp;</td>
-        <td align="left">....</td>
-        <td align="center">....</td>
-        <td align="left">....</td>
-        <td align="right">&nbsp;</td>
-        <td align="right">....</td>
-        <td align="center">....</td>
-
+        <td align="center">AA</td>
     </tr>
-
-
-    <tr style="">
-        <td height="15" align="center">.....</td>
-        <td align="center">....</td>
-        <td align="left">....</td>
-        <td align="center">....</td>
-        <td align="left">....</td>
-        <td align="right">....</td>
-        <td align="right">&nbsp;</td>
-        <td align="center">....</td>
-
-    </tr>
-    <tr style="">
-        <td height="15" align="center">&nbsp;</td>
-        <td align="center">&nbsp;</td>
-        <td align="left">....</td>
-        <td align="center">....</td>
-        <td align="left">....</td>
-        <td align="right">&nbsp;</td>
-        <td align="right">....</td>
-        <td align="center">....</td>
-
-    </tr>
-
 
     <tr>
+        <td height="15" align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td align="center">BB</td>
+        <td align="center">BB</td>
+        <td align="center">BB</td>
+        <td align="center">&nbsp;</td>
+        <td align="center">aaaaa</td>
+        <td align="center">BB</td>
+    </tr>
+
+    <tr>
+        <td height="15" align="center">&nbsp;</td>
+        <td align="center">CC</td>
+        <td align="center">CC</td>
+        <td align="center">CC</td>
+        <td align="center">CC</td>
+        <td align="center">CC</td>
+        <td align="center">&nbsp;CC</td>
+        <td align="center">CC</td>
+    </tr>
+
+    <tr>
+        <td height="15" align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td align="center">DD</td>
+        <td align="center">DD</td>
+        <td align="center">DD</td>
+        <td align="center">&nbsp;</td>
+        <td align="center">DD</td>
+        <td align="center">DD</td>
+    </tr>
+
+    <!-- Total Transaksi -->
+    <tr>
         <td colspan="8" style="padding: 0px !important;">
-            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
                 <tr style="background: rgb(233, 233, 233); font-weight: bold; color: #000;">
                     <td height="15" align="center">
                         <b>Total Transaksi</b>
                     </td>
-                    <td align="right" width="15%">....</td>
-                    <td align="right" width="15%">....</td>
+                    <td align="center" width="15%">EE</td>
+                    <td align="center" width="15%">EE</td>
                     <td align="center" width="5%">&nbsp;</td>
                 </tr>
             </table>

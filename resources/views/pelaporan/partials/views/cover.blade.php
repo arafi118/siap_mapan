@@ -40,8 +40,8 @@
 <body>
 
     <header>
-        <h1 style="margin: 0px;">{{ $title }}</h1>
-        <div style="margin: 0px; font-size: 24px;">ww</div>
+        <h1 style="margin: 0px;">{{ strtoupper($judul) }}</h1>
+        <div style="margin: 0px; font-size: 24px;">{{ strtoupper($sub_judul) }}</div>
     </header>
 
     <main>
@@ -66,7 +66,7 @@
                         <i>ee</i>
                     </div>
                     <div style="font-size: 10px; color: grey; margin-top: 10px;">
-                        <i>Tahun ee</i>
+                        <i>Tahun {{ $tahun }}</i>
                     </div>
                 </td>
             </tr>

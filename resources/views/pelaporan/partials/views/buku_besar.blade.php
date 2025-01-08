@@ -15,8 +15,8 @@
         </tr>
     </table>
 
-    <div style="width: 100%; text-align: right;">Kode Akun : {{ $kode_akun }}</div>
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 10px;">
+    <div style="width: 100%; text-align: right;">Kode Akun : {{$kode_akun}}</div>
+    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
         <tr style="background: rgb(74, 74, 74); font-weight: bold; color: #fff;">
             <td height="15" align="center" width="4%">No</td>
             <td align="center" width="10%">Tanggal</td>

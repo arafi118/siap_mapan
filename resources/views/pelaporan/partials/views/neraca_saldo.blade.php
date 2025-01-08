@@ -14,94 +14,52 @@
         <td colspan="3" height="5"></td>
     </tr>
 </table>
-
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+<table border="1" width="100%" cellspacing="0" cellpadding="5" style="font-size: 11px; border-collapse: collapse;">
     <tr style="background: rgb(230, 230, 230); font-weight: bold;">
-        <th rowspan="2" class="t l b" width="40%" height="30">Rekening</th>
-        <th colspan="2" class="t l b" width="20%">Necaca Saldo</th>
-        <th colspan="2" class="t l b" width="20%">Laba Rugi</th>
-        <th colspan="2" class="t l b r" width="20%">Neraca</th>
+        <th rowspan="2" width="40%">Rekening</th>
+        <th colspan="2">Neraca Saldo</th>
+        <th colspan="2">Laba Rugi</th>
+        <th colspan="2">Neraca</th>
     </tr>
     <tr style="background: rgb(230, 230, 230); font-weight: bold;">
-        <th class="t l b" width="10%">Debit</th>
-        <th class="t l b" width="10%">Kredit</th>
-        <th class="t l b" width="10%">Debit</th>
-        <th class="t l b" width="10%">Kredit</th>
-        <th class="t l b" width="10%">Debit</th>
-        <th class="t l b r" width="10%">Kredit</th>
-    </tr>
-
-
-    <tr>
-        <th class="t l b" align="left" style="padding: 2px 4px;">
-            ....... </th>
-        <td class="t l b" align="right">
-            .......
-        </td>
-        <td class="t l b" align="right">
-            .......
-        </td>
-        <td class="t l b" align="right">.......</td>
-        <td class="t l b" align="right">.......</td>
-        <td class="t l b" align="right">
-            .......
-        </td>
-        <td class="t l b r" align="right">
-            .......
-        </td>
-        <td class="t l b" align="right">
-            .......
-        </td>
-        <td class="t l b" align="right">
-            .......
-        </td>
-        <td class="t l b" align="right">
-            .......
-        </td>
-        <td class="t l b r" align="right">
-            .......
-        </td>
+        <th>Debit</th>
+        <th>Kredit</th>
+        <th>Debit</th>
+        <th>Kredit</th>
+        <th>Debit</th>
+        <th>Kredit</th>
     </tr>
     <tr>
-        <td colspan="7" style="padding: 0px !important;">
-            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+        <td align="left">Akun 1</td>
+        <td align="right">100,000</td>
+        <td align="right">50,000</td>
+        <td align="right">30,000</td>
+        <td align="right">20,000</td>
+        <td align="right">70,000</td>
+        <td align="right">40,000</td>
+    </tr>
+    <tr>
+        <td colspan="7" style="padding: 0px;">
+            <table border="1" width="100%" cellspacing="0" cellpadding="5" style="font-size: 11px; border-collapse: collapse;">
                 <tr style="background: rgb(167, 167, 167); font-weight: bold;">
-                    <td class="t l b" width="40%" align="center">Surplus/Devisit</td>
-                    <td class="t l b" width="10%">&nbsp;</td>
-                    <td class="t l b" width="10%">&nbsp;</td>
-                    <td class="t l b" width="10%" align="right">
-                        .......
-                    </td>
-                    <td class="t l b" width="10%">&nbsp;</td>
-                    <td class="t l b" width="10%">&nbsp;</td>
-                    <td class="t l b r" width="10%" align="right">
-                        .......
-                    </td>
+                    <td width="40%" align="center">Surplus/Defisit</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td align="right">10,000</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td align="right">5,000</td>
                 </tr>
                 <tr style="background: rgb(242, 242, 242); font-weight: bold;">
-                    <td class="t l b" align="center">Jumlah</td>
-                    <td class="t l b" align="right">
-                        .......
-                    </td>
-                    <td class="t l b" align="right">
-                        .......
-                    </td>
-                    <td class="t l b" align="right">
-                        .......
-                    </td>
-                    <td class="t l b" align="right">
-                        .......
-                    </td>
-                    <td class="t l b" align="right">
-                        .......
-                    </td>
-                    <td class="t l b r" align="right">
-                        .......
-                    </td>
+                    <td align="center">Jumlah</td>
+                    <td align="right">150,000</td>
+                    <td align="right">50,000</td>
+                    <td align="right">40,000</td>
+                    <td align="right">20,000</td>
+                    <td align="right">80,000</td>
+                    <td align="right">45,000</td>
                 </tr>
             </table>
-
-            <div style="margin-top: 16px;"></div>
         </td>
     </tr>
 </table>
