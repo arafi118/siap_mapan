@@ -52,18 +52,27 @@
         </div>
     </form>
 
-    <!--Row-->
-
-    <!-- Documentation Link -->
-
-    <!-- Modal Logout -->
-
     <form action="" method="post" id="FormHapusPelanggan">
         @method('DELETE')
         @csrf
     </form>
 @endsection
 @section('script')
+    @if (session('success'))
+        <script>
+            //edit
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: '{{ Session::get('berhasil') }}',
+                    showConfirmButton: false,
+                    timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
+                });
+            });
+        </script>
+    @endif
+
     <script>
         $(document).ready(function() {
             $('#TbPelanggan').DataTable(); // ID From dataTable 

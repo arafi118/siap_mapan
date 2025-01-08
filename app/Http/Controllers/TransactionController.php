@@ -150,6 +150,7 @@ class TransactionController extends Controller
             "tagihan",
             "keterangan",
         ]);
+
         $data['tagihan'] = str_replace(',', '', $data['tagihan']);
         $data['tagihan'] = str_replace('.00', '', $data['tagihan']);
         $data['tagihan'] = floatval($data['tagihan']);

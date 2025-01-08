@@ -150,7 +150,7 @@ class CustomerController extends Controller
         $this->validate($request, $validasi);
 
         // Update data customer
-        $update = Customer::where('id', $customer->id)->update([
+        Customer::where('id', $customer->id)->update([
             'nik' => $request->nik,
             'nama' => $request->nama_lengkap,
             'nama_panggilan' => $request->nama_panggilan,
@@ -164,7 +164,7 @@ class CustomerController extends Controller
             'hp' => $request->no_telp
         ]);
 
-        return redirect('/customers')->with('Berhasil', 'Customer berhasil diperbarui');
+        return redirect('/customers')->with('success', 'Cater berhasil diperbarui');
     }
 
     /**

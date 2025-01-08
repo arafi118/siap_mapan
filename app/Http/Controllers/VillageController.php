@@ -18,7 +18,7 @@ class VillageController extends Controller
         $villages = Village::all();
 
         $title = 'Data Desa';
-        return view('desa.index')->with(compact('title','villages'));
+        return view('desa.index')->with(compact('title', 'villages'));
     }
 
     /**
@@ -30,7 +30,7 @@ class VillageController extends Controller
         $provinsi = Region::whereRaw('LENGTH(kode)=2')->get();
 
         $title = 'Register Desa';
-        return view('desa.create')->with(compact('provinsi','title'));
+        return view('desa.create')->with(compact('provinsi', 'title'));
     }
 
     public function generateAlamat($kode)
@@ -40,13 +40,13 @@ class VillageController extends Controller
         $kode_kabupaten = substr($kode, 0, 5);
         $kode_kecamatan = substr($kode, 0, 8);
         $kode_desa = $kode;
-    
+
         // Mengambil data wilayah berdasarkan kode
         $provinsi = Region::where('kode', $kode_provinsi)->first();
         $kabupaten = Region::where('kode', $kode_kabupaten)->first();
         $kecamatan = Region::where('kode', $kode_kecamatan)->first();
         $desa = Region::where('kode', $kode_desa)->first();
-    
+
         $alamat = '';
         if ($provinsi) {
             $alamat .= 'Provinsi ' . ucfirst(strtolower($provinsi->nama));
@@ -61,8 +61,8 @@ class VillageController extends Controller
             $alamat .= ', Desa ' . ucfirst(strtolower($desa->nama));
         }
 
-        
-    
+
+
         return response()->json([
             'success' => true,
             'alamat' => $alamat
@@ -70,53 +70,53 @@ class VillageController extends Controller
     }
 
     public function ambil_kab($kode)
-     {
-        $kabupaten = Region::where('kode', 'LIKE',$kode . '%')->whereRaw('length(kode)=5')->get();
+    {
+        $kabupaten = Region::where('kode', 'LIKE', $kode . '%')->whereRaw('length(kode)=5')->get();
 
         return response()->json([
             'success' => true,
             'data' => $kabupaten
         ]);
-     }
+    }
 
-     public function ambil_kec($kode)
-     {
-        $kecamatan = Region::where('kode', 'LIKE',$kode . '%')->whereRaw('length(kode)=8')->get();
+    public function ambil_kec($kode)
+    {
+        $kecamatan = Region::where('kode', 'LIKE', $kode . '%')->whereRaw('length(kode)=8')->get();
 
         return response()->json([
             'success' => true,
             'data' => $kecamatan
         ]);
-     }
-     
-     public function ambil_desa($kode)
-     {
-        $desa = Region::where('kode', 'LIKE',$kode . '%')->whereRaw('length(kode)>8')->get();
+    }
+
+    public function ambil_desa($kode)
+    {
+        $desa = Region::where('kode', 'LIKE', $kode . '%')->whereRaw('length(kode)>8')->get();
 
         return response()->json([
             'success' => true,
             'data' => $desa
         ]);
-     }
-    
+    }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'desa' => 'required',
             'alamat' => 'required',
             'hp' => 'required'
 
-         ]);
+        ]);
 
-         $kode = Session::get('business_id');
-         $jumlah_desa = Village::where('kode', 'LIKE', $kode . '%')->count();
-         $kode .= str_pad(($jumlah_desa + 1), '3', '0', STR_PAD_LEFT);
+        $kode = Session::get('business_id');
+        $jumlah_desa = Village::where('kode', 'LIKE', $kode . '%')->count();
+        $kode .= str_pad(($jumlah_desa + 1), '3', '0', STR_PAD_LEFT);
 
-         $desa = Region::where('kode', $request->desa)->first();
+        $desa = Region::where('kode', $request->desa)->first();
 
         Village::create([
             'kode' => $kode,
@@ -125,7 +125,7 @@ class VillageController extends Controller
             'hp' => $request->hp
         ]);
 
-        return redirect('/villages')->with('berhasil','Customer berhasil ditambahkan!');
+        return redirect('/villages')->with('berhasil', 'Customer berhasil ditambahkan!');
     }
 
     /**
@@ -142,7 +142,7 @@ class VillageController extends Controller
     public function edit(Village $village)
     {
         $title = 'Edit Desa';
-        return view('desa.edit')->with(compact('village','title'));
+        return view('desa.edit')->with(compact('village', 'title'));
     }
 
     /**
@@ -159,17 +159,16 @@ class VillageController extends Controller
         ];
 
         $this->validate($request, $validasi);
-    
+
         // Update data 
-        $update = Village::where('id', $village->id)->update([
+        Village::where('id', $village->id)->update([
             'kode' => $request->kode,
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'hp' => $request->hp
         ]);
-    
-        return redirect('/villages')->with('Berhasil', 'Desa berhasil diperbarui');
 
+        return redirect('/villages')->with('success', 'Desa berhasil diperbarui');
     }
 
     /**
@@ -179,9 +178,8 @@ class VillageController extends Controller
     {
         // Menghapus customer berdasarkan id yang diterima
         $village->delete();
-    
+
         // Redirect ke halaman customer dengan pesan sukses
         return redirect('/villages')->with('success', 'Desa berhasil dihapus');
     }
-    
 }

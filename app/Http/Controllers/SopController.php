@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\Sop;
 use App\Models\Settings;
 use Illuminate\Http\Request;
@@ -17,10 +18,11 @@ class SopController extends Controller
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
         $settings = Settings::all();
+        $business = Business::all();
 
         $tampil_settings = $pengaturan->first();
         $title = 'Personalisasi Sop';
-        return view('sop.index')->with(compact('title', 'settings', 'tampil_settings'));
+        return view('sop.index')->with(compact('title', 'business', 'settings', 'tampil_settings'));
     }
 
     public function profil()
@@ -96,6 +98,93 @@ class SopController extends Controller
         return view('sop.partials.pasang_baru')->with(compact('title', 'tampil_settings'));
     }
 
+    public function lembaga()
+    {
+        $business_id = Session::get('business_id');
+        $pengaturan = Business::where('id', $business_id);
+        $business = Business::all();
+
+        if (request()->ajax()) {
+            $data['nama'] = request()->get('nama');
+            $data['alamat'] = request()->get('alamat');
+            $data['telpon'] = request()->get('telpon');
+            $data['email'] = request()->get('email');
+
+            $validate = Validator::make($data, [
+                'nama' => 'required',
+                'alamat' => 'required',
+                'telpon'    => 'required',
+                'email'       => 'required'
+            ]);
+
+            if ($validate->fails()) {
+                return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+            }
+
+            if ($pengaturan->count() > 0) {
+                $business = $pengaturan->update([
+                    'nama' => $data['nama'],
+                    'alamat' => $data['alamat'],
+                    'telpon'    => $data['telpon'],
+                    'email'       => $data['email'],
+                ]);
+            } else {
+                $business = Business::create([
+                    'nama' => $data['nama'],
+                    'alamat' => $data['alamat'],
+                    'telpon'    => $data['telpon'],
+                    'email'       => $data['email'],
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'business' => $business
+            ], Response::HTTP_ACCEPTED);
+        }
+
+        $tampil_settings = $pengaturan->first();
+        $title = 'Sop';
+        return view('sop.partials.lembaga')->with(compact('title', 'business', 'tampil_settings'));
+    }
+
+    public function sistem_instal()
+    {
+        $business_id = Session::get('business_id');
+        $pengaturan = Settings::where('business_id', $business_id);
+
+        if (request()->ajax()) {
+            $data['batas_tagihan'] = request()->get('batas_tagihan');
+
+            $validate = Validator::make($data, [
+                'batas_tagihan' => 'required',
+            ]);
+
+            if ($validate->fails()) {
+                return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+            }
+
+            if ($pengaturan->count() > 0) {
+                $Settings = $pengaturan->update([
+                    'batas_tagihan' => $data['batas_tagihan'],
+                ]);
+            } else {
+                $Settings = Settings::create([
+                    'business_id' => $business_id,
+                    'batas_tagihan' => $data['batas_tagihan']
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'Settings' => $Settings
+            ], Response::HTTP_ACCEPTED);
+        }
+
+        $tampil_settings = $pengaturan->first();
+        $title = 'Sop';
+        return view('sop.partials.sistem_instal')->with(compact('title', 'tampil_settings'));
+    }
     /**
      * Show the form for creating a new resource.
      */

@@ -730,6 +730,40 @@ class InstallationsController extends Controller
             'aktif' => $installation
         ]);
     }
+
+    /**
+     * Update Detail Status B.
+     */
+    private function updateB($request, $installation)
+    {
+        $data = $request->only([
+            "cabut",
+
+        ]);
+
+        $rules = [
+            'cabut' => 'required',
+        ];
+
+        $validate = Validator::make($data, $rules);
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        // INSTALLATION
+        $instal = Installations::where('id', $installation->id)->update([
+            'business_id' => Session::get('business_id'),
+            'cabut' => Tanggal::tglNasional($request->cabut),
+            'status' => 'C',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Pencabutan Custommer Berhasil',
+            'cabut' => $installation
+        ]);
+    }
+
     /**
      * menghapus data instalasi status R.
      */

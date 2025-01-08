@@ -35,7 +35,7 @@
                             <table class="table table-bordered table-striped">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th colspan="4">Detail Pasang</th>
+                                        <th colspan="4">Detail Installation/th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -43,14 +43,14 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Kode Instalasi</span>
                                             <span class="badge badge-primary"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->kode_instalasi }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Abodemen</span>
                                             <span class="badge badge-primary"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ number_format($installation->abodemen, 2) }}
                                             </span>
                                         </td>
@@ -59,14 +59,14 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Order</span>
                                             <span class="badge badge-primary"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->order }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Paket Instalasi</span>
                                             <span class="badge badge-primary"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->package->kelas }}
                                             </span>
                                         </td>
@@ -75,7 +75,7 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Pasang</span>
                                             <span class="badge badge-primary"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->pasang }}
                                             </span>
                                         </td>
@@ -83,8 +83,8 @@
                                             <span style="float: left;">Status Instalasi</span>
                                             @if ($installation->status === 'A')
                                                 <span class="badge badge-primary"
-                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                    PASANG
+                                                    style="float: right; width: 30%; padding: 5px; text-align: center;">
+                                                    Aktif
                                                 </span>
                                             @endif
                                         </td>
@@ -101,51 +101,6 @@
             <div class="col-lg-12">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <div class="alert alert-light" role="alert">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="kode_instalasi">Kode Instalasi</label>
-                                        <input type="text" class="form-control date" name="kode_instalasi"
-                                            id="kode_instalasi" value="{{ $installation->kode_instalasi }}" disabled>
-                                        <small class="text-danger" id="msg_kode_instalasi"></small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="aktif">Tanggal Pasang Baru</label>
-                                        <input type="text" class="form-control date" name="aktif" id="aktif"
-                                            value="{{ date('d/m/Y') }}">
-                                        <small class="text-danger" id="msg_aktif"></small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="biaya_instalasi">Biaya Istalasi</label>
-                                        <input type="text" class="form-control" name="biaya_instalasi"
-                                            id="biaya_instalasi" value="{{ number_format($trx, 2) }}" disabled>
-                                        <small class="text-danger" id="msg_biaya_instalasi"></small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="pasang_baru">Biaya Pasang Baru</label>
-                                        <input type="text" class="form-control"
-                                            value="{{ number_format($tampil_settings->pasang_baru, 2) }} "disabled>
-                                        <small class="text-danger"></small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="total">Nominal</label>
-                                        <input type="text" class="form-control" name="total" id="total">
-                                        <small class="text-danger" id="msg_total"></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-12 d-flex justify-content-end">
                             <a href="/installations?status=A" class="btn btn-light btn-icon-split">
                                 <span class="icon text-white-50">
@@ -157,17 +112,6 @@
                                 </span>
                                 <span class="text">Kembali</span>
                             </a>
-                            <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_A"
-                                style="float: right; margin-left: 10px;">
-                                <span class="icon text-white-50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
-                                    </svg>
-                                </span>
-                                <span class="text" style="float: right;">Aktifkan Sekarang</span>
-                            </button>
                         </div>
                     </div>
                 </div>

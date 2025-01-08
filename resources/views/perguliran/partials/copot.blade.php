@@ -12,7 +12,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <!-- Bagian Informasi Customer -->
-                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
                             <!-- Gambar -->
                             <img src="../../assets/img/user.png" style="max-height: 150px; margin-right: 20px;"
                                 class="img-fluid">
@@ -35,7 +35,7 @@
                             <table class="table table-bordered table-striped">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th colspan="4">Detail Pasang</th>
+                                        <th colspan="4">Detail Installation</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -43,14 +43,14 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Kode Instalasi</span>
                                             <span class="badge badge-danger"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width:30%; padding: 5px; text-align: center;">
                                                 {{ $installation->kode_instalasi }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Abodemen</span>
                                             <span class="badge badge-danger"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width:30%; padding: 5px; text-align: center;">
                                                 {{ number_format($installation->abodemen, 2) }}
                                             </span>
                                         </td>
@@ -59,14 +59,14 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Order</span>
                                             <span class="badge badge-danger"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width:30%; padding: 5px; text-align: center;">
                                                 {{ $installation->order }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Paket Instalasi</span>
                                             <span class="badge badge-danger"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width:30%; padding: 5px; text-align: center;">
                                                 {{ $installation->package->kelas }}
                                             </span>
                                         </td>
@@ -75,7 +75,7 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Pasang</span>
                                             <span class="badge badge-danger"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width:30%; padding: 5px; text-align: center;">
                                                 {{ $installation->pasang }}
                                             </span>
                                         </td>
@@ -83,8 +83,8 @@
                                             <span style="float: left;">Status Instalasi</span>
                                             @if ($installation->status === 'C')
                                                 <span class="badge badge-secondary"
-                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
-                                                    Copot
+                                                    style="float: right; width:30%; padding: 5px; text-align: center;">
+                                                    CABUT
                                                 </span>
                                             @endif
                                         </td>
@@ -96,17 +96,25 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 d-flex justify-content-end">
-            <a href="/installations?status=C" class="btn btn-light btn-icon-split">
-                <span class="icon text-white-50">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM6.864 8.368a.25.25 0 0 1-.451-.039l-1.06-2.882a.25.25 0 0 1 .192-.333l3.026-.523a.25.25 0 0 1 .26.371l-.667 1.154.621.373A2.5 2.5 0 0 1 10 8.632V11H9V8.632a1.5 1.5 0 0 0-.728-1.286l-.607-.364-.8 1.386Z" />
-                    </svg>
-                </span>
-                <span class="text">Kembali</span>
-            </a>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="col-12 d-flex justify-content-end">
+                            <a href="/installations?status=C" class="btn btn-light btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM6.864 8.368a.25.25 0 0 1-.451-.039l-1.06-2.882a.25.25 0 0 1 .192-.333l3.026-.523a.25.25 0 0 1 .26.371l-.667 1.154.621.373A2.5 2.5 0 0 1 10 8.632V11H9V8.632a1.5 1.5 0 0 0-.728-1.286l-.607-.364-.8 1.386Z" />
+                                    </svg>
+                                </span>
+                                <span class="text">Kembali</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 @endsection

@@ -1,12 +1,6 @@
 @extends('layouts.base')
 
 @section('content')
-@if (session('success'))
-<div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
-    <li class="	fas fa-check-circle"></li>
-    {{ session('success') }}
-</div>
-@endif
     <div class="row">
         <!-- Datatables -->
         <div class="col-lg-12">
@@ -32,26 +26,25 @@
                         </thead>
                         <tbody>
                             @foreach ($villages as $village)
-                            <tr>
-                                <td>{{ $village->kode }}</td>
-                                <td>{{ $village->nama }}</td>
-                                <td style="padding: 3px; word-wrap: break-word; max-width: 200px;">
-                                    {{ $village->alamat }}
-                                </td>
-                                <td>{{ $village->hp }}</td>
-                                <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                    <a href="/villages/{{ $village->id }}/edit" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    <a href="#" data-id="{{ $village->id }}"
-                                        class="btn-sm btn-danger mx-1 Hapus_desa"><i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>{{ $village->kode }}</td>
+                                    <td>{{ $village->nama }}</td>
+                                    <td style="padding: 3px; word-wrap: break-word; max-width: 200px;">
+                                        {{ $village->alamat }}
+                                    </td>
+                                    <td>{{ $village->hp }}</td>
+                                    <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                        <a href="/villages/{{ $village->id }}/edit" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a href="#" data-id="{{ $village->id }}"
+                                            class="btn-sm btn-danger mx-1 Hapus_desa"><i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    
                 </div>
             </div>
         </div>
@@ -63,36 +56,42 @@
 @endsection
 @section('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#TbDesa').DataTable(); // ID From dataTable 
         });
-
     </script>
 
-@if (Session::has('berhasil'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: '{{ Session::get('berhasil') }}',
-            showConfirmButton: false,
-            timer: 2000
-        });
-    </script>
+    @if (session('success'))
         <script>
-        // Menghilangkan notifikasi setelah 5 detik
-        document.addEventListener('DOMContentLoaded', function() {
-            const alert = document.getElementById('success-alert');
-            if (alert) {
-                setTimeout(() => {
-                    alert.style.display = 'none';
-                }, 2000); // 2000ms = 2 detik
-            }
-        });
+            //edit
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Edit Data Berhasil',
+                    text: '{{ Session::get('Berhasil') }}',
+                    showConfirmButton: false,
+                    timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
+                });
+            });
         </script>
-@endif
-<script>
-   $(document).on('click', '.Hapus_desa', function(e) {
+    @endif
+
+    @if (Session::has('berhasil'))
+        <script>
+            //tambah
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: '{{ Session::get('berhasil') }}',
+                    showConfirmButton: false,
+                    timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
+                });
+            });
+        </script>
+    @endif
+    <script>
+        $(document).on('click', '.Hapus_desa', function(e) {
             e.preventDefault();
 
             var hapus_desa = $(this).attr('data-id'); // Ambil ID yang terkait dengan tombol hapus
@@ -147,5 +146,5 @@
                 }
             });
         });
-</script>
+    </script>
 @endsection

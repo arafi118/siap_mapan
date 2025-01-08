@@ -1,7 +1,6 @@
 @extends('layouts.base')
 @section('content')
     <!-- Container Fluid-->
-    <!-- Container Fluid-->
     <div class="container-fluid">
         <div class="row">
             <!-- Alerts Basic -->
@@ -26,8 +25,21 @@
                                 </a>
                             </li>
                             <li class="nav-item" style="margin-bottom: 10px;">
-                                <a class="nav-link btn btn-white" data-status="S" data-toggle="tab" style="width: 220px;"
-                                    data-target="#instalasi" href="#">
+                                <a class="nav-link btn btn-white" data-status="L" data-toggle="tab" style="width: 220px;"
+                                    data-target="#lembaga" href="#">
+                                    <div class="left-align" style="display: flex; align-items: center; gap: 10px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="20"
+                                            height="25" style="fill: rgb(255, 255, 255);">
+                                            <path
+                                                d="M218.3 8.5c12.3-11.3 31.2-11.3 43.4 0l208 192c6.7 6.2 10.3 14.8 10.3 23.5l-144 0c-19.1 0-36.3 8.4-48 21.7l0-37.7c0-8.8-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16l0 64c0 8.8 7.2 16 16 16l64 0 0 128-160 0c-26.5 0-48-21.5-48-48l0-112-32 0c-13.2 0-25-8.1-29.8-20.3s-1.6-26.2 8.1-35.2l208-192zM352 304l0 144 192 0 0-144-192 0zm-48-16c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32l0 160 32 0c8.8 0 16 7.2 16 16c0 26.5-21.5 48-48 48l-48 0-192 0-48 0c-26.5 0-48-21.5-48-48c0-8.8 7.2-16 16-16l32 0 0-160z" />
+                                        </svg>
+                                        <span><b>Identitas Lembaga</b></span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item" style="margin-bottom: 10px;">
+                                <a class="nav-link btn btn-white" data-status="P" data-toggle="tab" style="width: 220px;"
+                                    data-target="#pasang" href="#">
                                     <div class="left-align" style="display: flex; align-items: center; gap: 10px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="20"
                                             height="25" style="fill: rgb(255, 255, 255);">
@@ -35,6 +47,19 @@
                                                 d="M94.1 315.1c0 25.9-21.2 47.1-47.1 47.1S0 341 0 315.1c0-25.9 21.2-47.1 47.1-47.1h47.1v47.1zm23.7 0c0-25.9 21.2-47.1 47.1-47.1s47.1 21.2 47.1 47.1v117.8c0 25.9-21.2 47.1-47.1 47.1s-47.1-21.2-47.1-47.1V315.1zm47.1-189c-25.9 0-47.1-21.2-47.1-47.1S139 32 164.9 32s47.1 21.2 47.1 47.1v47.1H164.9zm0 23.7c25.9 0 47.1 21.2 47.1 47.1s-21.2 47.1-47.1 47.1H47.1C21.2 244 0 222.8 0 196.9s21.2-47.1 47.1-47.1H164.9zm189 47.1c0-25.9 21.2-47.1 47.1-47.1 25.9 0 47.1 21.2 47.1 47.1s-21.2 47.1-47.1 47.1h-47.1V196.9zm-23.7 0c0 25.9-21.2 47.1-47.1 47.1-25.9 0-47.1-21.2-47.1-47.1V79.1c0-25.9 21.2-47.1 47.1-47.1 25.9 0 47.1 21.2 47.1 47.1V196.9zM283.1 385.9c25.9 0 47.1 21.2 47.1 47.1 0 25.9-21.2 47.1-47.1 47.1-25.9 0-47.1-21.2-47.1-47.1v-47.1h47.1zm0-23.7c-25.9 0-47.1-21.2-47.1-47.1 0-25.9 21.2-47.1 47.1-47.1h117.8c25.9 0 47.1 21.2 47.1 47.1 0 25.9-21.2 47.1-47.1 47.1H283.1z" />
                                         </svg>
                                         <span><b>Pasang Baru</b></span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item" style="margin-bottom: 10px;">
+                                <a class="nav-link btn btn-white" data-status="S" data-toggle="tab" style="width: 220px;"
+                                    data-target="#instalasi" href="#">
+                                    <div class="left-align" style="display: flex; align-items: center; gap: 10px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="20"
+                                            height="25" style="fill: rgb(255, 255, 255);">
+                                            <path
+                                                d="M256 64l128 0 0 64-128 0 0-64zM240 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l48 0 0 32L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0 0 32-48 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l160 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0-32 256 0 0 32-48 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l160 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0-32 96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-256 0 0-32 48 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48L240 0zM96 448l0-64 128 0 0 64L96 448zm320-64l128 0 0 64-128 0 0-64z" />
+                                        </svg>
+                                        <span><b>Sistem Tagihan</b></span>
                                     </div>
                                 </a>
                             </li>
@@ -58,8 +83,21 @@
                         </div>
                     </div>
 
-                    <!-- instalasi Tab -->
-                    <div id="instalasi" role="tab" class="tab-pane ">
+                    <!-- lembaga Tab -->
+                    <div id="lembaga" role="tab" class="tab-pane ">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="table-responsive p-3">
+                                        @include('sop.partials.lembaga')
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- pasang Tab -->
+                    <div id="pasang" role="tab" class="tab-pane ">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card mb-4">
@@ -71,18 +109,29 @@
                         </div>
                     </div>
 
+                    <!-- instalasi Tab -->
+                    <div id="instalasi" role="tab" class="tab-pane ">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="table-responsive p-3">
+                                        @include('sop.partials.sistem_instal')
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
         <!-- Row -->
-
     </div>
 @endsection
 
 @section('script')
     <script>
         //pasang baru
-
         $("#pasang_baru").maskMoney({
             allowNegative: true
         });
@@ -95,6 +144,74 @@
         $(document).on('click', '#SimpanSwit', function(e) {
             e.preventDefault();
             var form = $('#Fromswit');
+            var actionUrl = form.attr('action');
+
+            var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'success',
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+
+            $.ajax({
+                type: 'GET',
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        toastMixin.fire({
+                            title: 'Pembaruhan Sistem Instalasi Berhasil'
+                        });
+                        // setTimeout(() => window.location.reload(), 3000);
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
+                }
+            });
+        });
+    </script>
+    <script>
+        //identitas lembaga
+        $(document).on('click', '#SimpanLembaga', function(e) {
+            e.preventDefault();
+            var form = $('#FromLembaga');
+            var actionUrl = form.attr('action');
+
+            var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'success',
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+
+            $.ajax({
+                type: 'GET',
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        toastMixin.fire({
+                            title: 'Pembaruhan Identitas Lembaga Berhasil'
+                        });
+                        // setTimeout(() => window.location.reload(), 3000);
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
+                }
+            });
+        });
+    </script>
+    <script>
+        // sistem instal
+        $(document).on('click', '#SimpanInstal', function(e) {
+            e.preventDefault();
+            var form = $('#FromInstal');
             var actionUrl = form.attr('action');
 
             var toastMixin = Swal.mixin({

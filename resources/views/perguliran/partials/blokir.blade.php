@@ -35,7 +35,7 @@
                             <table class="table table-bordered table-striped">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th colspan="4">Detail Pasang</th>
+                                        <th colspan="4">Detail Installation</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,25 +105,25 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
-                                        <label for="aktif">Tentukan Tanggal Cabut</label>
-                                        <input type="text" class="form-control date" name="aktif" id="aktif"
+                                        <label for="cabut">Tentukan Tanggal Cabut</label>
+                                        <input type="text" class="form-control date" name="cabut" id="cabut"
                                             value="{{ date('d/m/Y') }}">
-                                        <small class="text-danger" id="msg_aktif"></small>
+                                        <small class="text-danger" id="msg_cabut"></small>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="kode_instalasi">Nik</label>
-                                        <input type="text" class="form-control date" name="kode_instalasi"
-                                            id="kode_instalasi" value="{{ $installation->customer->nik }}" disabled>
+                                        <input type="text" class="form-control" name="kode_instalasi" id="kode_instalasi"
+                                            value="{{ $installation->customer->nik }}" disabled>
                                         <small class="text-danger" id="msg_kode_instalasi"></small>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="kode_instalasi">desa</label>
-                                        <input type="text" class="form-control date" name="kode_instalasi"
-                                            id="kode_instalasi" value="{{ $installation->village->nama }}" disabled>
+                                        <input type="text" class="form-control" name="kode_instalasi" id="kode_instalasi"
+                                            value="{{ $installation->village->nama }}" disabled>
                                         <small class="text-danger" id="msg_kode_instalasi"></small>
                                     </div>
                                 </div>
@@ -201,7 +201,7 @@
                             draggable: true
                         }).then((res) => {
                             if (res.isConfirmed) {
-                                window.location.href = '/installations/' + result.Pasang.id;
+                                window.location.href = '/installations/' + result.cabut.id;
                             }
                         });
                     }

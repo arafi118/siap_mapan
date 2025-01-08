@@ -19,7 +19,7 @@ class CaterController extends Controller
             'position'
         ])->get();
         $title = 'Data Cater';
-        return view('cater.index')->with(compact('title','caters'));   
+        return view('cater.index')->with(compact('title', 'caters'));
     }
 
     /**
@@ -38,17 +38,17 @@ class CaterController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'nama' => 'required',
             'alamat' => 'required',
             'telpon' => 'required',
             'jabatan' => 'required',
             'username' => 'required',
             'password' => 'required',
-            'jenis_kelamin' =>'required'
+            'jenis_kelamin' => 'required'
 
 
-         ]);
+        ]);
 
         Cater::create([
             'nama' => $request->nama,
@@ -59,10 +59,10 @@ class CaterController extends Controller
             'password' => $request->password,
             'jenis_kelamin' => $request->jenis_kelamin,
             'business_id' => Session::get('business_id')
-          
+
         ]);
 
-        return redirect('/caters')->with('berhasil','Cater berhasil Ditambahkan!');
+        return redirect('/caters')->with('berhasil', 'Cater berhasil Ditambahkan!');
     }
 
     /**
@@ -78,9 +78,10 @@ class CaterController extends Controller
      */
     public function edit(Cater $cater)
     {
+        $positions = Position::all();
         $caters = Cater::with('position')->get();
         $title = 'Edit Cater';
-        return view('cater.edit')->with(compact('title', 'caters', 'cater'));
+        return view('cater.edit')->with(compact('title', 'positions', 'caters', 'cater'));
     }
     /**
      * Update the specified resource in storage.
@@ -95,23 +96,23 @@ class CaterController extends Controller
             'jabatan' => 'required',
             'username' => 'required',
             'password' => 'required',
-            'jenis_kelamin' =>'required'
+            'jenis_kelamin' => 'required'
         ]);
-    
+
         // Update data
         $cater->update([
             'nama' => $request->nama,
+            'jenis_kelamin' => $request->jenis_kelamin,
             'alamat' => $request->alamat,
             'telpon' => $request->telpon,
             'jabatan' => $request->jabatan, // Pastikan data sesuai tipe
             'username' => $request->username,
-            'password' => bcrypt($request->password), // Enkripsi password
-            'jenis_kelamin' => $request->jenis_kelamin,
+            'password' => $request->password, // Enkripsi password
         ]);
-    
+
         return redirect('/caters')->with('success', 'Cater berhasil diperbarui');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
@@ -119,6 +120,5 @@ class CaterController extends Controller
     {
         $cater->delete();
         return redirect('/caters')->with('success', 'Cater berhasil dihapus');
-
     }
 }

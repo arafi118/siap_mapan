@@ -1,28 +1,43 @@
 @extends('layouts.base')
 
 @section('content')
+    <style>
+        .custom-alert {
+            padding: 20px;
+            /* Jarak seragam di semua sisi dalam alert */
+            border-radius: 5px;
+            /* Membuat sudut sedikit melengkung */
+            margin: 1px;
+            /* Menambahkan jarak di luar alert */
+        }
+    </style>
+
     <form action="/customers" method="post" id="FormCustommer">
         @csrf
         <!-- Row -->
         <div class="row">
             <!-- Datatables -->
             <div class="col-lg-12">
+                <!-- Alerts with Icon -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="alert alert-success alert-dismissible custom-alert" role="alert">
+                            <h6><i class="fas fa-info-circle"></i><b> Success!</b></h6>
+                            Register Pelangan Baru !
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <!-- Datatables -->
+            <div class="col-lg-12">
                 <div class="card mb-4">
                     <div class="table-responsive p-3">
-                        <div class="alert alert-warning alert-dismissible" role="alert">
-                            <div class="app-page-title">
-                                <div class="page-title-wrapper">
-                                    <div class="page-title-heading">
-                                        <div style="display: flex; align-items: center;">
-                                            <i class="fa fa-user-plus" style="font-size: 30px; margin-right: 13px;"></i>
-                                            <b> Register Pelanggan Baru</b>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="position-relative mb-3">
                                     <label for="nik">NIK</label>
                                     <input autocomplete="off" maxlength="16" type="text" name="nik" id="nik"
@@ -30,7 +45,7 @@
                                     <small class="text-danger" id="msg_nik">{{ $errors->first('nik') }}</small>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="position-relative mb-3">
                                     <label for="nama_lengkap">Nama lengkap</label>
                                     <input autocomplete="off" type="text" name="nama_lengkap" id="nama_lengkap"
@@ -39,8 +54,6 @@
                                         id="msg_nama_lengkap">{{ $errors->first('nama_lengkap') }}</small>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4">
                                 <div class="position-relative mb-3">
                                     <label for="nama_panggilan">Nama Panggilan</label>
@@ -49,6 +62,8 @@
                                     <small class="text-danger">{{ $errors->first('nama_panggilan') }}</small>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="position-relative mb-3">
                                     <label for="no_kk">No. KK</label>
@@ -59,16 +74,6 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="position-relative mb-3">
-                                    <label for="no_telp">No. Telepon</label>
-                                    <input autocomplete="off" type="text" name="no_telp" id="no_telp"
-                                        class="form-control">
-                                    <small class="text-danger" id="msg_no_telp">{{ $errors->first('no_telp') }}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="position-relative mb-3">
                                     <label for="tempat_lahir">Tempat Lahir</label>
                                     <input autocomplete="off" type="text" name="tempat_lahir" id="tempat_lahir"
                                         class="form-control" value="">
@@ -76,7 +81,7 @@
                                         id="msg_tempat_lahir">{{ $errors->first('tempat_lahir') }}</small>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="tgl_lahir">Tgl Lahir</label>
                                     <div class="input-group date">
@@ -87,10 +92,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <div class="position-relative mb-3">
                                     <label for="jenis_kelamin">Jenis Kelamin</label>
-                                    <select class="js-select-2 form-control" name="jenis_kelamin" id="jenis_kelamin">
+                                    <select class="form-control" name="jenis_kelamin" id="jenis_kelamin">
                                         <option value="">Pilih Jenis Kelamin</option>
                                         <option value="L">Laki Laki</option>
                                         <option value="P">Perempuan</option>
@@ -100,7 +105,16 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+
+                            <div class="col-md-2">
+                                <div class="position-relative mb-3">
+                                    <label for="no_telp">No. Telepon</label>
+                                    <input autocomplete="off" type="text" name="no_telp" id="no_telp"
+                                        class="form-control">
+                                    <small class="text-danger" id="msg_no_telp">{{ $errors->first('no_telp') }}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
                                 <div class="position-relative mb-3">
                                     <label for="desa">Desa/Kelurahan</label>
                                     <select class="js-select-2 form-control" name="desa" id="desa">

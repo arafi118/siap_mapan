@@ -8,9 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Sop extends Model
 {
     use HasFactory;
-    
+
     public function settings()
     {
-        return $this->belongsTo(settings::class);
+        return $this->belongsTo(Settings::class);
+    }
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
     }
 }

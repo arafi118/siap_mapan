@@ -33,7 +33,7 @@
                             <table class="table table-bordered table-striped">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th colspan="4">Detail Pasang</th>
+                                        <th colspan="4">Detail Installation</th>
                                     </tr>
                                 </thead>
                                 <tbody>

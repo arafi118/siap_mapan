@@ -97,6 +97,8 @@ Route::resource('/caters', CaterController::class);
 Route::resource('/pengaturan', SopController::class);
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
 Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
+Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
+Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
 Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
 
 Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);
