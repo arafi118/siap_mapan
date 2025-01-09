@@ -29,6 +29,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [DashboardController::class, 'index']);
+Route::get('/dashboard/installations', [DashboardController::class, 'installations']);
+Route::get('/dashboard/usages', [DashboardController::class, 'usages']);
+Route::get('/dashboard/tagihan', [DashboardController::class, 'tagihan']);
 
 // Auth
 Route::post('/auth', [AuthController::class, 'login']);
