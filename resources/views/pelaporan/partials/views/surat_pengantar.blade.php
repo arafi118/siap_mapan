@@ -1,5 +1,5 @@
 <title>{{ $title }}</title>
-<table border="0">
+<table border="0"style="font-size: 13px;">
     <tr>
         <td width="5%">Nomor</td>
         <td width="50%">: ______________________</td>

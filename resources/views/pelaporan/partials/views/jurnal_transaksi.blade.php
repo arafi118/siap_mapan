@@ -5,7 +5,7 @@ use App\Utils\Tanggal;
 <title>{{ $title }}</title>
 
 <!-- Header Judul -->
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
     <tr>
         <td colspan="7" align="center">
             <div style="font-size: 18px;">
@@ -24,8 +24,8 @@ use App\Utils\Tanggal;
         <td colspan="7" height="5"></td>
     </tr>
     <!-- Header Tabel -->
-    <tr style="background: rgb(90, 90, 90); font-weight: bold; color: #fff;">
-        <td height="15" align="center" width="4%">No</td>
+    <tr style="background: rgb(73, 73, 73); font-weight: bold; color: #fff;">
+        <td height="20" align="center" width="4%">No</td>
         <td align="center" width="10%">Tanggal</td>
         <td align="center" width="8%">Ref ID.</td>
         <td align="center" width="8%">Kd. Rek</td>
@@ -83,7 +83,7 @@ use App\Utils\Tanggal;
     <!-- Total Transaksi -->
     <tr>
         <td colspan="8" style="padding: 0px !important;">
-            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
                 <tr style="background: rgb(233, 233, 233); font-weight: bold; color: #000;">
                     <td height="15" align="center">
                         <b>Total Transaksi</b>
