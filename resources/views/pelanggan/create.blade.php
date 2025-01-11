@@ -22,14 +22,12 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="alert alert-success alert-dismissible custom-alert" role="alert">
-                            <h6><i class="fas fa-info-circle"></i><b> Success!</b></h6>
-                            Register Pelangan Baru !
+                            <h6><i class="fas fa-info-circle"></i>&nbsp;&nbsp;<b> Register Pelangan Baru !</b></h6>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
 
         <div class="row">
             <!-- Datatables -->

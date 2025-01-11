@@ -31,4 +31,12 @@ class Transaction extends Model
     {
         return $this->belongsTo(Installations::class);
     }
+    public function Account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+    public function JenisTransactions()
+    {
+        return $this->belongsTo(JenisTransactions::class);
+    }
 }

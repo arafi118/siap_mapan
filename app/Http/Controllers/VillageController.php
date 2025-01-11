@@ -168,7 +168,7 @@ class VillageController extends Controller
             'hp' => $request->hp
         ]);
 
-        return redirect('/villages')->with('success', 'Desa berhasil diperbarui');
+        return redirect('/villages')->with('jsedit', 'Desa berhasil diperbarui');
     }
 
     /**

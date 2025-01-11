@@ -64,6 +64,9 @@ Route::get('/packages/block_paket', [PackageController::class, 'block_paket']);
 Route::resource('/packages', PackageController::class);
 
 // Transactions || Transaksi
+Route::get('/transactions/ambil_rekening/{id}', [TransactionController::class, 'rekening']);
+Route::get('/transactions/form_nominal/', [TransactionController::class, 'form']);
+Route::get('/transactions/jurnal_umum', [TransactionController::class, 'jurnal_umum']);
 Route::get('/transactions/tagihan_bulanan', [TransactionController::class, 'tagihan_bulanan']);
 Route::get('/transactions/pelunasan_instalasi', [TransactionController::class, 'pelunasan_instalasi']);
 Route::resource('/transactions', TransactionController::class);

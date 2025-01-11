@@ -22,8 +22,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="alert alert-info alert-dismissible custom-alert" role="alert">
-                            <h6><i class="fas fa-info-circle"></i><b> Success!</b></h6>
-                            Register Cater Baru !
+                            <h6><i class="fas fa-info-circle"></i>&nbsp;<b> Form Edit Data Cater !</b></h6>
                         </div>
                     </div>
                 </div>
@@ -46,7 +45,7 @@
                             <div class="col-md-2">
                                 <div class="position-relative mb-3">
                                     <label for="jabatan">Jabatan</label>
-                                    <select class="js-select-2 form-control" name="jabatan" id="jabatan">
+                                    <select class="select2 form-control" name="jabatan" id="jabatan">
                                         <option value="" disabled {{ $cater->position ? '' : 'selected' }}>Pilih
                                             Jabatan</option>
                                         @foreach ($positions as $position)
@@ -62,7 +61,7 @@
                             <div class="col-md-2">
                                 <div class="position-relative mb-3">
                                     <label for="jenis_kelamin">Jenis Kelamin</label>
-                                    <select class="js-select-2 form-control" name="jenis_kelamin" id="jenis_kelamin">
+                                    <select class="select2 form-control" name="jenis_kelamin" id="jenis_kelamin">
                                         <option value="">Pilih Jenis Kelamin</option>
                                         <option {{ $cater->jenis_kelamin == 'L' ? 'selected' : '' }} value="L">
                                             Laki-Laki</option>
@@ -140,4 +139,13 @@
             </div>
         </div>
     </form>
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4',
+            });
+        });
+    </script>
 @endsection

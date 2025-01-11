@@ -6,6 +6,10 @@ use App\Models\Cater;
 use App\Models\jabatan;
 use App\Models\Position;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Utils\Tanggal;
+
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 
 class CaterController extends Controller
@@ -38,7 +42,17 @@ class CaterController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $data = $request->only([
+            "nama",
+            "alamat",
+            "telpon",
+            "jabatan",
+            "username",
+            "password",
+            "jenis_kelamin"
+        ]);
+
+        $rules = [
             'nama' => 'required',
             'alamat' => 'required',
             'telpon' => 'required',
@@ -46,11 +60,14 @@ class CaterController extends Controller
             'username' => 'required',
             'password' => 'required',
             'jenis_kelamin' => 'required'
+        ];
 
+        $validate = Validator::make($data, $rules);
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
 
-        ]);
-
-        Cater::create([
+        $create = Cater::create([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'telpon' => $request->telpon,
@@ -62,7 +79,11 @@ class CaterController extends Controller
 
         ]);
 
-        return redirect('/caters')->with('berhasil', 'Cater berhasil Ditambahkan!');
+        return response()->json([
+            'success' => true,
+            'msg' => 'Daftar  Cater berhasil disimpan',
+            'cater' => $create
+        ]);
     }
 
     /**
@@ -110,7 +131,7 @@ class CaterController extends Controller
             'password' => $request->password, // Enkripsi password
         ]);
 
-        return redirect('/caters')->with('success', 'Cater berhasil diperbarui');
+        return redirect('/caters')->with('jsedit', 'Cater berhasil diperbarui');
     }
 
     /**

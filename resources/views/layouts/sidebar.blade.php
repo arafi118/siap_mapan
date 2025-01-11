@@ -36,8 +36,8 @@
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="/customers/create">Register Pelanggan</a>
-                <a class="collapse-item" href="/customers">Data Pelanggan</a>
                 <a class="collapse-item" href="/caters/create">Register Cater</a>
+                <a class="collapse-item" href="/customers">Data Pelanggan</a>
                 <a class="collapse-item" href="/caters">Data Cater</a>
                 <a class="collapse-item" href="/villages">Data Desa</a>
                 <a class="collapse-item" href="/hamlets">Data Dusun</a>
@@ -68,7 +68,7 @@
         </a>
         <div id="collapseTable" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="/transactions">Jurnal Umum</a>
+                <a class="collapse-item" href="/transactions/jurnal_umum">Jurnal Umum</a>
                 <a class="collapse-item" href="/transactions/pelunasan_instalasi">Tagihan Instalasi</a>
                 <a class="collapse-item" href="/transactions/tagihan_bulanan">Tagihan Bulanan</a>
             </div>

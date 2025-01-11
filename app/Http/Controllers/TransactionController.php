@@ -10,10 +10,13 @@ use App\Models\Region;
 use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\Usage;
-use App\Models\Village;
+use App\Models\Account;
+use App\Models\JenisTransactions;
+use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Utils\Tanggal;
+use App\Utils\Inventaris as UtilsInventaris;
 use App\Utils\Keuangan;
 
 use Illuminate\Support\Facades\Validator;
@@ -31,7 +34,17 @@ class TransactionController extends Controller
         $title = ' Transaksi';
         return view('transaksi.index')->with(compact('title', 'transactions'));
     }
+    //tampil jurnal umum
+    public function jurnal_umum()
+    {
+        $transactions = Transaction::all();
+        $jenis_transaksi = JenisTransactions::all();
+        $rekening = Account::all();
 
+        $title = ' Transaksi';
+        return view('transaksi.jurnal_umum.index')->with(compact('title', 'rekening', 'transactions', 'jenis_transaksi'));
+    }
+    //tampil pelunasan instalasi
     public function pelunasan_instalasi()
     {
         $transactions = Transaction::all();
@@ -44,7 +57,7 @@ class TransactionController extends Controller
         $title = 'Pelunasan Instalasi';
         return view('transaksi.pelunasan_instalasi')->with(compact('title', 'transactions', 'status_0'));
     }
-
+    //tampil tagihan_bulanan
     public function tagihan_bulanan()
     {
         $transactions = Transaction::all();
@@ -57,7 +70,200 @@ class TransactionController extends Controller
         $title = 'Pelunasan Instalasi';
         return view('transaksi.tagihan_bulanan')->with(compact('title', 'transactions', 'status_0'));
     }
+    //tampil rekening jurnal umum
+    public function rekening($id)
+    {
+        $jenis_transaksi = JenisTransactions::where('id', $id)->firstOrFail();
 
+        $label1 = 'Pilih Sumber Dana';
+        $tahun = request()->get('tahun', date('Y'));
+        $bulan = request()->get('bulan', date('m'));
+        $tgl_kondisi = date('Y-m-t', strtotime($tahun . '-' . $bulan . '-01'));
+
+        if ($id == 1) {
+            $rek1 = Account::where(function ($query) {
+                $query->where(function ($query) {
+                    $query->where('lev1', '2')->orWhere('lev1', '3')->orWhere('lev1', '4');
+                })->where([
+                    ['kode_akun', '!=', '2.1.04.01'],
+                    ['kode_akun', '!=', '2.1.04.02'],
+                    ['kode_akun', '!=', '2.1.04.03'],
+                    ['kode_akun', '!=', '2.1.02.01'],
+                    ['kode_akun', '!=', '2.1.03.01'],
+                    ['kode_akun', 'NOT LIKE', '4.1.01%'],
+                ]);
+            })->orderBy('kode_akun', 'ASC')->get();
+
+            $rek2 = Account::where('lev1', '1')->orderBy('kode_akun', 'ASC')->get();
+
+            $label2 = 'Disimpan Ke';
+        } elseif ($id == 2) {
+            $rek1 = Account::where(function ($query) {
+                $query->where(function ($query) {
+                    $query->where('lev1', '1')->orWhere('lev1', '2');
+                })->where([
+                    ['kode_akun', 'NOT LIKE', '2.1.04%'],
+                ]);
+            })->where(function ($query) use ($tgl_kondisi) {
+                $query->whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi);
+            })->orderBy('kode_akun', 'ASC')->get();
+
+            $rek2 = Account::where('lev1', '2')->orWhere('lev1', '3')->orWhere('lev1', '5')->orderBy('kode_akun', 'ASC')->get();
+
+            $label2 = 'Keperluan';
+        } elseif ($id == 3) {
+            $rek1 = Account::whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi)->get();
+
+            $rek2 = Account::whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi)->get();
+
+            $label2 = 'Disimpan Ke';
+        }
+
+        return view('transaksi.jurnal_umum.partials.rekening', compact('rek1', 'rek2', 'label1', 'label2'));
+    }
+    //tampil form rekening jurnal umum
+    public function form()
+    {
+        $keuangan = new Keuangan;
+        $tgl_transaksi = Tanggal::tglNasional(request()->get('tgl_transaksi'));
+        $jenis_transaksi = request()->get('jenis_transaksi');
+        $sumber_dana = request()->get('sumber_dana');
+        $disimpan_ke = request()->get('disimpan_ke');
+
+        if (Keuangan::startWith($sumber_dana, '1.2.01') && Keuangan::startWith($disimpan_ke, '5.3.02.01') && $jenis_transaksi == 2) {
+            $kode = explode('.', $sumber_dana);
+            $jenis = intval($kode[2]);
+            $kategori = intval($kode[3]);
+
+            $inventaris = Inventory::where([
+                ['jenis', $jenis],
+                ['kategori', $kategori]
+            ])->whereNotNull('tgl_beli')->where(function ($query) {
+                $query->where('status', 'Baik')->orwhere('status', 'Rusak');
+            })->get();
+            return view('transaksi.jurnal_umum.partials.form_hapus_inventaris')->with(compact('inventaris', 'tgl_transaksi'));
+        } else {
+            if (Keuangan::startWith($disimpan_ke, '1.2.01') || Keuangan::startWith($disimpan_ke, '1.2.03')) {
+                $kuitansi = false;
+                $relasi = false;
+                $files = 'bm';
+                if (Keuangan::startWith($disimpan_ke, '1.1.01') && !Keuangan::startWith($sumber_dana, '1.1.01')) {
+                    $file = "c_bkm";
+                    $files = "BKM";
+                    $kuitansi = true;
+                    $relasi = true;
+                } elseif (!Keuangan::startWith($disimpan_ke, '1.1.01') && Keuangan::startWith($sumber_dana, '1.1.01')) {
+                    $file = "c_bkk";
+                    $files = "BKK";
+                    $kuitansi = true;
+                    $relasi = true;
+                } elseif (Keuangan::startWith($disimpan_ke, '1.1.01') && Keuangan::startWith($sumber_dana, '1.1.01')) {
+                    $file = "c_bm";
+                    $files = "BM";
+                } elseif (Keuangan::startWith($disimpan_ke, '1.1.02') && !(Keuangan::startWith($sumber_dana, '1.1.01') || Keuangan::startWith($sumber_dana, '1.1.02'))) {
+                    $file = "c_bkm";
+                    $files = "BKM";
+                    $kuitansi = true;
+                    $relasi = true;
+                } elseif (Keuangan::startWith($disimpan_ke, '1.1.02') && Keuangan::startWith($sumber_dana, '1.1.02')) {
+                    $file = "c_bm";
+                    $files = "BM";
+                } elseif (Keuangan::startWith($disimpan_ke, '5.') && !(Keuangan::startWith($sumber_dana, '1.1.01') || Keuangan::startWith($sumber_dana, '1.1.02'))) {
+                    $file = "c_bm";
+                    $files = "BM";
+                } elseif (!(Keuangan::startWith($disimpan_ke, '1.1.01') || Keuangan::startWith($disimpan_ke, '1.1.02')) && Keuangan::startWith($sumber_dana, '1.1.02')) {
+                    $file = "c_bm";
+                    $files = "BM";
+                } elseif (!(Keuangan::startWith($disimpan_ke, '1.1.01') || Keuangan::startWith($disimpan_ke, '1.1.02')) && Keuangan::startWith($sumber_dana, '4.')) {
+                    $file = "c_bm";
+                    $files = "BM";
+                }
+
+                return view('transaksi.jurnal_umum.partials.form_inventaris')->with(compact('relasi'));
+            } else {
+                $rek_sumber = Account::where('kode_akun', $sumber_dana)->first();
+                $rek_simpan = Account::where('kode_akun', $disimpan_ke)->first();
+
+                $keterangan_transaksi = '';
+                if ($jenis_transaksi == 1) {
+                    if (!empty($disimpan_ke)) {
+                        $keterangan_transaksi = "Dari " . $rek_sumber->nama_akun . " ke " . $rek_simpan->nama_akun;
+                    }
+                } else if ($jenis_transaksi == 2) {
+                    if (!empty($disimpan_ke)) {
+                        $keterangan_transaksi = $rek_simpan->nama_akun;
+                        $kd = substr($sumber_dana, 0, 6);
+                        if ($kd == '1.1.01') {
+                            $keterangan_transaksi = "Bayar " . $rek_simpan->nama_akun;
+                        }
+                        if ($kd == '1.1.02') {
+                            $keterangan_transaksi = "Transfer " . $rek_simpan->nama_akun;
+                        }
+                    }
+                } else if ($jenis_transaksi == 3) {
+                    if (!empty($disimpan_ke)) {
+                        $keterangan_transaksi = "Pemindahan Saldo " . $rek_sumber->nama_akun . " ke " . $rek_simpan->nama_akun;
+                    }
+                }
+
+                $kuitansi = false;
+                $relasi = false;
+                $files = 'bm';
+                if (Keuangan::startWith($disimpan_ke, '1.1.01') && !Keuangan::startWith($sumber_dana, '1.1.01')) {
+                    $file = "c_bkm";
+                    $files = "BKM";
+                    $kuitansi = true;
+                    $relasi = true;
+                } elseif (!Keuangan::startWith($disimpan_ke, '1.1.01') && Keuangan::startWith($sumber_dana, '1.1.01')) {
+                    $file = "c_bkk";
+                    $files = "BKK";
+                    $kuitansi = true;
+                    $relasi = true;
+                } elseif (Keuangan::startWith($disimpan_ke, '1.1.01') && Keuangan::startWith($sumber_dana, '1.1.01')) {
+                    $file = "c_bm";
+                    $files = "BM";
+                } elseif (Keuangan::startWith($disimpan_ke, '1.1.02') && !(Keuangan::startWith($sumber_dana, '1.1.01') || Keuangan::startWith($sumber_dana, '1.1.02'))) {
+                    $file = "c_bkm";
+                    $files = "BKM";
+                    $kuitansi = true;
+                    $relasi = true;
+                } elseif (Keuangan::startWith($disimpan_ke, '1.1.02') && Keuangan::startWith($sumber_dana, '1.1.02')) {
+                    $file = "c_bm";
+                    $files = "BM";
+                } elseif (Keuangan::startWith($disimpan_ke, '5.') && !(Keuangan::startWith($sumber_dana, '1.1.01') || Keuangan::startWith($sumber_dana, '1.1.02'))) {
+                    $file = "c_bm";
+                    $files = "BM";
+                } elseif (!(Keuangan::startWith($disimpan_ke, '1.1.01') || Keuangan::startWith($disimpan_ke, '1.1.02')) && Keuangan::startWith($sumber_dana, '1.1.02')) {
+                    $file = "c_bm";
+                    $files = "BM";
+                } elseif (!(Keuangan::startWith($disimpan_ke, '1.1.01') || Keuangan::startWith($disimpan_ke, '1.1.02')) && Keuangan::startWith($sumber_dana, '4.')) {
+                    $file = "c_bm";
+                    $files = "BM";
+                }
+
+                $susut = 0;
+                if (Keuangan::startWith($disimpan_ke, '5.1.07.10')) {
+                    $tanggal = date('Y-m-t', strtotime($tgl_transaksi));
+                    if ($sumber_dana == '1.2.02.01') {
+                        $kategori = '2';
+                    } elseif ($sumber_dana == '1.2.02.02') {
+                        $kategori = '3';
+                    } else {
+                        $kategori = '4';
+                    }
+
+                    $penyusutan = UtilsInventaris::penyusutan($tanggal, $kategori);
+                    $saldo = UtilsInventaris::saldoSusut($tanggal, $sumber_dana);
+
+                    $susut = $penyusutan - $saldo;
+                    if ($susut < 0) $susut *= -1;
+                    $keterangan_transaksi .= ' (' . Tanggal::namaBulan($tgl_transaksi) . ')';
+                }
+
+                return view('transaksi.jurnal_umum.partials.form_nominal')->with(compact('relasi', 'keterangan_transaksi', 'susut'));
+            }
+        }
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -73,6 +279,41 @@ class TransactionController extends Controller
     {
         $func = 'Create' . $request->clay;
         return $this->$func($request);
+    }
+
+    /**
+     * Create data Pelunasan Instalasi.
+     */
+    private function CreateJurnalUmum($request)
+    {
+        $data = $request->only([
+            "tgl_transaksi",
+            "jenis_transaksi",
+            "sumber_dana",
+            "disimpan",
+            "keterangan",
+            "nominal",
+        ]);
+        dd($data);
+        $data['nominal'] = str_replace(',', '', $data['nominal']);
+        $data['nominal'] = str_replace('.00', '', $data['nominal']);
+        $data['nominal'] = floatval($data['nominal']);
+
+        $nominal = $data['nominal'];
+
+        $transaksi = Transaction::create([
+            'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
+            'rekening_debit' => $request->sumber_dana,
+            'rekening_kredit' => $request->disimpan_ke,
+            'total' => $nominal,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Transaksi berhasil disimpan',
+            'transaksi' => $transaksi
+        ]);
     }
 
     /**
