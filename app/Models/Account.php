@@ -9,4 +9,9 @@ class Account extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+
+    public function amount()
+    {
+        return $this->hasMany(Amount::class, 'account_id');
+    }
 }

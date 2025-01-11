@@ -10,7 +10,7 @@
                     <h6 class="font-weight-bold">
                         Instalasi
                     </h6>
-                    <div class="display-4 fs-5 mb-2 font-weight-normal text-success">
+                    <div class="display-4 fs-5 mb-2 font-weight-normal text-success" id="InstallationCount">
                         {{ $Installation }}
                     </div>
                     <a class="font-weight-bold text-nowrap fs-10" href="../app/e-commerce/customers.html">
@@ -29,7 +29,7 @@
                     <h6 class="font-weight-bold">
                         Pemakaian
                     </h6>
-                    <div class="display-4 fs-5 mb-2 font-weight-normal text-primary">
+                    <div class="display-4 fs-5 mb-2 font-weight-normal text-primary" id="UsageCount">
                         {{ $Usage }}
                     </div>
                     <a class="font-weight-bold text-nowrap fs-10" href="../app/e-commerce/customers.html">
@@ -48,7 +48,7 @@
                     <h6 class="font-weight-bold">
                         Tagihan
                     </h6>
-                    <div class="display-4 fs-5 mb-2 font-weight-normal text-warning">
+                    <div class="display-4 fs-5 mb-2 font-weight-normal text-warning" id="TagihanCount">
                         {{ $Tagihan }}
                     </div>
                     <a class="font-weight-bold text-nowrap fs-10" href="../app/e-commerce/customers.html">
@@ -68,7 +68,7 @@
                         <div class="card-body">
                             <div class="row flex-between-center py-2">
                                 <div class="col d-md-flex d-lg-block flex-between-center">
-                                    <h6 class="mb-md-0 mb-lg-2">Revenue</h6>
+                                    <h6 class="mb-md-0 mb-lg-2">Saldo Kas</h6>
                                     <span class="badge rounded-pill badge-success">
                                         <span class="fas fa-caret-up"></span>
                                         61.8%
@@ -135,6 +135,9 @@
     </div>
 @endsection
 
+@section('modal')
+@endsection
+
 @section('script')
     <script>
         var myChart = echarts.init(document.getElementById('main'));
@@ -163,5 +166,42 @@
 
         // Display the chart using the configuration items and data just specified.
         myChart.setOption(option);
+    </script>
+
+    <script>
+        function dataInstallations() {
+            $.ajax({
+                'url': '/dashboard/installations',
+                'type': 'GET',
+                'dataType': 'json',
+                'success': function(result) {
+                    console.log(result);
+                }
+            })
+        }
+
+        function dataUsages() {
+            $.ajax({
+                'url': '/dashboard/usages',
+                'type': 'GET',
+                'dataType': 'json',
+                'success': function(result) {
+                    console.log(result);
+                }
+            })
+        }
+
+        function dataTagihan() {
+            $.ajax({
+                'url': '/dashboard/tagihan',
+                'type': 'GET',
+                'dataType': 'json',
+                'success': function(result) {
+                    console.log(result);
+                }
+            })
+        }
+
+        dataTagihan()
     </script>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\AkunLevel1;
 use App\Models\Business;
 use App\Models\Calk;
 use App\Models\JenisLaporan;
@@ -90,7 +91,9 @@ class PelaporanController extends Controller
             'sub_laporan',
             'type'
         ]);
+        $busines = Business::where('id', Session::get('business_id'))->first();
 
+        
         if ($data['tahun'] == null) {
             abort(404);
         }
@@ -109,6 +112,14 @@ class PelaporanController extends Controller
 
         $data['tgl_kondisi'] = $data['tahun'] . '-' . $data['bulan'] . '-' . $data['hari'];
         $laporan = $request->laporan;
+
+        $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $busines->nomor_bh;
+        $data['info'] = $busines->alamat . ', Telp.' . $busines->telpon;
+        $data['email'] = $busines->email;
+        $data['nama'] = $busines->nama;
+        $data['alamat'] = $busines->alamat;
+
+
         return $this->$laporan($data);
     }
     
@@ -132,18 +143,25 @@ class PelaporanController extends Controller
         return $pdf->stream();
     }
     private function surat_pengantar(array $data)
-    {
-        $thn = $data['tahun'];
+    { $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
 
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['judul'] = 'Laporan Keuangan';
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        if (strlen($hari) > 0 && strlen($bln) > 0) {
+            $tgl = $thn . '-' . $bln . '-' . $hari;
+            $data['judul'] = 'Laporan Harian';
+            $data['sub_judul'] = 'Tanggal ' . Tanggal::tglLatin($tgl);
+            $data['tgl'] = Tanggal::tglLatin($tgl);
+        } elseif (strlen($bln) > 0) {
+            $tgl = $thn . '-' . $bln . '-' . $hari;
+            $data['judul'] = 'Laporan Bulanan';
+            $data['sub_judul'] = 'Tanggal ' . Tanggal::tglLatin(date('Y-m-t', strtotime($thn . '-' . $bln . '-01')));
+            $data['tgl'] = Tanggal::tglLatin(date('Y-m-t', strtotime($thn . '-' . $bln . '-01')));
+        } else {
+            $tgl = $thn . '-' . $bln . '-' . $hari;
+            $data['judul'] = 'Laporan Tahunan';
+            $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::tahun($tgl);
         }
         $data['title'] = 'Surat Pengantar';
         $view = view('pelaporan.partials.views.surat_pengantar', $data)->render();
@@ -195,6 +213,15 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
+
+        // SELECT * FROM account WHERE business_id = Session::get('business_id');
+       $data['accounts'] = Account::where('business_id', Session::get('business_id'))->with([
+        'amount' => function ($query) use ($data) {
+            $query->where('tahun', $data['tahun'])->where(function($query) use ($data) {
+                $query->where('bulan','0')->orWhere('bulan', $data['bulan']);
+            });
+        }
+    ])->get();
        $data['title'] = 'Neraca Saldo';
        $view = view('pelaporan.partials.views.neraca_saldo', $data)->render();
        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
@@ -202,6 +229,28 @@ class PelaporanController extends Controller
     }
     private function neraca(array $data)
     {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
+            'akun2',
+            'akun2.akun3',
+            'akun2.akun3.accounts',
+            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->orderBy('kode_akun', 'ASC')->get();
+
         $data['title'] = 'Neraca';
         $view = view('pelaporan.partials.views.neraca', $data)->render();
         $pdf = PDF::loadHTML($view);
@@ -235,7 +284,14 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['accounts'] = Account::where('lev1', '3')->get();
+        $data['accounts'] = Account::where('lev1', '3')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function($query) use ($data) {
+                    $query->where('bulan','0')->orWhere('bulan', $data['bulan']);
+                });
+            }
+        ])->get();
+
         $data['title'] = 'Laporan Perubahan Modal';
         $view = view('pelaporan.partials.views.laporan_perubahan_modal', $data)->render();
         $pdf = PDF::loadHTML($view);
@@ -267,6 +323,18 @@ class PelaporanController extends Controller
     }
     private function ati(array $data)
     {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
         $data['title'] = 'Daftar Aset Tetap';
         $view = view('pelaporan.partials.views.aset_tetap', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
@@ -294,14 +362,41 @@ class PelaporanController extends Controller
     }
     private function e_budgeting(array $data)
     {
-        $data['nama_akun'] = $data['sub_laporan'];
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['title'] = 'E - Budgeting';
         $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
-        $pdf = PDF::loadHTML($view);
+        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
         return $pdf->stream();
     }
     private function awal_tahun(array $data)
     {
 
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['title'] = 'E - Budgeting';
+        $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
+        return $pdf->stream();
     }
 
 }

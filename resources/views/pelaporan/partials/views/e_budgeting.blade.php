@@ -5,8 +5,9 @@
     }
 
 </style>
+<title>{{ $title }}</title>
 
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 10px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px;">
@@ -20,92 +21,60 @@
         </td>
     </tr>
     <tr>
-        <td colspan="3" height="5"></td>
+        <td colspan="3" height="10"></td>
     </tr>
 </table>
 
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
-    <tr style="background: rgb(232, 232, 232); font-weight: bold; font-size: 12px;">
-        <th rowspan="2" class="t l b" width="32%">Rekening</th>
-        <th rowspan="2" class="t l b" width="10%">Komulatif Bulan Lalu</th>
-        <th colspan="2" class="t l b" width="16%" height="16">
-            .........
-        </th>
-        <th rowspan="2" class="t l b r" width="10%">Total</th>
+<table border="1" width="100%" cellspacing="0" cellpadding="5" style="font-size: 13px; border-collapse: collapse; border: 1px solid black;">
+    <!-- Header -->
+    <tr style="background: rgb(232, 232, 232); font-weight: bold; font-size: 13px; border: 1px solid black;">
+        <th rowspan="2" class="t l b" width="20%" style="border: 1px solid black;">Rekening</th>
+        <th rowspan="2" class="t l b" width="10%" style="border: 1px solid black;">Komulatif Bulan Lalu</th>
+        <th colspan="2" class="t l b" width="12%" style="border: 1px solid black;">Januari</th>
+        <th colspan="2" class="t l b" width="12%" style="border: 1px solid black;">Februari</th>
+        <th colspan="2" class="t l b" width="12%" style="border: 1px solid black;">Maret</th>
+        <th rowspan="2" class="t l b r" width="10%" style="border: 1px solid black;">Total</th>
     </tr>
-    <tr style="background: rgb(232, 232, 232); font-weight: bold; font-size: 12px;">
-        <th class="t l b" width="8%" height="16">Rencana</th>
-        <th class="t l b" width="8%">Realisasi</th>
-        <th class="t l b" width="8%">Rencana</th>
-        <th class="t l b" width="8%">Realisasi</th>
-        <th class="t l b" width="8%">Rencana</th>
-        <th class="t l b" width="8%">Realisasi</th>
-    </tr>
-    <tr style="background: rgb(200, 200, 200); font-weight: bold;">
-        <td colspan="9" class="t l b r">
-            <b>.........</b>
-        </td>
-    </tr>
-    <tr style="background: rgb(150, 150, 150); font-weight: bold;">
-        <td colspan="9" class="t l b r">
-            <b>.........</b>
-        </td>
+    <tr style="background: rgb(232, 232, 232); font-weight: bold; font-size: 13px; border: 1px solid black;">
+        <th class="t l b" width="6%" style="border: 1px solid black;">Rencana</th>
+        <th class="t l b" width="6%" style="border: 1px solid black;">Realisasi</th>
+        <th class="t l b" width="6%" style="border: 1px solid black;">Rencana</th>
+        <th class="t l b" width="6%" style="border: 1px solid black;">Realisasi</th>
+        <th class="t l b" width="6%" style="border: 1px solid black;">Rencana</th>
+        <th class="t l b" width="6%" style="border: 1px solid black;">Realisasi</th>
     </tr>
 
-    <tr style="">
-        <td class="t l b"></td>
-        <td class="t l b" align="right">
-            .........
-        </td>
-        <td class="t l b" align="right">
-            .........
-        </td>
-        <td class="t l b" align="right">
-            ......... </td>
-        <td class="t l b" align="right">
-            ......... </td>
-        <td class="t l b r" align="right">.........</td>
+    <!-- Section Divider -->
+    <tr style="background: rgb(200, 200, 200); font-weight: bold; border: 1px solid black;">
+        <td colspan="9" class="t l b r" align="center" style="border: 1px solid black;"><b>.....</b></td>
     </tr>
-    <tr style="background: rgb(150, 150, 150); font-weight: bold;">
-        <td align="center" class="t l b" height="14">Total Realisasi .........</td>
-        <td align="right" class="t l b">.........</td>
-        <td align="right" class="t l b">.........</td>
-        <td align="right" class="t l b">.........</td>
-        <td align="right" class="t l b">.........</td>
-        <td align="right" class="t l b">.........</td>
-        <td align="right" class="t l b">.........</td>
-        <td align="right" class="t l b">.........</td>
-        <td align="right" class="t l b r">
-            .........
-        </td>
-    </tr>
-    <tr>
-        <td colspan="9" style="padding: 0px !important;">
-            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 9px;">
-                <tr style="background: rgb(232, 232, 232); font-weight: bold; font-size: 10px;">
-                    <th width="32%" class="t l b" height="28">Surplus</th>
-                    <th width="10%" class="t l b" align="right">
-                        ......... </th>
-                    <th width="8%" class="t l b" align="right">
-                        ......... </th>
-                    <th width="8%" class="t l b" align="right">.........
-                    </th>
-                    <th width="8%" class="t l b" align="right">
-                        .........
-                    </th>
-                    <th width="8%" class="t l b" align="right">.........
-                    </th>
-                    <th width="8%" class="t l b" align="right">
-                        ......... </th>
-                    <th width="8%" class="t l b" align="right">.........
-                    </th>
-                    <th width="10%" class="t l b r" align="right">
-                        ......... </th>
-                </tr>
-            </table>
 
-            <div style="margin-top: 16px;"></div>
-            .........
-        </td>
+    <!-- Data Rows -->
+    <tr style="border: 1px solid black;">
+        <td class="t l b" style="border: 1px solid black;">Rekening</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b r" align="right" style="border: 1px solid black;">.....</td>
+    </tr>
+    <!-- Total Section -->
+    <tr style="background: rgb(150, 150, 150); font-weight: bold; border: 1px solid black;">
+        <td colspan="9" class="t l b r" align="center" style="border: 1px solid black;"><b>Total</b></td>
+    </tr>
+    <tr style="border: 1px solid black;">
+        <td class="t l b r" align="center" style="border: 1px solid black;"><b>Total Realisasi</b></td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b" align="right" style="border: 1px solid black;">.....</td>
+        <td class="t l b r" align="right" style="border: 1px solid black;">.....</td>
     </tr>
 </table>
+

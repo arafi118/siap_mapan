@@ -49,21 +49,21 @@
     </main>
 
     <footer>
-        <table width="100%">
-            <tr>
+        <table width="100%" style="border: 0.1 solid black;">
+            <tr style="border: 0.1 solid black;">
                 <td align="center">
-                    <div>dd</div>
+                    <div>{{ strtoupper($nama) }}</div>
                     <div>
-                        <b>dd</b>
+                        <b>{{ strtoupper($alamat) }}</b>
                     </div>
                     <div style="font-size: 10px; color: grey;">
-                        <i>dd</i>
+                        <i>{{ $nomor_usaha }}</i>
                     </div>
                     <div style="font-size: 10px; color: grey;">
-                        <i>dd</i>
+                        <i>{{ $info }}</i>
                     </div>
                     <div style="font-size: 10px; color: grey;">
-                        <i>ee</i>
+                        <i>{{ $email }}</i>
                     </div>
                     <div style="font-size: 10px; color: grey; margin-top: 10px;">
                         <i>Tahun {{ $tahun }}</i>

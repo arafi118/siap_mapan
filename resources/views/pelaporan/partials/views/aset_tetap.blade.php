@@ -7,7 +7,7 @@
     table {
         border-collapse: collapse;
         width: 100%;
-        font-size: 11px;
+        font-size: 13px;
         table-layout: fixed;
     }
     th, td {
@@ -28,23 +28,23 @@
 </style>
 
 <!-- Header Judul -->
-<table class="header-table" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+<table class="header-table" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px;">
-                <b>Daftar</b>
+                <b>Daftar Tanah</b>
             </div>
             <div style="font-size: 16px;">
-                <b></b>
+                <b>{{ strtoupper($sub_judul) }}</b>
             </div>
         </td>
     </tr>
     <tr>
-        <td colspan="3" height="10"></td>
+        <td colspan="3" height="3"></td>
     </tr>
 </table>
 <!-- Tabel Utama -->
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px; table-layout: fixed;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; table-layout: fixed;">
     <!-- Header -->
     <tr style="background: rgb(232, 232, 232);">
         <th rowspan="2" width="3%">No</th>
@@ -90,27 +90,35 @@
     <!-- Baris Jumlah -->
     <tr>
         <td colspan="15" style="padding: 0px !important;">
-            <table class="p" border="1" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px; table-layout: fixed; border-collapse: collapse;">
+            <table class="p" border="1" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; table-layout: fixed; border-collapse: collapse;">
                 <tr>
-                    <td colspan="5"width="37%" align="left" height="15">Jumlah Daftar ___(Hapus, Hilang, Jual) s.d. Tahun __</td>
-                    <td width="3%">5</td>
-                    <td width="8%">10,000</td>
+                    <td colspan="5" width="37%" align="left" height="15" style="text-align: left; padding-left: 5px;">
+                        Jumlah Daftar ___(Hapus, Hilang, Jual) s.d. Tahun __
+                    </td>
+                    <td width="3%" align="right">5</td>
+                    <td width="8%" align="right">10,000</td>
                     <td width="8%" align="right">50,000</td>
-                    <td width="4%">5</td>
-                    <td width="8%">2,000</td>
+                    <td width="4%" align="right">5</td>
+                    <td width="8%" align="right">2,000</td>
                     <td width="12%" align="right">10,000</td>
                     <td width="12%" align="right">50,000</td>
                     <td width="8%" align="right">40,000</td>
                 </tr>
                 <tr>
-                    <td colspan="5" height="15" align="left">Jumlah</td>
-                    <td width="3%">5</td>
-                    <td width="3%">5</td>
-                    <td width="8%">10,000</td>
-                    <td  colspan="4"width="8%" align="right">50,000</td>
+                    <td colspan="5" height="15" align="left" style="text-align: left; padding-left: 5px;">
+                        Jumlah
+                    </td>
+                    <td width="3%" align="right">5</td>
+                    <td width="8%" align="right">10,000</td>
+                    <td width="8%" align="right">50,000</td>
+                    <td width="4%" align="right">5</td>
+                    <td width="8%" align="right">2,000</td>
+                    <td width="12%" align="right">10,000</td>
+                    <td width="12%" align="right">50,000</td>
                     <td width="8%" align="right">40,000</td>
                 </tr>
             </table>
+            
         </td>
     </tr>
 </table>
