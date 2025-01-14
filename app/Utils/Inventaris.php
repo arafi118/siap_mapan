@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Models\Account;
 use App\Models\Inventaris as ModelsInventaris;
 use App\Models\Rekening;
 use DB;
@@ -248,7 +249,7 @@ class Inventaris
         $awal_tahun = $y . '-01-01';
         $akhir_hari = $y . '-' . $m . '-' . date('t', strtotime("$y-$m-01"));
 
-        $rekening = Rekening::where('kode_akun', $kode_akun)->with([
+        $rekening = Account::where('kode_akun', $kode_akun)->with([
             'kom_saldo' => function ($query) use ($y, $m) {
                 $query->where('tahun', $y)->where(function ($query) use ($m) {
                     $query->where('bulan', $m)->orWhere('bulan', '0');

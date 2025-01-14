@@ -2,11 +2,15 @@
 
 namespace App\Utils;
 
+use App\Models\Account;
 use App\Models\AkunLevel2;
+use App\Models\Amount;
+use App\Models\Business;
 use App\Models\Kecamatan;
 use App\Models\PinjamanKelompok;
 use App\Models\Rekening;
 use App\Models\Saldo;
+use App\Models\Transaction;
 use App\Models\Transaksi;
 use DB;
 use Session;
@@ -17,7 +21,7 @@ class Keuangan
     {
         $angka = round($angka);
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->first();
+        $kec = Business::where('id', Session::get('lokasi'))->first();
         $pembulatan    = number_format($kec->pembulatan, 0, '', '');
         $ratusan = substr($angka, -3);
         $nilai_tengah = $pembulatan / 2;
@@ -35,7 +39,7 @@ class Keuangan
         $angka = round($angka);
 
         if ($pembulatan == null) {
-            $kec = Kecamatan::where('id', Session::get('lokasi'))->first();
+            $kec = Business::where('id', Session::get('lokasi'))->first();
             $pembulatan    = (string) $kec->pembulatan;
         }
 
@@ -127,7 +131,7 @@ class Keuangan
         $awal_tahun = $thn_kondisi . '-01-01';
         $thn_lalu = $thn_kondisi - 1;
 
-        $rekening = Rekening::select(
+        $rekening = Account::select(
             DB::raw("SUM(tb$thn_lalu) as debit"),
             DB::raw("SUM(tbk$thn_lalu) as kredit"),
             DB::raw('(SELECT sum(jumlah) as dbt FROM 
@@ -163,7 +167,7 @@ class Keuangan
         $thn_kondisi = explode('-', $tgl_kondisi)[0];
         $awal_tahun = $thn_kondisi . '-01-01';
 
-        $trx = Transaksi::where('rekening_debit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('jumlah');
+        $trx = Transaction::where('rekening_debit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('jumlah');
         return $trx;
     }
 
@@ -173,7 +177,7 @@ class Keuangan
         $thn_kondisi = explode('-', $tgl_kondisi)[0];
         $awal_tahun = $thn_kondisi . '-01-01';
 
-        $trx = Transaksi::where('rekening_kredit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('jumlah');
+        $trx = Transaction::where('rekening_kredit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('jumlah');
         return $trx;
     }
 
@@ -269,7 +273,7 @@ class Keuangan
 
         $saldo = 0;
         if ($bln == 12) {
-            $rekening = Rekening::where('kode_akun', 'like', '1.1.01%')->where(function ($query) use ($tgl_kondisi) {
+            $rekening = Account::where('kode_akun', 'like', '1.1.01%')->where(function ($query) use ($tgl_kondisi) {
                 $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
             })->orwhere('kode_akun', 'like', '1.1.02%')->with([
                 'kom_saldo' => function ($query) use ($thn) {
@@ -280,7 +284,7 @@ class Keuangan
                 }
             ])->get();
         } else {
-            $rekening = Rekening::where(function ($query) use ($tgl_kondisi) {
+            $rekening = Account::where(function ($query) use ($tgl_kondisi) {
                 $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
             })->where(function ($query) {
                 $query->where('kode_akun', 'like', '1.1.01%')->orwhere('kode_akun', 'like', '1.1.02%');
@@ -330,7 +334,7 @@ class Keuangan
     public function saldoAwal($tgl_kondisi, $kode_akun)
     {
         $thn_kondisi = explode('-', $tgl_kondisi)[0];
-        $saldo = Saldo::where([
+        $saldo = Amount::where([
             ['tahun', $thn_kondisi],
             ['bulan', '0'],
             ['kode_akun', $kode_akun]
@@ -354,7 +358,7 @@ class Keuangan
             ];
         }
 
-        $saldo = Saldo::where([
+        $saldo = Amount::where([
             ['tahun', $thn],
             ['bulan', $bln],
             ['kode_akun', $kode_akun]
@@ -374,7 +378,7 @@ class Keuangan
         ];
 
         $saldo = 0;
-        $rekening = Rekening::where('lev1', '4')->where(function ($query) use ($tgl_kondisi) {
+        $rekening = Account::where('lev1', '4')->where(function ($query) use ($tgl_kondisi) {
             $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
         })->with([
             'kom_saldo' => function ($query) use ($data) {
@@ -398,7 +402,7 @@ class Keuangan
         ];
 
         $saldo = 0;
-        $rekening = Rekening::where('lev1', '5')->where(function ($query) use ($tgl_kondisi) {
+        $rekening = Account::where('lev1', '5')->where(function ($query) use ($tgl_kondisi) {
             $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
         })->with([
             'kom_saldo' => function ($query) use ($data) {
@@ -428,7 +432,7 @@ class Keuangan
         $tahun = $array_tgl[0];
         $bulan = $array_tgl[1];
         $hari = $array_tgl[2];
-        $surplus = Rekening::where([
+        $surplus = Account::where([
             ['lev1', '>=', '4']
         ])->where(function ($query) use ($tgl_kondisi) {
             $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
@@ -652,7 +656,7 @@ class Keuangan
         $aset_produktif = 0;
         $aset_ekonomi = 0;
         $cadangan_piutang = 0;
-        $rekening = Rekening::where(function ($query) use ($tgl_kondisi) {
+        $rekening = Account::where(function ($query) use ($tgl_kondisi) {
             $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
         })->where(function ($query) {
             $query->where('lev1', '1')->where('lev2', '1');
@@ -688,7 +692,7 @@ class Keuangan
             'bulan' => explode('-', $tgl_kondisi)[1]
         ];
 
-        $rekening = Rekening::where(function ($query) {
+        $rekening = Account::where(function ($query) {
             $query->where('kode_akun', '3.1.01.01')->orwhere('kode_akun', '3.1.01.02')->orwhere('kode_akun', '3.1.01.03');
         })->where(function ($query) use ($tgl_kondisi) {
             $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
@@ -764,7 +768,7 @@ class Keuangan
             $debit = $kode_rek[0];
             $kredit = end($kode_rek);
 
-            $trx = Transaksi::where([
+            $trx = Transaction::where([
                 ['rekening_debit', 'like', "$debit"],
                 ['rekening_kredit', 'like', "$kredit"]
             ])->where([
@@ -789,7 +793,7 @@ class Keuangan
         $tgl_lalu = date('Y-m-d', strtotime('-1 month', strtotime($tgl_kondisi)));
 
         $kode_akun = '5.4.01.01';
-        $saldo = Rekening::where('kode_akun', $kode_akun)->where(function ($query) use ($tgl_kondisi) {
+        $saldo = Account::where('kode_akun', $kode_akun)->where(function ($query) use ($tgl_kondisi) {
             $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
         })->with([
             'kom_saldo' => function ($query) use ($tahun, $bulan, $bulan_lalu) {

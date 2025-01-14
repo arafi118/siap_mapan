@@ -14,4 +14,24 @@ class Account extends Model
     {
         return $this->hasMany(Amount::class, 'account_id');
     }
+
+    public function trx_debit()
+    {
+        return $this->hasMany(Transaction::class, 'rekening_debit', 'id');
+    }
+
+    public function trx_kredit()
+    {
+        return $this->hasMany(Transaction::class, 'rekening_kredit', 'id');
+    }
+
+    public function saldo()
+    {
+        return $this->hasOne(Amount::class, 'id', 'kode_akun');
+    }
+
+    public function kom_saldo()
+    {
+        return $this->hasMany(Amount::class, 'id', 'kode_akun');
+    }
 }

@@ -39,4 +39,24 @@ class Transaction extends Model
     {
         return $this->belongsTo(JenisTransactions::class);
     }
+    public function Business()
+    {
+        return $this->belongsTo(Business::class);
+    }
+    public function Inventory()
+    {
+        return $this->belongsTo(Inventory::class);
+    }
+    public function User()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function rek_debit()
+    {
+        return $this->belongsTo(Account::class, 'rekening_debit', 'id');
+    }
+    public function rek_kredit()
+    {
+        return $this->belongsTo(Account::class, 'rekening_kredit', 'id');
+    }
 }
