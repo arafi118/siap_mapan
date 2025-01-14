@@ -15,53 +15,36 @@
     </tr>
 
 </table>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
-    <tr style="background: rgb(200, 200, 200)">
-        <th colspan="2">Nama Akun</th>
-        <th>Jumlah</th>
-    </tr>
-        <tr>
-            <td colspan="3" height="3"></td>
-        </tr>
-        <tr style="">
-            <td width="5%" align="center">....</td>
-            <td width="80%">....</td>
-            <td width="15%" align="right">
-                ....
-            </td>
-        </tr>
-                <tr style="">
-                    <td>&nbsp;</td>
-                    <td>....</td>
-                    <td>....</td>
-                </tr>
-            <tr style="background: rgb(150, 150, 150); font-weight: bold;">
-                <td>&nbsp;</td>
-                <td>Jumlah ....</td>
-                <td align="right">....</td>
-            </tr>
-    <tr style="background: rgb(128, 128, 128)">
-        <td>&nbsp;</td>
-        <td>....</td>
-        <td align="right">....</td>
-    </tr>
+<table border="1" width="100%">
     <tr>
-        <td colspan="3" style="padding: 0px !important;">
-            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
-                style="font-size: 13px;">
-                <tr style="background: rgb(128, 128, 128)">
-                    <td width="5%" align="center">&nbsp;</td>
-                    <td width="80%">Kenaikan (Penurunan) Kas</td>
-                    <td width="15%" align="right">....</td>
-                </tr>
-                <tr style="background: rgb(128, 128, 128)">
-                    <td align="center">&nbsp;</td>
-                    <td>SALDO AKHIR KAS SETARA KAS</td>
-                    <td align="right">....</td>
-                </tr>
-            </table>
-
-            <div style="margin-top: 16px;"></div>
-        </td>
+        <td colspan="2"align="center">Nama Akun</td>
+        <td align="center" width="40%">Jumlah</td>
     </tr>
+
+    @foreach ($arus_kas as $ak)
+        <tr>
+            <td align="center">{{ $ak->id }}</td>
+            <td align="left">{{ $ak->nama_akun }}</td>
+            <td align="center"></td>
+        </tr>
+
+        @foreach ($ak->child as $child)
+            @php
+                if ($child->rek_kredit) {
+                    $nama_akun = $child->rek_kredit->nama_akun;
+
+                    // 
+                } else {
+                    $nama_akun = $child->rek_debit->nama_akun;
+
+                    // 
+                }
+            @endphp
+            <tr>
+                <td align="center"></td>
+                <td align="left">{{ $nama_akun }}</td>
+                <td align="center"></td>
+            </tr>
+        @endforeach
+    @endforeach
 </table>

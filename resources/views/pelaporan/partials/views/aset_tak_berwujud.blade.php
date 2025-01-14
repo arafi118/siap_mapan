@@ -63,7 +63,6 @@
         <th width="4%">Umur</th>
         <th style="border: 1px solid black;" width="8%">Biaya</th>
     </tr>
-
     <!-- Baris Data -->
     <tr>
         <td>1</td>
@@ -82,7 +81,6 @@
         <td>10,000</td>
         <td>40,000</td>
     </tr>
-
     <!-- Baris Jumlah -->
     <tr>
         <td colspan="15" style="padding: 0px !important;">
