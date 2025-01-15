@@ -67,9 +67,26 @@ Route::get('/packages/block_paket', [PackageController::class, 'block_paket']);
 Route::resource('/packages', PackageController::class);
 
 // Transactions || Transaksi
+Route::get('/transactions/ambil_rekening/{id}', [TransactionController::class, 'rekening']);
+Route::get('/transactions/form_nominal/', [TransactionController::class, 'form']);
+Route::get('/transactions/jurnal_umum', [TransactionController::class, 'jurnal_umum']);
 Route::get('/transactions/tagihan_bulanan', [TransactionController::class, 'tagihan_bulanan']);
 Route::get('/transactions/pelunasan_instalasi', [TransactionController::class, 'pelunasan_instalasi']);
+Route::get('/transactions/saldo/{kode_akun}', [TransactionController::class, 'saldo']);
 Route::resource('/transactions', TransactionController::class);
+
+Route::get('/transactions/dokumen/kuitansi/{id}', [TransactionController::class, 'kuitansi'])->middleware('auth');
+Route::get('/transactions/dokumen/kuitansi_thermal/{id}', [TransactionController::class, 'kuitansi_thermal'])->middleware('auth');
+Route::get('/transactions/dokumen/bkk/{id}', [TransactionController::class, 'bkk'])->middleware('auth');
+Route::get('/transactions/dokumen/bkm/{id}', [TransactionController::class, 'bkm'])->middleware('auth');
+Route::get('/transactions/dokumen/bm/{id}', [TransactionController::class, 'bm'])->middleware('auth');
+
+Route::get('/transactions/dokumen/struk/{id}', [TransactionController::class, 'struk'])->middleware('auth');
+Route::get('/transactions/dokumen/struk_matrix/{id}', [TransactionController::class, 'strukMatrix'])->middleware('auth');
+Route::get('/transactions/dokumen/struk_thermal/{id}', [TransactionController::class, 'strukThermal'])->middleware('auth');
+Route::get('/transactions/dokumen/bkm_angsuran/{id}', [TransactionController::class, 'bkmAngsuran'])->middleware('auth');
+Route::post('/transactions/dokumen/cetak', [TransactionController::class, 'cetak'])->middleware('auth');
+
 
 // Usages || Penggunaan
 Route::get('/usages/cari_anggota', [UsageController::class, 'carianggota']);

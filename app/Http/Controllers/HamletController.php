@@ -17,7 +17,7 @@ class HamletController extends Controller
         $desa = Village::orderBy('id', 'ASC')->get();
 
         $title = 'Data Dusun';
-        return view('dusun.index')->with(compact('title','hamlets','desa'));
+        return view('dusun.index')->with(compact('title', 'hamlets', 'desa'));
     }
 
     /**
@@ -29,7 +29,6 @@ class HamletController extends Controller
 
         $title = 'Register Dusun';
         return view('dusun.create')->with(compact('desa', 'title'));
-
     }
 
     /**
@@ -37,22 +36,22 @@ class HamletController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'id_desa' => 'required',
             'dusun' => 'required',
             'alamat' => 'required',
             'hp' => 'required'
-         ]);
+        ]);
 
         Hamlet::create([
             'id_desa' => $request->id_desa,
             'dusun' => $request->dusun,
             'alamat' => $request->alamat,
             'hp' => $request->hp
-          
+
         ]);
 
-        return redirect('/hamlets')->with('berhasil','Dusun berhasil Ditambahkan!');
+        return redirect('/hamlets')->with('jsinput', 'Dusun berhasil Ditambahkan!');
     }
 
     /**
@@ -68,9 +67,10 @@ class HamletController extends Controller
      */
     public function edit(Hamlet $hamlet)
     {
+        $desa = Village::all();
         $hamlets = Hamlet::with('village')->get();
         $title = 'Edit Dusun';
-        return view('dusun.edit')->with(compact('hamlets','title','hamlet'));
+        return view('dusun.edit')->with(compact('hamlets', 'desa', 'title', 'hamlet'));
     }
 
     /**
@@ -85,7 +85,7 @@ class HamletController extends Controller
             'alamat' => 'required',
             'hp' => 'required'
         ]);
-    
+
         // Update data
         $hamlet->update([
             'id_desa' => $request->id_desa,
@@ -93,10 +93,10 @@ class HamletController extends Controller
             'alamat' => $request->alamat,
             'hp' => $request->hp
         ]);
-    
-        return redirect('/hamlets')->with('success', 'Dusun berhasil diperbarui');
+
+        return redirect('/hamlets')->with('jsedit', 'Dusun berhasil diperbarui');
     }
-    
+
 
     /**
      * Remove the specified resource from storage.
@@ -105,6 +105,5 @@ class HamletController extends Controller
     {
         $hamlet->delete();
         return redirect('/hamlets')->with('success', 'Dusun berhasil dihapus');
-
     }
 }

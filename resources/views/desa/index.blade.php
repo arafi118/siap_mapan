@@ -61,14 +61,14 @@
         });
     </script>
 
-    @if (session('success'))
+    @if (session('jsedit'))
         <script>
             //edit
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
                     icon: 'success',
                     title: 'Edit Data Berhasil',
-                    text: '{{ Session::get('Berhasil') }}',
+                    text: '{{ Session::get('jsedit') }}',
                     showConfirmButton: false,
                     timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
                 });

@@ -11,22 +11,22 @@
             /* Menambahkan jarak di luar alert */
         }
     </style>
-    <div class="row">
-        <!-- Datatables -->
-        <div class="col-lg-12">
-            <!-- Alerts with Icon -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="alert alert-info alert-dismissible custom-alert" role="alert">
-                        <h6><i class="fas fa-info-circle"></i><b> Success!</b></h6>
-                        Register Cater Baru !
+    <form action="/caters" method="post" id="FormCater">
+        @csrf
+
+        <div class="row">
+            <!-- Datatables -->
+            <div class="col-lg-12">
+                <!-- Alerts with Icon -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="alert alert-info alert-dismissible custom-alert" role="alert">
+                            <h6><i class="fas fa-info-circle"></i>&nbsp;&nbsp;<b>Register Cater Baru !</b></h6>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <form action="/caters" method="post" id="FormCater">
-        @csrf
         <div class="row">
             <!-- Datatables -->
             <div class="col-lg-12">
@@ -44,7 +44,7 @@
                             <div class="col-md-2">
                                 <div class="position-relative mb-3">
                                     <label for="jabatan">Jabatan</label>
-                                    <select class="js-select-2 form-control" name="jabatan" id="jabatan">
+                                    <select class="select2 form-control" name="jabatan" id="jabatan">
                                         <option value="">Pilih Jabatan</option>
                                         @foreach ($positions as $position)
                                             <option value="{{ $position->id }}">{{ $position->nama_jabatan }}</option>
@@ -56,7 +56,7 @@
                             <div class="col-md-2">
                                 <div class="position-relative mb-3">
                                     <label for="jenis_kelamin">Jenis Kelamin</label>
-                                    <select class="js-select-2 form-control" name="jenis_kelamin" id="jenis_kelamin">
+                                    <select class="select2 form-control" name="jenis_kelamin" id="jenis_kelamin">
                                         <option value="">Pilih Jenis Kelamin</option>
                                         <option value="L">Laki Laki</option>
                                         <option value="P">Perempuan</option>
@@ -120,4 +120,61 @@
             </div>
         </div>
     </form>
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4',
+            });
+        });
+
+        //simpan
+        $(document).on('click', '#SimpanCater', function(e) {
+            e.preventDefault();
+            $('small').html('');
+
+            var form = $('#FormCater');
+            var actionUrl = form.attr('action');
+
+            $.ajax({
+                type: 'POST',
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        Swal.fire({
+                            title: result.msg,
+                            text: "Tambahkan Register Cater Baru?",
+                            icon: "success",
+                            showDenyButton: true,
+                            confirmButtonText: "Tambahkan",
+                            denyButtonText: `Tidak`
+                        }).then((res) => {
+                            if (res.isConfirmed) {
+                                window.location.reload()
+                            } else {
+                                window.location.href = '/caters/';
+                            }
+                        });
+                    }
+                },
+                error: function(result) {
+                    const response = result.responseJSON;
+
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
+
+                    if (response && typeof response === 'object') {
+                        $.each(response, function(key, message) {
+                            $('#' + key)
+                                .closest('.input-group.input-group-static')
+                                .addClass('is-invalid');
+
+                            $('#msg_' + key).html(message);
+                        });
+                    }
+                }
+            });
+        });
+    </script>
 @endsection

@@ -30,7 +30,7 @@ $thn_awal = explode('-', $busines->created_at)[0];
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="bulan">Bulan</label>
-                            <select class=" form-control" name="bulan" id="bulan">
+                            <select class="form-control" name="bulan" id="bulan">
                                 <option value="">---</option>
                                 <option value="01">01. JANUARI</option>
                                 <option value="02">02. FEBRUARI</option>
@@ -137,6 +137,14 @@ $thn_awal = explode('-', $busines->created_at)[0];
 @endsection
 @section('script')
 <script>
+    // Mendapatkan bulan berjalan
+    const currentMonth = new Date().getMonth() + 1; // Bulan mulai dari 0 (Januari adalah 0)
+    const formattedMonth = currentMonth.toString().padStart(2, '0'); // Tambahkan nol di depan jika perlu
+
+    // Setel nilai default pada elemen select
+    document.getElementById('bulan').value = formattedMonth;
+</script>
+<script>
     $('.js-example-basic-single').select2({
         theme: 'bootstrap-4'
     });
@@ -238,9 +246,10 @@ $thn_awal = explode('-', $busines->created_at)[0];
         }
     })
 
+    
     function namaBulan(bulan) {
         switch (bulan) {
-            case '01':
+            case '01s':
                 return 'Januari';
                 break;
             case '02':

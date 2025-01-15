@@ -45,21 +45,35 @@
         <td colspan="3" height="8"></td>
     </tr>
 </table>
-<table class="with-border">
+<table class="with-border"style="font-size: 13px;">
     <tr>
         <th class="l t" width="5%">No</th>
         <th class="l t" width="55%">Rekening Modal</th>
         <th class="l t" width="20%">&nbsp;</th>
     </tr>
-    @foreach ($accounts as $rek)
-        <tr>
-            <td class="l t" align="center">{{ $nomor++ }}</td>
-            <td class="l t">{{ $rek->nama_akun }}</td>
-            <td class="l t" align="right">_______</td>
-        </tr>
-    @endforeach
+   @php
+    $total_saldo = 0; 
+@endphp
+@foreach ($accounts as $rek)
+    @php
+        $saldo_debit = 0;
+        $saldo_kredit = 0;
+        foreach ($rek->amount as $amount) {
+            $saldo_debit += $amount->debit;
+            $saldo_kredit += $amount->kredit;
+        }
+
+        $saldo = $saldo_kredit - $saldo_debit;
+        $total_saldo += $saldo; 
+    @endphp
     <tr>
-        <td class="l t b" colspan="2" height="15">&nbsp;</td>
-        <td class="l t b" align="right">.........</td>
+        <td class="l t" align="center">{{ $nomor++ }}</td>
+        <td class="l t">{{ $rek->nama_akun }}</td>
+        <td class="l t" align="right">{{ number_format($saldo, 2) }}</td>
     </tr>
+@endforeach
+<tr>
+    <td class="l t b" colspan="2" height="15">Total Saldo</td>
+    <td class="l t b" align="right">{{ number_format($total_saldo, 2) }}</td>
+</tr>
 </table>

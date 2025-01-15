@@ -72,29 +72,14 @@
         });
     </script>
 
-    @if (session('success'))
+    @if (session('jsedit'))
         <script>
             //edit
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Edit Data Berhasil',
-                    text: '{{ Session::get('berhasil') }}',
-                    showConfirmButton: false,
-                    timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
-                });
-            });
-        </script>
-    @endif
-
-    @if (Session::has('berhasil'))
-        <script>
-            //tambah
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
                     title: 'Berhasil',
-                    text: '{{ Session::get('berhasil') }}',
+                    text: '{{ Session::get('jsedit') }}',
                     showConfirmButton: false,
                     timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
                 });
@@ -102,6 +87,7 @@
         </script>
     @endif
     <script>
+        //hapus
         $(document).on('click', '.Hapus_cater', function(e) {
             e.preventDefault();
 
