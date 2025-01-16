@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Installations;
 use App\Models\Settings;
 use App\Models\Usage;
+use App\Utils\Keuangan;
+use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -12,6 +15,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $keuangan = new Keuangan;
+
         Session::put('business_id', '1');
         $Installation = Installations::count();
         $Usage = Usage::where('status', 'PAID')->count();
@@ -20,12 +25,25 @@ class DashboardController extends Controller
             ['tgl_akhir', '<', date('Y-m-d')]
         ])->count();
 
+        $bulan = intval(date('m'));
+        $chart = $this->chart();
+
+        $pendapatan = $chart['pendapatan'];
+        $beban = $chart['beban'];
+        $surplus = $chart['surplus'];
+
+        $pros_pendapatan = $keuangan->ProsSaldo($pendapatan[$bulan - 1], $pendapatan[$bulan]);
+        $pros_beban = $keuangan->ProsSaldo($beban[$bulan - 1], $beban[$bulan]);
+        $pros_surplus = $keuangan->ProsSaldo($surplus[$bulan - 1], $surplus[$bulan]);
+
+        $charts = json_encode($chart);
+
         $today = date('Y-m-d');
         $year = date('Y');
         $month = date('m');
 
         $title = 'Dashboard';
-        return view('welcome')->with(compact('Installation', 'Usage', 'Tagihan', 'title'));
+        return view('welcome')->with(compact('Installation', 'Usage', 'Tagihan', 'title', 'charts', 'pendapatan', 'beban', 'surplus', 'pros_pendapatan', 'pros_beban', 'pros_surplus'));
     }
 
     public function installations()
@@ -95,5 +113,71 @@ class DashboardController extends Controller
             'setting' => $setting,
             'block' => $result
         ]);
+    }
+
+    private function chart()
+    {
+        $accounts = Account::where('business_id', Session::get('business_id'))->where(function ($query) {
+            $query->where('lev1', '4')->orWhere('lev1', '5');
+        })->with([
+            'amount' => function ($query) {
+                $query->where('tahun', date('Y'))->where('bulan', '<=', date('m'));
+            }
+        ])->get();
+
+        $bulan = [];
+        for ($i = 0; $i <= date('m'); $i++) {
+            $bulan[$i] = [
+                'pendapatan' => 0,
+                'beban' => 0
+            ];
+        }
+
+        foreach ($accounts as $account) {
+            foreach ($account->amount as $amount) {
+                $saldo = $amount->kredit - $amount->debit;
+                if ($account->jenis_mutasi != 'kredit') {
+                    $saldo = $amount->debit - $amount->kredit;
+                }
+
+                if ($account->lev1 == '4') {
+                    if ($amount->bulan > 0) {
+                        $saldo -= $bulan[intval($amount->bulan) - 1]['pendapatan'];
+                    }
+
+                    $bulan[intval($amount->bulan)]['pendapatan'] += $saldo;
+                } else {
+                    if ($amount->bulan > 0) {
+                        $saldo -= $bulan[intval($amount->bulan) - 1]['beban'];
+                    }
+
+                    $bulan[intval($amount->bulan)]['beban'] += $saldo;
+                }
+            }
+        }
+
+        $nama_bulan = [];
+        $pendapatan = [];
+        $beban = [];
+        $surplus = [];
+        foreach ($bulan as $key => $value) {
+            $pendapatan[$key] = $value['pendapatan'];
+            $beban[$key] = $value['beban'];
+            $surplus[$key] = $value['pendapatan'] - $value['beban'];
+
+            if ($key == 0) {
+                $nama_bulan[$key] = 'Awal Tahun';
+            } else {
+                $tanggal = date('Y-m-d', strtotime(date('Y') . '-' . $key . '-01'));
+                $nama_bulan[$key] = Tanggal::namaBulan($tanggal);
+            }
+        }
+
+        return [
+            'nama_bulan' => $nama_bulan,
+            'pendapatan' => $pendapatan,
+            'beban' => $beban,
+            'surplus' => $surplus
+        ];
     }
 }

@@ -1,8 +1,8 @@
 @extends('layouts.base')
 
 @section('content')
-    <div class="row g-3 mb-3">
-        <div class="col-sm-6 col-md-4">
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
             <div class="card overflow-hidden">
                 <div class="bg-holder bg-card" style="background-image:url(/assets/img/corner-3.png);"></div>
 
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="col-sm-6 col-md-4">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
             <div class="card overflow-hidden">
                 <div class="bg-holder bg-card" style="background-image:url(/assets/img/corner-2.png);"></div>
 
@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <div class="col-sm-6 col-md-4">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
             <div class="card overflow-hidden">
                 <div class="bg-holder bg-card" style="background-image:url(/assets/img/corner-1.png);"></div>
 
@@ -62,22 +62,23 @@
     </div>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-12 col-lg-4 mb-3">
             <div class="row">
                 <div class="col-12 mb-3">
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="row flex-between-center py-2">
                                 <div class="col d-md-flex d-lg-block flex-between-center">
-                                    <h6 class="mb-md-0 mb-lg-2">Saldo Kas</h6>
-                                    <span class="badge rounded-pill badge-success">
-                                        <span class="fas fa-caret-up"></span>
-                                        61.8%
+                                    <h6 class="mb-md-0 mb-lg-2">Pendapatan</h6>
+                                    <span
+                                        class="badge rounded-pill badge-{{ $pros_pendapatan > 0 ? 'success' : 'danger' }}">
+                                        <span class="fas fa-caret-{{ $pros_pendapatan > 0 ? 'up' : 'down' }}"></span>
+                                        {{ $pros_pendapatan }}%
                                     </span>
                                 </div>
                                 <div class="col-auto">
-                                    <h4 class="fs-6 font-weight-normal text-700">
-                                        $82.18M
+                                    <h4 class="fs-8 font-weight-normal text-700">
+                                        Rp. {{ number_format($pendapatan[intval(date('m'))], 2) }}
                                     </h4>
                                 </div>
                             </div>
@@ -89,15 +90,15 @@
                         <div class="card-body">
                             <div class="row flex-between-center py-2">
                                 <div class="col d-md-flex d-lg-block flex-between-center">
-                                    <h6 class="mb-md-0 mb-lg-2">Revenue</h6>
-                                    <span class="badge rounded-pill badge-success">
-                                        <span class="fas fa-caret-up"></span>
-                                        61.8%
+                                    <h6 class="mb-md-0 mb-lg-2">Beban</h6>
+                                    <span class="badge rounded-pill badge-{{ $pros_beban > 0 ? 'danger' : 'success' }}">
+                                        <span class="fas fa-caret-{{ $pros_beban > 0 ? 'up' : 'down' }}"></span>
+                                        {{ $pros_beban }}%
                                     </span>
                                 </div>
                                 <div class="col-auto">
-                                    <h4 class="fs-6 font-weight-normal text-700">
-                                        $82.18M
+                                    <h4 class="fs-8 font-weight-normal text-700">
+                                        Rp. {{ number_format($beban[intval(date('m'))], 2) }}
                                     </h4>
                                 </div>
                             </div>
@@ -109,15 +110,15 @@
                         <div class="card-body">
                             <div class="row flex-between-center py-2">
                                 <div class="col d-md-flex d-lg-block flex-between-center">
-                                    <h6 class="mb-md-0 mb-lg-2">Revenue</h6>
-                                    <span class="badge rounded-pill badge-success">
-                                        <span class="fas fa-caret-up"></span>
-                                        61.8%
+                                    <h6 class="mb-md-0 mb-lg-2">Surplus</h6>
+                                    <span class="badge rounded-pill badge-{{ $pros_surplus > 0 ? 'success' : 'danger' }}">
+                                        <span class="fas fa-caret-{{ $pros_surplus > 0 ? 'up' : 'down' }}"></span>
+                                        {{ $pros_surplus }}%
                                     </span>
                                 </div>
                                 <div class="col-auto">
-                                    <h4 class="fs-6 font-weight-normal text-700">
-                                        $82.18M
+                                    <h4 class="fs-8 text-700">
+                                        Rp. {{ number_format($surplus[intval(date('m'))], 2) }}
                                     </h4>
                                 </div>
                             </div>
@@ -126,10 +127,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-12 col-lg-8 mb-3">
             <div class="card">
                 <div class="card-body">
-                    <div id="main" style="width: 100%;height:314px;"></div>
+                    <h5 class="mb-3">Pendapatan dan Beban</h5>
+                    <div id="main" style="width: 100%;height:273px;"></div>
                 </div>
             </div>
         </div>
@@ -309,31 +311,59 @@
 
 @section('script')
     <script>
+        var dataChart = JSON.parse(@json($charts));
         var myChart = echarts.init(document.getElementById('main'));
 
-        // Specify the configuration items and data for the chart
         option = {
-            xAxis: {
-                data: ['A', 'B', 'C', 'D', 'E']
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
             },
-            yAxis: {},
+            legend: {
+                data: ['Pendapatan', 'Beban', 'Surplus']
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            grid: {
+                right: '4%',
+                bottom: '12%',
+                containLabel: false
+            },
+            xAxis: {
+                data: dataChart.nama_bulan
+            },
+            yAxis: [{
+                type: 'value'
+            }],
             series: [{
-                    data: [10, 22, 28, 23, 19],
+                    name: 'Pendapatan',
+                    data: dataChart.pendapatan,
                     type: 'line',
                     areaStyle: {}
                 },
                 {
-                    data: [25, 14, 23, 35, 10],
+                    name: 'Beban',
+                    data: dataChart.beban,
                     type: 'line',
-                    areaStyle: {
-                        color: '#ff0',
-                        opacity: 0.5
-                    }
+                    areaStyle: {}
+                },
+                {
+                    name: 'Surplus',
+                    data: dataChart.surplus,
+                    type: 'line',
+                    areaStyle: {}
                 }
             ]
         };
 
-        // Display the chart using the configuration items and data just specified.
         myChart.setOption(option);
     </script>
 

@@ -34,6 +34,7 @@ Route::get('/dashboard/usages', [DashboardController::class, 'usages']);
 Route::get('/dashboard/tagihan', [DashboardController::class, 'tagihan']);
 
 // Auth
+Route::get('/auth', [AuthController::class, 'index']);
 Route::post('/auth', [AuthController::class, 'login']);
 
 // Accounts || Rekening
