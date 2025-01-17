@@ -301,12 +301,6 @@ form#Penduduk small.text-danger {
     left: 0;
 }
 
-.navbar-nav {
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
 #wrapper #content-wrapper {
     height: 100vh;
 }

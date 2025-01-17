@@ -25,6 +25,7 @@ class UserFactory extends Factory
     {
         return [
             'nama' => fake()->name(),
+            'business_id' => 1,
             'jenis_kelamin' => fake()->randomElement(['L', 'P']),
             'alamat' => fake()->address(),
             'telpon' => '08' . fake()->numerify('#########'),

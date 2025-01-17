@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="/assets/img/logo/logo.png" rel="icon">
-    <title>RuangAdmin - Login</title>
+    <title>Login</title>
     <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/ruang-admin.css" rel="stylesheet">
@@ -29,7 +29,9 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Login</h1>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" action="{{ route('auth') }}" method="POST">
+                                        @csrf
+
                                         <div class="form-group">
                                             <input type="text" class="form-control" id="username" name="username"
                                                 placeholder="Masukkan Username">
