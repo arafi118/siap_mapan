@@ -1,5 +1,11 @@
+<style>
+    * {
+        font-family: 'Arial', sans-serif;
+
+    }
+</style>
     <title>{{ $title }}</title>
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
         <tr>
             <td colspan="4" align="center">
                 <div style="font-size: 18px;">
@@ -16,7 +22,7 @@
     </table>
 
     <div style="width: 100%; text-align: right;">Kode Akun : {{$kode_akun}}</div>
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
         <tr style="background: rgb(63, 63, 63); font-weight: bold; color: #fff;">
             <td height="20" align="center" width="4%">No</td>
             <td align="center" width="10%">Tanggal</td>

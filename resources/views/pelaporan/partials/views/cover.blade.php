@@ -2,7 +2,8 @@
 <title>{{ $title }}</title>
 <style>
     * {
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: 'Arial', sans-serif;
+
     }
 
     html {

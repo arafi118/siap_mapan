@@ -1,5 +1,9 @@
 <title>{{ $title }}</title>
 <style>
+    * {
+        font-family: 'Arial', sans-serif;
+
+    }
     table {
         border-collapse: collapse;
         width: 100%;

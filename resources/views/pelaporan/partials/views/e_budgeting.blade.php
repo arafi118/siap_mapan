@@ -1,4 +1,8 @@
 <style>
+     * {
+        font-family: 'Arial', sans-serif;
+
+    }
     html {
         margin-left: 40px;
         margin-right: 40px;

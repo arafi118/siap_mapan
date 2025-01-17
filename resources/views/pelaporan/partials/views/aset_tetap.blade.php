@@ -4,10 +4,14 @@
 @endphp
 <title>{{ $title }}</title>
 <style>
+     * {
+        font-family: 'Arial', sans-serif;
+
+    }
     table {
         border-collapse: collapse;
         width: 100%;
-        font-size: 13px;
+        font-size: 12px;
         table-layout: fixed;
     }
     th, td {
@@ -28,7 +32,7 @@
 </style>
 
 <!-- Header Judul -->
-<table class="header-table" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
+<table class="header-table" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px;">
@@ -44,7 +48,7 @@
     </tr>
 </table>
 <!-- Tabel Utama -->
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; table-layout: fixed;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px; table-layout: fixed;">
     <!-- Header -->
     <tr style="background: rgb(232, 232, 232);">
         <th rowspan="2" width="3%">No</th>
@@ -90,7 +94,7 @@
     <!-- Baris Jumlah -->
     <tr>
         <td colspan="15" style="padding: 0px !important;">
-            <table class="p" border="1" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; table-layout: fixed; border-collapse: collapse;">
+            <table class="p" border="1" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px; table-layout: fixed; border-collapse: collapse;">
                 <tr>
                     <td colspan="5" width="37%" align="left" height="15" style="text-align: left; padding-left: 5px;">
                         Jumlah Daftar ___(Hapus, Hilang, Jual) s.d. Tahun __

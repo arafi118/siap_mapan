@@ -1,5 +1,9 @@
 <title>{{ $title }}</title>
 <style>
+    * {
+        font-family: 'Arial', sans-serif;
+    }
+
     .text-center {
         text-align: center;
     }
@@ -7,7 +11,7 @@
     table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .left-align {
@@ -64,7 +68,7 @@
 
 </style>
 
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px;">
@@ -99,23 +103,23 @@
         <td colspan="2">{{ $lev2->nama_akun }}</td>
     </tr>
     @foreach ($lev2->akun3 as $lev3)
-    @php
-    $sum_saldo = 0;
-    foreach ($lev3->accounts as $account) {
-    $saldo_debit = 0;
-    $saldo_kredit = 0;
-    foreach ($account->amount as $amount) {
-    $saldo_debit += $amount->debit;
-    $saldo_kredit += $amount->kredit;
-    }
+        @php
+            $sum_saldo = 0;
+        foreach ($lev3->accounts as $account) {
+            $saldo_debit = 0;
+            $saldo_kredit = 0;
+        foreach ($account->amount as $amount) {
+            $saldo_debit += $amount->debit;
+            $saldo_kredit += $amount->kredit;
+        }
 
-    $saldo = $saldo_kredit - $saldo_debit;
-    if ($lev1->lev1 == '1') {
-    $saldo = $saldo_debit - $saldo_kredit;
-    }
+             $saldo = $saldo_kredit - $saldo_debit;
+        if ($lev1->lev1 == '1') {
+                $saldo = $saldo_debit - $saldo_kredit;
+        }
 
-    $sum_saldo += $saldo;
-    }
+         $sum_saldo += $saldo;
+        }
 
     $row_class = $loop->iteration % 2 === 0 ? 'row-dark' : 'row-light';
     @endphp
