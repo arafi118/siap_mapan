@@ -20,6 +20,24 @@ use Illuminate\Support\Facades\Session;
 class Keuangan
 {
 
+    function ProsSaldo($bulan_kemarin, $bulan_sekarang)
+    {
+        if ($bulan_kemarin == 0) {
+            if ($bulan_sekarang > 0) {
+                return 100;
+            } else {
+                return 0;
+            }
+        }
+
+        if ($bulan_sekarang == 0) {
+            return -100;
+        }
+
+        $percentageChange = (($bulan_sekarang - $bulan_kemarin) / $bulan_kemarin) * 100;
+        return $percentageChange;
+    }
+
     public function komSaldo($account)
     {
         $saldo_awal_debit = 0;
@@ -260,41 +278,6 @@ class Keuangan
 
         $trx = Transaction::where('rekening_kredit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('total');
         return $trx;
-    }
-
-    public function komSaldo($rek)
-    {
-        $awal_debit = 0;
-        $saldo_debit = 0;
-        $awal_kredit = 0;
-        $saldo_kredit = 0;
-
-        $nomor = 0;
-        foreach ($rek->amount as $amount) {
-            if ($nomor > 2) {
-                continue;
-            }
-
-            if ($amount->bulan == 0) {
-                $awal_debit += floatval($amount->debit);
-                $awal_kredit += floatval($amount->kredit);
-            } else {
-                $saldo_debit += floatval($amount->debit);
-                $saldo_kredit += floatval($amount->kredit);
-            }
-
-            $nomor++;
-        }
-
-        if ($rek->lev1 == 1 || $rek->lev1 == '5') {
-            $saldo_awal = $awal_debit - $awal_kredit;
-            $saldo = $saldo_awal + ($saldo_debit - $saldo_kredit);
-        } else {
-            $saldo_awal = $awal_kredit - $awal_debit;
-            $saldo = $saldo_awal + ($saldo_kredit - $saldo_debit);
-        }
-
-        return $saldo;
     }
 
     public function saldoBulanIni($rek)
