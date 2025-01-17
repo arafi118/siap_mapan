@@ -69,5 +69,4 @@ class Transaction extends Model
     {
         return $this->belongsTo(Account::class, 'rekening_kredit');
     }
-    
 }

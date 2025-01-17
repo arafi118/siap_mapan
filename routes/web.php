@@ -73,19 +73,20 @@ Route::get('/transactions/jurnal_umum', [TransactionController::class, 'jurnal_u
 Route::get('/transactions/tagihan_bulanan', [TransactionController::class, 'tagihan_bulanan']);
 Route::get('/transactions/pelunasan_instalasi', [TransactionController::class, 'pelunasan_instalasi']);
 Route::get('/transactions/saldo/{kode_akun}', [TransactionController::class, 'saldo']);
+Route::get('/transactions/detail_transaksi/', [TransactionController::class, 'detailTransaksi']);
 Route::resource('/transactions', TransactionController::class);
 
-Route::get('/transactions/dokumen/kuitansi/{id}', [TransactionController::class, 'kuitansi'])->middleware('auth');
-Route::get('/transactions/dokumen/kuitansi_thermal/{id}', [TransactionController::class, 'kuitansi_thermal'])->middleware('auth');
-Route::get('/transactions/dokumen/bkk/{id}', [TransactionController::class, 'bkk'])->middleware('auth');
-Route::get('/transactions/dokumen/bkm/{id}', [TransactionController::class, 'bkm'])->middleware('auth');
-Route::get('/transactions/dokumen/bm/{id}', [TransactionController::class, 'bm'])->middleware('auth');
+Route::get('/transactions/dokumen/kuitansi/{id}', [TransactionController::class, 'kuitansi']);
+Route::get('/transactions/dokumen/kuitansi_thermal/{id}', [TransactionController::class, 'kuitansi_thermal']);
+Route::get('/transactions/dokumen/bkk/{id}', [TransactionController::class, 'bkk']);
+Route::get('/transactions/dokumen/bkm/{id}', [TransactionController::class, 'bkm']);
+Route::get('/transactions/dokumen/bm/{id}', [TransactionController::class, 'bm']);
 
-Route::get('/transactions/dokumen/struk/{id}', [TransactionController::class, 'struk'])->middleware('auth');
-Route::get('/transactions/dokumen/struk_matrix/{id}', [TransactionController::class, 'strukMatrix'])->middleware('auth');
-Route::get('/transactions/dokumen/struk_thermal/{id}', [TransactionController::class, 'strukThermal'])->middleware('auth');
-Route::get('/transactions/dokumen/bkm_angsuran/{id}', [TransactionController::class, 'bkmAngsuran'])->middleware('auth');
-Route::post('/transactions/dokumen/cetak', [TransactionController::class, 'cetak'])->middleware('auth');
+Route::get('/transactions/dokumen/struk/{id}', [TransactionController::class, 'struk']);
+Route::get('/transactions/dokumen/struk_matrix/{id}', [TransactionController::class, 'strukMatrix']);
+Route::get('/transactions/dokumen/struk_thermal/{id}', [TransactionController::class, 'strukThermal']);
+Route::get('/transactions/dokumen/bkm_angsuran/{id}', [TransactionController::class, 'bkmAngsuran']);
+Route::post('/transactions/dokumen/cetak', [TransactionController::class, 'cetak']);
 
 
 // Usages || Penggunaan
@@ -111,9 +112,7 @@ Route::delete('/hamlets/{hamlet}', [HamletController::class, 'destroy']);
 // Cater
 Route::resource('/caters', CaterController::class);
 
-
-
-
+//peraturan sop
 Route::resource('/pengaturan', SopController::class);
 Route::get('/pengaturan/sop', [SopController::class, 'profil']);
 Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
@@ -121,8 +120,10 @@ Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
 Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
 Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
 
+//generate
 Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);
 
+//pelaporan
 Route::get('/pelaporan', [PelaporanController::class, 'index']);
 Route::post('/pelaporan/preview', [PelaporanController::class, 'preview']);
 Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan']);

@@ -29,9 +29,4 @@ class Account extends Model
     {
         return $this->hasOne(Amount::class, 'id', 'kode_akun');
     }
-
-    public function kom_saldo()
-    {
-        return $this->hasMany(Amount::class, 'id', 'kode_akun');
-    }
 }

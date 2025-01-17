@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\AkunLevel2;
 use App\Models\Amount;
 use App\Models\Business;
+use App\Models\Installations;
 use App\Models\Kecamatan;
 use App\Models\PinjamanKelompok;
 use App\Models\Rekening;
@@ -13,15 +14,95 @@ use App\Models\Saldo;
 use App\Models\Transaction;
 use App\Models\Transaksi;
 use DB;
-use Session;
+
+use Illuminate\Support\Facades\Session;
 
 class Keuangan
 {
+
+    public function komSaldo($account)
+    {
+        $saldo_awal_debit = 0;
+        $saldo_awal_kredit = 0;
+        $saldo_bulan_berjalan_debit = 0;
+        $saldo_bulan_berjalan_kredit = 0;
+        foreach ($account->amount as $amount) {
+            if ($amount) {
+                if ($amount->bulan == '0') {
+                    $saldo_awal_debit += $amount->debit ?? 0;
+                    $saldo_awal_kredit += $amount->kredit ?? 0;
+                } else {
+                    $saldo_bulan_berjalan_debit += $amount->debit ?? 0;
+                    $saldo_bulan_berjalan_kredit += $amount->kredit ?? 0;
+                }
+            }
+        }
+
+        // Hitung saldo
+        $saldo_awal = $saldo_awal_debit - $saldo_awal_kredit;
+        $saldo_bulan_berjalan = $saldo_bulan_berjalan_debit - $saldo_bulan_berjalan_kredit;
+        if ($account->jenis_mutasi == 'kredit') {
+            $saldo_awal = $saldo_awal_kredit - $saldo_awal_debit;
+            $saldo_bulan_berjalan = $saldo_bulan_berjalan_kredit - $saldo_bulan_berjalan_debit;
+        }
+
+        $saldo_sd_bulan_ini = $saldo_awal + $saldo_bulan_berjalan;
+
+        return $saldo_sd_bulan_ini;
+    }
+
+    public function komSaldoLB($account)
+    {
+        $saldo_awal_debit = 0;
+        $saldo_awal_kredit = 0;
+        $saldo_bulan_berjalan_debit = 0;
+        $saldo_bulan_berjalan_kredit = 0;
+        foreach ($account->amount as $amount) {
+            if ($amount) {
+                if ($amount->bulan == '0') {
+                    $saldo_awal_debit += $amount->debit ?? 0;
+                    $saldo_awal_kredit += $amount->kredit ?? 0;
+                } else {
+                    $saldo_bulan_berjalan_debit += $amount->debit ?? 0;
+                    $saldo_bulan_berjalan_kredit += $amount->kredit ?? 0;
+                }
+            }
+        }
+
+        // Pengecekan untuk $bulan_lalu jika null
+        $bulan_lalu = $account->oneAmount;
+        if ($bulan_lalu) {
+            $saldo_bulan_lalu_debit = $bulan_lalu->debit ?? 0;
+            $saldo_bulan_lalu_kredit = $bulan_lalu->kredit ?? 0;
+        } else {
+            $saldo_bulan_lalu_debit = 0;
+            $saldo_bulan_lalu_kredit = 0;
+        }
+
+        // Hitung saldo
+        $saldo_awal = $saldo_awal_debit - $saldo_awal_kredit;
+        $saldo_bulan_lalu = $saldo_bulan_lalu_debit - $saldo_bulan_lalu_kredit;
+        $saldo_bulan_berjalan = $saldo_bulan_berjalan_debit - $saldo_bulan_berjalan_kredit;
+        if ($account->jenis_mutasi == 'kredit') {
+            $saldo_awal = $saldo_awal_kredit - $saldo_awal_debit;
+            $saldo_bulan_lalu = $saldo_bulan_lalu_kredit - $saldo_bulan_lalu_debit;
+            $saldo_bulan_berjalan = $saldo_bulan_berjalan_kredit - $saldo_bulan_berjalan_debit;
+        }
+
+        $saldo_sd_bulan_lalu = $saldo_awal + $saldo_bulan_lalu;
+        $saldo_sd_bulan_ini = $saldo_awal + $saldo_bulan_berjalan;
+
+        return [
+            'saldo_sd_bulan_lalu' => $saldo_sd_bulan_lalu,
+            'saldo_sd_bulan_ini' => $saldo_sd_bulan_ini,
+        ];
+    }
+
     public static function bulatkan($angka)
     {
         $angka = round($angka);
 
-        $kec = Business::where('id', Session::get('lokasi'))->first();
+        $kec = Business::where('id', Session::get('business_id'))->first();
         $pembulatan    = number_format($kec->pembulatan, 0, '', '');
         $ratusan = substr($angka, -3);
         $nilai_tengah = $pembulatan / 2;
@@ -39,7 +120,7 @@ class Keuangan
         $angka = round($angka);
 
         if ($pembulatan == null) {
-            $kec = Business::where('id', Session::get('lokasi'))->first();
+            $kec = Business::where('id', Session::get('business_id'))->first();
             $pembulatan    = (string) $kec->pembulatan;
         }
 
@@ -135,13 +216,13 @@ class Keuangan
             DB::raw("SUM(tb$thn_lalu) as debit"),
             DB::raw("SUM(tbk$thn_lalu) as kredit"),
             DB::raw('(SELECT sum(jumlah) as dbt FROM 
-            transaksi_' . Session::get('lokasi') . ' as td WHERE 
-            td.rekening_debit=rekening_' . Session::get('lokasi') . '.kode_akun AND 
+            transaksi_' . Session::get('business_id') . ' as td WHERE 
+            td.rekening_debit=rekening_' . Session::get('business_id') . '.kode_akun AND 
             td.tgl_transaksi BETWEEN "' . $awal_tahun . '" AND "' . $tgl_kondisi . '"
             ) as saldo_debit'),
             DB::raw('(SELECT sum(jumlah) as dbt FROM 
-            transaksi_' . Session::get('lokasi') . ' as td WHERE 
-            td.rekening_kredit=rekening_' . Session::get('lokasi') . '.kode_akun AND 
+            transaksi_' . Session::get('business_id') . ' as td WHERE 
+            td.rekening_kredit=rekening_' . Session::get('business_id') . '.kode_akun AND 
             td.tgl_transaksi BETWEEN "' . $awal_tahun . '" AND "' . $tgl_kondisi . '"
             ) as saldo_kredit'),
             'kode_akun'
@@ -167,7 +248,7 @@ class Keuangan
         $thn_kondisi = explode('-', $tgl_kondisi)[0];
         $awal_tahun = $thn_kondisi . '-01-01';
 
-        $trx = Transaction::where('rekening_debit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('jumlah');
+        $trx = Transaction::where('rekening_debit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('total');
         return $trx;
     }
 
@@ -177,7 +258,7 @@ class Keuangan
         $thn_kondisi = explode('-', $tgl_kondisi)[0];
         $awal_tahun = $thn_kondisi . '-01-01';
 
-        $trx = Transaction::where('rekening_kredit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('jumlah');
+        $trx = Transaction::where('rekening_kredit', $kode_akun)->whereBetween('tgl_transaksi', [$awal_tahun, $tgl_kondisi])->sum('total');
         return $trx;
     }
 
@@ -189,17 +270,17 @@ class Keuangan
         $saldo_kredit = 0;
 
         $nomor = 0;
-        foreach ($rek->kom_saldo as $kom_saldo) {
+        foreach ($rek->amount as $amount) {
             if ($nomor > 2) {
                 continue;
             }
 
-            if ($kom_saldo->bulan == 0) {
-                $awal_debit += floatval($kom_saldo->debit);
-                $awal_kredit += floatval($kom_saldo->kredit);
+            if ($amount->bulan == 0) {
+                $awal_debit += floatval($amount->debit);
+                $awal_kredit += floatval($amount->kredit);
             } else {
-                $saldo_debit += floatval($kom_saldo->debit);
-                $saldo_kredit += floatval($kom_saldo->kredit);
+                $saldo_debit += floatval($amount->debit);
+                $saldo_kredit += floatval($amount->kredit);
             }
 
             $nomor++;
@@ -337,8 +418,9 @@ class Keuangan
         $saldo = Amount::where([
             ['tahun', $thn_kondisi],
             ['bulan', '0'],
-            ['kode_akun', $kode_akun]
+            ['account_id', $kode_akun]
         ])->first();
+        dd($saldo);
 
         return [
             'debit' => floatval($saldo->debit),
@@ -346,7 +428,7 @@ class Keuangan
         ];
     }
 
-    public function saldoPerBulan($tgl_kondisi, $kode_akun)
+    public function saldoPerBulan($tgl_kondisi, $account_id)
     {
         $thn = explode('-', $tgl_kondisi)[0];
         $bln = explode('-', $tgl_kondisi)[1];
@@ -361,7 +443,7 @@ class Keuangan
         $saldo = Amount::where([
             ['tahun', $thn],
             ['bulan', $bln],
-            ['kode_akun', $kode_akun]
+            ['account_id', $account_id]
         ])->first();
 
         return [
@@ -442,7 +524,7 @@ class Keuangan
                     $query->where('bulan', '0')->orwhere('bulan', $bulan);
                 });
             }
-        ])->orderBy('kode_akun', 'ASC')->get();
+        ])->orderBy('account_id', 'ASC')->get();
 
         $pendapatan = 0;
         $biaya = 0;
@@ -487,7 +569,7 @@ class Keuangan
         $data['tahun'] = $tgl[0];
         $data['bulan'] = $tgl[1];
         $data['tanggal'] = $tgl[2];
-        $data['lokasi'] = Session::get('lokasi');
+        $data['lokasi'] = Session::get('business_id');
         $data['tgl_kondisi'] = $tgl_kondisi;
 
         $sum_nunggak_pokok = 0;
@@ -498,7 +580,7 @@ class Keuangan
         $sum_kolek2 = 0;
         $sum_kolek3 = 0;
 
-        $pinjaman_kelompok = PinjamanKelompok::where('sistem_angsuran', '!=', '12')
+        $pinjaman_kelompok = Installations::where('sistem_angsuran', '!=', '12')
             ->where(function ($query) use ($data) {
                 $query->where([
                     ['status', 'A'],
@@ -774,7 +856,7 @@ class Keuangan
             ])->where([
                 ['tgl_transaksi', '>=', $tgl_awal],
                 ['tgl_transaksi', '<=', $tgl_kondisi]
-            ])->sum('jumlah');
+            ])->sum('total');
 
             $jumlah += $trx;
         }

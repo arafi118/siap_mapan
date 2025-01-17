@@ -1,13 +1,19 @@
+{{-- @php
+    $Class = 'col-12 mb-4';
+    if (in_array('jurnal_umum.detail_transaksi', (array) Session::get('tombol'))) {
+        $Class = 'col-lg-9 mb-4';
+    }
+@endphp --}}
+
 @extends('layouts.base')
 @section('content')
     <div class="container-fluid" id="container-wrapper">
         <form action="/transactions" method="post" id="FormTransaksi">
             @csrf
             <input type="hidden" name="clay" id="clay" value="JurnalUmum">
-            {{-- <input type="hidden" name="transaction_id" id="transaction_id"> --}}
 
             <div class="row">
-                <div class="col-lg-9">
+                <div class="col-9">
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="alert alert-light" role="alert">
@@ -78,9 +84,9 @@
                                 </div>
                             </div>
                             <br>
+                            {{-- @if (in_array('jurnal_umum.simpan_transaksi', (array) Session::get('tombol'))) --}}
                             <div class="col-12 d-flex justify-content-end">
-                                <button class="btn btn-secondary btn-icon-split" type="submit" id="SimpanTransaksi"
-                                    style="float: right; margin-left: 10px;">
+                                <button class="btn btn-secondary btn-icon-split" type="button" id="SimpanTransaksi">
                                     <span class="icon text-white-50">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
@@ -91,10 +97,12 @@
                                     <span class="text" style="float: right;">Simpan Transaksi</span>
                                 </button>
                             </div>
+                            {{-- @endif --}}
                         </div>
                     </div>
                 </div>
 
+                {{-- @if (in_array('jurnal_umum.detail_transaksi', (array) Session::get('tombol'))) --}}
                 <div class="col-lg-3">
                     <div class="card mb-4">
                         <form action="">
@@ -113,23 +121,77 @@
                                         <div class="col-md-12">
                                             <div class="position-relative mb-3">
                                                 <label for="tahun">Tahun</label>
-                                                <select class="form-control select2" name="tahun" id="tahun"
-                                                    style="height: 38px;">
-                                                    <option value="kredit">Kredit</option>
-                                                    <option value="debit">Debit</option>
+                                                <select class="form-control select2" name="tahun" id="tahun">
+                                                    @php
+                                                        $tgl_pakai = $business->tgl_pakai ?? '2000-01-01';
+                                                        $th_pakai = explode('-', $tgl_pakai)[0];
+                                                    @endphp
+                                                    @for ($i = $th_pakai; $i <= date('Y'); $i++)
+                                                        <option value="{{ $i }}"
+                                                            {{ old('tahun', date('Y')) == $i ? 'selected' : '' }}>
+                                                            {{ $i }}
+                                                        </option>
+                                                    @endfor
                                                 </select>
                                                 <small class="text-danger" id="msg_tahun"></small>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="position-relative mb-3">
                                                 <label for="bulan">Bulan</label>
-                                                <select class="form-control select2" name="bulan" id="bulan"
-                                                    style="height: 38px;">
-                                                    <option value="kredit">Kredit</option>
-                                                    <option value="debit">Debit</option>
+                                                <select class="form-control select2" name="bulan" id="bulan">
+                                                    <option value="">--</option>
+                                                    <option {{ date('m') == '01' ? 'selected' : '' }} value="01">
+                                                        01.
+                                                        JANUARI
+                                                    </option>
+                                                    <option {{ date('m') == '02' ? 'selected' : '' }} value="02">
+                                                        02.
+                                                        FEBRUARI
+                                                    </option>
+                                                    <option {{ date('m') == '03' ? 'selected' : '' }} value="03">
+                                                        03.
+                                                        MARET
+                                                    </option>
+                                                    <option {{ date('m') == '04' ? 'selected' : '' }} value="04">
+                                                        04.
+                                                        APRIL
+                                                    </option>
+                                                    <option {{ date('m') == '05' ? 'selected' : '' }} value="05">
+                                                        05.
+                                                        MEI
+                                                    </option>
+                                                    <option {{ date('m') == '06' ? 'selected' : '' }} value="06">
+                                                        06.
+                                                        JUNI
+                                                    </option>
+                                                    <option {{ date('m') == '07' ? 'selected' : '' }} value="07">
+                                                        07.
+                                                        JULI
+                                                    </option>
+                                                    <option {{ date('m') == '08' ? 'selected' : '' }} value="08">
+                                                        08.
+                                                        AGUSTUS
+                                                    </option>
+                                                    <option {{ date('m') == '09' ? 'selected' : '' }} value="09">
+                                                        09.
+                                                        SEPTEMBER
+                                                    </option>
+                                                    <option {{ date('m') == '10' ? 'selected' : '' }} value="10">
+                                                        10.
+                                                        OKTOBER
+                                                    </option>
+                                                    <option {{ date('m') == '11' ? 'selected' : '' }} value="11">
+                                                        11.
+                                                        NOVEMBER
+                                                    </option>
+                                                    <option {{ date('m') == '12' ? 'selected' : '' }} value="12">
+                                                        12.
+                                                        DESEMBER
+                                                    </option>
                                                 </select>
                                                 <small class="text-danger"></small>
                                             </div>
@@ -139,10 +201,13 @@
                                         <div class="col-md-12">
                                             <div class="position-relative mb-3">
                                                 <label for="tanggal">Tanggal</label>
-                                                <select class="form-control select2" name="tanggal" id="tanggal"
-                                                    style="height: 38px;">
-                                                    <option value="kredit">Kredit</option>
-                                                    <option value="debit">Debit</option>
+                                                <select class="form-control select2" name="tanggal" id="tanggal">
+                                                    <option value="">--</option>
+                                                    @for ($j = 1; $j <= 31; $j++)
+                                                        @php $no=str_pad($j, 2, "0" , STR_PAD_LEFT) @endphp
+                                                        <option value="{{ $no }}">{{ $no }}
+                                                        </option>
+                                                    @endfor
                                                 </select>
                                                 <small class="text-danger"></small>
                                             </div>
@@ -150,7 +215,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 d-flex justify-content-end">
-                                    <button class="btn btn-success btn-icon-split" type="submit" id="simpanpembayaran"
+                                    <button class="btn btn-success btn-icon-split" type="button" id="BtndetailTransaksi"
                                         style="float: right; margin-left: 10px;">
                                         <span class="text" style="float: right;">Detail Transaksi</span>
                                     </button>
@@ -159,12 +224,65 @@
                         </form>
                     </div>
                 </div>
+                {{-- @endif --}}
 
             </div>
         </form>
     </div>
     <div id="notifikasi"></div>
 
+    <!-- Modal detailTransaksi -->
+    <div class="modal fade" id="detailTransaksi" tabindex="-1" role="dialog" aria-labelledby="detailTransaksiLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen modal-dialog-scrollable"
+            style="max-width: 100%; margin: 0; height: 100%;" role="document">
+            <div class="modal-content" style="height: 100%; border-radius: 0;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailTransaksiLabel">Detail Transaksi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow-y: auto;">
+                    <div id="LayoutdetailTransaksi"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="BtnCetakBuktiTransaksi" class="btn btn-info btn-sm">
+                        Cetak Bukti Transaksi
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal CetakBuktiTransaksi -->
+    <div class="modal fade" id="CetakBuktiTransaksi" tabindex="-1" aria-labelledby="CetakBuktiTransaksiLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="CetakBuktiTransaksiLabel">
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="LayoutCetakBuktiTransaksi"></div>
+                </div>
+                <div class="modal-footer">
+                    {{-- @if (in_array('jurnal_umum.cetak_bukti_transaksi', Session::get('tombol')))
+                        <button type="button" id="BtnCetak" class="btn btn-sm btn-info">
+                            Print
+                        </button>
+                    @endif --}}
+                    <button type="button" id="BtnCetakBuktiTransaksi" class="btn btn-danger btn-sm">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Action -->
     <form action="/transactions/reversal" method="post" id="formReversal">
         @csrf
 
@@ -190,7 +308,7 @@
         var formatter = new Intl.NumberFormat('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
-        })
+        });
 
         //angka 00,000,00
         $("#nominal").maskMoney({
@@ -239,7 +357,8 @@
                         $('#kd_rekening').html(result)
                     })
             }
-        })
+        });
+
         //tgl_transaksi
         $(document).on('change', '#tgl_transaksi', function(e) {
             e.preventDefault()
@@ -255,29 +374,29 @@
 
                 setSaldo(sumber_dana, tgl_transaksi)
             }
-        })
+        });
 
         //sumber_dana
-        // $(document).on('change', '#sumber_dana', function(e) {
-        //     e.preventDefault()
-        //     var sumber_dana = $(this).val()
+        $(document).on('change', '#sumber_dana', function(e) {
+            e.preventDefault()
+            var sumber_dana = $(this).val()
 
-        //     if (sumber_dana == '1.2.02.01') {
-        //         simpan.setChoiceByValue('5.1.07.08')
-        //     }
+            if (sumber_dana == '1.2.02.01') {
+                simpan.setChoiceByValue('5.1.07.08')
+            }
 
-        //     if (sumber_dana == '1.2.02.02') {
-        //         simpan.setChoiceByValue('5.1.07.09')
-        //     }
+            if (sumber_dana == '1.2.02.02') {
+                simpan.setChoiceByValue('5.1.07.09')
+            }
 
-        //     if (sumber_dana == '1.2.02.03') {
-        //         simpan.setChoiceByValue('5.1.07.10')
-        //     }
+            if (sumber_dana == '1.2.02.03') {
+                simpan.setChoiceByValue('5.1.07.10')
+            }
 
-        //     var tgl_transaksi = $('#tgl_transaksi').val().split('/')
+            var tgl_transaksi = $('#tgl_transaksi').val().split('/')
 
-        //     setSaldo(sumber_dana, tgl_transaksi)
-        // })
+            setSaldo(sumber_dana, tgl_transaksi)
+        })
 
         //form sumber dana & disimpan ke
         $(document).on('change', '#sumber_dana,#disimpan_ke', function(e) {
@@ -299,44 +418,6 @@
         })
 
         //simpan Jurnal Umum
-        // $(document).on('click', '#SimpanTransaksi', function(e) {
-        //     e.preventDefault();
-        //     $('small').html('');
-
-        //     var form = $('#FormTransaksi');
-        //     var actionUrl = form.attr('action');
-
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: actionUrl,
-        //         data: form.serialize(),
-        //         success: function(result) {
-        //             if (result.success) {
-        //                 Swal.fire({
-        //                     title: result.msg,
-        //                     icon: "success",
-        //                     draggable: true
-        //                 });
-        //             }
-        //         },
-        //         error: function(result) {
-        //             const response = result.responseJSON;
-
-        //             Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
-
-        //             if (response && typeof response === 'object') {
-        //                 $.each(response, function(key, message) {
-        //                     $('#' + key)
-        //                         .closest('.input-group.input-group-static')
-        //                         .addClass('is-invalid');
-
-        //                     $('#msg_' + key).html(message);
-        //                 });
-        //             }
-        //         }
-        //     });
-        // });
-
         $(document).on('click', '#SimpanTransaksi', function(e) {
             e.preventDefault()
             $('small').html('')
@@ -356,22 +437,29 @@
             }
 
             var sumber_dana = $('#sumber_dana').val()
-            if (sumber_dana == '20') {
+            if (sumber_dana == '1.2.02.01') {
                 saldo_rek *= -1;
             }
 
-            if (sumber_dana == '21') {
+            if (sumber_dana == '1.2.02.02') {
                 saldo_rek *= -1;
             }
 
-            if (sumber_dana == '22') {
+            if (sumber_dana == '1.2.02.03') {
                 saldo_rek *= -1;
             }
 
-            if (sumber_dana == '12') {
+            if (sumber_dana == '1.1.04.01') {
                 saldo_rek *= -1;
             }
 
+            if (sumber_dana == '1.1.04.02') {
+                saldo_rek *= -1;
+            }
+
+            if (sumber_dana == '1.1.04.03') {
+                saldo_rek *= -1;
+            }
 
             var saldo_rek = 999999999999999
             if (saldo_rek >= nominal) {
@@ -500,13 +588,13 @@
 
             if (kode_akun != '') {
                 $.ajax({
-                    url: '/transaksi/detail_transaksi',
+                    url: '/transactions/detail_transaksi',
                     type: 'get',
                     data: {
                         tahun,
                         bulan,
                         hari,
-                        kode_akun
+                        account_id
                     },
                     success: function(result) {
                         $('#detailTransaksi').modal('show')
@@ -656,6 +744,12 @@
         }
 
         function setSaldo(sumber_dana, tgl_transaksi) {
+
+            if (!sumber_dana) {
+                console.warn("Sumber dana kosong. Permintaan tidak akan dijalankan.");
+                return; // Hentikan eksekusi jika sumber_dana kosong
+            }
+
             var tahun = tgl_transaksi[2];
             var bulan = tgl_transaksi[1];
             var hari = tgl_transaksi[0];
