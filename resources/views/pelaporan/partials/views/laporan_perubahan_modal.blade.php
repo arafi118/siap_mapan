@@ -4,6 +4,9 @@
 @endphp
 
 <style>
+    * {
+        font-family: 'Arial', sans-serif;
+    }
     /* Gaya umum untuk semua tabel */
     table {
         border-collapse: collapse;
@@ -45,7 +48,7 @@
         <td colspan="3" height="8"></td>
     </tr>
 </table>
-<table class="with-border"style="font-size: 13px;">
+<table class="with-border"style="font-size: 12px;">
     <tr>
         <th class="l t" width="5%">No</th>
         <th class="l t" width="55%">Rekening Modal</th>

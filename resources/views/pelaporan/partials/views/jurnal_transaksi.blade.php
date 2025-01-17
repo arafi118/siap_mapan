@@ -1,5 +1,9 @@
 <title>{{ $title }}</title>
 <style>
+     * {
+        font-family: 'Arial', sans-serif;
+
+    }
     /* Gaya umum untuk tabel */
     table {
         width: 100%;

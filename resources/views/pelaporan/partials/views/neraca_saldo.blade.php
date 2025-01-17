@@ -1,5 +1,10 @@
+<style>
+    * {
+        font-family: 'Arial', sans-serif;
+    }
+</style>
 <title>{{ $title }}</title>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px;">
@@ -14,7 +19,7 @@
         <td colspan="3" height="5"></td>
     </tr>
 </table>
-<table border="0" width="100%" cellspacing="0" cellpadding="5" style="font-size: 13px; border-collapse: collapse; border: 0.5px solid black;">
+<table border="0" width="100%" cellspacing="0" cellpadding="5" style="font-size: 12px; border-collapse: collapse; border: 0.5px solid black;">
     <tr style="background: rgb(230, 230, 230); font-weight: bold; border: 0.5px solid black;">
         <th rowspan="2" width="20%" style="border: 0.5px solid black;">Rekening</th>
         <th colspan="2" width="30%" style="border: 0.5px solid black;">Neraca Saldo</th>
@@ -72,7 +77,7 @@
 @endforeach
     <tr style="border: 0.5px solid black;">
         <td colspan="7" style="padding: 0px;">
-            <table border="0" width="100%" cellspacing="0" cellpadding="5" style="font-size: 13px; border-collapse: collapse; border: 0.5px solid black;">
+            <table border="0" width="100%" cellspacing="0" cellpadding="5" style="font-size: 12px; border-collapse: collapse; border: 0.5px solid black;">
                 <tr style="background: rgb(167, 167, 167); font-weight: bold;">
                     <td width="20%" align="center" style="border: 0.5px solid black;">Surplus/Defisit</td>
                     <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
