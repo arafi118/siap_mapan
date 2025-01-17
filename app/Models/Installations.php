@@ -43,6 +43,10 @@ class Installations extends Model
     {
         return $this->hasMany(Usage::class, 'id_instalasi', 'id');
     }
+    public function oneUsage()
+    {
+        return $this->hasOne(Usage::class, 'id_instalasi', 'id')->orderBy('tgl_akhir', 'desc');
+    }
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'installation_id', 'id');
