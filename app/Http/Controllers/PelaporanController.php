@@ -271,33 +271,145 @@ class PelaporanController extends Controller
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
-
+    
+        // Mendapatkan bulan dan tahun sekarang
+        $bulanSekarang = date('m'); // Bulan saat ini
+        $tahunSekarang = date('Y'); // Tahun saat ini
+    
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $data['judul'] = 'Laporan Keuangan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
+    
         if ($data['bulanan']) {
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $acc = Account::where([
-            ['lev1', '>=', '4']
+    
+        // Query untuk Pendapatan s.d. Bulan Lalu dan Bulan Ini
+        $dataPendapatan = Account::where([
+            ['kode_akun', 'LIKE', '4.1.%']
         ])->with([
-            'amount' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun'])->where(function($query) use ($data) {
-                    $query->where('bulan','0')->orWhere('bulan', $data['bulan']);
+            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+                    // Data untuk Bulan Lalu (bulan aktif - 1)
+                    $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where('bulan', $data['bulan'] - 1);
             }
-            
+        ])->orderBy('kode_akun', 'ASC')->get();
+    
+        // Query untuk Beban s.d. Bulan Lalu dan Bulan Ini
+        $dataBeban = Account::where([
+            ['kode_akun', 'LIKE', '5.1.%']
+        ])->orWhere('kode_akun', 'LIKE', '5.2.%')
+        ->where('kode_akun', '!=', '5.2.01.01')
+        ->with([
+            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+                    // Data untuk Bulan Lalu (bulan aktif - 1)
+                    $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
+                });
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where('bulan', $data['bulan'] - 1);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
+    
+        $dataPen = Account::where([
+            ['kode_akun', 'LIKE', '4.2.%']
+        ])->orWhere('kode_akun', 'LIKE', '4.3.%')
+        ->whereNotIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])
+        ->with([
+            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+                    // Data untuk Bulan Lalu (bulan aktif - 1)
+                    $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
+                });
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where('bulan', $data['bulan'] - 1);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
+    
+        // Query untuk Beb s.d. Bulan Lalu dan Bulan Ini
+        $dataBeb = Account::where([
+            ['kode_akun', 'LIKE', '5.3.%'],
+        ])
+        ->orWhere('kode_akun', 'LIKE', '5.4%')
+        ->where('kode_akun', '!=', '5.4.01.01') // Mengecualikan kode akun 5.4.01.01
+        ->with([
+            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+                    // Data untuk Bulan Lalu (bulan aktif - 1)
+                    $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
+                });
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where('bulan', $data['bulan'] - 1);
+            }
         ])->orderBy('kode_akun', 'ASC')->get();
 
+        $pph = Account::where('kode_akun', '5.4.01.01')->with([
+            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+                    // Data untuk Bulan Lalu (bulan aktif - 1)
+                    $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
+                });
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where('bulan', $data['bulan'] - 1);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
         
-        
+        $bebanPemasaran = Account::where('kode_akun', '5.2.01.01')->with([
+            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+                    // Data untuk Bulan Lalu (bulan aktif - 1)
+                    $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
+                });
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where('bulan', $data['bulan'] - 1);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $pendluar = Account::whereIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])->with([
+            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+                    // Data untuk Bulan Lalu (bulan aktif - 1)
+                    $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
+                });
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where('bulan', $data['bulan'] - 1);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
+    
+        // Menyiapkan data untuk view
+        $data = [
+            'pendapatan' => $dataPendapatan,
+            'beban' => $dataBeban,
+            'pen' => $dataPen,
+            'beb' => $dataBeb,
+            'ph' => $pph,
+            'bp' => $bebanPemasaran,
+            'pendl' => $pendluar
+
+
+        ];
+    
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['title'] = 'Laba Rugi';
+    
+        // Menampilkan view dengan data yang sudah dihitung
         $view = view('pelaporan.partials.views.laba_rugi', $data)->render();
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
+    
     private function arus_kas(array $data)
     {
         $thn = $data['tahun'];
@@ -312,20 +424,25 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
+
+        $data['akun_kas'] = Account::where('business_id', Session::get('business_id'))->where(function($query) {
+            $query->where('kode_akun', 'like','1.1.01%')->orWhere('kode_akun', 'like', '1.1.02%');
+        })->pluck('id');
+
         $data['tgl_awal'] = $thn . '-' . $bln . '-01';
         $data['arus_kas'] = MasterArusKas::where('parent_id','0')->with([
             'child',
             'child.rek_debit',
             'child.rek_debit.accounts',
-            'child.rek_debit.accounts.amount' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
-                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+            'child.rek_debit.accounts.rek_debit' => function ($query) use ($data) {
+                $query->whereBetween('tgl_transaksi', [$data['tgl_awal'], $data['tgl_kondisi']])->where(function ($query) use ($data) {
+                    $query->whereIn('rekening_kredit', $data['akun_kas']);
                 });
             },
             'child.rek_kredit',
-            'child.rek_kredit.accounts.amount' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
-                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+            'child.rek_kredit.accounts.rek_kredit' => function ($query) use ($data) {
+                $query->whereBetween('tgl_transaksi', [$data['tgl_awal'], $data['tgl_kondisi']])->where(function ($query) use ($data) {
+                    $query->whereIn('rekening_debit', $data['akun_kas']);
                 });
             },
         ])->get();

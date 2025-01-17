@@ -1,5 +1,10 @@
 <title>{{ $title }}</title>
-<table border="0"style="font-size: 13px;">
+<style>
+    * {
+        font-family: 'Arial', sans-serif;
+    }
+</style>
+<table border="0"style="font-size: 12px;">
     <tr>
         <td width="5%">Nomor</td>
         <td width="50%">: ______________________</td>

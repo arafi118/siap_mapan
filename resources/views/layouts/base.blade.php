@@ -51,6 +51,10 @@
 
     @yield('modal')
 
+    <form action="/logout" method="post" id="logoutForm">
+        @csrf
+    </form>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
@@ -76,6 +80,25 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
+
+    {{-- Logout --}}
+    <script>
+        $(document).on('click', '#logoutButton', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Konfirmasi Logout",
+                icon: 'info',
+                showDenyButton: true,
+                confirmButtonText: "Logout",
+                denyButtonText: "Batal",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#logoutForm').submit();
+                }
+            });
+        })
+    </script>
 
     <script>
         var numFormat = new Intl.NumberFormat('en-EN', {

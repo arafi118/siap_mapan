@@ -15,6 +15,11 @@ class Account extends Model
         return $this->hasMany(Amount::class, 'account_id');
     }
 
+    public function oneAmount()
+    {
+        return $this->hasOne(Amount::class, 'account_id');
+    }
+
     public function trx_debit()
     {
         return $this->hasMany(Transaction::class, 'rekening_debit', 'id');
@@ -23,6 +28,16 @@ class Account extends Model
     public function trx_kredit()
     {
         return $this->hasMany(Transaction::class, 'rekening_kredit', 'id');
+    }
+
+    public function rek_debit()
+    {
+        return $this->hasMany(Transaction::class, 'rekening_debit');
+    }
+    
+    public function rek_kredit()
+    {
+        return $this->hasMany(Transaction::class, 'rekening_kredit');
     }
 
     public function saldo()
