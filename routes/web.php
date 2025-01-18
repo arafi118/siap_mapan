@@ -167,5 +167,5 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan']);
 
   // Logout
-  Route::get('/logout', [AuthController::class, 'logout']);
+  Route::post('/logout', [AuthController::class, 'logout']);
 });
