@@ -321,6 +321,13 @@
             }
         });
     </script>
+    <script>
+        //property lainya
+
+        function open_window(link) {
+            return window.open(link)
+        }
+    </script>
 
     @yield('script')
 </body>

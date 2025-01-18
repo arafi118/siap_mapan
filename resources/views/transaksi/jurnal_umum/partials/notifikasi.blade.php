@@ -144,12 +144,12 @@
                  <div class="col-12 d-flex justify-content-end">
                      @if ($kuitansi)
                          <button type="button" class="btn btn-primary btn-icon-split btn-link"
-                             data-action="/transactions/dokumen/kuitansi/{{ $trx->idt }}">
+                             data-action="/transactions/dokumen/kuitansi/{{ $trx->id }}">
                              <span class="text" style="float: right;">Kuitansi</span>
                          </button>
                      @endif
                      <button type="button" class="btn btn-info btn-icon-split btn-link"
-                         data-action="/transactions/dokumen/{{ $files }}/{{ $trx->idt }}"
+                         data-action="/transactions/dokumen/{{ $files }}/{{ $trx->id }}"
                          style="float: right; margin-left: 10px;">
                          </span>
                          <span class="text" style="float: right;">{{ $files }}</span>

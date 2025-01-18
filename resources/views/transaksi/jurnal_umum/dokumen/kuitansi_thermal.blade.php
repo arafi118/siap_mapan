@@ -79,11 +79,11 @@
 
         <tr>
             <td colspan="5" class="bottom" align="center">
-                <b>{{ strtoupper($kec->nama_lembaga_sort . ' ' . $kec->nama_kec) }}</b>
+                <b>{{ strtoupper($business->nama) }}</b>
                 <br>
-                <b>{{ $kec->alamat_kec }}</b>
+                <b>{{ $business->alamat }}</b>
                 <br>
-                {{ $kec->nomor_bh }}
+                {{ $business->nomor_bh }}
             </td>
         </tr>
 

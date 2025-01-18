@@ -1,3 +1,6 @@
+@php
+    use App\Utils\Tanggal;
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -126,12 +129,9 @@
                 <div class="flex align-items-center">
                     <img src="<?php echo $gambar; ?>" width="50" height="50">
                     <div class="ml-4">
-                        <div class="block fw-bold">{{ strtoupper($kec->nama_lembaga_sort) }}</div>
-                        <div class="block fw-bold">
-                            {{ strtoupper('Kec. ' . $kec->nama_kec . ' Kab. ' . $kec->kabupaten->nama_kab . ' ' . $kec->kabupaten->nama_prov) }}
-                        </div>
-                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $kec->nomor_bh }}</div>
-                        <div class="block fs-10">{{ $kec->alamat_kec . ', Telp. ' . $kec->telpon_kec }}</div>
+                        <div class="block fw-bold">{{ strtoupper($business->nama) }}</div>
+                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $business->nomor_bh }}</div>
+                        <div class="block fs-10">{{ $business->alamat . ', Telp. ' . $business->telpon }}</div>
                     </div>
                 </div>
                 <div class="justify-right">
@@ -160,14 +160,14 @@
                         <td width="30%">Keterangan</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan">
-                            {{ ucwords($trx->keterangan_transaksi) }}
+                            {{ ucwords($trx->keterangan) }}
                         </td>
                     </tr>
                     <tr>
                         <td width="30%">Jumlah</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan">
-                            Rp. {{ number_format($trx->jumlah, 2) }}
+                            Rp. {{ number_format($trx->total, 2) }}
                         </td>
                     </tr>
                     <tr>
@@ -198,11 +198,6 @@
                         <td align="center">Disiapkan Oleh :</td>
                     </tr>
                     <tr>
-                        <td align="center"><?php echo $kec->sebutan_level_1; ?></td>
-                        <td align="center"><?php echo $kec->sebutan_level_3; ?></td>
-                        <td align="center">&nbsp;</td>
-                    </tr>
-                    <tr>
                         <td align="center">&nbsp;</td>
                         <td align="center">&nbsp;</td>
                         <td align="center">&nbsp;</td>
@@ -213,9 +208,9 @@
                         <td align="center">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td align="center">{{ $dir->namadepan . ' ' . $dir->namabelakang }}</td>
-                        <td align="center">{{ $sekr->namadepan . ' ' . $sekr->namabelakang }}</td>
-                        <td align="center"><?php echo $kec->disiapkan; ?></td>
+                        <td align="center">{{ $dir->nama ?? 0 }}</td>
+                        <td align="center">{{ $sekr->nama ?? 0 }}</td>
+                        <td align="center"><?php echo $business->disiapkan; ?></td>
                     </tr>
                 </table>
             </div>

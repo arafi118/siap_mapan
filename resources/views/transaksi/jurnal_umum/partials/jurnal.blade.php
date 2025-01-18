@@ -14,17 +14,6 @@
 
     $total_debit = 0;
     $total_kredit = 0;
-
-    $KolomAksi = true;
-    // if (
-    //     !(
-    //         in_array('jurnal_umum.cetak_dokumen_transaksi', Session::get('tombol')) ||
-    //         in_array('jurnal_umum.transaksi_reversal', Session::get('tombol')) ||
-    //         in_array('jurnal_umum.penghapusan_transaksi', Session::get('tombol'))
-    //     )
-    // ) {
-    //     $KolomAksi = false;
-    // }
 @endphp
 
 <table border="0" width="100%" cellspacing="0" cellpadding="0" class="table table-striped midle">
@@ -32,16 +21,14 @@
         <tr>
             <td height="40" align="center" width="40">No</td>
             <td align="center" width="100">Tanggal</td>
-            <td align="center" width="100">Kode Akun</td>
+            <td align="center" width="100">Kode Akun.</td>
             <td align="center">Keterangan</td>
-            <td align="center" width="70">Kode Trx.</td>
+            <td align="center" width="70">ID Trx.</td>
             <td align="center" width="140">Debit</td>
             <td align="center" width="140">Kredit</td>
             <td align="center" width="150">Saldo</td>
-            <td align="center" width="40">Ins</td>
-            @if ($KolomAksi)
-                <td align="center" width="170">&nbsp;</td>
-            @endif
+            {{-- <td align="center" width="40">Ins</td> --}}
+            <td align="center" width="170">&nbsp;</td>
         </tr>
     </thead>
 
@@ -55,10 +42,8 @@
             <td align="right">{{ number_format($saldo['debit'], 2) }}</td>
             <td align="right">{{ number_format($saldo['kredit'], 2) }}</td>
             <td align="right">{{ number_format($saldo_awal_tahun, 2) }}</td>
+            {{-- <td align="center"></td> --}}
             <td align="center"></td>
-            @if ($KolomAksi)
-                <td align="center"></td>
-            @endif
         </tr>
         <tr>
             <td align="center"></td>
@@ -69,27 +54,21 @@
             <td align="right">{{ number_format($d_bulan_lalu, 2) }}</td>
             <td align="right">{{ number_format($k_bulan_lalu, 2) }}</td>
             <td align="right">{{ number_format($total_saldo, 2) }}</td>
+            {{-- <td align="center"></td> --}}
             <td align="center"></td>
-            @if ($KolomAksi)
-                <td align="center"></td>
-            @endif
         </tr>
 
         @foreach ($transaksi as $trx)
             @php
 
-                // $kodeAkun = $trx->kode_akun;
-                // $amountData = \DB::table('accounts')->where('id', $kodeAkun)->first();
-                // dd($amountData);
-
                 if ($trx->rekening_debit == $rek->kode_akun) {
-                    $ref = $trx->rekening_kredit;
-                    $debit = $trx->jumlah;
+                    $ref = $trx->rek_debit->kode_akun;
+                    $debit = $trx->total;
                     $kredit = 0;
                 } else {
-                    $ref = $trx->rekening_debit;
+                    $ref = $trx->rek_kredit->kode_akun;
                     $debit = 0;
-                    $kredit = $trx->jumlah;
+                    $kredit = $trx->total;
                 }
 
                 if ($rek->jenis_mutasi == 'debet') {
@@ -105,86 +84,35 @@
                 $kuitansi = false;
                 $files = 'bm';
                 if (
-                    $keuangan->startWith($trx->rekening_debit, '1.1.01') &&
-                    !$keuangan->startWith($trx->rekening_kredit, '1.1.01')
+                    $keuangan->startWith($trx->rek_debit->kode_akun, '1.1.01') &&
+                    !$keuangan->startWith($trx->rek_kredit->kode_akun, '1.1.01')
                 ) {
                     $files = 'bkm';
                     $kuitansi = true;
                 }
                 if (
-                    !$keuangan->startWith($trx->rekening_debit, '1.1.01') &&
-                    $keuangan->startWith($trx->rekening_kredit, '1.1.01')
+                    !$keuangan->startWith($trx->rek_debit->kode_akun, '1.1.01') &&
+                    $keuangan->startWith($trx->rek_kredit->kode_akun, '1.1.01')
                 ) {
                     $files = 'bkk';
                     $kuitansi = true;
                 }
                 if (
-                    $keuangan->startWith($trx->rekening_debit, '1.1.01') &&
-                    $keuangan->startWith($trx->rekening_kredit, '1.1.01')
+                    $keuangan->startWith($trx->rek_debit->kode_akun, '1.1.01') &&
+                    $keuangan->startWith($trx->rek_kredit->kode_akun, '1.1.01')
                 ) {
                     $files = 'bm';
                     $kuitansi = false;
                 }
                 if (
-                    $keuangan->startWith($trx->rekening_debit, '1.1.02') &&
+                    $keuangan->startWith($trx->rek_debit->kode_akun, '1.1.02') &&
                     !(
-                        $keuangan->startWith($trx->rekening_kredit, '1.1.01') ||
-                        $keuangan->startWith($trx->rekening_kredit, '1.1.02')
+                        $keuangan->startWith($trx->rek_debit->kode_akun, '1.1.01') ||
+                        $keuangan->startWith($trx->rek_kredit->kode_akun, '1.1.02')
                     )
                 ) {
                     $files = 'bkm';
                     $kuitansi = true;
-                }
-                if (
-                    $keuangan->startWith($trx->rekening_debit, '1.1.02') &&
-                    $keuangan->startWith($trx->rekening_kredit, '1.1.02')
-                ) {
-                    $files = 'bm';
-                    $kuitansi = false;
-                }
-                if (
-                    $keuangan->startWith($trx->rekening_debit, '1.1.02') &&
-                    $keuangan->startWith($trx->rekening_kredit, '1.1.01')
-                ) {
-                    $files = 'bm';
-                    $kuitansi = false;
-                }
-                if (
-                    $keuangan->startWith($trx->rekening_debit, '1.1.01') &&
-                    $keuangan->startWith($trx->rekening_kredit, '1.1.02')
-                ) {
-                    $files = 'bm';
-                    $kuitansi = false;
-                }
-                if (
-                    $keuangan->startWith($trx->rekening_debit, '5.') &&
-                    !(
-                        $keuangan->startWith($trx->rekening_kredit, '1.1.01') ||
-                        $keuangan->startWith($trx->rekening_kredit, '1.1.02')
-                    )
-                ) {
-                    $files = 'bm';
-                    $kuitansi = false;
-                }
-                if (
-                    !(
-                        $keuangan->startWith($trx->rekening_debit, '1.1.01') ||
-                        $keuangan->startWith($trx->rekening_debit, '1.1.02')
-                    ) &&
-                    $keuangan->startWith($trx->rekening_kredit, '1.1.02')
-                ) {
-                    $files = 'bm';
-                    $kuitansi = false;
-                }
-                if (
-                    !(
-                        $keuangan->startWith($trx->rekening_debit, '1.1.01') ||
-                        $keuangan->startWith($trx->rekening_debit, '1.1.02')
-                    ) &&
-                    $keuangan->startWith($trx->rekening_kredit, '4.')
-                ) {
-                    $files = 'bm';
-                    $kuitansi = false;
                 }
 
                 $ins = '';
@@ -198,108 +126,51 @@
                 <td align="center">{{ $loop->iteration }}.</td>
                 <td align="center">{{ Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
                 <td align="center">{{ $ref }}</td>
-                <td>{{ $trx->keterangan_transaksi }}</td>
-                <td align="center">{{ $trx->idt }}</td>
+                <td>{{ $trx->keterangan }}</td>
+                <td align="center">{{ $trx->id }}</td>
                 <td align="right">{{ number_format($debit, 2) }}</td>
                 <td align="right">{{ number_format($kredit, 2) }}</td>
                 <td align="right">{{ number_format($total_saldo, 2) }}</td>
-                <td align="center">{{ $ins }}</td>
-                @if ($KolomAksi)
-                    <td align="right">
-                        <div class="btn-group">
-                            @if ($kuitansi && in_array('jurnal_umum.cetak_dokumen_transaksi', Session::get('tombol')))
-                                @if ($trx->idtp > 0 && $trx->id_pinj != 0)
-                                    <button type="button" data-idtp="{{ $trx->idtp }}"
-                                        class="btn btn-instagram btn-icon-only btn-tooltip" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <span class="btn-inner--icon"><i class="fas fa-file"></i></span>
-                                    </button>
-                                    <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
-                                        <li>
-                                            <a class="dropdown-item border-radius-md" target="_blank"
-                                                href="/transaksi/dokumen/struk/{{ $trx->idtp }}">
-                                                Kuitansi
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item border-radius-md" target="_blank"
-                                                href="/transaksi/dokumen/struk_matrix/{{ $trx->idtp }}">
-                                                Kuitansi Dot Matrix
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item border-radius-md" target="_blank"
-                                                href="/transaksi/dokumen/struk_thermal/{{ $trx->idtp }}">
-                                                Kuitansi Thermal
-                                            </a>
-                                        </li>
-                                    </ul>
+                {{-- <td align="center">{{ $ins }}</td> --}}
+                <td align="center">
+                    <div class="dropdown dropleft">
+                        <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="{{ $trx->id }}"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-info"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="{{ $trx->id }}">
+                            <a class="dropdown-item" target="_blank"
+                                href="/transactions/dokumen/kuitansi/{{ $trx->id }}">
+                                Kuitansi
+                            </a>
+                            <a class="dropdown-item" target="_blank"
+                                href="/transactions/dokumen/kuitansi_thermal/{{ $trx->id }}">
+                                Kuitansi Thermal
+                            </a>
+
+                            <a class="dropdown-item btn-link" target="_blank"
+                                data-action="/transactions/dokumen/{{ $files }}/{{ $trx->id }}"
+                                href="#">
+                                @if ($files == 'bkm')
+                                    Bukti Kas Masuk
+                                @elseif ($files == 'bkk')
+                                    Bukti Kas Keluar
                                 @else
-                                    <button type="button" class="btn btn-instagram btn-icon-only btn-tooltip"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="btn-inner--icon"><i class="fas fa-file"></i></span>
-                                    </button>
-                                    <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
-                                        <li>
-                                            <a class="dropdown-item border-radius-md" target="_blank"
-                                                href="/transaksi/dokumen/kuitansi/{{ $trx->idt }}">
-                                                Kuitansi
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item border-radius-md" target="_blank"
-                                                href="/transaksi/dokumen/kuitansi_thermal/{{ $trx->idt }}">
-                                                Kuitansi Thermal
-                                            </a>
-                                        </li>
-                                    </ul>
+                                    Bukti Memorial
                                 @endif
-                            @endif
+                            </a>
 
-                            {{-- @if (in_array('jurnal_umum.cetak_dokumen_transaksi', Session::get('tombol')))
-                                @if ($trx->idtp > 0 && $trx->id_pinj != 0)
-                                    <button type="button"
-                                        data-action="/transaksi/dokumen/{{ $files }}_angsuran/{{ $trx->idt }}"
-                                        class="btn btn-tumblr btn-icon-only btn-tooltip btn-link"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $files }}"
-                                        data-container="body" data-animation="true">
-                                        <span class="btn-inner--icon">
-                                            <i class="fas fa-file-circle-exclamation"></i>
-                                        </span>
-                                    </button>
-                                @else
-                                    <button type="button"
-                                        data-action="/transaksi/dokumen/{{ $files }}/{{ $trx->idt }}"
-                                        class="btn btn-tumblr btn-icon-only btn-tooltip btn-link"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $files }}"
-                                        data-container="body" data-animation="true">
-                                        <span class="btn-inner--icon">
-                                            <i class="fas fa-file-circle-exclamation"></i>
-                                        </span>
-                                    </button>
-                                @endif
-                            @endif
-
-                            @if (in_array('jurnal_umum.transaksi_reversal', Session::get('tombol')))
-                                <button type="button" data-idt="{{ $trx->idt }}"
-                                    class="btn btn-tumblr btn-icon-only btn-tooltip btn-reversal"
-                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Reversal"
-                                    data-container="body" data-animation="true">
-                                    <span class="btn-inner--icon"><i class="fas fa-code-pull-request"></i></span>
-                                </button>
-                            @endif
-
-                            @if (in_array('jurnal_umum.penghapusan_transaksi', Session::get('tombol')))
-                                <button type="button" data-idt="{{ $trx->idt }}"
-                                    class="btn btn-github btn-icon-only btn-tooltip btn-delete"
-                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"
-                                    data-container="body" data-animation="true">
-                                    <span class="btn-inner--icon"><i class="fas fa-trash-can"></i></span>
-                                </button>
-                            @endif --}}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item btn-reversal" data-id="{{ $trx->id }}" href="#">
+                                Reversal
+                            </a>
+                            <a class="dropdown-item text-danger btn-delete" data-id="{{ $trx->id }}"
+                                href="#">
+                                Hapus Transaksi
+                            </a>
                         </div>
-                    </td>
-                @endif
+                    </div>
+                </td>
             </tr>
         @endforeach
 
@@ -313,7 +184,7 @@
             <td align="right">
                 <b>{{ number_format($total_kredit, 2) }}</b>
             </td>
-            <td colspan="3" rowspan="3" align="center" style="vertical-align: middle">
+            <td colspan="2" rowspan="3" align="center" style="vertical-align: middle">
                 <b>{{ number_format($total_saldo, 2) }}</b>
             </td>
         </tr>

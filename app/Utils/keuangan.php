@@ -395,19 +395,18 @@ class Keuangan
         return $saldo;
     }
 
-    public function saldoAwal($tgl_kondisi, $kode_akun)
+    public function saldoAwal($tgl_kondisi, $account_id)
     {
         $thn_kondisi = explode('-', $tgl_kondisi)[0];
         $saldo = Amount::where([
             ['tahun', $thn_kondisi],
             ['bulan', '0'],
-            ['account_id', $kode_akun]
+            ['account_id', $account_id]
         ])->first();
-        dd($saldo);
 
         return [
-            'debit' => floatval($saldo->debit),
-            'kredit' => floatval($saldo->kredit)
+            'debit' => floatval($saldo->debit ?? 0),
+            'kredit' => floatval($saldo->kredit ?? 0)
         ];
     }
 
@@ -430,8 +429,8 @@ class Keuangan
         ])->first();
 
         return [
-            'debit' => floatval($saldo->debit),
-            'kredit' => floatval($saldo->kredit)
+            'debit' => floatval($saldo->debit ?? 0),
+            'kredit' => floatval($saldo->kredit ?? 0)
         ];
     }
 

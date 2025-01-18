@@ -179,16 +179,13 @@
                 <div class="flex align-items-center">
                     <img src="{{ $gambar }}" width="50" height="50">
                     <div class="ml-4">
-                        <div class="block fw-bold">{{ strtoupper($kec->nama_lembaga_sort) }}</div>
-                        <div class="block fw-bold">
-                            {{ strtoupper('Kec. ' . $kec->nama_kec . ' Kab. ' . $kec->kabupaten->nama_kab . ' ' . $kec->kabupaten->nama_prov) }}
-                        </div>
-                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $kec->nomor_bh }}</div>
-                        <div class="block fs-10">{{ $kec->alamat_kec . ', Telp. ' . $kec->telpon_kec }}</div>
+                        <div class="block fw-bold">{{ strtoupper($bisnis->nama) }}</div>
+                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $bisnis->nomor_bh }}</div>
+                        <div class="block fs-10">{{ $bisnis->alamat . ', Telp. ' . $bisnis->telpon }}</div>
                     </div>
                 </div>
                 <div class="fw-medium">
-                    Nomor &nbsp; &nbsp; : {{ $trx->idt . '/' . $jenis }}
+                    Nomor &nbsp; &nbsp; : {{ $trx->id . '/' . $jenis }}
                 </div>
             </div>
             <div class="box-body fs-14">
@@ -207,8 +204,8 @@
                         <td width="30%">Uang Sebanyak</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan fw-medium terbilang jajargenjang">
-                            <h4 {!! strlen($keuangan->terbilang($trx->jumlah)) > 30 ? 'style="font-size: 8px;"' : '' !!}>
-                                <span>{{ ucwords($keuangan->terbilang($trx->jumlah)) }} Rupiah</span>
+                            <h4 {!! strlen($keuangan->terbilang($trx->total)) > 30 ? 'style="font-size: 8px;"' : '' !!}>
+                                <span>{{ ucwords($keuangan->terbilang($trx->total)) }} Rupiah</span>
                             </h4>
                         </td>
                     </tr>
@@ -216,7 +213,7 @@
                         <td width="30%">Untuk Pembayaran</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan border-b">
-                            {{ ucwords($trx->keterangan_transaksi) }}
+                            {{ ucwords($trx->keterangan) }}
                         </td>
                     </tr>
                     <tr>
@@ -232,14 +229,14 @@
                             <i>
                                 <h3 class="flex" style="padding-left: 18px;">
                                     Terbilang Rp. &nbsp; <div class="jajargenjang text-left">
-                                        {{ number_format($trx->jumlah, 2) }}</div>
+                                        {{ number_format($trx->total, 2) }}</div>
                                 </h3>
                             </i>
                         </td>
                     </tr>
                     <tr>
                         <td align="center">&nbsp;</td>
-                        <td align="center">{{ $kec->nama_kec . ', ' . Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
+                        <td align="center">{{ $bisnis->nama . ', ' . Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
                     </tr>
                     <tr>
                         <td width="30%" align="center">Dibayar Oleh</td>

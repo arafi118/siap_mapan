@@ -286,17 +286,15 @@
     <form action="/transactions/reversal" method="post" id="formReversal">
         @csrf
 
-        <input type="hidden" name="rev_idt" id="rev_idt">
-        <input type="hidden" name="rev_idtp" id="rev_idtp">
-        <input type="hidden" name="rev_id_pinj" id="rev_id_pinj">
+        <input type="hidden" name="rev_id" id="rev_id">
+        <input type="hidden" name="del_istal_id" id="del_istal_id">
     </form>
 
     <form action="/transactions/hapus" method="post" id="formHapus">
         @csrf
 
-        <input type="hidden" name="del_idt" id="del_idt">
-        <input type="hidden" name="del_idtp" id="del_idtp">
-        <input type="hidden" name="del_id_pinj" id="del_id_pinj">
+        <input type="hidden" name="del_id" id="del_id">
+        <input type="hidden" name="del_istal_id" id="del_istal_id">
     </form>
 
     <input type="hidden" name="saldo_trx" id="saldo_trx">
@@ -584,9 +582,9 @@
             var tahun = $('select#tahun').val()
             var bulan = $('select#bulan').val()
             var hari = $('select#tanggal').val()
-            var kode_akun = $('#sumber_dana').val()
+            var account_id = $('#sumber_dana').val()
 
-            if (kode_akun != '') {
+            if (account_id != '') {
                 $.ajax({
                     url: '/transactions/detail_transaksi',
                     type: 'get',
@@ -628,14 +626,15 @@
                 denyButtonColor: "#3085d6",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    open_window('/transaksi/angsuran/struk/' + idtp)
+                    open_window('/transactions/angsuran/struk/' + idtp)
                 } else if (result.isDenied) {
-                    open_window('/transaksi/angsuran/struk_matrix/' + idtp)
+                    open_window('/transactions/angsuran/struk_matrix/' + idtp)
                 }
             });
         })
 
         $(document).on('click', '.btn-link', function(e) {
+            e.preventDefault()
             var action = $(this).attr('data-action')
 
             open_window(action)
@@ -644,16 +643,15 @@
         $(document).on('click', '.btn-reversal', function(e) {
             e.preventDefault()
 
-            var idt = $(this).attr('data-idt')
-            $.get('/transaksi/data/' + idt, function(result) {
+            var id = $(this).attr('data-id')
+            $.get('/transactions/data/' + id, function(result) {
 
-                $('#rev_idt').val(result.idt)
-                $('#rev_idtp').val(result.idtp)
-                $('#rev_id_pinj').val(result.id_pinj)
+                $('#rev_id').val(result.id)
+                $('#rev_istal_id').val(result.istal_id)
                 Swal.fire({
                     title: 'Peringatan',
                     text: 'Setelah menekan tombol Reversal dibawah, maka aplikasi akan membuat transaksi minus (-) senilai Rp. -' +
-                        result.jumlah,
+                        result.total,
                     showCancelButton: true,
                     confirmButtonText: 'Reversal',
                     cancelButtonText: 'Batal',
@@ -669,13 +667,9 @@
                                 if (result.success) {
                                     Swal.fire('Berhasil!', result.msg, 'success')
                                         .then(() => {
-                                            childWindow = window.open(
-                                                '/simpan_saldo?bulan=' + result
-                                                .bulan + '&tahun=' +
-                                                result.tahun + '&kode_akun=' +
-                                                result.kode_akun, '_blank');
-                                            $('#detailTransaksi').modal('hide')
-                                        })
+                                            window.location.href =
+                                                '/transactions/jurnal_umum';
+                                        });
                                 }
                             }
                         })
@@ -687,12 +681,12 @@
         $(document).on('click', '.btn-delete', function(e) {
             e.preventDefault()
 
-            var idt = $(this).attr('data-idt')
-            $.get('/transaksi/data/' + idt, function(result) {
+            var id = $(this).attr('data-id')
 
-                $('#del_idt').val(result.idt)
-                $('#del_idtp').val(result.idtp)
-                $('#del_id_pinj').val(result.id_pinj)
+            $.get('/transactions/data/' + id, function(result) {
+
+                $('#del_id').val(result.id)
+                $('#del_instal_id').val(result.installation_id)
                 Swal.fire({
                     title: 'Peringatan',
                     text: 'Setelah menekan tombol Hapus Transaksi dibawah, maka transaksi ini akan dihapus dari aplikasi secara permanen.',
@@ -711,14 +705,11 @@
                                 if (result.success) {
                                     Swal.fire('Berhasil!', result.msg, 'success')
                                         .then(() => {
-                                            childWindow = window.open(
-                                                '/simpan_saldo?bulan=' + result
-                                                .bulan + '&tahun=' +
-                                                result.tahun + '&kode_akun=' +
-                                                result.kode_akun, '_blank');
-                                            $('#detailTransaksi').modal('hide')
-                                        })
+                                            window.location.href =
+                                                '/transactions/jurnal_umum';
+                                        });
                                 }
+
                             }
                         })
                     }
