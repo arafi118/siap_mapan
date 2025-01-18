@@ -19,11 +19,24 @@ class DashboardController extends Controller
 
         Session::put('business_id', '1');
         $Installation = Installations::count();
-        $Usage = Usage::where('status', 'PAID')->count();
+        $Usages = Installations::where('status', 'A')->with([
+            'customer',
+            'package',
+            'oneUsage' => function ($query) {
+                $query->where('tgl_akhir', '<=', date('Y-m-d'));
+            }
+        ])->get();
         $Tagihan = Usage::where([
             ['status', 'UNPAID'],
             ['tgl_akhir', '<', date('Y-m-d')]
         ])->count();
+
+        $UsageCount = 0;
+        foreach ($Usages as $usage) {
+            if ($usage->one_usage != null) {
+                $UsageCount += 1;
+            }
+        }
 
         $bulan = intval(date('m'));
         $chart = $this->chart();
@@ -43,7 +56,7 @@ class DashboardController extends Controller
         $month = date('m');
 
         $title = 'Dashboard';
-        return view('welcome')->with(compact('Installation', 'Usage', 'Tagihan', 'title', 'charts', 'pendapatan', 'beban', 'surplus', 'pros_pendapatan', 'pros_beban', 'pros_surplus'));
+        return view('welcome')->with(compact('Installation', 'UsageCount', 'Tagihan', 'title', 'charts', 'pendapatan', 'beban', 'surplus', 'pros_pendapatan', 'pros_beban', 'pros_surplus'));
     }
 
     public function installations()

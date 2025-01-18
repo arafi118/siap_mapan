@@ -30,7 +30,7 @@
                         Pemakaian
                     </h6>
                     <div class="display-4 fs-5 mb-2 font-weight-normal text-primary" id="UsageCount">
-                        {{ $Usage }}
+                        {{ $UsageCount }}
                     </div>
                     <a class="font-weight-bold text-nowrap fs-10" href="#" id="BtnModalPemakaian">
                         Lihat Detail
