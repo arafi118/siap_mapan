@@ -787,7 +787,7 @@ class TransactionController extends Controller
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $tgl = $thn . '-';
         $data['judul'] = 'Laporan Tahunan';
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tah un($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
         $awal_bulan = $thn . '00-00';
         if ($data['bulanan']) {
