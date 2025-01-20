@@ -88,10 +88,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transactions/dokumen/bkm/{id}', [TransactionController::class, 'bkm']);
     Route::get('/transactions/dokumen/bm/{id}', [TransactionController::class, 'bm']);
 
-    Route::get('/transactions/dokumen/struk/{id}', [TransactionController::class, 'struk']);
-    Route::get('/transactions/dokumen/struk_matrix/{id}', [TransactionController::class, 'strukMatrix']);
-    Route::get('/transactions/dokumen/struk_thermal/{id}', [TransactionController::class, 'strukThermal']);
-    Route::get('/transactions/dokumen/bkm_angsuran/{id}', [TransactionController::class, 'bkmAngsuran']);
     Route::post('/transactions/dokumen/cetak', [TransactionController::class, 'cetak']);
     Route::get('/transactions/data/{id}', [TransactionController::class, 'data'])->middleware('auth');
     Route::post('/transactions/reversal', [TransactionController::class, 'reversal'])->middleware('auth');

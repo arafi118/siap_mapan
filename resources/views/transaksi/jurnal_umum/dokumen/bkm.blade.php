@@ -179,14 +179,14 @@
                         <td width="30%">Kode Akun (D/K)</td>
                         <td width="2%">&nbsp;</td>
                         <td colspan="3" class="keterangan">
-                            Debit {{ ucwords($trx->rekening_debit . ' - ' . $trx->rek_debit->nama_akun) }}
+                            Debit {{ ucwords($trx->rek_debit->kode_akun . ' - ' . $trx->rek_debit->nama_akun) }}
                         </td>
                     </tr>
                     <tr>
                         <td width="30%">&nbsp;</td>
                         <td width="2%">&nbsp;</td>
                         <td colspan="3" class="keterangan">
-                            Kredit {{ ucwords($trx->rekening_kredit . ' - ' . $trx->rek_kredit->nama_akun) }}
+                            Kredit {{ ucwords($trx->rek_kredit->kode_akun . ' - ' . $trx->rek_kredit->nama_akun) }}
                         </td>
                     </tr>
                 </table>
@@ -195,22 +195,22 @@
                     <tr>
                         <td align="center">Disetujui,</td>
                         <td align="center">Diverifikasi,</td>
-                        <td align="center">Disiapkan Oleh :</td>
+                        {{-- <td align="center">Disiapkan Oleh :</td> --}}
                     </tr>
                     <tr>
                         <td align="center">&nbsp;</td>
                         <td align="center">&nbsp;</td>
-                        <td align="center">&nbsp;</td>
+                        {{-- <td align="center">&nbsp;</td> --}}
                     </tr>
                     <tr>
                         <td align="center">&nbsp;</td>
                         <td align="center">&nbsp;</td>
-                        <td align="center">&nbsp;</td>
+                        {{-- <td align="center">&nbsp;</td> --}}
                     </tr>
                     <tr>
                         <td align="center">{{ $dir->nama ?? 0 }}</td>
                         <td align="center">{{ $sekr->nama ?? 0 }}</td>
-                        <td align="center"><?php echo $business->disiapkan; ?></td>
+                        {{-- <td align="center"><?php echo $business->disiapkan; ?></td> --}}
                     </tr>
                 </table>
             </div>

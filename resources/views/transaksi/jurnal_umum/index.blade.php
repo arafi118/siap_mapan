@@ -1,10 +1,3 @@
-{{-- @php
-    $Class = 'col-12 mb-4';
-    if (in_array('jurnal_umum.detail_transaksi', (array) Session::get('tombol'))) {
-        $Class = 'col-lg-9 mb-4';
-    }
-@endphp --}}
-
 @extends('layouts.base')
 @section('content')
     <div class="container-fluid" id="container-wrapper">
@@ -84,7 +77,6 @@
                                 </div>
                             </div>
                             <br>
-                            {{-- @if (in_array('jurnal_umum.simpan_transaksi', (array) Session::get('tombol'))) --}}
                             <div class="col-12 d-flex justify-content-end">
                                 <button class="btn btn-secondary btn-icon-split" type="button" id="SimpanTransaksi">
                                     <span class="icon text-white-50">
@@ -97,12 +89,10 @@
                                     <span class="text" style="float: right;">Simpan Transaksi</span>
                                 </button>
                             </div>
-                            {{-- @endif --}}
                         </div>
                     </div>
                 </div>
 
-                {{-- @if (in_array('jurnal_umum.detail_transaksi', (array) Session::get('tombol'))) --}}
                 <div class="col-lg-3">
                     <div class="card mb-4">
                         <form action="">
@@ -224,8 +214,6 @@
                         </form>
                     </div>
                 </div>
-                {{-- @endif --}}
-
             </div>
         </form>
     </div>
@@ -271,11 +259,9 @@
                     <div id="LayoutCetakBuktiTransaksi"></div>
                 </div>
                 <div class="modal-footer">
-                    {{-- @if (in_array('jurnal_umum.cetak_bukti_transaksi', Session::get('tombol')))
-                        <button type="button" id="BtnCetak" class="btn btn-sm btn-info">
-                            Print
-                        </button>
-                    @endif --}}
+                    <button type="button" id="BtnCetak" class="btn btn-sm btn-info">
+                        Print
+                    </button>
                     <button type="button" id="BtnCetakBuktiTransaksi" class="btn btn-danger btn-sm">Tutup</button>
                 </div>
             </div>

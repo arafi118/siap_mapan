@@ -520,7 +520,7 @@ class TransactionController extends Controller
                     'relasi'              => (string) $request->relasi,
                     'total'                => str_replace(',', '', str_replace('.00', '', $request->harga_satuan)) * $request->jumlah,
                     'urutan'                => 0,
-                    'id_user'                 => auth()->user()->id,
+                    'user_id'                 => auth()->user()->id,
                 ];
 
                 $inventaris = [
@@ -574,7 +574,7 @@ class TransactionController extends Controller
                     'relasi'            => (string) $relasi,
                     'total'             => str_replace(',', '', str_replace('.00', '', $request->nominal)),
                     'keterangan'        => (string) $request->keterangan,
-                    'id_user'           => auth()->user()->id,
+                    'user_id'           => auth()->user()->id,
                 ];
 
                 $transaksi = Transaction::create($insert);
@@ -762,8 +762,6 @@ class TransactionController extends Controller
         $data['bulan'] = $request->bulan;
         $data['hari'] = $request->hari;
 
-        $data['kode_akun'] = Account::where('id', $kode_akun_by_id)->value('kode_akun');
-
         if ($data['tahun'] == null) {
             abort(404);
         }
@@ -785,10 +783,10 @@ class TransactionController extends Controller
         $hari = $data['hari'];
 
         $tgl = $thn . '-' . $bln . '-' . $hari;
-        $tgl = $thn . '-';
         $data['judul'] = 'Laporan Tahunan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
+
         $awal_bulan = $thn . '00-00';
         if ($data['bulanan']) {
             $tgl = $thn . '-' . $bln . '-';
@@ -815,9 +813,9 @@ class TransactionController extends Controller
         $data['is_dir'] = (auth()->guard('web')->user()->level == 1 && (auth()->guard('web')->user()->jabatan == 1 || auth()->guard('web')->user()->jabatan == 3)) ? true : false;
         $data['is_ben'] = (auth()->guard('web')->user()->level == 1 && (auth()->guard('web')->user()->jabatan == 3)) ? true : false;
 
-        $data['rek'] = Account::where('kode_akun', $data['kode_akun'])->first();
-        $data['transaksi'] = Transaction::where('tgl_transaksi', 'LIKE', '%' . $tgl . '%')->where(function ($query) use ($data) {
-            $query->where('rekening_debit', $data['kode_akun'])->orwhere('rekening_kredit', $data['kode_akun']);
+        $data['rek'] = Account::where('id', $kode_akun_by_id)->first();
+        $data['transaksi'] = Transaction::where('tgl_transaksi', 'LIKE', '%' . $tgl . '%')->where(function ($query) use ($kode_akun_by_id) {
+            $query->where('rekening_debit', $kode_akun_by_id)->orwhere('rekening_kredit', $kode_akun_by_id);
         })->with([
             'user',
             'rek_debit',
@@ -825,14 +823,14 @@ class TransactionController extends Controller
         ])->orderBy('tgl_transaksi', 'ASC')->orderBy('urutan', 'ASC')->orderBy('id', 'ASC')->get();
 
         $data['keuangan'] = $keuangan;
-        $data['saldo'] = $keuangan->saldoAwal($data['tgl_kondisi'], $data['kode_akun']);
-        $data['d_bulan_lalu'] = $keuangan->saldoD($awal_bulan, $data['kode_akun']);
-        $data['k_bulan_lalu'] = $keuangan->saldoK($awal_bulan, $data['kode_akun']);
+        $data['saldo'] = $keuangan->saldoAwal($data['tgl_kondisi'], $kode_akun_by_id);
+        $data['d_bulan_lalu'] = $keuangan->saldoD($awal_bulan, $kode_akun_by_id);
+        $data['k_bulan_lalu'] = $keuangan->saldoK($awal_bulan, $kode_akun_by_id);
 
         return [
             'label' => '<i class="fas fa-book"></i> ' . $data['rek']->kode_akun . ' - ' . $data['rek']->nama_akun . ' ' . $data['sub_judul'],
             'view' => view('transaksi.jurnal_umum.partials.jurnal', $data)->render(),
-            // 'cetak' => view('transaksi.jurnal_umum.partials._jurnal', $data)->render()
+            'cetak' => view('transaksi.jurnal_umum.partials._jurnal', $data)->render()
         ];
     }
 
@@ -936,7 +934,6 @@ class TransactionController extends Controller
         $business = Business::where('id', Session::get('business_id'))->first();
         $trx = Transaction::where('id', $id)->with('rek_debit')->with('rek_kredit')->first();
         $user = User::where('id', $trx->id_user)->first();
-
         $dir = User::where([
             ['jabatan', '1'],
             ['business_id', Session::get('business_id')]
@@ -976,146 +973,6 @@ class TransactionController extends Controller
 
         return view('transaksi.jurnal_umum.dokumen.bm')->with(compact('trx', 'business', 'dir', 'sekr', 'gambar', 'keuangan'));
     }
-
-    // public function struk($id)
-    // {
-    //     $data['real'] = RealAngsuran::where('id', $id)->with('trx', 'trx.user')->firstOrFail();
-    //     $data['pinkel'] = PinjamanKelompok::where('id', $data['real']->loan_id)->with([
-    //         'kelompok',
-    //         'kelompok.d',
-    //         'kelompok.d.sebutan_desa',
-    //         'jpp',
-    //         'sis_pokok'
-    //     ])->first();
-
-    //     $data['ra_bulan_ini'] = RencanaAngsuran::where([
-    //         ['loan_id', $data['real']->loan_id],
-    //         ['jatuh_tempo', '<=', date('Y-m-t', strtotime($data['real']->tgl_transaksi))],
-    //     ])->orderBy('jatuh_tempo', 'DESC')->first();
-    //     $data['angsuran'] = RencanaAngsuran::where([
-    //         ['loan_id', $data['real']->loan_id],
-    //         ['target_pokok', '<=', $data['real']->sum_pokok],
-    //     ])->orderBy('jatuh_tempo', 'DESC')->first();
-
-    //     $data['user'] = User::where('id', $data['real']->id_user)->first();
-    //     $data['kec'] = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
-    //     $data['keuangan'] = new Keuangan;
-
-    //     return view('transaksi.jurnal_angsuran.dokumen.struk', $data);
-    // }
-
-    // public function strukMatrix($id)
-    // {
-    //     $data['real'] = RealAngsuran::where('id', $id)->with('trx', 'trx.user')->firstOrFail();
-    //     $data['pinkel'] = PinjamanKelompok::where('id', $data['real']->loan_id)->with([
-    //         'kelompok',
-    //         'kelompok.d',
-    //         'kelompok.d.sebutan_desa',
-    //         'jpp',
-    //         'sis_pokok'
-    //     ])->first();
-
-    //     $data['ra_bulan_ini'] = RencanaAngsuran::where([
-    //         ['loan_id', $data['real']->loan_id],
-    //         ['jatuh_tempo', '<=', date('Y-m-t', strtotime($data['real']->tgl_transaksi))],
-    //     ])->orderBy('jatuh_tempo', 'DESC')->first();
-    //     $data['angsuran'] = RencanaAngsuran::where([
-    //         ['loan_id', $data['real']->loan_id],
-    //         ['target_pokok', '<=', $data['real']->sum_pokok],
-    //     ])->orderBy('jatuh_tempo', 'DESC')->first();
-
-    //     $data['user'] = User::where('id', $data['real']->id_user)->first();
-    //     $data['kec'] = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
-    //     $data['keuangan'] = new Keuangan;
-
-    //     return view('transaksi.jurnal_angsuran.dokumen.struk_matrix', $data);
-    // }
-
-    // public function strukThermal($id)
-    // {
-
-    //     $data['kertas'] = '80';
-    //     if (request()->get('kertas')) {
-    //         $data['kertas'] = request()->get('kertas');
-    //     }
-
-    //     $data['real'] = RealAngsuran::where('id', $id)->with('trx', 'trx.user')->firstOrFail();
-    //     $data['pinkel'] = PinjamanKelompok::where('id', $data['real']->loan_id)->with([
-    //         'kelompok',
-    //         'kelompok.d',
-    //         'kelompok.d.sebutan_desa',
-    //         'jpp',
-    //         'sis_pokok'
-    //     ])->first();
-
-    //     $data['ra_bulan_ini'] = RencanaAngsuran::where([
-    //         ['loan_id', $data['real']->loan_id],
-    //         ['jatuh_tempo', '<=', date('Y-m-t', strtotime($data['real']->tgl_transaksi))],
-    //     ])->orderBy('jatuh_tempo', 'DESC')->first();
-    //     $data['angsuran'] = RencanaAngsuran::where([
-    //         ['loan_id', $data['real']->loan_id],
-    //         ['target_pokok', '<=', $data['real']->sum_pokok],
-    //     ])->orderBy('jatuh_tempo', 'DESC')->first();
-
-    //     $data['user'] = User::where('id', $data['real']->id_user)->first();
-    //     $data['kec'] = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
-    //     $data['keuangan'] = new Keuangan;
-
-    //     return view('transaksi.jurnal_angsuran.dokumen.struk_thermal', $data);
-    // }
-    // public function bkmAngsuran($id)
-    // {
-    //     $keuangan = new Keuangan;
-
-    //     $kec = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
-    //     $trx = Transaksi::where('idt', $id)->with('rek_debit', 'tr_idtp', 'tr_idtp.rek_kredit')->withSum('tr_idtp', 'jumlah')->first();
-    //     $user = User::where('id', $trx->id_user)->first();
-
-    //     $dir = User::where([
-    //         ['level', '1'],
-    //         ['jabatan', '1'],
-    //         ['lokasi', Session::get('lokasi')]
-    //     ])->first();
-
-    //     $sekr = User::where([
-    //         ['level', '1'],
-    //         ['jabatan', '3'],
-    //         ['lokasi', Session::get('lokasi')]
-    //     ])->first();
-
-    //     $logo = $kec->logo;
-    //     $gambar = '/storage/logo/' . $logo;
-
-    //     return view('transaksi.jurnal_umum.jurnal_angsuran.dokumen.bkm')->with(compact('trx', 'kec', 'dir', 'sekr', 'gambar', 'keuangan'));
-    // }
-    // public function cetak(Request $request)
-    // {
-    //     $keuangan = new Keuangan;
-    //     $idt = $request->cetak;
-
-    //     $data['kec'] = Business::where('id', Session::get('bussines_id'))->with('kabupaten')->first();
-    //     $data['transaksi'] = Transaction::whereIn('idt', $idt)->with('rek_debit', 'rek_kredit', 'tr_idtp', 'tr_idtp.rek_kredit')->withSum('tr_idtp', 'jumlah')->get();
-
-    //     $data['dir'] = User::where([
-    //         ['level', '1'],
-    //         ['jabatan', '1'],
-    //         ['lokasi', Session::get('lokasi')]
-    //     ])->first();
-
-    //     $data['sekr'] = User::where([
-    //         ['level', '1'],
-    //         ['jabatan', '3'],
-    //         ['lokasi', Session::get('lokasi')]
-    //     ])->first();
-
-    //     $logo = $data['kec']->logo;
-    //     $data['gambar'] = $logo;
-    //     $data['keuangan'] = $keuangan;
-
-    //     $view = view('transaksi.jurnal_umum.dokumen.cetak', $data)->render();
-    //     $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-    //     return $pdf->stream();
-    // }
 
     public function data($id)
     {
