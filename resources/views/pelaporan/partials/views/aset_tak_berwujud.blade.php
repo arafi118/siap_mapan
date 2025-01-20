@@ -69,21 +69,21 @@
     </tr>
     <!-- Baris Data -->
     <tr>
-        <td>1</td>
-        <td>01-01-2023</td>
-        <td>Nama Barang Contoh</td>
-        <td>123</td>
-        <td>Baik</td>
-        <td>5</td>
-        <td>10,000</td>
-        <td>50,000</td>
-        <td>5</td>
-        <td>2,000</td>
-        <td>1</td>
-        <td>2,000</td>
-        <td>5</td>
-        <td>10,000</td>
-        <td>40,000</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
     </tr>
     <!-- Baris Jumlah -->
     <tr>

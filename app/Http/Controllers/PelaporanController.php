@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\AkunLevel1;
+use App\Models\Amount;
 use App\Models\Business;
 use App\Models\Calk;
+use App\Models\Inventory;
 use App\Models\JenisLaporan;
 use App\Models\JenisLaporanPinjaman;
 use App\Models\MasterArusKas;
@@ -201,8 +203,41 @@ class PelaporanController extends Controller
     }
     private function buku_besar(array $data)
     {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        } 
         $data['title'] = 'Buku Besar';
         $data['kode_akun'] = $data['sub_laporan'];
+
+        $data['account'] = Account::where([
+            ['business_id', Session::get('business_id')],
+            ['kode_akun', $data['kode_akun']]
+        ])->first();
+
+        $data['saldo_awal_tahun'] = Amount::where([
+            ['tahun', $data['tahun']],
+            ['bulan','0'],
+            ['account_id', $data['account']->id]
+        ])->first();
+
+        $data['saldo_bulan_lalu'] = Amount::where([
+            ['tahun', $data['tahun']],
+            ['bulan',$data['bulan'] - 1],
+            ['account_id', $data['account']->id]
+        ])->first();
+
+        $data['transactions'] = Transaction::where('rekening_debit', $data['account']->id)
+                                    ->orwhere('rekening_kredit', $data['account']->id)->get();
+
         $view = view('pelaporan.partials.views.buku_besar', $data)->render();
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
@@ -537,18 +572,12 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['Inventory'] = Account::where('kode_akun', 'LIKE', '1.2.03%')
-        ->with([
-            'Inventory' => function ($query) use ($data) {
-                $query->where([
-                    ['jenis', '3'],
-                    ['status', '!=', '0'],
-                    ['tgl_beli', '<=', $data['tgl_kondisi']],
-                    ['tgl_beli', 'NOT LIKE', '']
-                ])->orderBy('tgl_beli', 'ASC');
-            }
-        ])
-        ->get();
+        $data['Inventory'] = Inventory::where([
+            ['jenis', '3'],
+            ['business_id', Session::get('id')],
+            ['tgl_beli', '<=', $data['tgl']]
+        ])->get();
+
         $data['title'] = 'Daftar Aset Tak Berwujud';
         $view = view('pelaporan.partials.views.aset_tak_berwujud', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
