@@ -16,7 +16,7 @@
     $total_kredit = 0;
 @endphp
 
-<form action="/transaksi/dokumen/cetak" method="post" id="FormCetakDokumenTransaksi" target="_blank">
+<form action="/transactions/dokumen/cetak" method="post" id="FormCetakDokumenTransaksi" target="_blank">
     @csrf
 
     <table border="0" width="100%" cellspacing="0" cellpadding="0" class="table table-striped midle">
@@ -31,11 +31,10 @@
                 <td align="center" width="100">Tanggal</td>
                 <td align="center" width="100">Kode Akun</td>
                 <td align="center">Keterangan</td>
-                <td align="center" width="70">Kode Trx.</td>
+                <td align="center" width="70">ID Trx.</td>
                 <td align="center" width="140">Debit</td>
                 <td align="center" width="140">Kredit</td>
                 <td align="center" width="150">Saldo</td>
-                <td align="center" width="40">Ins</td>
             </tr>
         </thead>
 
@@ -50,7 +49,6 @@
                 <td align="right">{{ number_format($saldo['debit'], 2) }}</td>
                 <td align="right">{{ number_format($saldo['kredit'], 2) }}</td>
                 <td align="right">{{ number_format($saldo_awal_tahun, 2) }}</td>
-                <td align="center"></td>
             </tr>
             <tr>
                 <td align="center"></td>
@@ -62,19 +60,18 @@
                 <td align="right">{{ number_format($d_bulan_lalu, 2) }}</td>
                 <td align="right">{{ number_format($k_bulan_lalu, 2) }}</td>
                 <td align="right">{{ number_format($total_saldo, 2) }}</td>
-                <td align="center"></td>
             </tr>
 
             @foreach ($transaksi as $trx)
                 @php
                     if ($trx->rekening_debit == $rek->id) {
-                        $ref = $trx->rek_kredit->kode_akun;
+                        $ref = $trx->rek_debit->kode_akun;
                         $debit = $trx->total;
                         $kredit = 0;
                     } else {
-                        $ref = $trx->rek_debit->kode_akun;
-                        $debit = 0;
+                        $ref = $trx->kode_akun;
                         $kredit = $trx->total;
+                        $debit = 0;
                     }
 
                     if ($rek->jenis_mutasi == 'debet') {
@@ -128,20 +125,6 @@
                         $kuitansi = false;
                     }
                     if (
-                        $keuangan->startWith($trx->rekening_debit, '1.1.02') &&
-                        $keuangan->startWith($trx->rekening_kredit, '1.1.01')
-                    ) {
-                        $files = 'bm';
-                        $kuitansi = false;
-                    }
-                    if (
-                        $keuangan->startWith($trx->rekening_debit, '1.1.01') &&
-                        $keuangan->startWith($trx->rekening_kredit, '1.1.02')
-                    ) {
-                        $files = 'bm';
-                        $kuitansi = false;
-                    }
-                    if (
                         $keuangan->startWith($trx->rekening_debit, '5.') &&
                         !(
                             $keuangan->startWith($trx->rekening_kredit, '1.1.01') ||
@@ -171,30 +154,24 @@
                         $files = 'bm';
                         $kuitansi = false;
                     }
-
-                    $ins = '';
-                    if (isset($trx->user->ins)) {
-                        $ins = $trx->user->ins;
-                    }
                 @endphp
 
 
                 <tr>
                     <td align="center">
                         <div class="form-check text-center ps-0 mb-0">
-                            <input class="form-check-input" type="checkbox" value="{{ $trx->idt }}"
-                                id="{{ $trx->idt }}" name="cetak[]" data-input="checked">
+                            <input class="form-check-input" type="checkbox" value="{{ $trx->id }}"
+                                id="{{ $trx->id }}" name="cetak[]" data-input="checked">
                         </div>
                     </td>
                     <td align="center">{{ $loop->iteration }}.</td>
                     <td align="center">{{ Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
                     <td align="center">{{ $ref }}</td>
-                    <td>{{ $trx->keterangan_transaksi }}</td>
-                    <td align="center">{{ $trx->idt }}</td>
+                    <td>{{ $trx->keterangan }}</td>
+                    <td align="center">{{ $trx->id }}</td>
                     <td align="right">{{ number_format($debit, 2) }}</td>
                     <td align="right">{{ number_format($kredit, 2) }}</td>
                     <td align="right">{{ number_format($total_saldo, 2) }}</td>
-                    <td align="center">{{ $ins }}</td>
                 </tr>
             @endforeach
 

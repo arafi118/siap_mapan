@@ -89,9 +89,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transactions/dokumen/bm/{id}', [TransactionController::class, 'bm']);
 
     Route::post('/transactions/dokumen/cetak', [TransactionController::class, 'cetak']);
-    Route::get('/transactions/data/{id}', [TransactionController::class, 'data'])->middleware('auth');
-    Route::post('/transactions/reversal', [TransactionController::class, 'reversal'])->middleware('auth');
-    Route::post('/transactions/hapus', [TransactionController::class, 'hapus'])->middleware('auth');
+    Route::get('/transactions/data/{id}', [TransactionController::class, 'data']);
+    Route::post('/transactions/reversal', [TransactionController::class, 'reversal']);
+    Route::post('/transactions/hapus', [TransactionController::class, 'hapus']);
 
     // Cater 
     Route::resource('/caters', CaterController::class);

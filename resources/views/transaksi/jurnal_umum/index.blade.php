@@ -227,9 +227,6 @@
             <div class="modal-content" style="height: 100%; border-radius: 0;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detailTransaksiLabel">Detail Transaksi</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" style="overflow-y: auto;">
                     <div id="LayoutdetailTransaksi"></div>
@@ -253,7 +250,6 @@
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="CetakBuktiTransaksiLabel">
                     </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="LayoutCetakBuktiTransaksi"></div>

@@ -837,6 +837,36 @@ class TransactionController extends Controller
     /**
      * .cetak kuitansi notifikasi jurnal umum
      */
+    public function cetak(Request $request)
+    {
+        $keuangan = new Keuangan;
+        $id = $request->cetak;
+
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+        $data['transaksi'] = Transaction::whereIn('id', $id)
+            ->selectRaw('*, SUM(total) as total_sum')
+            ->groupBy('id')
+            ->with('rek_debit', 'rek_kredit')
+            ->get();
+        $data['dir'] = User::where([
+            ['jabatan', '1'],
+            ['business_id', Session::get('business_id')]
+        ])->first();
+
+        $data['sekr'] = User::where([
+            ['jabatan', '2'],
+            ['business_id', Session::get('business_id')]
+        ])->first();
+
+        $logo = $data['bisnis']->logo;
+        $data['gambar'] = $logo;
+        $data['keuangan'] = $keuangan;
+
+        $view = view('transaksi.jurnal_umum.dokumen.cetak', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
+        return $pdf->stream();
+    }
+
     public function kuitansi($id)
     {
         $keuangan = new Keuangan;

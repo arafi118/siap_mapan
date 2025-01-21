@@ -27,8 +27,7 @@
             <td align="center" width="140">Debit</td>
             <td align="center" width="140">Kredit</td>
             <td align="center" width="150">Saldo</td>
-            {{-- <td align="center" width="40">Ins</td> --}}
-            <td align="center" width="170">&nbsp;</td>
+            <td align="center" width="170">Aksi</td>
         </tr>
     </thead>
 
@@ -42,7 +41,6 @@
             <td align="right">{{ number_format($saldo['debit'], 2) }}</td>
             <td align="right">{{ number_format($saldo['kredit'], 2) }}</td>
             <td align="right">{{ number_format($saldo_awal_tahun, 2) }}</td>
-            {{-- <td align="center"></td> --}}
             <td align="center"></td>
         </tr>
         <tr>
@@ -54,7 +52,6 @@
             <td align="right">{{ number_format($d_bulan_lalu, 2) }}</td>
             <td align="right">{{ number_format($k_bulan_lalu, 2) }}</td>
             <td align="right">{{ number_format($total_saldo, 2) }}</td>
-            {{-- <td align="center"></td> --}}
             <td align="center"></td>
         </tr>
 
@@ -115,10 +112,6 @@
                     $kuitansi = true;
                 }
 
-                $ins = '';
-                if (isset($trx->user->ins)) {
-                    $ins = $trx->user->ins;
-                }
             @endphp
 
             <tr>
@@ -130,7 +123,6 @@
                 <td align="right">{{ number_format($debit, 2) }}</td>
                 <td align="right">{{ number_format($kredit, 2) }}</td>
                 <td align="right">{{ number_format($total_saldo, 2) }}</td>
-                {{-- <td align="center">{{ $ins }}</td> --}}
                 <td align="center">
                     <div class="dropdown dropleft">
                         <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="{{ $trx->id }}"
