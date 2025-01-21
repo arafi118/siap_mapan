@@ -147,7 +147,8 @@ class PelaporanController extends Controller
         return $pdf->stream();
     }
     private function surat_pengantar(array $data)
-    { $thn = $data['tahun'];
+    { 
+        $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
 
@@ -266,7 +267,7 @@ class PelaporanController extends Controller
                 $query->where('bulan','0')->orWhere('bulan', $data['bulan']);
             });
         }
-    ])->get();
+        ])->get();
        $data['title'] = 'Neraca Saldo';
        $view = view('pelaporan.partials.views.neraca_saldo', $data)->render();
        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
@@ -552,6 +553,17 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
+        $data['accounts'] = Account::where([
+            ['kode_akun','LIKE','1.2.01%'],
+            ['business_id', Session::get('business_id')]
+        ])->with([
+            'inventory' => function ($query) use($data) {
+                $query->where([
+                    ['business_id', Session::get('business_id')],
+                    ['tgl_beli', '<=', $data['tgl_kondisi']]
+                ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC');
+            }
+        ])->get();
         $data['title'] = 'Daftar Aset Tetap';
         $view = view('pelaporan.partials.views.aset_tetap', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
@@ -572,11 +584,46 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['Inventory'] = Inventory::where([
-            ['jenis', '3'],
-            ['business_id', Session::get('id')],
-            ['tgl_beli', '<=', $data['tgl']]
+
+        $data['accounts'] = Account::where([
+            ['kode_akun','LIKE','1.2.03%'],
+            ['business_id', Session::get('business_id')]
+        ])->with([
+            'inventory' => function ($query) use($data) {
+                $query->where([
+                    ['business_id', Session::get('business_id')],
+                    ['tgl_beli', '<=', $data['tgl_kondisi']]
+                ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC');
+            }
         ])->get();
+
+        // $data['PendirianOrganisasi'] = Inventory::where([
+        //     ['jenis', '3'],
+        //     ['kategori', '1'],
+        //     ['business_id', Session::get('business_id')],
+        //     ['tgl_beli', '<=', $data['tgl_kondisi']]
+        // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
+
+        // $data['Lisensi'] = Inventory::where([
+        //     ['jenis', '3'],
+        //     ['kategori', '2'],
+        //     ['business_id', Session::get('business_id')],
+        //     ['tgl_beli', '<=', $data['tgl_kondisi']]
+        // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
+        
+        // $data['Sewa'] = Inventory::where([
+        //     ['jenis', '3'],
+        //     ['kategori', '3'],
+        //     ['business_id', Session::get('business_id')],
+        //     ['tgl_beli', '<=', $data['tgl_kondisi']]
+        // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
+        
+        // $data['Asuransi'] = Inventory::where([
+        //     ['jenis', '3'],
+        //     ['kategori', '4'],
+        //     ['business_id', Session::get('business_id')],
+        //     ['tgl_beli', '<=', $data['tgl_kondisi']]
+        // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
 
         $data['title'] = 'Daftar Aset Tak Berwujud';
         $view = view('pelaporan.partials.views.aset_tak_berwujud', $data)->render();

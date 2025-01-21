@@ -158,7 +158,7 @@
        @endforeach
    @else
        <tr>
-           <td colspan="8" align="center">Tidak ada transaksi.</td>
+           <td colspan="8" align="center">0</td>
        </tr>
    @endif
    

@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Awobaz\Compoships\Compoships;
 
 class Account extends Model
 {
-    use HasFactory;
+    use HasFactory, Compoships;
     protected $guarded = ['id'];
 
     public function amount()
@@ -43,5 +44,10 @@ class Account extends Model
     public function saldo()
     {
         return $this->hasOne(Amount::class, 'id', 'kode_akun');
+    }
+
+    public function inventory()
+    {
+        return $this->hasMany(Inventory::class, ['jenis','kategori'],['lev3','lev4']);
     }
 }

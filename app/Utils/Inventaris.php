@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\Inventaris as ModelsInventaris;
 use App\Models\Rekening;
 use DB;
+use Illuminate\Contracts\Session\Session as SessionSession;
 use Session;
 
 class Inventaris

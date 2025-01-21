@@ -6,6 +6,7 @@ use Carbon\Carbon;
 
 class Tanggal
 {
+    
     public static function tglIndo($tanggal, $format = 'DD/MM/YYYY')
     {
         if ($tanggal != '') {
