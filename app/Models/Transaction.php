@@ -33,7 +33,7 @@ class Transaction extends Model
     }
     public function Account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Account::class, 'kode_akun', 'id');
     }
     public function JenisTransactions()
     {

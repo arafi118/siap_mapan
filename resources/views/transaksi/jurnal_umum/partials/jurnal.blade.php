@@ -61,14 +61,14 @@
         @foreach ($transaksi as $trx)
             @php
 
-                if ($trx->rekening_debit == $rek->kode_akun) {
+                if ($trx->rekening_debit == $rek->id) {
                     $ref = $trx->rek_debit->kode_akun;
                     $debit = $trx->total;
                     $kredit = 0;
                 } else {
-                    $ref = $trx->rek_kredit->kode_akun;
-                    $debit = 0;
+                    $ref = $trx->kode_akun;
                     $kredit = $trx->total;
+                    $debit = 0;
                 }
 
                 if ($rek->jenis_mutasi == 'debet') {
@@ -120,7 +120,6 @@
                     $ins = $trx->user->ins;
                 }
             @endphp
-
 
             <tr>
                 <td align="center">{{ $loop->iteration }}.</td>

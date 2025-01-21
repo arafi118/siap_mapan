@@ -233,12 +233,12 @@ class Keuangan
         $rekening = Account::select(
             DB::raw("SUM(tb$thn_lalu) as debit"),
             DB::raw("SUM(tbk$thn_lalu) as kredit"),
-            DB::raw('(SELECT sum(jumlah) as dbt FROM 
+            DB::raw('(SELECT sum(total) as dbt FROM 
             transaksi_' . Session::get('business_id') . ' as td WHERE 
             td.rekening_debit=rekening_' . Session::get('business_id') . '.kode_akun AND 
             td.tgl_transaksi BETWEEN "' . $awal_tahun . '" AND "' . $tgl_kondisi . '"
             ) as saldo_debit'),
-            DB::raw('(SELECT sum(jumlah) as dbt FROM 
+            DB::raw('(SELECT sum(total) as dbt FROM 
             transaksi_' . Session::get('business_id') . ' as td WHERE 
             td.rekening_kredit=rekening_' . Session::get('business_id') . '.kode_akun AND 
             td.tgl_transaksi BETWEEN "' . $awal_tahun . '" AND "' . $tgl_kondisi . '"
