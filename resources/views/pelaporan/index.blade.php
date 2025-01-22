@@ -16,7 +16,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="tahun">Tahun</label>
-                                <select class=" form-control" name="tahun" id="tahun">
+                                <select class="js-select-2 form-control" name="tahun" id="tahun">
                                     <option value="">---</option>
                                     @for ($i = $thn_awal; $i <= date('Y'); $i++)
                                         <option {{ $i == date('Y') ? 'selected' : '' }} value="{{ $i }}">
@@ -30,7 +30,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="bulan">Bulan</label>
-                                <select class="form-control" name="bulan" id="bulan">
+                                <select class="js-select-2 form-control" name="bulan" id="bulan">
                                     <option value="">---</option>
                                     <option value="01">01. JANUARI</option>
                                     <option value="02">02. FEBRUARI</option>
@@ -51,7 +51,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="hari">Tanggal</label>
-                                <select class=" form-control" name="hari" id="hari">
+                                <select class="js-select-2 form-control" name="hari" id="hari">
                                     <option value="">---</option>
                                     @for ($j = 1; $j <= 31; $j++)
                                         @if ($j < 10)
@@ -71,7 +71,7 @@
                             <div class="my-2">
                                 <div class="form-group">
                                     <label for="laporan">Nama Laporan</label>
-                                    <select class=" form-control" name="laporan" id="laporan">
+                                    <select class="js-select-2 form-control" name="laporan" id="laporan">
                                         <option value="">---</option>
                                         @foreach ($laporan as $lap)
                                             <option value="{{ $lap->file }}">
@@ -88,7 +88,7 @@
                             <div class="my-2">
                                 <div class="form-group">
                                     <label for="sub_laporan">Nama Sub Laporan</label>
-                                    <select class=" form-control" name="sub_laporan" id="sub_laporan">
+                                    <select class="js-select-2 form-control" name="sub_laporan" id="sub_laporan">
                                         <option value="">---</option>
                                     </select>
                                     <small class="text-danger" id="msg_sub_laporan"></small>
@@ -147,9 +147,12 @@
         document.getElementById('bulan').value = formattedMonth;
     </script>
     <script>
-        $('.js-example-basic-single').select2({
-            theme: 'bootstrap-4'
+        $(document).ready(function() {
+            $('.js-select-2').select2({
+                theme: 'bootstrap4',
+            });
         });
+
         $(document).on('change', '#tahun, #bulan', function(e) {
             e.preventDefault()
 

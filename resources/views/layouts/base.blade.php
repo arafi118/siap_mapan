@@ -22,6 +22,19 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <link rel="stylesheet" href="/assets/css/custom.css?v={{ time() }}">
+    <style>
+        .form-control,
+        .js-select-2 {
+            height: calc(1.5em + 0.75rem + 2px);
+            /* Sesuaikan jika perlu */
+            padding: 0.375rem 0.75rem;
+            /* Sesuaikan padding agar seragam */
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            /* Sesuaikan dengan elemen input */
+        }
+    </style>
 </head>
 
 <body id="page-top">

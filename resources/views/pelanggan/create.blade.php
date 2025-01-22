@@ -93,7 +93,7 @@
                             <div class="col-md-2">
                                 <div class="position-relative mb-3">
                                     <label for="jenis_kelamin">Jenis Kelamin</label>
-                                    <select class="form-control" name="jenis_kelamin" id="jenis_kelamin">
+                                    <select class="form-control js-select-2" name="jenis_kelamin" id="jenis_kelamin">
                                         <option value="">Pilih Jenis Kelamin</option>
                                         <option value="L">Laki Laki</option>
                                         <option value="P">Perempuan</option>

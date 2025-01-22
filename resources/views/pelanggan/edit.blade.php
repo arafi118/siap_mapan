@@ -299,3 +299,10 @@
         </div>
     </div>
 @endsection
+<script>
+    $(document).ready(function() {
+        $('.js-select-2').select2({
+            theme: 'bootstrap4',
+        });
+    });
+</script>
