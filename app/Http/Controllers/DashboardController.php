@@ -15,7 +15,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $keuangan = new Keuangan;
 
         Session::put('business_id', '1');
         $Installation = Installations::count();
