@@ -50,7 +50,7 @@ class InstallationsController extends Controller
             'package'
         )->get();
 
-        $title = 'Proposal';
+        $title = 'Permohonan';
         return view('perguliran.index')->with(compact('title', 'installations', 'status_R', 'status_I', 'status_A', 'status_B', 'status_C'));
     }
 

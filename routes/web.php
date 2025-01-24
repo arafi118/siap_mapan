@@ -27,6 +27,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Example route web
+// GET /customers                         index
+// POST /customers                        store
+// GET /customers/create                  create
+// GET /customers/{customer}              show
+// GET /customers/{customer}/edit         edit
+// PUT /customers/{customer}              update
+// DELETE /customers/{customer}           destroy
 
 // Auth
 Route::get('/auth', [AuthController::class, 'index'])->name('auth')->middleware('guest');
@@ -47,13 +55,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Customers || Pelanggan
     Route::resource('/customers', CustomerController::class);
-    // GET /customers                   index
-    // POST /customers                  store
-    // GET /customers/create            create
-    // GET /customers/{customer}              show
-    // GET /customers/{customer}/edit         edit
-    // PUT /customers/{customer}              update
-    // DELETE /customers/{customer}           destroy
 
     // Installations || Instalasi
     Route::get('/installations/reg_notifikasi/{customer_id}', [InstallationsController::class, 'reg_notifikasi']);
@@ -93,9 +94,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/transactions/reversal', [TransactionController::class, 'reversal']);
     Route::post('/transactions/hapus', [TransactionController::class, 'hapus']);
 
-    // Cater 
-    Route::resource('/caters', CaterController::class);
-
     // Setting || Pengaturan
     Route::resource('/pengaturan', SopController::class);
     Route::get('/pengaturan/sop', [SopController::class, 'profil']);
@@ -103,11 +101,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
     Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
     Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
-
-    // Pelaporan
-    Route::get('/pelaporan', [PelaporanController::class, 'index']);
-    Route::post('/pelaporan/preview', [PelaporanController::class, 'preview']);
-    Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan']);
 
     // Users || Pengguna
     Route::resource('/users', UserController::class);
@@ -126,14 +119,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Cater
     Route::resource('/caters', CaterController::class);
-
-    //peraturan sop
-    Route::resource('/pengaturan', SopController::class);
-    Route::get('/pengaturan/sop', [SopController::class, 'profil']);
-    Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
-    Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
-    Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
-    Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
 
     //generate
     Route::get('/generate_alamat/{kode}', [VillageController::class, 'generateAlamat']);

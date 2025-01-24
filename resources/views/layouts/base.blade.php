@@ -7,7 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{{ $title }}</title>
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ Session::get('icon') }}">
+    <link rel="icon" type="image/png" href="{{ Session::get('icon') }}">
+    <title>
+        {{ $title ?? 'x' }} &mdash; Aplikasi Pembayaran Meter SIAP MAPAN
+    </title>
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
         integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g=="
