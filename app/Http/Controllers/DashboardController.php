@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Business;
 use App\Models\Installations;
 use App\Models\Settings;
 use App\Models\Usage;
@@ -16,8 +17,7 @@ class DashboardController extends Controller
     public function index()
     {
         $keuangan = new Keuangan;
-        
-        Session::put('business_id', '1');
+
         $Installation = Installations::count();
         $Usages = Installations::where('status', 'A')->with([
             'customer',
@@ -56,7 +56,9 @@ class DashboardController extends Controller
         $month = date('m');
 
         $title = 'Dashboard';
-        return view('welcome')->with(compact('Installation', 'UsageCount', 'Tagihan', 'title', 'charts', 'pendapatan', 'beban', 'surplus', 'pros_pendapatan', 'pros_beban', 'pros_surplus'));
+        $api = env('APP_API', 'http://localhost:8080');
+        $business = Business::where('id', Session::get('business_id'))->first();
+        return view('welcome')->with(compact('Installation', 'UsageCount', 'Tagihan', 'title', 'charts', 'pendapatan', 'beban', 'surplus', 'pros_pendapatan', 'pros_beban', 'pros_surplus', 'business', 'api'));
     }
 
     public function installations()
@@ -105,6 +107,7 @@ class DashboardController extends Controller
         ])->with([
             'installation',
             'installation.customer',
+            'installation.customer.village',
             'installation.package'
         ])->get();
         $setting = Settings::where('business_id', Session::get('business_id'))->first();

@@ -123,25 +123,6 @@ td {
     /* Warna latar belakang saat dihover */
 }
 
-
-.nav-pills {
-    display: flex;
-    justify-content: space-between;
-    /* Jarak merata */
-    padding: 0;
-    /* Hapus padding default */
-    list-style: none;
-    /* Hapus bullet */
-    text-align: center;
-}
-
-.nav-pills .nav-link {
-    width: 160px;
-    /* Atur jarak antar tombol */
-}
-
-
-
 /* Target form labels */
 form#Penduduk label {
     font-size: 0.85rem;

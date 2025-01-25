@@ -95,12 +95,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/transactions/hapus', [TransactionController::class, 'hapus']);
 
     // Setting || Pengaturan
-    Route::resource('/pengaturan', SopController::class);
     Route::get('/pengaturan/sop', [SopController::class, 'profil']);
     Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
     Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
     Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
     Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
+    Route::post('/pengaturan/pesan_whatsapp', [SopController::class, 'pesan']);
+    Route::resource('/pengaturan', SopController::class);
 
     // Users || Pengguna
     Route::resource('/users', UserController::class);

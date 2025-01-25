@@ -302,7 +302,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary btn-modal-close">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="SendWhatsappMessage" class="btn btn-primary">Kirim Pesan</button>
                 </div>
             </div>
         </div>
@@ -500,28 +500,77 @@
             var setting = result.setting;
             var block = result.block
 
-
             $('#TableTagihan').html('');
             Tagihan.forEach((item, index) => {
                 var paket = JSON.parse(item.installation.package.harga)
+
+                var pesan_tagihan = ReplaceText(setting.pesan_tagihan, {
+                    'customer': item.installation.customer.nama,
+                    'desa': item.installation.customer.village.nama,
+                    'kode_instalasi': item.installation.kode_instalasi,
+                    'jatuh_tempo': formatDate(item.tgl_akhir),
+                    'jumlah_tagihan': paket[block[item.jumlah]],
+                    'user_login': '{{ Auth::user()->nama }}',
+                    'telpon': '{{ Auth::user()->telpon }}'
+                })
+
                 $('#TableTagihan').append(`
-                <tr>
-                    <td>${item.installation.kode_instalasi}</td>
-                    <td>${item.installation.customer.nama}</td>
-                    <td>${item.tgl_akhir}</td>
-                    <td>${item.jumlah}</td>
-                    <td>${paket[block[item.jumlah]]}</td>
-                </tr>
-            `)
+                    <tr>
+                        <td>
+                            <input type="hidden" class="pesan" name="pesan_tagihan[]" value="${item.installation.customer.hp}||${pesan_tagihan}">
+                            ${item.installation.kode_instalasi}
+                        </td>
+                        <td>${item.installation.customer.nama}</td>
+                        <td>${item.tgl_akhir}</td>
+                        <td>${item.jumlah}</td>
+                        <td>${paket[block[item.jumlah]]}</td>
+                    </tr>
+                `)
             })
 
             $('#ModalTagihan').modal('toggle');
         });
 
-        $(document).on('click', '.btn-modal-close', function(e) {
-            e.preventDefault();
+        $(document).on('click', '#SendWhatsappMessage', function(e) {
+            e.preventDefault()
 
-            $('.modal').modal('hide');
-        });
+            var messages = [];
+            $('.pesan').each(function(i) {
+                var pesan = this.value
+
+                var number = pesan.split('||')[0]
+                var msg = pesan.split('||')[1]
+
+                if (!number.startsWith('08') && !number.startsWith('628')) {
+                    number = '0' + number;
+                }
+
+                messages.push({
+                    number,
+                    message: msg
+                })
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ $api }}/api/message/{{ $business->token }}/send_messages',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    messages
+                }),
+                success: function(result) {
+                    if (result.success) {
+                        Swal.fire('Berhasil', 'Pesan Berhasil Dikirim', 'success')
+                    }
+                }
+            })
+
+        })
+
+        function ReplaceText(text, key_value) {
+            return text.replace(/{([^}]+)}/g, function(match, key) {
+                return key_value[key] || match;
+            });
+        }
     </script>
 @endsection

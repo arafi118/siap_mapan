@@ -15,14 +15,15 @@ class SopController extends Controller
 {
     public function index()
     {
+        $api = env('APP_API', 'http://localhost:8080');
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
-        $settings = Settings::all();
-        $business = Business::all();
+        $business = Business::where('id', $business_id)->first();
+        $token = $business->token;
 
         $tampil_settings = $pengaturan->first();
         $title = 'Personalisasi Sop';
-        return view('sop.index')->with(compact('title', 'business', 'settings', 'tampil_settings'));
+        return view('sop.index')->with(compact('title', 'api', 'business', 'token', 'tampil_settings'));
     }
 
     public function profil()
@@ -184,6 +185,21 @@ class SopController extends Controller
         $tampil_settings = $pengaturan->first();
         $title = 'Sop';
         return view('sop.partials.sistem_instal')->with(compact('title', 'tampil_settings'));
+    }
+
+    public function pesan(Request $request)
+    {
+        $business_id = Session::get('business_id');
+
+        Settings::where('business_id', $business_id)->update([
+            'pesan_tagihan' => $request->tagihan,
+            'pesan_pembayaran' => $request->pembayaran,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Pesan whatsapp berhasil diubah'
+        ]);
     }
     /**
      * Show the form for creating a new resource.
