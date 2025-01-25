@@ -121,6 +121,7 @@ class InstallationsController extends Controller
         $trx_settings = $pengaturan->first();
         $package = Package::all();
         $usages = Usage::all();
+        $transaksi = Transaction::all();
 
         $usages = Usage::where([
             ['id_instalasi', $installations->id],
@@ -133,7 +134,7 @@ class InstallationsController extends Controller
         if ($jumlah_trx == $abodemen) {
             return response()->json([
                 'success' => true,
-                'view' => view('transaksi.partials.usage')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
+                'view' => view('transaksi.partials.usage')->with(compact('installations', 'transaksi',  'usages', 'trx_settings', 'package'))->render()
             ]);
         } else {
             return response()->json([
@@ -141,12 +142,6 @@ class InstallationsController extends Controller
                 'view' => view('transaksi.partials.installations')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
             ]);
         }
-
-
-        // return response()->json([
-        //     'success' => true,
-        //     'view' => view('transaksi.partials.usage')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
-        // ]);
     }
 
     /**

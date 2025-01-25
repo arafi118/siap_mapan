@@ -183,7 +183,7 @@
             // $("#customername").val(installation.customers.nama);
 
             var tagihan = sum_total - installation.abodemen;
-            $("#transaction_id").val(installation.id);
+            $("#installation").val(installation.id);
             $("#order").val(installation.order);
             $("#kode_instalasi").val(installation.kode_instalasi);
             $("#alamat").val(installation.village.nama);

@@ -83,8 +83,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transactions/detail_transaksi/', [TransactionController::class, 'detailTransaksi']);
     Route::resource('/transactions', TransactionController::class);
 
-    Route::get('/transactions/dokumen/kuitansi/{id}', [TransactionController::class, 'kuitansi']);
-    Route::get('/transactions/dokumen/kuitansi_thermal/{id}', [TransactionController::class, 'kuitansi_thermal']);
+    Route::get('/transactions/dokumen/struk_instalasi/{id}', [TransactionController::class, 'kuitansi_thermal']);
+    Route::get('/transactions/dokumen/struk_tagihan/{id}', [TransactionController::class, 'struk_instalasi']);
+    Route::get('/transactions/dokumen/kuitansi_thermal/{id}', [TransactionController::class, 'struk_tagihan']);
     Route::get('/transactions/dokumen/bkk/{id}', [TransactionController::class, 'bkk']);
     Route::get('/transactions/dokumen/bkm/{id}', [TransactionController::class, 'bkm']);
     Route::get('/transactions/dokumen/bm/{id}', [TransactionController::class, 'bm']);

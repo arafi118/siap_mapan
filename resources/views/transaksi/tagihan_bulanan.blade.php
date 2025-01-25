@@ -38,7 +38,6 @@
             var total = (jumlah - jumlah_bayar);
 
             $("#total").val(numFormat.format(Math.abs(total)));
-
         });
 
         //simpan data pembayaran tagihan bulanan
@@ -61,6 +60,7 @@
                             icon: "success",
                             draggable: true
                         });
+                        window.open('/transactions/dokumen/struk_tagihan/' + result.transaction_id)
                     }
                 },
 
@@ -105,11 +105,13 @@
                             denyButtonText: `Tidak`
                         }).then((res) => {
                             if (res.isConfirmed) {
-                                window.location.reload()
-                            } else {
+                                window.location.reload();
+                            } else if (res.isDenied) {
                                 window.location.href = '#';
                             }
                         });
+
+                        window.open('/transactions/dokumen/struk_instalasi/' + result.transaction_id)
                     }
                 },
                 error: function(result) {
@@ -129,5 +131,23 @@
                 }
             });
         });
+
+        $(document).on('change', '#tgl_transaksi', function() {
+
+            var tglTransaksi = $('#tgl_transaksi').val();
+            var tglAkhir = $('#tgl_akhir').val();
+            var denda = $('#denda').val();
+
+            var tanggal = tglTransaksi.split('/')
+            var bulan = tanggal[1]
+
+            if (tglAkhir - bulan > 1) {
+                denda = denda;
+            } else {
+                denda = 0;
+            }
+
+            $("#denda_bulanan").val(numFormat.format(Math.abs(denda)));
+        })
     </script>
 @endsection

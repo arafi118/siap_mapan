@@ -8,7 +8,7 @@
         <form action="/transactions" method="post" id="FormPembayaran">
             @csrf
             <input type="hidden" name="clay" id="clay" value="pelunasaninstalasi">
-            <input type="hidden" name="transaction_id" id="transaction_id">
+            <input type="hidden" name="istallation_id" id="installation">
 
             <div class="row">
                 <div class="col-lg-12">
@@ -132,8 +132,8 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-end">
-                                <button class="btn btn-secondary btn-icon-split" type="submit" id="simpanpembayaran"
-                                    style="float: right; margin-left: 10px;">
+                                <button class="btn btn-secondary btn-icon-split btn-struk" type="submit"
+                                    id="simpanpembayaran" style="float: right; margin-left: 10px;">
                                     <span class="icon text-white-50">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
@@ -233,19 +233,21 @@
                 success: function(result) {
                     if (result.success) {
                         Swal.fire({
-                            title: result.msg,
-                            text: "Tambahkan Pembayaran Baru?",
+                            title: "Berhasil",
+                            text: "Simpan Data Instalasi Berhasil",
                             icon: "success",
                             showDenyButton: true,
-                            confirmButtonText: "Tambahkan",
-                            denyButtonText: `Tidak`
+                            confirmButtonText: "Tambahkan Pembayaran Baru",
+                            denyButtonText: "Kembali"
                         }).then((res) => {
                             if (res.isConfirmed) {
-                                window.location.reload()
-                            } else {
+                                window.location.reload();
+                            } else if (res.isDenied) {
                                 window.location.href = '#';
                             }
                         });
+
+                        window.open('/transactions/dokumen/struk_instalasi/' + result.transaction_id)
                     }
                 },
                 error: function(result) {

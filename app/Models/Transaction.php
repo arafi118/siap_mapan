@@ -27,9 +27,13 @@ class Transaction extends Model
     {
         return $this->hasOne(Usage::class, 'kode_instalasi', 'id');
     }
+    public function Usages()
+    {
+        return $this->belongsTo(Usage::class, 'usage_id', 'id');
+    }
     public function Installations()
     {
-        return $this->belongsTo(Installations::class);
+        return $this->belongsTo(Installations::class, 'installation_id', 'id');
     }
     public function Account()
     {
@@ -68,5 +72,9 @@ class Transaction extends Model
     public function acc_kredit()
     {
         return $this->belongsTo(Account::class, 'rekening_kredit');
+    }
+    public function settings()
+    {
+        return $this->hasOne(Settings::class, 'business_id', 'business_id');
     }
 }

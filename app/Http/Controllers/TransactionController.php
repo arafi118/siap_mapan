@@ -67,11 +67,13 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::all();
         $installations = Installations::all();
+        $settings = Settings::all();
         $status_0 = Installations::where('status', '0')->with(
             'customer',
             'village',
             'package'
         )->get();
+
         $title = 'Pelunasan Instalasi';
         return view('transaksi.tagihan_bulanan')->with(compact('title', 'transactions', 'status_0'));
     }
@@ -590,7 +592,7 @@ class TransactionController extends Controller
         return response()->json([
             'success'   => true,
             'msg'       => $msg,
-            'view'      => $view
+            'view'      => $view,
         ]);
     }
 
@@ -601,7 +603,7 @@ class TransactionController extends Controller
     {
         $data = $request->only([
             "tgl_transaksi",
-            "transaction_id",
+            "istallation_id",
             "abodemen",
             "biaya_sudah_dibayar",
             "pembayaran",
@@ -639,7 +641,7 @@ class TransactionController extends Controller
             'rekening_kredit' => '67',
             'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
             'total' => $jumlah_instal,
-            'installation_id' => $request->transaction_id,
+            'installation_id' => $request->istallation_id,
             'keterangan' => 'Biaya istalasi ' . $persen . '%',
         ]);
 
@@ -652,12 +654,38 @@ class TransactionController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Pembayaran berhasil disimpan',
-            'transaksi' => $transaksi
+            'transaksi' => $transaksi,
+            'transaction_id' => $transaksi->id
         ]);
     }
 
+    public function struk_instalasi($id)
+    {
+        $keuangan = new Keuangan;
+
+        $bisnis = Business::where('id', Session::get('business_id'))->first();
+        $trx = Transaction::where('id', $id)->with([
+            'Installations.customer'
+        ])->first();
+        $user = User::where('id', $trx->user_id)->first();
+        $kode_akun = Account::where('id', $trx)->value('kode_akun');
+
+        $jenis = 'Pembayaran Instalasi';
+        $dari = ucwords($trx->Installations->customer->nama);
+        $oleh = ucwords(auth()->user()->nama);
+
+        $logo = $bisnis->logo;
+        if (empty($logo)) {
+            $gambar = '/storage/logo/1.png';
+        } else {
+            $gambar = '/storage/logo/' . $logo;
+        }
+
+        return view('transaksi.dokumen.struk_installasi')->with(compact('trx', 'keuangan', 'dari', 'oleh', 'jenis', 'bisnis', 'gambar'));
+    }
+
     /**
-     * Create data Pelunasan Instalasi.
+     * Create data Pelunasan bulanan.
      */
     private function CreateTagihanBulanan($request)
     {
@@ -700,10 +728,36 @@ class TransactionController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Pembayaran berhasil disimpan',
-            'transaksi' => $transaksi
+            'transaksi' => $transaksi,
+            'transaction_id' => $transaksi->id
         ]);
     }
 
+    public function struk_tagihan($id)
+    {
+        $keuangan = new Keuangan;
+
+        $bisnis = Business::where('id', Session::get('business_id'))->first();
+        $trx = Transaction::where('id', $id)->with([
+            'Installations.customer',
+            'Usages'
+        ])->first();
+        $user = User::where('id', $trx->user_id)->first();
+        $kode_akun = Account::where('id', $trx)->value('kode_akun');
+
+        $jenis = 'Pembayaran Bulanan';
+        $dari = ucwords($trx->Installations->customer->nama);
+        $oleh = ucwords(auth()->user()->nama);
+
+        $logo = $bisnis->logo;
+        if (empty($logo)) {
+            $gambar = '/storage/logo/1.png';
+        } else {
+            $gambar = '/storage/logo/' . $logo;
+        }
+
+        return view('transaksi.dokumen.struk_tagihan')->with(compact('trx', 'keuangan', 'dari', 'oleh', 'jenis', 'bisnis', 'gambar'));
+    }
     /**
      * Set saldo.
      */
@@ -837,6 +891,8 @@ class TransactionController extends Controller
     /**
      * .cetak kuitansi notifikasi jurnal umum
      */
+
+
     public function cetak(Request $request)
     {
         $keuangan = new Keuangan;
