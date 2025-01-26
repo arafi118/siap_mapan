@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Session;
 
 class UsageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+ 
     public function index()
     {
         $usages = Usage::with([
@@ -35,11 +33,12 @@ class UsageController extends Controller
         // where('status','A')->
         $customer = Installations::with('customer')->orderBy('id', 'ASC')->get();
         $caters = Cater::all();
+        $usages = Usage::all();
         $installasi = Installations::orderBy('id', 'ASC')->get();
         $pilih_customer = 0;
 
         $title = 'Register Pemakaian';
-        return view('penggunaan.create')->with(compact('customer', 'pilih_customer', 'caters', 'title'));
+        return view('penggunaan.create')->with(compact('customer', 'pilih_customer', 'caters', 'title','usages'));
     }
 
     public function store(Request $request)

@@ -188,6 +188,35 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
+    private function calk(array $data)
+    {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
+            'akun2',
+            'akun2.akun3',
+            'akun2.akun3.accounts',
+            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->orderBy('kode_akun', 'ASC')->get();
+        
+        $data['title'] = 'Calk';
+        $view = view('pelaporan.partials.views.calk', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
     private function surat_pengantar(array $data)
     { 
         $thn = $data['tahun'];
@@ -797,11 +826,9 @@ class PelaporanController extends Controller
     }
     private function daftar_tagihan_pelanggan(array $data)
     {
-
     }
     private function daftar_piutang_pelanggan(array $data)
     {
-
     }
     private function ati(array $data)
     {
@@ -911,13 +938,6 @@ class PelaporanController extends Controller
         $data['title'] = 'E - Budgeting';
         $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-        return $pdf->stream();
-    }
-    private function calk(array $data)
-    {
-        $data['title'] = 'Calk';
-        $view = view('pelaporan.partials.views.calk', $data)->render();
-        $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
    

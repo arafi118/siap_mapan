@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/customers', CustomerController::class);
 
     // Installations || Instalasi
+    Route::get('/installations/cater/{cater_id}', [InstallationsController::class, 'list']);
     Route::get('/installations/reg_notifikasi/{customer_id}', [InstallationsController::class, 'reg_notifikasi']);
     Route::get('/installations/jenis_paket/{id}', [InstallationsController::class, 'jenis_paket']);
     Route::get('/installations/kode_instalasi', [InstallationsController::class, 'kode_instalasi']);

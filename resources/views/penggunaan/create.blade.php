@@ -28,66 +28,51 @@
 
                             <div class="flex-grow-1">
                                 <div class="mt-3">
-                                    <h3><b>Pembayaran Pemakaian Bulanan</b></h3>
+                                    <h3><b>Input Pemakaian Air Bulanan</b></h3>
                                 </div>
                                 <hr class="my-2 bg-white">
-                                <div class="form-group">
-                                    <input type="text" class="typeahead form-control bg-light border-1 small search"
-                                        id="carianggota" name="customer" placeholder="{{ $label_search }}">
-                                </div>
+                                <select class="select2 form-control" name="caters" id="caters">
+                                    @foreach ($caters as $cater)
+                                        <option value="{{ $cater->id }}">
+                                            {{ $cater->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <!-- Tabel di Bawah Customer -->
                         <br>
-                        <div class="alert alert-light" role="alert">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="position-relative mb-3">
-                                        <label for="tgl_akhir">Tanggal Akhir</label>
-                                        <input type="text" class="form-control date" name="tgl_akhir"
-                                            id="tgl_akhir"value=" {{ date('d/m/Y') }}">
-                                        <small class="text-danger">{{ $errors->first('tgl_akhir') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="position-relative mb-3">
-                                        <label for="awal">Awal Pemakaian</label>
-                                        <input type="text" class="form-control hitungan" id="awal" name="awal"
-                                            readonly>
-                                        <small class="text-danger" id="msg_awal"></small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="position-relative mb-3">
-                                        <label for="akhir">Akhir Pemakaian</label>
-                                        <input type="text" class="form-control total hitungan" name="akhir"
-                                            id="akhir">
-                                        <small class="text-danger" id="msg_akhir"></small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="position-relative mb-3">
-                                        <label for="jumlah">Jumlah</label>
-                                        <input type="text" class="form-control" name="jumlah" id="jumlah" readonly>
-                                        <small class="text-danger"></small>
+                        <div class="row">
+                            <!-- Datatables -->
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="table-responsive p-3">
+                                        <table class="table align-items-center table-flush" id="TbPemakain">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Checklist</th>
+                                                    <th>NAMA</th>
+                                                    <th>KODE INSTALASI</th>
+                                                    <th>AWAL</th>
+                                                    <th>AKHIR</th>
+                                                    <th>JUMLAH</th>
+                                                    {{-- <th style="text-align: center;">AKSI</th> --}}
+                                                </tr>
+                                            </thead>
+                                            <tbody id="DaftarInstalasi"></tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-12 d-flex justify-content-end">
-                            <a href="/usages" class="btn btn-light btn-sm">Kembali</a>
-                            <button class="btn btn-secondary btn-icon-split" type="submit" id="SimpanPemakaian"
-                                style="float: right; margin-left: 10px;">
-                                <span class="icon text-white-50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
-                                    </svg>
+                            <a href="/usages" class="btn btn-white">Kembali</a>
+                            <button class="btn btn-secondary ml-2" type="submit" id="SimpanPemakaian">
+                                <span class="icon">
+                                    <i class="fas fa-plus"></i>
                                 </span>
-                                <span class="text" style="float: right;">Simpan Pembayaran</span>
+                                <span class="text">Simpan</span>
                             </button>
                         </div>
                     </div>
@@ -98,11 +83,6 @@
 @endsection
 
 @section('script')
-    <script>
-        document.getElementById("close").addEventListener("click", function() {
-            window.location.href = "/usages"; // Url kembali
-        });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const alert = document.getElementById('success-alert');
@@ -140,5 +120,38 @@
             timepicker: false,
             format: 'd/m/Y'
         });
+
+        $(document).on('change', '#caters', function(e) {
+            e.preventDefault()
+
+            var id_cater = $(this).val();
+            $.get('/installations/cater/' + id_cater, function(result) {
+                if (result.success) {
+
+                    var table = $('#DaftarInstalasi')
+                    table.html('')
+
+                    result.installations.forEach((item, index) => {
+                        var nilai_akhir = (item.one_usage) ? item.one_usage.akhir : '0'
+                        table.append(`
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="check[${item.id}]" id="check_${item.id}">   
+                                </td>    
+                                <td>${item.customer.nama}</td>    
+                                <td>${item.kode_instalasi}</td>    
+                                <td>${nilai_akhir}</td>    
+                                <td>
+                                    <input type="text" class="form-control" name="akhir[item.id]" id="akhir_${item.id}" value="${nilai_akhir}">    
+                                </td>    
+                                <td>
+                                    <input type="text" class="form-control" name="jumlah[item.id]" id="jumlah_${item.id}" value="${nilai_akhir}">     
+                                </td>    
+                            </tr>
+                        `)
+                    });
+                }
+            })
+        })
     </script>
 @endsection
