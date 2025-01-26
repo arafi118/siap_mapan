@@ -780,4 +780,18 @@ class InstallationsController extends Controller
             'installation' => $installation
         ]);
     }
+    public function list($cater_id)
+    {
+        $installations = Installations::where('cater_id', $cater_id)->with([
+            'oneUsage' => function ($query) {
+                $query->where('status','PAID');
+            },
+            'customer'
+        ])->get();
+
+        return response()->json([
+            'success' => true,
+            'installations' => $installations
+        ]);
+    }
 }
