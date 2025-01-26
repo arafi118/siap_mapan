@@ -130,27 +130,38 @@
                 })
                 return;
             } else {
-                var form = $('#FormDataLogin');
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'post',
-                    data: form.serialize(),
-                    success: function(data) {
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: data.message,
-                            }).then((result) => {
-                                window.location.href = '/auth';
-                            })
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: data.message,
-                            })
-                        }
+                swal.fire({
+                    title: 'Apakah anda yakin?',
+                    text: "Semua perangkat yang login menggunakan akun ini akan otomatis logout!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, lanjutkan!',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var form = $('#FormDataLogin');
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'post',
+                            data: form.serialize(),
+                            success: function(data) {
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Berhasil',
+                                        text: data.message,
+                                    }).then((result) => {
+                                        window.location.href = '/auth';
+                                    })
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal',
+                                        text: data.message,
+                                    })
+                                }
+                            }
+                        })
                     }
                 })
             }
