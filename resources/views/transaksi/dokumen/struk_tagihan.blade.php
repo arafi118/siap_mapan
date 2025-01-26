@@ -213,19 +213,21 @@
                         <td width="30%">S Mater</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan border-b">
-                            {{ $trx->Usages->awal }}
+                            {{ $trx->Usages->awal }} s/d {{ $trx->Usages->akhir }}
                         </td>
                     </tr>
                     <tr>
                         <td width="30%">P Tagihan</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan border-b">
+                            {{ Tanggal::tglLatin($trx->Usages->tgl_akhir) }}
                         </td>
                     </tr>
                     <tr>
                         <td width="30%">Jml bulan</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan border-b">
+                            1 bulan
                         </td>
                     </tr>
                     <tr>
@@ -238,12 +240,14 @@
                         <td width="30%">Tagihan</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan border-b">
+                            RP. {{ number_format($trx->Usages->nominal, 2) }}
                         </td>
                     </tr>
                     <tr>
                         <td width="30%">Denda</td>
                         <td width="2%">:</td>
                         <td colspan="3" class="keterangan border-b">
+                            RP. {{ number_format($trx->denda, 2) }}
                         </td>
                     </tr>
                     <tr>
@@ -288,8 +292,8 @@
                         <td align="center">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td align="center"></td>
-                        <td align="center"></td>
+                        <td align="center">{{ $dari }}</td>
+                        <td align="center">{{ $oleh }}</td>
                     </tr>
                 </table>
             </div>
