@@ -10,9 +10,9 @@
 @extends('layouts.base')
 
 @section('content')
-    <div class="main-body mb-3">
+    <div class="main-body">
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-4 mb-3">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-8">
+            <div class="col-lg-8 mb-3">
                 <div class="card">
                     <div class="card-header pt-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">Data Diri</h6>
