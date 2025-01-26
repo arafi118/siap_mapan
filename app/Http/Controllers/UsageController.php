@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Session;
 
 class UsageController extends Controller
 {
- 
+
     public function index()
     {
         $usages = Usage::with([
             'customers',
             'installation'
-        ])->get();
+        ])->orderBy('created_at', 'DESC')->get();
 
         $title = 'Data Pemakaian';
         return view('penggunaan.index')->with(compact('title', 'usages'));
@@ -38,46 +38,31 @@ class UsageController extends Controller
         $pilih_customer = 0;
 
         $title = 'Register Pemakaian';
-        return view('penggunaan.create')->with(compact('customer', 'pilih_customer', 'caters', 'title','usages'));
+        return view('penggunaan.create')->with(compact('customer', 'pilih_customer', 'caters', 'title', 'usages'));
     }
 
     public function store(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'customer' => 'required',
-            'awal' => 'numeric',
-            'akhir' => 'numeric',
-            'id_instalasi' => 'required',
-            'jumlah' => 'numeric',
-            'tgl_akhir' => 'required|date_format:d/m/Y'
-        ]);
-
-        // Konversi format tanggal
-        $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
-
-        // Cek duplikasi data
-        $existingUsage = Usage::where('tgl_akhir', $tgl_akhir)
-            ->where('customer', $request->customer_id)
-            ->first();
-
-        if ($existingUsage) {
-            return redirect()->back()->withErrors([
-                'tgl_akhir' => 'Tanggal akhir sudah ada untuk pelanggan ini.'
-            ])->withInput();
+        $insert = [];
+        $tanggal = Tanggal::tglNasional($request->tanggal);
+        foreach ($request->data as $data) {
+            $insert[] = [
+                'customer' => $data['customer'],
+                'awal' => $data['awal'],
+                'akhir' => $data['akhir'],
+                'jumlah' => $data['jumlah'],
+                'id_instalasi' => $data['id'],
+                'tgl_akhir' => $tanggal,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
         }
-
         // Simpan data
-        Usage::create([
-            'customer' => $request->customer_id,
-            'awal' => $request->awal,
-            'akhir' => $request->akhir,
-            'jumlah' => $request->jumlah,
-            'id_instalasi' => $request->id_instalasi,
-            'tgl_akhir' => $tgl_akhir,
+        Usage::insert($insert);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil disimpan'
         ]);
-
-        return redirect('/usages')->with('berhasil', 'Pemakaian berhasil ditambahkan!');
     }
 
 

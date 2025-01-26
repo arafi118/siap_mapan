@@ -383,3 +383,7 @@ h1,
 .modal-dialog.modal-fullscreen.modal-dialog-scrollable .modal-content {
     max-height: 100vh;
 }
+
+table.table-center tbody tr td {
+    vertical-align: middle;
+}

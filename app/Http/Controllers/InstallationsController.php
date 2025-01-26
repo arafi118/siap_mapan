@@ -782,9 +782,12 @@ class InstallationsController extends Controller
     }
     public function list($cater_id)
     {
+        $tanggal = request()->get('tanggal') ?: date('d/m/Y');
+        $tanggal = Tanggal::tglNasional($tanggal);
+
         $installations = Installations::where('cater_id', $cater_id)->with([
-            'oneUsage' => function ($query) {
-                $query->where('status','PAID');
+            'oneUsage' => function ($query) use ($tanggal) {
+                $query->where('tgl_akhir', '<=', $tanggal);
             },
             'customer'
         ])->get();
