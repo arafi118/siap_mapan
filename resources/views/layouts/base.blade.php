@@ -359,6 +359,15 @@
 
             return `${day}/${month}/${year}`;
         };
+
+        var toastMixin = Swal.mixin({
+            toast: true,
+            icon: 'success',
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
     </script>
 
     @yield('script')

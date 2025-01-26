@@ -34,6 +34,11 @@ class AuthController extends Controller
             $user = User::where('username', $data['username'])->first();
             $business = Business::where('id', $user->business_id)->first();
 
+            $auth_token = md5(strtolower($data['username'] . '|' . $data['password']));
+            User::where('id', $user->id)->update([
+                'auth_token' => $auth_token,
+            ]);
+
             $request->session()->regenerate();
             session([
                 'nama_usaha' => $business->nama,
@@ -41,6 +46,7 @@ class AuthController extends Controller
                 'logo' => $business->logo,
                 'business_id' => $business->id,
                 'is_auth' => true,
+                'auth_token' => $auth_token,
             ]);
 
             return redirect('/')->with('success', 'Login Berhasil');

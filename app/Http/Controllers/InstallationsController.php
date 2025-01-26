@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cater;
 use App\Models\Customer;
 use App\Models\Family;
 use App\Models\Installations;
@@ -208,17 +209,17 @@ class InstallationsController extends Controller
     public function create()
     {
         $paket = Package::all();
-        $installations = Installations::all();
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
         $settings = $pengaturan->first();
 
+        $caters = Cater::where('business_id', $business_id)->get();
         $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
         $desa = Village::all();
 
         $pilih_desa = 0;
         $title = 'Register Installlation';
-        return view('perguliran.create')->with(compact('settings', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
+        return view('perguliran.create')->with(compact('settings', 'paket', 'caters', 'customer', 'desa', 'pilih_desa', 'title'));
     }
 
     /**
@@ -272,6 +273,7 @@ class InstallationsController extends Controller
             "customer_id",
             "order",
             "desa",
+            "cater",
             "alamat",
             "koordinate",
             "package_id",
@@ -283,6 +285,7 @@ class InstallationsController extends Controller
         $rules = [
             'kode_instalasi' => 'required',
             'customer_id' => 'required',
+            'cater' => 'required',
             'order' => 'required',
             'desa' => 'required',
             'alamat' => 'required',
@@ -319,6 +322,7 @@ class InstallationsController extends Controller
             'business_id' => Session::get('business_id'),
             'kode_instalasi' => $request->kode_instalasi,
             'customer_id' => $request->customer_id,
+            'cater_id' => $request->cater,
             'order' => Tanggal::tglNasional($request->order),
             'desa' => $request->desa,
             'alamat' => $request->alamat,

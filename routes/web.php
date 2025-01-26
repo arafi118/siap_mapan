@@ -10,6 +10,7 @@ use App\Http\Controllers\HamletController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PelaporanController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
@@ -40,12 +41,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/auth', [AuthController::class, 'index'])->name('auth')->middleware('guest');
 Route::post('/auth', [AuthController::class, 'login']);
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'auth.token'])->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index']);
     Route::get('/dashboard/installations', [DashboardController::class, 'installations']);
     Route::get('/dashboard/usages', [DashboardController::class, 'usages']);
     Route::get('/dashboard/tagihan', [DashboardController::class, 'tagihan']);
+
+    // Profil
+    Route::get('/profil', [ProfilController::class, 'index']);
+    Route::post('/profil', [ProfilController::class, 'update']);
+    Route::post('/profil/data_login', [ProfilController::class, 'data_login']);
 
     // Accounts || Rekening
     Route::resource('/accounts', AccountController::class);
