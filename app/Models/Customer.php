@@ -26,7 +26,7 @@ class Customer extends Model
 
     public function village()
     {
-        return $this->belongsTo(Village::class, 'desa', 'kode');
+        return $this->belongsTo(Village::class, 'desa', 'id');
     }
 
     public function getRouteKeyName()

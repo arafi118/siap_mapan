@@ -42,19 +42,20 @@
              * ]
              */
 
-            $harga = 0;
-            $daftar_harga = json_decode($installations->package->harga, true);
+            // $harga = 0;
+            // $daftar_harga = json_decode($installations->package->harga, true);
 
-            foreach ($blok as $b => $val) {
-                $meter = str_replace(' ', '', $val['jarak']);
-                $meter = str_replace('M3', '', $meter);
-                $meter = explode('-', $meter); //[0, 10]
+            // foreach ($blok as $b => $val) {
+            //     $meter = str_replace(' ', '', $val['jarak']);
+            //     $meter = str_replace('M3', '', $meter);
+            //     $meter = explode('-', $meter); //[0, 10]
 
-                if ($meter[0] <= $usage->jumlah && $meter[1] >= $usage->jumlah) {
-                    $harga = $daftar_harga[$b];
-                    break;
-                }
-            }
+            //     if ($meter[0] <= $usage->jumlah && $meter[1] >= $usage->jumlah) {
+            //         $harga = $daftar_harga[$b];
+            //         break;
+            //     }
+            // }
+
         @endphp
         <div class="card">
             <div class="card-header" id="Judul-{{ $nomor }}">
@@ -73,6 +74,9 @@
                         <input type="hidden" name="clay" id="clay" value="TagihanBulanan">
                         <input type="hidden" name="id_trx" id="id_trx" value="{{ $installations->id }}">
                         <input type="hidden" name="id_usage" id="id_usage" value="{{ $usage->id }}">
+                        <input type="hidden" name="tgl_akhir" id="tgl_akhir"
+                            value="{{ Tanggal::bulan($usage->tgl_akhir) }}">
+                        <input type="hidden" name="denda" id="denda" value="{{ $trx_settings->denda }}">
 
                         <div class="row">
                             <div class="col-lg-9">
@@ -115,7 +119,7 @@
                                             <div class="position-relative mb-3">
                                                 <label for="tagihan">Tagihan</label>
                                                 <input type="text" class="form-control" name="tagihan" id="tagihan"
-                                                    value="{{ number_format($harga, 2) }}"readonly>
+                                                    value="{{ number_format($usage->nominal, 2) }}"readonly>
                                                 <small class="text-danger"></small>
                                             </div>
                                         </div>
@@ -132,9 +136,17 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="position-relative mb-3">
+                                                <label for="denda">Denda</label>
+                                                <input type="text" class="form-control denda" name="denda"
+                                                    id="denda_bulanan" readonly placeholder="0.00">
+                                                <small class="text-danger"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="position-relative mb-3">
                                                 <label for="total">Total</label>
                                                 <input type="text" class="form-control total" name="total"
-                                                    id="total" readonly>
+                                                    id="total" readonly placeholder="0.00">
                                                 <small class="text-danger"></small>
                                             </div>
                                         </div>
@@ -152,7 +164,7 @@
                                                     d="M112 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm40 304l0 128c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-223.1L59.4 304.5c-9.1 15.1-28.8 20-43.9 10.9s-20-28.8-10.9-43.9l58.3-97c17.4-28.9 48.6-46.6 82.3-46.6l29.7 0c33.7 0 64.9 17.7 82.3 46.6l44.9 74.7c-16.1 17.6-28.6 38.5-36.6 61.5c-1.9-1.8-3.5-3.9-4.9-6.3L232 256.9 232 480c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-128-16 0zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm0 240a24 24 0 1 0 0-48 24 24 0 1 0 0 48zm0-192c-8.8 0-16 7.2-16 16l0 80c0 8.8 7.2 16 16 16s16-7.2 16-16l0-80c0-8.8-7.2-16-16-16z" />
                                             </svg>
                                         </span>
-                                        <span class="text" style="float: right;">Detail Tagihan</span>
+                                        <span class="text" style="float: right;">Info Tagihan</span>
                                     </button>
                                     <button class="btn btn-secondary btn-icon-split SimpanTagihan" type="submit"
                                         data-form="#FormTagihan-{{ $nomor }}"
@@ -243,7 +255,7 @@
                                         <table class="table table-bordered table-striped">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th colspan="4">Detail Tagihan</th>
+                                                    <th colspan="4">Info Tagihan</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -315,7 +327,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                            Detail</button>
+                            Info</button>
                     </div>
                 </div>
             </div>
@@ -329,6 +341,9 @@
     });
 
     $(".total").maskMoney({
+        allowNegative: true
+    });
+    $(".denda").maskMoney({
         allowNegative: true
     });
 

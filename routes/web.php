@@ -10,6 +10,7 @@ use App\Http\Controllers\HamletController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PelaporanController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
@@ -40,12 +41,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/auth', [AuthController::class, 'index'])->name('auth')->middleware('guest');
 Route::post('/auth', [AuthController::class, 'login']);
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'auth.token'])->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index']);
     Route::get('/dashboard/installations', [DashboardController::class, 'installations']);
     Route::get('/dashboard/usages', [DashboardController::class, 'usages']);
     Route::get('/dashboard/tagihan', [DashboardController::class, 'tagihan']);
+
+    // Profil
+    Route::get('/profil', [ProfilController::class, 'index']);
+    Route::post('/profil', [ProfilController::class, 'update']);
+    Route::post('/profil/data_login', [ProfilController::class, 'data_login']);
 
     // Accounts || Rekening
     Route::resource('/accounts', AccountController::class);
@@ -84,7 +90,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transactions/detail_transaksi/', [TransactionController::class, 'detailTransaksi']);
     Route::resource('/transactions', TransactionController::class);
 
-    Route::get('/transactions/dokumen/kuitansi/{id}', [TransactionController::class, 'kuitansi']);
+    Route::get('/transactions/dokumen/struk_instalasi/{id}', [TransactionController::class, 'struk_instalasi']);
+    Route::get('/transactions/dokumen/struk_tagihan/{id}', [TransactionController::class, 'struk_tagihan']);
     Route::get('/transactions/dokumen/kuitansi_thermal/{id}', [TransactionController::class, 'kuitansi_thermal']);
     Route::get('/transactions/dokumen/bkk/{id}', [TransactionController::class, 'bkk']);
     Route::get('/transactions/dokumen/bkm/{id}', [TransactionController::class, 'bkm']);
@@ -96,12 +103,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/transactions/hapus', [TransactionController::class, 'hapus']);
 
     // Setting || Pengaturan
-    Route::resource('/pengaturan', SopController::class);
     Route::get('/pengaturan/sop', [SopController::class, 'profil']);
     Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
     Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
     Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
     Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
+    Route::post('/pengaturan/pesan_whatsapp', [SopController::class, 'pesan']);
+    Route::resource('/pengaturan', SopController::class);
 
     // Users || Pengguna
     Route::resource('/users', UserController::class);

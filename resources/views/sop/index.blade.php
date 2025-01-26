@@ -11,55 +11,48 @@
                     </div>
                     <div class="card-body">
                         <ul class="nav nav-pills">
-                            <li class="nav-item" style="margin-bottom: 10px;">
+                            <li class="nav-item w-100" style="margin-bottom: 10px;">
                                 <a class="nav-link btn btn-white active" data-status="P" data-toggle="tab"
-                                    style="width: 220px;" data-target="#wellcome" href="#">
-                                    <div class="left-align" style="display: flex; align-items: center; gap: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="20"
-                                            height="25" style="fill: rgb(255, 255, 255);">
-                                            <path
-                                                d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z" />
-                                        </svg>
-                                        <span><b>Wellcome</b></span>
+                                    data-target="#wellcome" href="#">
+                                    <div class="left-align d-flex align-items-center">
+                                        <i class="fas fa-home"></i>
+                                        <span class="ml-2"><b>Wellcome</b></span>
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" style="margin-bottom: 10px;">
-                                <a class="nav-link btn btn-white" data-status="L" data-toggle="tab" style="width: 220px;"
-                                    data-target="#lembaga" href="#">
-                                    <div class="left-align" style="display: flex; align-items: center; gap: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="20"
-                                            height="25" style="fill: rgb(255, 255, 255);">
-                                            <path
-                                                d="M218.3 8.5c12.3-11.3 31.2-11.3 43.4 0l208 192c6.7 6.2 10.3 14.8 10.3 23.5l-144 0c-19.1 0-36.3 8.4-48 21.7l0-37.7c0-8.8-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16l0 64c0 8.8 7.2 16 16 16l64 0 0 128-160 0c-26.5 0-48-21.5-48-48l0-112-32 0c-13.2 0-25-8.1-29.8-20.3s-1.6-26.2 8.1-35.2l208-192zM352 304l0 144 192 0 0-144-192 0zm-48-16c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32l0 160 32 0c8.8 0 16 7.2 16 16c0 26.5-21.5 48-48 48l-48 0-192 0-48 0c-26.5 0-48-21.5-48-48c0-8.8 7.2-16 16-16l32 0 0-160z" />
-                                        </svg>
-                                        <span><b>Identitas Lembaga</b></span>
+                            <li class="nav-item w-100" style="margin-bottom: 10px;">
+                                <a class="nav-link btn btn-white" data-status="L" data-toggle="tab" data-target="#lembaga"
+                                    href="#">
+                                    <div class="left-align">
+                                        <i class="fas fa-cog"></i>
+                                        <span class="ml-2"><b>Identitas Lembaga</b></span>
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" style="margin-bottom: 10px;">
-                                <a class="nav-link btn btn-white" data-status="P" data-toggle="tab" style="width: 220px;"
-                                    data-target="#pasang" href="#">
-                                    <div class="left-align" style="display: flex; align-items: center; gap: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="20"
-                                            height="25" style="fill: rgb(255, 255, 255);">
-                                            <path
-                                                d="M94.1 315.1c0 25.9-21.2 47.1-47.1 47.1S0 341 0 315.1c0-25.9 21.2-47.1 47.1-47.1h47.1v47.1zm23.7 0c0-25.9 21.2-47.1 47.1-47.1s47.1 21.2 47.1 47.1v117.8c0 25.9-21.2 47.1-47.1 47.1s-47.1-21.2-47.1-47.1V315.1zm47.1-189c-25.9 0-47.1-21.2-47.1-47.1S139 32 164.9 32s47.1 21.2 47.1 47.1v47.1H164.9zm0 23.7c25.9 0 47.1 21.2 47.1 47.1s-21.2 47.1-47.1 47.1H47.1C21.2 244 0 222.8 0 196.9s21.2-47.1 47.1-47.1H164.9zm189 47.1c0-25.9 21.2-47.1 47.1-47.1 25.9 0 47.1 21.2 47.1 47.1s-21.2 47.1-47.1 47.1h-47.1V196.9zm-23.7 0c0 25.9-21.2 47.1-47.1 47.1-25.9 0-47.1-21.2-47.1-47.1V79.1c0-25.9 21.2-47.1 47.1-47.1 25.9 0 47.1 21.2 47.1 47.1V196.9zM283.1 385.9c25.9 0 47.1 21.2 47.1 47.1 0 25.9-21.2 47.1-47.1 47.1-25.9 0-47.1-21.2-47.1-47.1v-47.1h47.1zm0-23.7c-25.9 0-47.1-21.2-47.1-47.1 0-25.9 21.2-47.1 47.1-47.1h117.8c25.9 0 47.1 21.2 47.1 47.1 0 25.9-21.2 47.1-47.1 47.1H283.1z" />
-                                        </svg>
-                                        <span><b>Pasang Baru</b></span>
+                            <li class="nav-item w-100" style="margin-bottom: 10px;">
+                                <a class="nav-link btn btn-white" data-status="P" data-toggle="tab" data-target="#pasang"
+                                    href="#">
+                                    <div class="left-align d-flex align-items-center">
+                                        <i class="fas fa-server"></i>
+                                        <span class="ml-2"><b>Pasang Baru</b></span>
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" style="margin-bottom: 10px;">
-                                <a class="nav-link btn btn-white" data-status="S" data-toggle="tab" style="width: 220px;"
-                                    data-target="#instalasi" href="#">
-                                    <div class="left-align" style="display: flex; align-items: center; gap: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="20"
-                                            height="25" style="fill: rgb(255, 255, 255);">
-                                            <path
-                                                d="M256 64l128 0 0 64-128 0 0-64zM240 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l48 0 0 32L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0 0 32-48 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l160 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0-32 256 0 0 32-48 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l160 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0-32 96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-256 0 0-32 48 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48L240 0zM96 448l0-64 128 0 0 64L96 448zm320-64l128 0 0 64-128 0 0-64z" />
-                                        </svg>
-                                        <span><b>Sistem Tagihan</b></span>
+                            <li class="nav-item w-100" style="margin-bottom: 10px;">
+                                <a class="nav-link btn btn-white" data-status="S" data-toggle="tab" data-target="#instalasi"
+                                    href="#">
+                                    <div class="left-align d-flex align-items-center">
+                                        <i class="fas fa-file-alt"></i>
+                                        <span class="ml-2"><b>Sistem Tagihan</b></span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item w-100" style="margin-bottom: 10px;">
+                                <a class="nav-link btn btn-white" data-status="S" data-toggle="tab" data-target="#whatsapp"
+                                    href="#">
+                                    <div class="left-align d-flex align-items-center">
+                                        <i class="fas fa-comment"></i>
+                                        <span class="ml-2"><b>Whatsapp</b></span>
                                     </div>
                                 </a>
                             </li>
@@ -122,10 +115,80 @@
                         </div>
                     </div>
 
+                    <!-- whatsapp Tab -->
+                    <div id="whatsapp" role="tab" class="tab-pane ">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title font-weight-bold">
+                                            Pengaturan Pesan Whatsapp
+                                        </h5>
+                                        @include('sop.partials.whatsapp')
+
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" id="ScanWhatsapp" class="btn btn-info ml-2">
+                                                Scan Whatsapp
+                                            </button>
+                                            <button type="button" id="HapusWhatsapp" class="btn btn-danger ml-2"
+                                                style="display: none;">Hapus Whatsapp</button>
+                                            <button type="button" id="SimpanWhatsapp" class="btn btn-primary ml-2">
+                                                Simpan
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
         <!-- Row -->
+    </div>
+
+    <form action="/pengaturan/whatsapp/{{ $token }}" method="post" id="FormWhatsapp">
+        @csrf
+    </form>
+@endsection
+
+@section('modal')
+    <div class="modal fade" id="ModalScanWhatsapp" tabindex="-1" role="dialog"
+        aria-labelledby="ModalScanWhatsappLabel" aria-modal="false">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalScanWhatsappLabel">Scan Whatsapp</h5>
+                    <button type="button" class="close btn-modal-close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-5 col-lg-6 text-center">
+                                    <img class="w-100 border-radius-lg shadow-lg mx-auto" src="/assets/img/no_image.png"
+                                        id="QrCode" alt="chair">
+                                </div>
+                                <div class="col-lg-5 mx-auto">
+                                    <h3 class="mt-lg-0 mt-4">Scan kode QR</h3>
+                                    <ul class="list-group list-group-flush rounded" id="ListConnection">
+                                        <li class="list-group-item">
+                                            Membuat Kode QR
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary btn-modal-close">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -145,15 +208,6 @@
             e.preventDefault();
             var form = $('#Fromswit');
             var actionUrl = form.attr('action');
-
-            var toastMixin = Swal.mixin({
-                toast: true,
-                icon: 'success',
-                position: 'top-right',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
 
             $.ajax({
                 type: 'GET',
@@ -179,15 +233,6 @@
             e.preventDefault();
             var form = $('#FromLembaga');
             var actionUrl = form.attr('action');
-
-            var toastMixin = Swal.mixin({
-                toast: true,
-                icon: 'success',
-                position: 'top-right',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
 
             $.ajax({
                 type: 'GET',
@@ -240,5 +285,129 @@
                 }
             });
         });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        let ListContainer = $('#ListConnection')
+        const API = '{{ $api }}'
+        const form = $('#FormWhatsapp')
+        const socket = io(API, {
+            transports: ['polling']
+        })
+
+        var scan = 0
+        var connect = 0
+        const pesan = $('#Pesan')
+
+        var socketId = 0;
+        socket.on('connected', (res) => {
+            console.log('Connected to the server. Socket ID:', res.id);
+            socketId = res.id
+        });
+
+        $('#HapusWhatsapp').hide()
+        $('#ScanWhatsapp').hide()
+        $(document).ready(function() {
+            $.get(API + '/api/client/{{ $token }}', function(result) {
+                if (result.success && result.data) {
+                    $('#HapusWhatsapp').show()
+                    $('#ScanWhatsapp').hide()
+                } else {
+                    $('#ScanWhatsapp').show()
+                    $('#HapusWhatsapp').hide()
+                }
+
+                console.log(result);
+
+            })
+        })
+
+        var scanQr = 0;
+        socket.on('QR', (result) => {
+            $('#QrCode').attr('src', result.url)
+
+            if (scanQr <= 0) {
+                var List = $('<li class="list-group-item font-weight-bold">Scan QR</li>')
+                ListContainer.append(List)
+            }
+
+            scanQr += 1;
+        })
+
+        socket.on('ClientConnect', (result) => {
+            $('#QrCode').attr('src', result.url)
+            var List = $('<li class="list-group-item list-group-item-success font-weight-bold">Whatsapp Aktif</li>')
+            ListContainer.append(List)
+        })
+
+        $(document).on('click', '#ScanWhatsapp', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: API + '/api/client',
+                data: {
+                    nama: $('#nama').val(),
+                    token: '{{ $token }}',
+                    socketId
+                },
+                success: function(result) {
+                    if (result.success) {
+                        $('#ModalScanWhatsapp').modal('show');
+                    } else {
+                        Swal.fire('Error', "Whatsapp sudah terdaftar.", 'error')
+                    }
+                }
+            })
+        });
+
+        $(document).on('click', '#HapusWhatsapp', function(e) {
+            e.preventDefault()
+
+            Swal.fire({
+                title: 'Hapus Whatsapp',
+                text: 'Hapus koneksi whatsapp.',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                icon: 'error'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: API + '/api/client/{{ $token }}',
+                        success: function(result) {
+                            if (result.success) {
+                                Swal.fire('Whatsapp Dihapus',
+                                    "Scan ulang untuk bisa menggunakan layanan pesan pemberitahuan otomatis.",
+                                    'success')
+
+                                $('#ScanWhatsapp').show()
+                                $('#HapusWhatsapp').hide()
+                            }
+                        }
+                    })
+                }
+            })
+        })
+
+        $(document).on('click', '#SimpanWhatsapp', function(e) {
+            e.preventDefault();
+
+            var form = $('#FormScanWhatsapp');
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        toastMixin.fire({
+                            title: result.msg
+                        });
+                    }
+                }
+            })
+        })
     </script>
 @endsection

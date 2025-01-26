@@ -97,6 +97,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
+    <script src="/assets/js/demo/ruang-admin.js"></script>
 
     {{-- Logout --}}
     <script>
@@ -183,7 +184,7 @@
             // $("#customername").val(installation.customers.nama);
 
             var tagihan = sum_total - installation.abodemen;
-            $("#transaction_id").val(installation.id);
+            $("#installation").val(installation.id);
             $("#order").val(installation.order);
             $("#kode_instalasi").val(installation.kode_instalasi);
             $("#alamat").val(installation.village.nama);
@@ -344,6 +345,30 @@
         function open_window(link) {
             return window.open(link)
         }
+
+        $(document).on('click', '.btn-modal-close', function(e) {
+            e.preventDefault();
+
+            $('.modal').modal('hide');
+        });
+
+        const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+
+            return `${day}/${month}/${year}`;
+        };
+
+        var toastMixin = Swal.mixin({
+            toast: true,
+            icon: 'success',
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
     </script>
 
     @yield('script')
