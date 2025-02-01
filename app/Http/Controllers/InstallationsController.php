@@ -258,6 +258,10 @@ class InstallationsController extends Controller
      */
     public function reg_notifikasi($customer_id)
     {
+        $business_id = Session::get('business_id');
+        $caters = Cater::where('business_id', $business_id)->get();
+        $pengaturan = Settings::where('business_id', $business_id);
+        $settings = $pengaturan->first();
         $paket = Package::all();
         $installations = Installations::all();
         $REG_status = Installations::select(
@@ -276,9 +280,6 @@ class InstallationsController extends Controller
             'package'
         )->where('customer_id', $customer_id)->orderBy('created_at', 'DESC')->first();
 
-        $business_id = Session::get('business_id');
-        $pengaturan = Settings::where('business_id', $business_id);
-        $settings = $pengaturan->first();
 
         $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
         $desa = Village::all();
@@ -289,7 +290,7 @@ class InstallationsController extends Controller
         if ($REG_status && ($REG_status->status == 'B' || $REG_status->status == 'C')) {
             $view = view('perguliran.partials.tangungan_pinjaman')->with(compact('REG_status', 'title'));
         } else {
-            $view = view('perguliran.partials.form_installation')->with(compact('settings', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
+            $view = view('perguliran.partials.form_installation')->with(compact('settings', 'caters', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
         }
 
         return response()->json($view->render());
