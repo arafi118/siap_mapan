@@ -10,6 +10,7 @@ use App\Models\Package;
 use App\Models\Region;
 use App\Models\Settings;
 use App\Models\Transaction;
+use App\Models\Account;
 use App\Models\Usage;
 use App\Models\Village;
 use Illuminate\Http\Request;
@@ -87,11 +88,18 @@ class InstallationsController extends Controller
     {
         $params = $request->input('query');
 
-        $installations = Installations::join('customers', 'customers.id', 'installations.customer_id')->where(function ($query) use ($params) {
-            $query->where('customers.nama', 'LIKE', "%{$params}%")
-                ->orWhere('customers.nik', 'LIKE', "%{$params}%")
-                ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
-        })->whereNotIn('installations.status', ['B', 'C'])->get();
+        $installations = Installations::select(
+            'installations.*',
+            'customers.nama',
+            'customers.alamat',
+            'customers.nik',
+            'customers.hp'
+        )
+            ->join('customers', 'customers.id', 'installations.customer_id')->where(function ($query) use ($params) {
+                $query->where('customers.nama', 'LIKE', "%{$params}%")
+                    ->orWhere('customers.nik', 'LIKE', "%{$params}%")
+                    ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
+            })->whereNotIn('installations.status', ['B', 'C'])->get();
 
         return response()->json($installations);
     }
@@ -121,7 +129,6 @@ class InstallationsController extends Controller
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
         $package = Package::all();
-        $usages = Usage::all();
         $transaksi = Transaction::all();
 
         $usages = Usage::where([
@@ -133,14 +140,38 @@ class InstallationsController extends Controller
         $abodemen = $installations->abodemen;
 
         if ($jumlah_trx == $abodemen) {
+
+            $tagihan1 = Account::where([
+                ['kode_akun', '1.1.01.01'],
+                ['business_id', Session::get('business_id')]
+            ])->first();
+            $tagihan2 = Account::where([
+                ['kode_akun', '4.2.01.04'],
+                ['business_id', Session::get('business_id')]
+            ])->first();
+
             return response()->json([
                 'success' => true,
-                'view' => view('transaksi.partials.usage')->with(compact('installations', 'transaksi',  'usages', 'trx_settings', 'package'))->render()
+                'view' => view('transaksi.partials.usage')->with(compact('installations', 'transaksi',  'usages', 'trx_settings', 'package'))->render(),
+                'rek_debit' => $tagihan1,
+                'rek_kredit' => $tagihan2,
             ]);
         } else {
+
+            $pasang1 = Account::where([
+                ['kode_akun', '1.1.01.01'],
+                ['business_id', Session::get('business_id')]
+            ])->first();
+            $pasang2 = Account::where([
+                ['kode_akun', '5.1.01.04'],
+                ['business_id', Session::get('business_id')]
+            ])->first();
+
             return response()->json([
                 'success' => false,
-                'view' => view('transaksi.partials.installations')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render()
+                'view' => view('transaksi.partials.installations')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render(),
+                'rek_debit' => $pasang1,
+                'rek_kredit' => $pasang2,
             ]);
         }
     }
