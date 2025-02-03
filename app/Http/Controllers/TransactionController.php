@@ -685,6 +685,33 @@ class TransactionController extends Controller
     }
 
     /**
+     * .cetak detail Transaksi Instalasi
+     */
+    public function detailTransaksiInstalasi(Request $request)
+    {
+        $keuangan = new Keuangan;
+
+        $data['installation_id'] = $request->id;
+        $data['rek_debit'] = $request->rek_debit;
+        $data['rek_kredit'] = $request->rek_kredit;
+
+        $data['judul'] = 'Detail Transaksi';
+        $data['sub_judul'] = 'Pasang Baru';
+        $data['transaksi'] = Transaction::where(function ($query) use ($data) {
+            $query->where('installation_id', $data['installation_id']);
+        })->with([
+            'Installations.customer',
+            'Usages',
+            'rek_debit',
+            'rek_kredit'
+        ])->orderBy('tgl_transaksi', 'ASC')->orderBy('urutan', 'ASC')->orderBy('id', 'ASC')->get();
+        return [
+            'label' => '<i class="fas fa-book"></i> Detail Transaksi ' . $data['sub_judul'],
+            'view' => view('transaksi.partials.detail_instalasi', $data)->render(),
+        ];
+    }
+
+    /**
      * Create data Pelunasan bulanan.
      */
     private function CreateTagihanBulanan($request)

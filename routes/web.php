@@ -88,6 +88,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/transactions/pelunasan_instalasi', [TransactionController::class, 'pelunasan_instalasi']);
     Route::get('/transactions/saldo/{kode_akun}', [TransactionController::class, 'saldo']);
     Route::get('/transactions/detail_transaksi_tagihan/', [TransactionController::class, 'detailTransaksiTagihan']);
+    Route::get('/transactions/detail_transaksi_instalasi/', [TransactionController::class, 'detailTransaksiInstalasi']);
     Route::get('/transactions/detail_transaksi/', [TransactionController::class, 'detailTransaksi']);
     Route::resource('/transactions', TransactionController::class);
 

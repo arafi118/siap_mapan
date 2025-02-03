@@ -126,8 +126,8 @@
                                         <div class="col-md-6">
                                             <div class="position-relative mb-3">
                                                 <label for="pembayaran">Pembayaran</label>
-                                                <input type="text" class="form-control total" name="pembayaran"
-                                                    id="pembayaran">
+                                                <input type="text" class="form-control total perhitungan"
+                                                    name="pembayaran" id="pembayaran" value="0.00">
                                                 <small class="text-danger" id="msg_pembayaran"></small>
                                             </div>
                                         </div>
@@ -292,7 +292,8 @@
                                                         style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                                         <span style="float: left;">Denda</span>
                                                         <span class="badge badge-success"
-                                                            style="float: right; width: 40%; padding: 5px; text-align: center;">
+                                                            style="float: right; width: 40%; padding: 5px; text-align: center;"
+                                                            id="infotagihan">
                                                             {{ number_format($installations->package->denda, 2) }}
                                                         </span>
                                                     </td>

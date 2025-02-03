@@ -111,6 +111,7 @@
                 return;
             }
         });
+
         jQuery.datetimepicker.setLocale('de');
         $('.date').datetimepicker({
             i18n: {
