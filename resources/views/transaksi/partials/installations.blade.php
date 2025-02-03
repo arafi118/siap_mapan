@@ -11,7 +11,7 @@
     <form action="/transactions" method="post" id="FormPembayaran">
         @csrf
         <input type="hidden" name="clay" id="clay" value="pelunasaninstalasi">
-        <input type="hidden" name="transaction_id" value="{{ $installations->id }}" id="transaction_id">
+        <input type="hidden" name="istallation_id" value="{{ $installations->id }}" id="installation">
 
         <div class="row">
             <div class="col-lg-12">

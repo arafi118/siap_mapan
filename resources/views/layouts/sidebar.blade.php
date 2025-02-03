@@ -40,11 +40,9 @@
                 <a class="collapse-item" href="/customers">Data Pelanggan</a>
                 <a class="collapse-item" href="/caters">Data Cater</a>
                 <a class="collapse-item" href="/villages">Data Desa</a>
-                <a class="collapse-item" href="/hamlets">Data Dusun</a>
             </div>
         </div>
     </li>
-
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm"
             aria-expanded="true" aria-controls="collapseForm">

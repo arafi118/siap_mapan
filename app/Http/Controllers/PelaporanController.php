@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Usage;
 use App\Models\AkunLevel1;
 use App\Models\Amount;
 use App\Models\Business;
@@ -298,6 +299,54 @@ class PelaporanController extends Controller
 
         $data['title'] = 'Jurnal Tutup Buku';
         $view = view('pelaporan.partials.views.tutup_buku.jurnal', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    private function daftar_pelanggan(array $data)
+    {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['usages'] = Usage::with([
+            'customers',
+            'installation'
+        ])->get();
+        $data['title'] = 'Daftar pelanggan';
+        $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
+        return $pdf->stream();
+    }
+    private function tagihan_pelanggan(array $data)
+    {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['usages'] = Usage::with([
+            'customers',
+            'customers.village',
+            'installation',
+            'transaction',
+        ])->get();
+        $data['title'] = 'Tagihan Pelanggan';
+        $view = view('pelaporan.partials.views.tagihan_pelanggan', $data)->render();
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
@@ -823,9 +872,6 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     
-    }
-    private function daftar_tagihan_pelanggan(array $data)
-    {
     }
     private function daftar_piutang_pelanggan(array $data)
     {

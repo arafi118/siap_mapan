@@ -9,6 +9,8 @@
             @csrf
             <input type="hidden" name="clay" id="clay" value="pelunasaninstalasi">
             <input type="hidden" name="istallation_id" id="installation">
+            <input type="hidden" id="rek_debit">
+            <input type="hidden" id="rek_kredit">
 
             <div class="row">
                 <div class="col-lg-12">
@@ -118,7 +120,7 @@
                                         <div class="position-relative mb-3">
                                             <label for="pembayaran">Pembayaran</label>
                                             <input type="text" class="form-control total" name="pembayaran"
-                                                id="pembayaran">
+                                                id="pembayaran" value="0.00">
                                             <small class="text-danger" id="msg_pembayaran"></small>
                                         </div>
                                     </div>
@@ -132,6 +134,9 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-end">
+                                <button class="btn btn-success" type="button" id="BtndetailTransaksi">
+                                    <span class="text">Detail</span>
+                                </button>
                                 <button class="btn btn-secondary btn-icon-split btn-struk" type="submit"
                                     id="simpanpembayaran" style="float: right; margin-left: 10px;">
                                     <span class="icon text-white-50">
@@ -150,6 +155,31 @@
             </div>
         </form>
     </div>
+    <!-- Modal detailTransaksi  tagihan-->
+    <div class="modal fade" id="detailTransaksi" tabindex="-1" role="dialog" aria-labelledby="detailTransaksiLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen modal-dialog-scrollable"
+            style="max-width: 100%; margin: 0; height: 100%;" role="document">
+            <div class="modal-content" style="height: 100%; border-radius: 0;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailTransaksiLabel">Detail Transaksi Pasang Baru</h5>
+                </div>
+                <div class="modal-body" style="overflow-y: auto;">
+                    <div id="LayoutdetailTransaksi"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form action="/transactions/hapus" method="post" id="formHapus">
+        @csrf
+
+        <input type="hidden" name="del_id" id="del_id">
+        <input type="hidden" name="del_istal_id" id="del_istal_id">
+    </form>
 @endsection
 
 @section('script')
@@ -267,5 +297,70 @@
                 }
             });
         });
+
+        //detail transaksi
+        $(document).on('click', '#BtndetailTransaksi', function(e) {
+            var id = $('#installation').val();
+            var rek_debit = $('#rek_debit').val();
+            var rek_kredit = $('#rek_kredit').val();
+
+            if (id != '') {
+                $.ajax({
+                    url: '/transactions/detail_transaksi_instalasi',
+                    type: 'get',
+                    data: {
+                        id,
+                        rek_debit,
+                        rek_kredit
+                    },
+                    success: function(result) {
+                        $('#detailTransaksi').modal('show')
+
+                        $('#detailTransaksiLabel').html(result.label)
+                        $('#LayoutdetailTransaksi').html(result.view)
+                    }
+                })
+            }
+        })
+
+        //hapus detail transaksi
+        $(document).on('click', '.btn-delete', function(e) {
+            e.preventDefault()
+
+            var id = $(this).attr('data-id')
+
+            $.get('/transactions/data/' + id, function(result) {
+
+                $('#del_id').val(result.id)
+                $('#del_instal_id').val(result.installation_id)
+                Swal.fire({
+                    title: 'Peringatan',
+                    text: 'Setelah menekan tombol Hapus Transaksi dibawah, maka transaksi ini akan dihapus dari aplikasi secara permanen.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Hapus Transaksi',
+                    cancelButtonText: 'Batal',
+                    icon: 'warning'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var form = $('#formHapus')
+                        $.ajax({
+                            type: form.attr('method'),
+                            url: form.attr('action'),
+                            data: form.serialize(),
+                            success: function(result) {
+                                if (result.success) {
+                                    Swal.fire('Berhasil!', result.msg, 'success')
+                                        .then(() => {
+                                            window.location.href =
+                                                '/transactions/pelunasan_instalasi';
+                                        });
+                                }
+
+                            }
+                        })
+                    }
+                })
+            })
+        })
     </script>
 @endsection

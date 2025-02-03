@@ -178,12 +178,18 @@
 
             var sum_total = 0;
             trx.map(function(item) {
+                rekening_debit = item.rekening_debit;
+                rekening_kredit = item.rekening_kredit;
                 sum_total += item.total;
             })
+
             // console.log(numFormat.format(installation.abodemen))
             // $("#customername").val(installation.customers.nama);
 
+            var rek_debit = rekening_debit;
+            var rek_kredit = rekening_kredit;
             var tagihan = sum_total - installation.abodemen;
+
             $("#installation").val(installation.id);
             $("#order").val(installation.order);
             $("#kode_instalasi").val(installation.kode_instalasi);
@@ -193,7 +199,12 @@
             $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
             $("#tagihan").val(numFormat.format(tagihan));
             $("#_total").val(numFormat.format(installation.abodemen - sum_total));
+            $("#rek_debit").val(rek_debit);
+            $("#rek_kredit").val(rek_kredit);
+
         });
+
+
         //end cari customors
     </script>
 
@@ -201,6 +212,8 @@
         var numFormat = new Intl.NumberFormat('en-EN', {
             minimumFractionDigits: 2
         })
+
+        var dataCustomer;
 
         //Tagihan Bulanan (Aktif)
         $('#TagihanBulanan').typeahead({
@@ -253,6 +266,13 @@
                 } else {
                     $('#accordion').html(result.view)
                 }
+
+                dataCustomer = {
+                    item: item.item,
+                    rek_debit: result.rek_debit,
+                    rek_kredit: result.rek_kredit,
+                }
+
             })
         });
         //end cari Tagihan perbulan

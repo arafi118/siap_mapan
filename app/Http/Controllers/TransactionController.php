@@ -74,7 +74,7 @@ class TransactionController extends Controller
             'package'
         )->get();
 
-        $title = 'Pelunasan Instalasi';
+        $title = 'Pelunasan Tagihan Bulanan';
         return view('transaksi.tagihan_bulanan')->with(compact('title', 'transactions', 'status_0'));
     }
     //tampil rekening jurnal umum
@@ -685,6 +685,33 @@ class TransactionController extends Controller
     }
 
     /**
+     * .cetak detail Transaksi Instalasi
+     */
+    public function detailTransaksiInstalasi(Request $request)
+    {
+        $keuangan = new Keuangan;
+
+        $data['installation_id'] = $request->id;
+        $data['rek_debit'] = $request->rek_debit;
+        $data['rek_kredit'] = $request->rek_kredit;
+
+        $data['judul'] = 'Detail Transaksi';
+        $data['sub_judul'] = 'Pasang Baru';
+        $data['transaksi'] = Transaction::where(function ($query) use ($data) {
+            $query->where('installation_id', $data['installation_id']);
+        })->with([
+            'Installations.customer',
+            'Usages',
+            'rek_debit',
+            'rek_kredit'
+        ])->orderBy('tgl_transaksi', 'ASC')->orderBy('urutan', 'ASC')->orderBy('id', 'ASC')->get();
+        return [
+            'label' => '<i class="fas fa-book"></i> Detail Transaksi ' . $data['sub_judul'],
+            'view' => view('transaksi.partials.detail_instalasi', $data)->render(),
+        ];
+    }
+
+    /**
      * Create data Pelunasan bulanan.
      */
     private function CreateTagihanBulanan($request)
@@ -697,7 +724,6 @@ class TransactionController extends Controller
             "tagihan",
             "keterangan",
         ]);
-
         $data['tagihan'] = str_replace(',', '', $data['tagihan']);
         $data['tagihan'] = str_replace('.00', '', $data['tagihan']);
         $data['tagihan'] = floatval($data['tagihan']);
@@ -708,7 +734,7 @@ class TransactionController extends Controller
 
         $biaya_tagihan = $data['tagihan'];
         $biaya_instalasi = $data['pembayaran'];
-        // TRANSACTION TAGIHAN BULANAN
+
         $transaksi = Transaction::create([
             'rekening_debit' => '1',
             'rekening_kredit' => '59',
@@ -758,6 +784,34 @@ class TransactionController extends Controller
 
         return view('transaksi.dokumen.struk_tagihan')->with(compact('trx', 'keuangan', 'dari', 'oleh', 'jenis', 'bisnis', 'gambar'));
     }
+
+    /**
+     * .cetak detail Transaksi Tagihan Bulanan
+     */
+    public function detailTransaksiTagihan(Request $request)
+    {
+        $keuangan = new Keuangan;
+
+        $data['installation_id'] = $request->id;
+        $data['rek_debit'] = $request->rek_debit;
+        $data['rek_kredit'] = $request->rek_kredit;
+
+        $data['judul'] = 'Detail Transaksi';
+        $data['sub_judul'] = 'Tagihan Bulanan';
+        $data['transaksi'] = Transaction::where(function ($query) use ($data) {
+            $query->where('installation_id', $data['installation_id']);
+        })->with([
+            'Installations.customer',
+            'Usages',
+            'rek_debit',
+            'rek_kredit'
+        ])->orderBy('tgl_transaksi', 'ASC')->orderBy('urutan', 'ASC')->orderBy('id', 'ASC')->get();
+        return [
+            'label' => '<i class="fas fa-book"></i> Detail Transaksi ' . $data['sub_judul'],
+            'view' => view('transaksi.partials.detail_tagihan', $data)->render(),
+        ];
+    }
+
     /**
      * Set saldo.
      */
@@ -1117,6 +1171,23 @@ class TransactionController extends Controller
     {
         $id = $request->del_id;
         $installation_id = $request->del_instal_id;
+
+        if ($id != '0') {
+            $transaction = Transaction::find($id);
+
+            if ($transaction) {
+                $usageId = $transaction->usage_id;
+                $usage = Usage::find($usageId);
+
+                if ($usage) {
+                    // Update status menjadi UNPAID
+                    $usage->update([
+                        'status' => 'UNPAID'
+                    ]);
+                }
+            }
+        }
+
 
         if ($installation_id != '0') {
             $instal = Installations::where('id', $installation_id)->update([

@@ -42,19 +42,19 @@
              * ]
              */
 
-            // $harga = 0;
-            // $daftar_harga = json_decode($installations->package->harga, true);
+            $harga = 0;
+            $daftar_harga = json_decode($installations->package->harga, true);
 
-            // foreach ($blok as $b => $val) {
-            //     $meter = str_replace(' ', '', $val['jarak']);
-            //     $meter = str_replace('M3', '', $meter);
-            //     $meter = explode('-', $meter); //[0, 10]
+            foreach ($blok as $b => $val) {
+                $meter = str_replace(' ', '', $val['jarak']);
+                $meter = str_replace('M3', '', $meter);
+                $meter = explode('-', $meter); //[0, 10]
 
-            //     if ($meter[0] <= $usage->jumlah && $meter[1] >= $usage->jumlah) {
-            //         $harga = $daftar_harga[$b];
-            //         break;
-            //     }
-            // }
+                if ($meter[0] <= $usage->jumlah && $meter[1] >= $usage->jumlah) {
+                    $harga = $daftar_harga[$b];
+                    break;
+                }
+            }
 
         @endphp
         <div class="card">
@@ -126,8 +126,8 @@
                                         <div class="col-md-6">
                                             <div class="position-relative mb-3">
                                                 <label for="pembayaran">Pembayaran</label>
-                                                <input type="text" class="form-control total" name="pembayaran"
-                                                    id="pembayaran">
+                                                <input type="text" class="form-control total perhitungan"
+                                                    name="pembayaran" id="pembayaran" value="0.00">
                                                 <small class="text-danger" id="msg_pembayaran"></small>
                                             </div>
                                         </div>
@@ -192,7 +192,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="position-relative mb-3">
-                                                        <label for="awal">Awal</label>
+                                                        <label for="awal">Awal Pemakaian</label>
                                                         <input type="text" class="form-control awal"
                                                             id="awal" value="{{ $usage->awal }}" disabled>
                                                     </div>
@@ -201,7 +201,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="position-relative mb-3">
-                                                        <label for="akhir">Akhir</label>
+                                                        <label for="akhir">Akhir Pemakaian</label>
                                                         <input type="text" class="form-control akhir"
                                                             id="akhir" value="{{ $usage->akhir }}" disabled>
                                                     </div>
@@ -292,7 +292,8 @@
                                                         style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                                         <span style="float: left;">Denda</span>
                                                         <span class="badge badge-success"
-                                                            style="float: right; width: 40%; padding: 5px; text-align: center;">
+                                                            style="float: right; width: 40%; padding: 5px; text-align: center;"
+                                                            id="infotagihan">
                                                             {{ number_format($installations->package->denda, 2) }}
                                                         </span>
                                                     </td>
