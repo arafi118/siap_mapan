@@ -34,6 +34,7 @@
                                 <th>AKHIR</th>
                                 <th>JUMLAH</th>
                                 <th>TGL AKHIR</th>
+                                <th>Status</th>
                                 {{-- <th style="text-align: center;">AKSI</th> --}}
                             </tr>
                         </thead>
@@ -46,6 +47,13 @@
                                     <td>{{ $usage->akhir }}</td>
                                     <td>{{ $usage->jumlah }}</td>
                                     <td>{{ $usage->tgl_akhir }}</td>
+                                    <td>
+                                        @if ($usage->status === 'PAID')
+                                            <span class="badge badge-success">PAID</span>
+                                        @elseif($usage->status === 'UNPAID')
+                                            <span class="badge badge-warning">UNPAID</span>
+                                        @endif
+                                    </td>
                                     {{-- <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
                                         <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
                                             <i class="fas fa-pencil-alt"></i>

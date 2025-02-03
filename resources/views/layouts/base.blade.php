@@ -194,6 +194,8 @@
             $("#tagihan").val(numFormat.format(tagihan));
             $("#_total").val(numFormat.format(installation.abodemen - sum_total));
         });
+
+
         //end cari customors
     </script>
 
@@ -201,6 +203,8 @@
         var numFormat = new Intl.NumberFormat('en-EN', {
             minimumFractionDigits: 2
         })
+
+        var dataCustomer;
 
         //Tagihan Bulanan (Aktif)
         $('#TagihanBulanan').typeahead({
@@ -253,6 +257,13 @@
                 } else {
                     $('#accordion').html(result.view)
                 }
+
+                dataCustomer = {
+                    item: item.item,
+                    rek_debit: result.rek_debit,
+                    rek_kredit: result.rek_kredit,
+                }
+
             })
         });
         //end cari Tagihan perbulan

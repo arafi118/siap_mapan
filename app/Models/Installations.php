@@ -55,4 +55,8 @@ class Installations extends Model
     {
         return $this->hasOne(Settings::class, 'business_id', 'business_id');
     }
+    public function Account()
+    {
+        return $this->belongsTo(Account::class, 'kode_akun', 'id');
+    }
 }

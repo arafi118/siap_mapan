@@ -30,6 +30,20 @@
                 </div>
                 <div class="col-md-5">
                     <div class="position-relative mb-3">
+                        <label for="cater">Nama Cater</label>
+                        <select class="select2 form-control" name="cater" id="cater">
+                            <option>Pilih Cater</option>
+                            @foreach ($caters as $ct)
+                                <option value="{{ $ct->id }}">
+                                    {{ $ct->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <small class="text-danger" id="msg_cater"></small>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="position-relative mb-3">
                         <label for="alamat">Alamat</label>
                         <input type="text" class="form-control" id="alamat" name="alamat"
                             aria-describedby="alamat" placeholder="Alamat">

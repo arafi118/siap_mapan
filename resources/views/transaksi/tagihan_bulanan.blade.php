@@ -7,23 +7,67 @@
 @section('content')
     <div class="container-fluid" id="container-wrapper">
 
-        <div class="col-12">
-            <div class="form-group">
-                <input type="text" class="form-control is-valid" id="{{ $search }}" placeholder="{{ $label }}">
+        <style>
+            .custom-height {
+                height: 38px;
+                /* Sesuaikan dengan tinggi yang diinginkan */
+            }
+        </style>
+
+        <div class="row align-items-center">
+            <div class="col-9">
+                <div class="form-group mb-0">
+                    <input type="text" class="form-control is-valid custom-height" id="{{ $search }}"
+                        placeholder="{{ $label }}">
+                </div>
             </div>
-            <hr class="my-2 bg-white">
-            <br>
+
+            <div class="col-3">
+                <div class="form-group mb-0">
+                    <a href="#" class="btn btn-success w-100 custom-height" type="button" id="BtndetailTransaksi">
+                        <span class="text">Detail Transaksi</span>
+                    </a>
+                </div>
+            </div>
         </div>
+        <hr class="my-2 bg-white">
+        <br>
 
         <div id="accordion">
             <div class="text-center">
                 <img src="../../assets/img/air.png" style="max-height: 200px;" class="mb-3">
                 <h3 class="text-gray-800 font-weight-bold">Tagihan!</h3>
                 <p class="lead text-gray-800 mx-auto">Seacrh untuk melakukan pembayaran</p>
-                <a href="#">&larr; Back to Dashboard</a>
+                <a href="/">&larr; Back to Dashboard</a>
             </div>
         </div>
     </div>
+
+    <!-- Modal detailTransaksi  tagihan-->
+    <div class="modal fade" id="detailTransaksi" tabindex="-1" role="dialog" aria-labelledby="detailTransaksiLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen modal-dialog-scrollable" style="max-width: 100%; margin: 0; height: 100%;"
+            role="document">
+            <div class="modal-content" style="height: 100%; border-radius: 0;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailTransaksiLabel">Detail Transaksi Tagihan</h5>
+                </div>
+                <div class="modal-body" style="overflow-y: auto;">
+                    <div id="LayoutdetailTransaksi"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form action="/transactions/hapus" method="post" id="formHapus">
+        @csrf
+
+        <input type="hidden" name="del_id" id="del_id">
+        <input type="hidden" name="del_istal_id" id="del_istal_id">
+    </form>
 @endsection
 @section('script')
     <script>
@@ -39,6 +83,71 @@
 
             $("#total").val(numFormat.format(Math.abs(total)));
         });
+
+        //detail transaksi
+        $(document).on('click', '#BtndetailTransaksi', function(e) {
+            var id = dataCustomer.item.id;
+            var rek_debit = dataCustomer.rek_debit;
+            var rek_kredit = dataCustomer.rek_kredit;
+
+            if (id != '') {
+                $.ajax({
+                    url: '/transactions/detail_transaksi_tagihan',
+                    type: 'get',
+                    data: {
+                        id,
+                        rek_debit,
+                        rek_kredit
+                    },
+                    success: function(result) {
+                        $('#detailTransaksi').modal('show')
+
+                        $('#detailTransaksiLabel').html(result.label)
+                        $('#LayoutdetailTransaksi').html(result.view)
+                    }
+                })
+            }
+        })
+
+        //hapus detail transaksi
+        $(document).on('click', '.btn-delete', function(e) {
+            e.preventDefault()
+
+            var id = $(this).attr('data-id')
+
+            $.get('/transactions/data/' + id, function(result) {
+
+                $('#del_id').val(result.id)
+                $('#del_instal_id').val(result.installation_id)
+                Swal.fire({
+                    title: 'Peringatan',
+                    text: 'Setelah menekan tombol Hapus Transaksi dibawah, maka transaksi ini akan dihapus dari aplikasi secara permanen. Dan mengubah status (UNPAID) di pemakaian',
+                    showCancelButton: true,
+                    confirmButtonText: 'Hapus Transaksi',
+                    cancelButtonText: 'Batal',
+                    icon: 'warning'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var form = $('#formHapus')
+                        $.ajax({
+                            type: form.attr('method'),
+                            url: form.attr('action'),
+                            data: form.serialize(),
+                            success: function(result) {
+                                if (result.success) {
+                                    Swal.fire('Berhasil!', result.msg, 'success')
+                                        .then(() => {
+                                            window.location.href =
+                                                '/transactions/tagihan_bulanan';
+                                        });
+                                }
+
+                            }
+                        })
+                    }
+                })
+            })
+        })
 
         //simpan data pembayaran tagihan bulanan
         $(document).on('click', '.SimpanTagihan', function(e) {
@@ -132,8 +241,8 @@
             });
         });
 
+        //form input denda
         $(document).on('change', '#tgl_transaksi', function() {
-
             var tglTransaksi = $('#tgl_transaksi').val();
             var tglAkhir = $('#tgl_akhir').val();
             var denda = $('#denda').val();
