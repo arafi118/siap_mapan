@@ -2,60 +2,86 @@
 <html lang="en">
 
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link href="/assets/img/logo/logo.png" rel="icon">
     <title>Login</title>
-    <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/ruang-admin.css" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="/Login/images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Login/css/util.css">
+    <link rel="stylesheet" type="text/css" href="/Login/css/main.css">
+    <!--===============================================================================================-->
 </head>
 
-<body class="bg-gradient-login">
-    <!-- Login Content -->
-    <div class="container-login">
-        <div class="row justify-content-center">
-            <div class="col-xl-6 col-lg-12 col-md-9">
-                <div class="card shadow-sm my-5">
-                    <div class="card-body p-0">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="login-form">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Login</h1>
-                                    </div>
-                                    <form class="user" action="{{ route('auth') }}" method="POST">
-                                        @csrf
+<body>
 
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="username" name="username"
-                                                placeholder="Masukkan Username">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" class="form-control" id="password" name="password"
-                                                placeholder="Password">
-                                        </div>
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary btn-block">Login</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <div class="login100-form-title" style="background-image: url(/Login/images/bg-01.jpg);">
+                    <span class="login100-form-title-1">
+                        Sign In
+                    </span>
                 </div>
+                <form class="login100-form validate-form user" action="{{ route('auth') }}" method="POST">
+                    @csrf
+                    <div class="wrap-input100 validate-input m-b-26" data-validate="Username is required">
+                        <span class="label-input100">Username</span>
+                        <input class="input100" type="text" id="username" name="username"
+                            placeholder="Masukkan username">
+                        <span class="focus-input100"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-18" data-validate = "Password is required">
+                        <span class="label-input100">Password</span>
+                        <input class="input100" type="password" name="password" id="password"
+                            placeholder="Masukkan password">
+                        <span class="focus-input100"></span>
+                    </div>
+
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn">
+                            Login
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <!-- Login Content -->
-    <script src="/assets/vendor/jquery/jquery.min.js"></script>
-    <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!--===============================================================================================-->
+    <script src="/Login/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Login/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Login/vendor/bootstrap/js/popper.js"></script>
+    <script src="/Login/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Login/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Login/vendor/daterangepicker/moment.min.js"></script>
+    <script src="/Login/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Login/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="js/main.js"></script>
+
 </body>
 
 </html>
