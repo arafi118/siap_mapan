@@ -60,12 +60,13 @@
                                     </td>
                                     <td>{{ number_format($paket->denda, 2) }}
                                     </td>
-                                    <td class="action-buttons">
-                                        <a href="/packages/{{ $paket->id }}/edit" class="btn-sm btn-warning mx-1"><i
-                                                class="fas fa-pencil-alt"></i></a>
-
-                                        <a href="#" data-id="{{ $paket->id }}"
-                                            class="btn-sm btn-danger mx-1 Hapus_paket"><i class="fas fa-trash-alt"></i>
+                                    <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                        <a href="/packages/{{ $paket->id }}/edit" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a href="#"
+                                            data-id="{{ $paket->id }}"class="btn-sm btn-danger mx-1 Hapus_paket">
+                                            <i class="fas fa-trash-alt"></i>
                                         </a>
                                     </td>
                                 </tr>
