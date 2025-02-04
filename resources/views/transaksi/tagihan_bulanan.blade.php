@@ -250,36 +250,29 @@
             var tanggal = tglTransaksi.split('/')
             var bulan = tanggal[1]
 
-            if (tglAkhir - bulan > 1) {
+            if (tglAkhir - bulan < 1) {
                 denda = denda;
             } else {
                 denda = 0;
             }
 
-            $("#infotagihan").val(numFormat.format(Math.abs(denda)));
             $("#denda_bulanan").val(numFormat.format(Math.abs(denda)));
         })
 
         $(document).on('change', '.perhitungan', function() {
-            var tagihan = ($('#tagihan').val()) || 0;
-            var pembayaran = ($('#pembayaran').val()) || 0;
+            function cleanNumber(value) {
+                let cleanNumber = value.toString().replace(/,/g, '');
+                return parseFloat(cleanNumber);
+            }
+            var jumlah = cleanNumber($(this).val());
+            var tagihan = cleanNumber($("#tagihan").val());
+            var pembayaran = cleanNumber($("#pembayaran").val());
 
             if (pembayaran > tagihan) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Pembayaran tidak valid',
                     text: 'Pembayaran tidak boleh melebihi tagihan.',
-                    confirmButtonText: 'Coba lagi'
-                });
-                $('#pembayaran').val('');
-                return;
-            }
-
-            if (pembayaran <= 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Pembayaran tidak valid',
-                    text: 'Pembayaran harus lebih besar dari 0.',
                     confirmButtonText: 'Coba lagi'
                 });
                 $('#pembayaran').val('');

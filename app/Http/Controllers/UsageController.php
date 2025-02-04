@@ -43,9 +43,40 @@ class UsageController extends Controller
 
     public function store(Request $request)
     {
+        $data_id = [];
+        foreach ($request->data as $data) {
+            $data_id[] = $data['id'];
+        }
+
+        $data_installation = [];
+        $installations = Installations::whereIn('id', $data_id)->with([
+            'package'
+        ])->get();
+        foreach ($installations as $ins) {
+            $data_installation[$ins->id] = $ins->package->harga;
+        }
+
+        $setting = Settings::where('business_id', Session::get('business_id'))->first();
+
         $insert = [];
         $tanggal = Tanggal::tglNasional($request->tanggal);
         foreach ($request->data as $data) {
+            $harga = json_decode($data_installation[$data['id']], true);
+
+            $result = [];
+            $block = json_decode($setting->block, true);
+            foreach ($block as $index => $item) {
+                preg_match_all('/\d+/', $item['jarak'], $matches);
+                $start = (int)$matches[0][0];
+                $end = (int)$matches[0][1];
+
+                for ($i = $start; $i <= $end; $i++) {
+                    $result[$i] = $index;
+                }
+            }
+
+            $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
+
             $insert[] = [
                 'customer' => $data['customer'],
                 'awal' => $data['awal'],
@@ -53,10 +84,12 @@ class UsageController extends Controller
                 'jumlah' => $data['jumlah'],
                 'id_instalasi' => $data['id'],
                 'tgl_akhir' => $tanggal,
+                'nominal' => $harga[$index_harga],
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
         }
+
         // Simpan data
         Usage::insert($insert);
         return response()->json([

@@ -13,25 +13,25 @@
             <div class="card mb-4">
                 <div class="table-responsive p-3">
                     <table class="table align-items-center table-flush" id="TbPemakain">
-                        <thead class="thead-light">
-                            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                                <!-- Data Desa -->
-                                <div style="display: flex; align-items: center;">
-                                    <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
-                                    <b>Data Pemakaian</b>
-                                </div>
-                                <div style="display: flex; justify-content: flex-end;">
-                                    <a href="/usages/create" class="btn btn-primary" id="RegisterDusun">
-                                        <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
-                                    </a>
-                                </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <!-- Data Desa -->
+                            <div style="display: flex; align-items: center;">
+                                <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
+                                <b>Data Pemakaian</b>
                             </div>
-                            <div>&nbsp;</div>
+                            <div style="display: flex; justify-content: flex-end;">
+                                <a href="/usages/create" class="btn btn-primary" id="RegisterDusun">
+                                    <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
+                                </a>
+                            </div>
+                        </div>
+                        <div>&nbsp;</div>
+                        <thead class="thead-light" align="center">
                             <tr>
                                 <th>NAMA</th>
                                 <th>KODE INSTALASI</th>
-                                <th>AWAL</th>
-                                <th>AKHIR</th>
+                                <th>AWAL PEMAKAIAN</th>
+                                <th>AKHIR PEMAKAIAN</th>
                                 <th>JUMLAH</th>
                                 <th>TGL AKHIR</th>
                                 <th>Status</th>

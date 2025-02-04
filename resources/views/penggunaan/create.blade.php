@@ -57,13 +57,13 @@
                                 <div class="card mb-4">
                                     <div class="table-responsive p-3">
                                         <table class="table align-items-center table-flush table-center" id="TbPemakain">
-                                            <thead class="thead-light">
+                                            <thead class="thead-light" align="center">
                                                 <tr>
                                                     <th>Checklist</th>
                                                     <th>NAMA</th>
                                                     <th>KODE INSTALASI</th>
-                                                    <th>AWAL</th>
-                                                    <th>AKHIR</th>
+                                                    <th>AWAL PERMAKAIAN</th>
+                                                    <th>AKHIR PERMAKAIAN</th>
                                                     <th>JUMLAH</th>
                                                     {{-- <th style="text-align: center;">AKSI</th> --}}
                                                 </tr>
@@ -77,12 +77,9 @@
 
                         <div class="col-12 d-flex justify-content-end">
                             <a href="/usages" class="btn btn-white">Kembali</a>
-                            <button class="btn btn-secondary ml-2" type="button" id="SimpanPemakaian">
-                                <span class="icon">
-                                    <i class="fas fa-plus"></i>
-                                </span>
-                                <span class="text">Simpan</span>
-                            </button>
+                            &nbsp;
+                            <a href="#" type="button" id="SimpanPemakaian" class="btn btn-secondary">Simpan
+                                Pemakaian</a>
                         </div>
                     </div>
                 </div>
@@ -93,6 +90,12 @@
 
 @section('script')
     <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4',
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             const alert = document.getElementById('success-alert');
             if (alert) {

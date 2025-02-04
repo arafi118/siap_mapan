@@ -33,36 +33,37 @@
 
 @section('content')
     <div class="container-fluid" id="container-wrapper">
-        <div class="col-lg-13">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <ul class="nav nav-pills">
-                        <li class="nav-item">
-                            <a class="nav-link {{ $tombolR }}" data-status="R" data-toggle="tab" data-target="#Permohonan"
-                                href="#"><b>Permohonan ( R )</b></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ $tombolI }}" data-status="I" data-toggle="tab" data-target="#Pasang"
-                                href="#"><b>Pasang ( I )</b></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ $tombolA }}" data-status="A" data-toggle="tab" data-target="#Aktif"
-                                href="#"><b>Aktif ( A )</b></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ $tombolB }}" data-status="B" data-toggle="tab" data-target="#Blokir"
-                                href="#"><b>Blokir ( B )</b></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ $tombolC }}" data-status="C" data-toggle="tab" data-target="#Cabut"
-                                href="#"><b>Cabut ( C )</b></a>
-                        </li>
-                    </ul>
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body p-0"> <!-- Menghapus padding default card-body -->
+                        <ul class="nav nav-pills nav-fill"> <!-- Menambahkan nav-fill untuk lebar sama -->
+                            <li class="nav-item">
+                                <a class="nav-link {{ $tombolR }} w-100 text-center" data-status="R" data-toggle="tab"
+                                    data-target="#Permohonan" href="#"><b>Permohonan ( R )</b></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ $tombolI }} w-100 text-center" data-status="I" data-toggle="tab"
+                                    data-target="#Pasang" href="#"><b>Pasang ( I )</b></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ $tombolA }} w-100 text-center" data-status="A" data-toggle="tab"
+                                    data-target="#Aktif" href="#"><b>Aktif ( A )</b></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ $tombolB }} w-100 text-center" data-status="B" data-toggle="tab"
+                                    data-target="#Blokir" href="#"><b>Blokir ( B )</b></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ $tombolC }} w-100 text-center" data-status="C" data-toggle="tab"
+                                    data-target="#Cabut" href="#"><b>Cabut ( C )</b></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="container-fluid" id="container-wrapper">
         <div id="tabsContent" class="tab-content">
             <!-- Permohonan Tab -->
