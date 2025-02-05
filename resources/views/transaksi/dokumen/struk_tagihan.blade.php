@@ -28,7 +28,7 @@
 
         .container {
             position: relative;
-            width: 20cm;
+            width: 18cm;
             height: 10cm;
             padding: 20px;
             /*border: 1px solid rgba(0, 0, 0, 0.1);*/
@@ -37,7 +37,7 @@
         .box {
             border: 2px solid #000;
             padding-top: 16px;
-            padding-bottom: 12px;
+            padding-bottom: 13px;
             padding-right: 22px;
             padding-left: 12px;
         }
@@ -257,43 +257,21 @@
                             Rp. {{ number_format($trx->total, 2) }}
                         </td>
                     </tr>
+
                     <tr>
                         <td width="30%">&nbsp;</td>
                         <td width="2%">&nbsp;</td>
-                        <td colspan="3" class="keterangan border-b"></td>
+                        <td colspan="3"></td>
                     </tr>
-                </table>
-
-                <table width="100%" class="fs-12" style="margin-top: 8px;">
                     <tr>
-                        <td width="40%" align="center" rowspan="6">
-                            <i>
-                                <h3 class="flex" style="padding-left: 18px;">
-                                    Terbilang Rp. &nbsp; <div class="jajargenjang text-left">
-                                        {{ number_format($trx->total, 2) }}</div>
-                                </h3>
-                            </i>
+                        <td colspan="5" class="fs-10" align="center">
                         </td>
                     </tr>
                     <tr>
-                        <td align="center">&nbsp;</td>
-                        <td align="center"></td>
-                    </tr>
-                    <tr>
-                        <td width="30%" align="center">Dibayar Oleh</td>
-                        <td width="30%" align="center">Diterima Oleh</td>
-                    </tr>
-                    <tr>
-                        <td align="center">&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td align="center">&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td align="center">{{ $dari }}</td>
-                        <td align="center">{{ $oleh }}</td>
+                        <td colspan="5" class="fs-10" align="center">
+                            <h2 class="font-roboto">Terima kasih</h2>
+                            <h2> - - - - - - - - {{ $trx->tgl_transaksi }} - - - - - - - -</h2>
+                        </td>
                     </tr>
                 </table>
             </div>

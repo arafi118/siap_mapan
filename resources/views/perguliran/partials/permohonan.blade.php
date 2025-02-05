@@ -130,7 +130,7 @@
                             </div>
                         </div>
                         <div class="col-12 d-flex justify-content-end">
-                            <a href="/installations?status=R" class="btn btn-light btn-icon-split">
+                            <button id="kembali" class="btn btn-light btn-icon-split">
                                 <span class="icon text-white-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
@@ -139,7 +139,7 @@
                                     </svg>
                                 </span>
                                 <span class="text">Kembali</span>
-                            </a>
+                            </button>
                             @if ($status === 1)
                                 <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_R"
                                     style="float: right; margin-left: 10px;"disabled>
@@ -175,6 +175,11 @@
 @endsection
 @section('script')
     <script>
+        $(document).on('click', '#kembali', function(e) {
+            e.preventDefault();
+            window.location.href = '/installations?status=R';
+        });
+
         jQuery.datetimepicker.setLocale('de');
         $('.date').datetimepicker({
             i18n: {

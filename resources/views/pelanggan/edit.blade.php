@@ -268,7 +268,7 @@
                             </div>
 
                             <div class="col-12 d-flex justify-content-end">
-                                <a href="/customers" class="btn btn-light btn-icon-split">
+                                <button id="kembali" class="btn btn-light btn-icon-split">
                                     <span class="icon text-white-50">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-sign-turn-slight-left-fill"
@@ -278,7 +278,7 @@
                                         </svg>
                                     </span>
                                     <span class="text">Kembali</span>
-                                </a>
+                                </button>
 
                                 <button class="btn btn-secondary btn-icon-split" id="SimpanPenduduk"
                                     type="submit"style="float: right; margin-left: 10px;">
@@ -300,6 +300,11 @@
     </div>
 @endsection
 <script>
+    $(document).on('click', '#kembali', function(e) {
+        e.preventDefault();
+        window.location.href = '/customers';
+    });
+
     $(document).ready(function() {
         $('.js-select-2').select2({
             theme: 'bootstrap4',

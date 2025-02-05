@@ -803,7 +803,7 @@ class InstallationsController extends Controller
         // Menghapus Installations berdasarkan id yang diterima
         Installations::where('id', $installation->id)->delete();
         Transaction::where('installation_id', $installation->id)->delete();
-        Usage::where('installation_id', $installation->id)->delete();
+        Usage::where('id_instalasi', $installation->id)->delete();
 
         // Redirect ke halaman Installations dengan pesan sukses
         return response()->json([

@@ -77,7 +77,7 @@
                             </div>
                         </div>
                         <div class="col-12 d-flex justify-content-end">
-                            <a href="/usages" class="btn btn-light btn-sm">Kembali</a>
+                            <button id="kembali" class="btn btn-light btn-sm">Kembali</button>
                             <button class="btn btn-secondary btn-icon-split" type="submit" id="SimpanPemakaian"
                                 style="float: right; margin-left: 10px;">
                                 <span class="icon text-white-50">
@@ -98,9 +98,11 @@
 @endsection
 @section('script')
     <script>
-        document.getElementById("close").addEventListener("click", function() {
-            window.location.href = "/usages"; // Ganti "/usage" dengan URL yang sesuai
+        $(document).on('click', '#kembali', function(e) {
+            e.preventDefault();
+            window.location.href = '/usages';
         });
+
         jQuery.datetimepicker.setLocale('de');
         $('.date').datetimepicker({
             i18n: {

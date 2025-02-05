@@ -111,7 +111,7 @@
                             Catatan : ( Jika Ada data atau inputan yang kosong bisa di isi ( 0 ) atau ( - ) )
                         </div>
                         <div class="col-12 d-flex justify-content-end">
-                            <a href="/cater" class="btn btn-light btn-icon-split">
+                            <button id="kembali" class="btn btn-light btn-icon-split">
                                 <span class="icon text-white-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
@@ -120,7 +120,7 @@
                                     </svg>
                                 </span>
                                 <span class="text">Kembali</span>
-                            </a>
+                            </button>
 
                             <button class="btn btn-secondary btn-icon-split" id="SimpanCater"
                                 type="submit"style="float: right; margin-left: 10px;">
@@ -142,6 +142,11 @@
 @endsection
 @section('script')
     <script>
+        $(document).on('click', '#kembali', function(e) {
+            e.preventDefault();
+            window.location.href = '/caters';
+        });
+
         $(document).ready(function() {
             $('.select2').select2({
                 theme: 'bootstrap4',

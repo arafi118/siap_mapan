@@ -101,7 +101,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="col-12 d-flex justify-content-end">
-                            <a href="/installations?status=C" class="btn btn-light btn-icon-split">
+                            <button id="kembali" class="btn btn-light btn-icon-split">
                                 <span class="icon text-white-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
@@ -110,7 +110,7 @@
                                     </svg>
                                 </span>
                                 <span class="text">Kembali</span>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -120,6 +120,11 @@
 @endsection
 @section('script')
     <script>
+        $(document).on('click', '#kembali', function(e) {
+            e.preventDefault();
+            window.location.href = '/installations?status=C';
+        });
+
         $("#total").maskMoney({
             allowNegative: true
         });
