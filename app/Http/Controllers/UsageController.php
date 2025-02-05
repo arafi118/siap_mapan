@@ -78,6 +78,7 @@ class UsageController extends Controller
             $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
 
             $insert[] = [
+                'business_id' => Session::get('business_id'),
                 'customer' => $data['customer'],
                 'awal' => $data['awal'],
                 'akhir' => $data['akhir'],

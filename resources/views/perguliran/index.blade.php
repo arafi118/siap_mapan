@@ -100,7 +100,9 @@
                                                         <span class="badge badge-warning">UNPAID</span>
                                                     @endif
                                                 </td>
-                                                <td style="text-align: center;">
+
+                                                <td
+                                                    style="text-align: center; display: flex; gap: 5px; justify-content: center;">
                                                     <a href="/installations/{{ $status_R->id }}"
                                                         class="btn btn-info btn-sm">
                                                         <i class="fas fa-info-circle"></i>

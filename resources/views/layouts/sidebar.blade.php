@@ -1,7 +1,7 @@
 <!-- Sidebar -->
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
-        <div class="sidebar-brand-text mx-3">Siap-Mapan</div>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+        <div class="sidebar-brand-text mx-3">{{ Session::get('nama_usaha') }}</div>
     </a>
     <hr class="sidebar-divider">
     <li class="nav-item active">
