@@ -8,6 +8,7 @@ use App\Models\AkunLevel1;
 use App\Models\Amount;
 use App\Models\Business;
 use App\Models\Calk;
+use App\Models\Installations;
 use App\Models\Inventory;
 use App\Models\JenisLaporan;
 use App\Models\JenisLaporanPinjaman;
@@ -316,10 +317,16 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['usages'] = Usage::with([
-            'customers',
-            'installation'
+        $data['installations'] = Installations::where('aktif','<=', $data['tgl_kondisi'])->with([
+            'customer',
+            'usage' => function ($query) use($data) {
+                $query->where('tgl_akhir','<=', $data['tgl_kondisi']);
+            },
         ])->get();
+        // $data['usages'] = Usage::with([
+        //     'customers',
+        //     'installation'
+        // ])->get();
         $data['title'] = 'Daftar pelanggan';
         $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
@@ -344,11 +351,46 @@ class PelaporanController extends Controller
             'customers.village',
             'installation',
             'transaction',
+        ])->where([
+            ['tgl_akhir','<=', $data['tgl_kondisi']],
+            ['status','UNPAID']
         ])->get();
-        $data['title'] = 'Tagihan Pelanggan';
+        $data['title'] = 'Daftar Tagihan Pelanggan';
         $view = view('pelaporan.partials.views.tagihan_pelanggan', $data)->render();
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
+    }
+    private function piutang_pelanggan(array $data)
+    {
+        
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+
+        $data['installations'] = Installations::where('aktif','<=', $data['tgl_kondisi'])->with([
+            'customer',
+            'usage' => function ($query) use($data) {
+                $query->where('tgl_akhir','<=', $data['tgl_kondisi']);
+            },
+            'usage.transaction' => function ($query) use($data) {
+                $query->where('tgl_transaksi','<=', $data['tgl_kondisi']);
+            },
+        ])->get();
+
+        $data['title'] = 'Daftar Piutang Pelanggan';
+        $view = view('pelaporan.partials.views.piutang_pelanggan', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    
     }
     private function alokasi_laba_tutup_buku(array $data)
     {
@@ -864,17 +906,6 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
 
-    }
-    private function piutang_pelanggan(array $data)
-    {
-        $data['title'] = 'Daftar Piutang Pelanggan';
-        $view = view('pelaporan.partials.views.piutang_pelanggan', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    
-    }
-    private function daftar_piutang_pelanggan(array $data)
-    {
     }
     private function ati(array $data)
     {

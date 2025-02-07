@@ -53,7 +53,7 @@
         <th class="t l b" width="8%">Desa</th>
         <th class="t l b" width="10%">Kode Instalasi</th>
         <th class="t l b" width="8%">Pemakaian</th>
-        <th class="t l b" width="8%">Tagih</th>
+        <th class="t l b" width="8%">Tagihan</th>
         <th class="t l b" width="9%">Status</th>
         <th class="t l b" width="9%">Pembayaran</th>
     </tr>
@@ -77,8 +77,8 @@
             <td class="t l b" align="left">{{ $usage->customers->nama }}</td>
             <td class="t l b" align="left">{{ $usage->customers->village ? $usage->customers->village->nama : '' }}
             </td>
-            <td class="t l b" align="center">{{ $usage->installation->kode_instalasi }}</td>
-            <td class="t l b" align="center">{{ $pemakaian }}</td>
+            <td class="t l b" align="center">{{ $usage->installation->kode_instalasi ?? '' }}</td>
+            <td class="t l b" align="right">{{ $pemakaian }}</td>
             <td class="t l b" align="right">{{ number_format($tagih, 2) }}</td>
             <td class="t l b" align="center">{{ $usage->status }}</td>
             <td class="t l b r" align="right">{{ number_format($pembayaran, 2) }}</td>
@@ -86,7 +86,7 @@
     @endforeach
     <tr style="font-weight: bold;">
         <td class="t l b" colspan="4">Jumlah</td>
-        <td class="t l b" align="center">{{ $totalPemakaian }}</td>
+        <td class="t l b" align="right">{{ $totalPemakaian }}</td>
         <td class="t l b" align="right">{{ number_format($totalTagih, 2) }}</td>
         <td class="t l b" align="center"></td>
         <td class="t l b r" align="right">{{ number_format($totalPembayaran, 2) }}</td>

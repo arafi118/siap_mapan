@@ -63,25 +63,27 @@
         <th width="10%">Kode Instalasi</th>
         <th width="8%">Status</th>
     </tr>
-    @foreach ($usages as $usage)
-        <tr>
-            <td align="center">{{ $no++ }}</td>
-            <td align="left">{{ $usage->customers->nama }}</td>
-            <td align="center">{{ $usage->customers->nik }}</td>
-            <td align="left">{{ $usage->customers->alamat }}</td>
-            <td align="center">{{ $usage->customers->hp }}</td>
-            <td align="center">{{ $usage->installation->kode_instalasi }}</td>
-            @if ($usage->installation->status == 'R' || $usage->installation->status == '0')
-                <td align="center">Permohonan</td>
-            @elseif ($usage->installation->status == 'I')
-                <td align="center">Pasang</td>
-            @elseif ($usage->installation->status == 'A')
-                <td align="center">Aktif</td>
-            @elseif ($usage->installation->status == 'B')
-                <td align="center">Blokir</td>
-            @elseif ($usage->installation->status == 'C')
-                <td align="center">Cabut</td>
-            @endif
-        </tr>
+    @foreach ($installations as $installation)
+        @foreach ($installation->usage as $usage)
+            <tr>
+                <td align="center">{{ $no++ }}</td>
+                <td align="left">{{ $installation->customer->nama }}</td>
+                <td align="center">{{ $installation->customer->nik }}</td>
+                <td align="left">{{ $installation->customer->alamat }}</td>
+                <td align="center">{{ $installation->customer->hp }}</td>
+                <td align="center">{{ $installation->kode_instalasi }}</td>
+                @if ($installation->status == 'R' || $installation->status == '0')
+                    <td align="center">Permohonan</td>
+                @elseif ($installation->status == 'I')
+                    <td align="center">Pasang</td>
+                @elseif ($installation->status == 'A')
+                    <td align="center">Aktif</td>
+                @elseif ($installation->status == 'B')
+                    <td align="center">Blokir</td>
+                @elseif ($installation->status == 'C')
+                    <td align="center">Cabut</td>
+                @endif
+            </tr>
+        @endforeach
     @endforeach
 </table>
