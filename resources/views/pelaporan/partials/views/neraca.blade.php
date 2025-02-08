@@ -126,6 +126,10 @@
                             $saldo = $saldo_debit - $saldo_kredit;
                         }
 
+                        if ($account->kode_akun == '3.2.02.01') {
+                            $saldo = $surplus;
+                        }
+
                         $sum_saldo += $saldo;
                     }
 

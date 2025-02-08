@@ -15,6 +15,7 @@ use App\Models\JenisLaporanPinjaman;
 use App\Models\MasterArusKas;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -489,6 +490,7 @@ class PelaporanController extends Controller
     }
     private function neraca(array $data)
     {
+        $keuangan = new Keuangan;
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
@@ -510,6 +512,29 @@ class PelaporanController extends Controller
                 });
             },
         ])->orderBy('kode_akun', 'ASC')->get();
+
+        $laba_rugi = Account::where('lev1', '>=', '4')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->get();
+
+        $pendapatan = 0;
+        $beban = 0;
+        foreach ($laba_rugi as $lr) {
+            $saldo = $keuangan->komSaldo($lr);
+            if ($lr->lev1 == '4') {
+                $pendapatan += $saldo;
+            }
+            
+            if ($lr->lev1 == '5') {
+                $beban += $saldo;
+            }
+        }
+
+        $data['surplus'] = $pendapatan - $beban;
 
         $data['title'] = 'Neraca';
         $view = view('pelaporan.partials.views.neraca', $data)->render();
@@ -553,8 +578,8 @@ class PelaporanController extends Controller
         $hari = $data['hari'];
     
         // Mendapatkan bulan dan tahun sekarang
-        $bulanSekarang = date('m'); // Bulan saat ini
-        $tahunSekarang = date('Y'); // Tahun saat ini
+        $bulanSekarang = $bln; // Bulan saat ini
+        $tahunSekarang = $thn; // Tahun saat ini
     
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $data['judul'] = 'Laporan Keuangan';
@@ -568,7 +593,8 @@ class PelaporanController extends Controller
     
         // Query untuk Pendapatan s.d. Bulan Lalu dan Bulan Ini
         $dataPendapatan = Account::where([
-            ['kode_akun', 'LIKE', '4.1.%']
+            ['kode_akun', 'LIKE', '4.1.%'],
+            ['business_id', Session::get('business_id')]
         ])->with([
             'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
                 $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
@@ -583,7 +609,8 @@ class PelaporanController extends Controller
     
         // Query untuk Beban s.d. Bulan Lalu dan Bulan Ini
         $dataBeban = Account::where([
-            ['kode_akun', 'LIKE', '5.1.%']
+            ['kode_akun', 'LIKE', '5.1.%'],
+            ['business_id', Session::get('business_id')]
         ])->orWhere('kode_akun', 'LIKE', '5.2.%')
         ->where('kode_akun', '!=', '5.2.01.01')
         ->with([
@@ -599,7 +626,8 @@ class PelaporanController extends Controller
         ])->orderBy('kode_akun', 'ASC')->get();
     
         $dataPen = Account::where([
-            ['kode_akun', 'LIKE', '4.2.%']
+            ['kode_akun', 'LIKE', '4.2.%'],
+            ['business_id', Session::get('business_id')]
         ])->orWhere('kode_akun', 'LIKE', '4.3.%')
         ->whereNotIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])
         ->with([
@@ -617,6 +645,7 @@ class PelaporanController extends Controller
         // Query untuk Beb s.d. Bulan Lalu dan Bulan Ini
         $dataBeb = Account::where([
             ['kode_akun', 'LIKE', '5.3.%'],
+            ['business_id', Session::get('business_id')]
         ])
         ->orWhere('kode_akun', 'LIKE', '5.4%')
         ->where('kode_akun', '!=', '5.4.01.01') // Mengecualikan kode akun 5.4.01.01
@@ -632,7 +661,7 @@ class PelaporanController extends Controller
             }
         ])->orderBy('kode_akun', 'ASC')->get();
 
-        $pph = Account::where('kode_akun', '5.4.01.01')->with([
+        $pph = Account::where([['kode_akun', '5.4.01.01'], ['business_id', Session::get('business_id')]])->with([
             'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
                 $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
@@ -644,7 +673,7 @@ class PelaporanController extends Controller
             }
         ])->orderBy('kode_akun', 'ASC')->get();
         
-        $bebanPemasaran = Account::where('kode_akun', '5.2.01.01')->with([
+        $bebanPemasaran = Account::where([['kode_akun', '5.2.01.01'], ['business_id', Session::get('business_id')]])->with([
             'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
                 $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
@@ -656,7 +685,9 @@ class PelaporanController extends Controller
             }
         ])->orderBy('kode_akun', 'ASC')->get();
 
-        $pendluar = Account::whereIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])->with([
+        $pendluar = Account::whereIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])->where([
+            ['business_id', Session::get('business_id')]
+        ])->with([
             'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
                 $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
