@@ -130,7 +130,20 @@
                             </div>
                         </div>
                         <div class="col-12 d-flex justify-content-end">
-                            <button id="kembali" class="btn btn-light btn-icon-split">
+                            <button class="btn btn-warning btn-icon-split" data-id="{{ $installation->id }}" type="submit"
+                                id="Kembali_Status_A" style="float: right; margin-left: 10px;">
+                                <span class="icon text-white-50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
+                                    </svg>
+                                </span>
+                                <span class="text" style="float: right;">Kembali ke Aktif</span>
+                            </button>
+
+                            <button id="kembali"
+                                class="btn btn-light btn-icon-split"style="float: right; margin-left: 10px;">
                                 <span class="icon text-white-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
@@ -225,6 +238,64 @@
                             $('#msg_' + key).html(message);
                         });
                     }
+                }
+            });
+        });
+        // mengembalikan status B ke A
+        $(document).on('click', '#Kembali_Status_A', function(e) {
+            e.preventDefault();
+
+            var cek_id = $(this).attr('data-id');
+
+            var actionUrl = '/installations/KembaliStatus_A/' + cek_id;
+
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Data akan diproses dan tidak bisa dikembalikan!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Process",
+                cancelButtonText: "No, Cancel",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var form = $('#FormHapus')
+                    $.ajax({
+                        type: form.attr('method'),
+                        url: actionUrl,
+                        data: form.serialize(),
+                        success: function(response) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: response.msg,
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.location.reload()
+                                } else {
+                                    window.location.href = '/installations/' + result
+                                        .kembaliA.id;
+                                }
+                            });
+                        },
+                        error: function(response) {
+                            const errorMsg = "Terjadi kesalahan.";
+                            Swal.fire({
+                                title: "Error",
+                                text: errorMsg,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        title: "Dibatalkan",
+                        text: "Data Akan Tetap di Status BLOKIR",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
                 }
             });
         });

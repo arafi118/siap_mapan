@@ -13,7 +13,8 @@
             </div>
         </div>
         <hr>
-        <p>Jika ada data tagihan dengan Status <b>AKTIF</b> dan melebihi batas tagihan yang ditentukan, maka Aplikasi
+        <p style="text-align: justify;">
+            Jika ada data tagihan dengan Status <b>AKTIF</b> dan melebihi batas tagihan yang ditentukan, maka Aplikasi
             akan secara otomatis memindahkan data tersebut ke Status <b>BLOKIR</b> sesuai batas yang sudah ditentukan.
         </p>
         <div class="col-12 d-flex justify-content-end">

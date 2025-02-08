@@ -796,6 +796,23 @@ class InstallationsController extends Controller
     }
 
     /**
+     * Update Detail Status B kembali menjaddi Aktif.
+     */
+    public function KembaliStatus_A($id)
+    {
+        $instal = Installations::where('id', $id)->update([
+            'business_id' => Session::get('business_id'),
+            'status' => 'A',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'msg' => '"Data berhasil diaktifkan dan statusnya dikembalikan menjadi Aktif."',
+            'kembaliA' => $instal
+        ]);
+    }
+
+    /**
      * menghapus data instalasi status R.
      */
     public function destroy(Installations $installation)

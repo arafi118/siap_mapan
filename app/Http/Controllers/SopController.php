@@ -28,9 +28,13 @@ class SopController extends Controller
 
     public function profil()
     {
+        $business_id = Session::get('business_id');
+
+        $business = Business::where('id', $business_id)->first();
+
         $title = 'Sop';
 
-        return view('sop.partials.profil')->with(compact('title'));
+        return view('sop.partials.profil')->with(compact('title', 'business'));
     }
 
     public function pasang_baru()
