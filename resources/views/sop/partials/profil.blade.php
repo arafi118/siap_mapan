@@ -6,7 +6,8 @@
         <h4 class="alert-heading"><b>Standar Operasional Prosedur (SOP)</b></h4>
         <hr>
         <hr>
-        <p>Penggunaan Aplikasi <b>{{ $business->nama }}</b>
+        <p style="text-align: justify;">
+            Penggunaan Aplikasi <b>{{ $business->nama }}</b>
             Sebagai dasar penggunaan Aplikasi ini
             Isilah sesuai dengan prosedur yang berlaku,
             Klik Sidbar disamping untuk mengatur & masuk ke fitur" Aplikasi.
