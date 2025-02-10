@@ -20,7 +20,6 @@
                         <form action="/customers/{{ $customer->nik }}" method="post" id="Penduduk">
                             @csrf
                             @method('PUT')
-
                             <input type="hidden" name="_nik" id="_nik" value="{{ $customer->nik }}">
                             <div class="row">
                                 <div class="col-md-4">
@@ -84,7 +83,7 @@
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="no_kk">No. KK</label>
-                                        <input autocomplete="off" type="text" name="no_kk" id="no_kk"
+                                        <input autocomplete="off" type="text"maxlength="16" name="no_kk" id="no_kk"
                                             class="form-control" value="{{ $customer->kk }}">
                                         <small class="text-danger">{{ $errors->first('no_kk') }}</small>
 
@@ -95,8 +94,8 @@
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="alamat">Alamat KTP</label>
-                                        <input autocomplete="off" maxlength="16" type="text" name="alamat"
-                                            id="alamat" class="form-control" value="{{ $customer->alamat }}">
+                                        <input autocomplete="off"type="text" name="alamat" id="alamat"
+                                            class="form-control" value="{{ $customer->alamat }}">
                                         <small class="text-danger">{{ $errors->first('alamat') }}</small>
                                     </div>
                                 </div>
@@ -123,7 +122,6 @@
                                         <small class="text-danger">{{ $errors->first('desa') }}</small>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-4">

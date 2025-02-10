@@ -2,7 +2,6 @@
     <!-- Gambar -->
     <img src="../../assets/img/sop.png" style="max-height: 300px; margin-right: 20px;" class="img-fluid">
     <div>
-
         <h4 class="alert-heading"><b>Standar Operasional Prosedur (SOP)</b></h4>
         <hr>
         <hr>

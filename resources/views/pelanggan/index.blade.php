@@ -65,7 +65,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
-                    text: '{{ Session::get('berhasil') }}',
+                    text: '{{ Session::get('success') }}',
                     showConfirmButton: false,
                     timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
                 });

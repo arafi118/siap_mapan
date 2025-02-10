@@ -1,7 +1,6 @@
 <div class="card-body">
     <form action="/pengaturan/sop/sistem_instal" method="post" id="FromInstal">
         @csrf
-
         <div class="row">
             <div class="col-md-6">
                 <div class="position-relative mb-3">

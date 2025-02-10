@@ -164,7 +164,7 @@ class CustomerController extends Controller
             'hp' => $request->no_telp
         ]);
 
-        return redirect('/customers')->with('success', 'Cater berhasil diperbarui');
+        return redirect('/customers')->with('success', 'Customer berhasil diperbarui');
     }
 
     /**
