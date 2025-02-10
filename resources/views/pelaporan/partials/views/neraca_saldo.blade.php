@@ -39,7 +39,15 @@
     @php
         $saldo_pendapatan = 0;
         $saldo_beban = 0;
+        $surplus_defisit = 0;
+        $jumlah_saldo_debit = 0;
+        $jumlah_saldo_kredit = 0;
+        $jumlah_saldo_laba_rugi_debit = 0;
+        $jumlah_saldo_laba_rugi_kredit = 0;
+        $jumlah_saldo_neraca_debit = 0;
+        $jumlah_saldo_neraca_kredit = 0;
     @endphp
+
 
     @foreach ($accounts as $rek)
         @php
@@ -88,7 +96,6 @@
 
                 $saldo_beban += $beban;
             }
-
         @endphp
         <tr style="border: 0.5px solid black;">
             <td width="15%" align="left" style="border: 0.5px solid black; padding-left: 5px;">
@@ -108,6 +115,15 @@
                 {{ number_format($saldo_neraca_kredit, 2) }}</td>
         </tr>
     @endforeach
+    @php
+        $jumlah_saldo_debit += $saldo_debit;
+        $jumlah_saldo_kredit += $saldo_kredit;
+        $jumlah_saldo_laba_rugi_debit += $saldo_laba_rugi_debit;
+        $jumlah_saldo_laba_rugi_kredit += $saldo_laba_rugi_kredit;
+        $jumlah_saldo_neraca_debit += $saldo_neraca_debit;
+        $jumlah_saldo_neraca_kredit += $saldo_neraca_kredit;
+        $surplus_defisit = $saldo_pendapatan - $saldo_beban;
+    @endphp
     <tr style="border: 0.5px solid black;">
         <td colspan="7" style="padding: 0px;">
             <table border="0" width="100%" cellspacing="0" cellpadding="5"
@@ -117,23 +133,30 @@
                     <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
                     <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
                     <td width="15%"align="right" style="border: 0.5px solid black;">
-                        {{ $saldo_pendapatan - $saldo_beban }}
+                        {{ number_format($surplus_defisit, 2) }}
                     </td>
                     <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
                     <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
                     <td width="15%"align="right" style="border: 0.5px solid black;">
-                        {{ $saldo_pendapatan - $saldo_beban }}
+                        {{ number_format($surplus_defisit, 2) }}
                     </td>
                 </tr>
                 <tr style="background: rgb(242, 242, 242); font-weight: bold; border: 0.5px solid black;">
-                    <td width="15%"align="center" style="border: 0.5px solid black;">Jumlah</td>
-                    <td width="15%"align="right" style="border: 0.5px solid black;">3</td>
-                    <td width="15%"align="right" style="border: 0.5px solid black;">5</td>
-                    <td width="15%"align="right" style="border: 0.5px solid black;">2</td>
-                    <td width="15%"align="right" style="border: 0.5px solid black;">d</td>
-                    <td width="15%"align="right" style="border: 0.5px solid black;">3</td>
-                    <td width="15%"align="right" style="border: 0.5px solid black;">d</td>
+                    <td width="40%" align="center" style="border: 0.5px solid black;">Jumlah</td>
+                    <td width="15%" align="right" style="border: 0.5px solid black;">
+                        {{ number_format($jumlah_saldo_debit, 2) }}</td>
+                    <td width="15%" align="right" style="border: 0.5px solid black;">
+                        {{ number_format($jumlah_saldo_kredit, 2) }}</td>
+                    <td width="15%" align="right" style="border: 0.5px solid black;">
+                        {{ number_format($jumlah_saldo_laba_rugi_debit + $surplus_defisit, 2) }}</td>
+                    <td width="15%" align="right" style="border: 0.5px solid black;">
+                        {{ number_format($jumlah_saldo_laba_rugi_kredit, 2) }}</td>
+                    <td width="15%" align="right" style="border: 0.5px solid black;">
+                        {{ number_format($jumlah_saldo_neraca_debit, 2) }}</td>
+                    <td width="15%" align="right" style="border: 0.5px solid black;">
+                        {{ number_format($jumlah_saldo_neraca_kredit + $surplus_defisit, 2) }}</td>
                 </tr>
+
             </table>
         </td>
     </tr>
