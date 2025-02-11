@@ -626,16 +626,13 @@ class TransactionController extends Controller
         $biaya_instalasi = $data['pembayaran'];
 
         $penjumlahantrx = $biaya_sudah_dibayar + $biaya_instalasi;
+
         $biaya_instal = $data['abodemen'] - $penjumlahantrx;
 
-        // TRANSACTION TIDAK BOLEH NYICIL
         $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $biaya_sudah_dibayar;
-        if (empty($biaya_sudah_dibayar)) {
-            $persen = $biaya_instal * 100;
-        } else {
-            $persen = 100 - ($biaya_instal / $biaya_sudah_dibayar * 100);
-        }
+
         $persen = ($penjumlahantrx / $abodemen) * 100;
+
         $transaksi = Transaction::create([
             'rekening_debit' => '1',
             'rekening_kredit' => '67',
@@ -646,7 +643,7 @@ class TransactionController extends Controller
         ]);
 
         if ($biaya_instal <= 0) {
-            Installations::where('id', $request->transaction_id)->update([
+            Installations::where('id', $request->istallation_id)->update([
                 'status' => 'R',
             ]);
         }

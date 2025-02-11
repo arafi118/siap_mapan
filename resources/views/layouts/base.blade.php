@@ -177,18 +177,18 @@
             var trx = installation.transaction
 
             var sum_total = 0;
+            var rekening_debit = 0;
+            var rekening_kredit = 0;
+
             trx.map(function(item) {
                 rekening_debit = item.rekening_debit;
                 rekening_kredit = item.rekening_kredit;
                 sum_total += item.total;
             })
 
-            // console.log(numFormat.format(installation.abodemen))
-            // $("#customername").val(installation.customers.nama);
-
             var rek_debit = rekening_debit;
             var rek_kredit = rekening_kredit;
-            var tagihan = sum_total - installation.abodemen;
+            var tagihan = (sum_total - installation.abodemen);
 
             $("#installation").val(installation.id);
             $("#order").val(installation.order);
