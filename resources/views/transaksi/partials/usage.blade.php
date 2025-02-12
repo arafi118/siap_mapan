@@ -294,7 +294,7 @@
                                                         <span class="badge badge-success"
                                                             style="float: right; width: 40%; padding: 5px; text-align: center;"
                                                             id="infotagihan">
-                                                            {{ number_format($installations->package->denda, 2) }}
+                                                            Rp. {{ number_format($trx_settings->denda, 2) }}
                                                         </span>
                                                     </td>
                                                 </tr>

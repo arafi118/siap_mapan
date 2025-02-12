@@ -40,8 +40,6 @@
                                 @for ($i = 0; $i < $jumlah_blok; $i++)
                                     <th>{{ $blok[$i]['nama'] }} .[ {{ $blok[$i]['jarak'] }} ]</th>
                                 @endfor
-                                <th>BEBAN</th>
-                                <th>DENDA</th>
                                 <th style="text-align: center;">AKSI</th>
                             </tr>
                         </thead>
@@ -56,10 +54,6 @@
                                         <td>{{ number_format(isset($harga[$i]) ? $harga[$i] : '0', 2) }}
                                         </td>
                                     @endfor
-                                    <td>{{ number_format($paket->abodemen, 2) }}
-                                    </td>
-                                    <td>{{ number_format($paket->denda, 2) }}
-                                    </td>
                                     <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
                                         <a href="/packages/{{ $paket->id }}/edit" class="btn btn-warning btn-sm">
                                             <i class="fas fa-pencil-alt"></i>

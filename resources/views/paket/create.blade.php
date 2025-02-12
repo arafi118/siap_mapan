@@ -19,30 +19,12 @@
                             <div class="w-100">
                                 <h4 class="alert-heading"><b>Tentukan Harga Paket</b></h4>
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-12">
                                         <div class="position-relative mb-2">
                                             <label for="kelas" class="form-label">Kelas</label>
                                             <input autocomplete="off" maxlength="16" type="text" name="kelas"
                                                 id="kelas" class="form-control form-control-sm">
                                             <small class="text-danger" id="msg_kelas"></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="position-relative mb-2">
-                                            <label for="abodemen" class="form-label">Abodemen</label>
-                                            <input autocomplete="off" type="text" name="abodemen" id="abodemen"
-                                                class="form-control form-control-sm"
-                                                value="{{ number_format($tampil_settings->abodemen, 2) }}">
-                                            <small class="text-danger" id="msg_abodemen"></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="position-relative mb-2">
-                                            <label for="denda" class="form-label">Denda</label>
-                                            <input autocomplete="off" type="text" name="denda" id="denda"
-                                                class="form-control form-control-sm"
-                                                value="{{ number_format($tampil_settings->denda, 2) }}">
-                                            <small class="text-danger" id="msg_denda"></small>
                                         </div>
                                     </div>
                                 </div>
@@ -186,12 +168,6 @@
     </script>
     <script>
         // create 
-        $("#abodemen").maskMoney({
-            allowNegative: true
-        });
-        $("#denda").maskMoney({
-            allowNegative: true
-        });
         $(".block").maskMoney({
             allowNegative: true
         });

@@ -56,8 +56,6 @@ class PackageController extends Controller
     {
         $data = $request->only([
             "kelas",
-            "abodemen",
-            "denda",
             "blok"
         ]);
         $rules = [
@@ -68,14 +66,6 @@ class PackageController extends Controller
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
-
-        $data['abodemen'] = str_replace(',', '', $data['abodemen']);
-        $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
-        $data['abodemen'] = floatval($data['abodemen']);
-
-        $data['denda'] = str_replace(',', '', $data['denda']);
-        $data['denda'] = str_replace('.00', '', $data['denda']);
-        $data['denda'] = floatval($data['denda']);
 
         $no = 0;
         $blok = [];
@@ -88,17 +78,10 @@ class PackageController extends Controller
             $no++;
         }
 
-
-        $abodemen = $data['abodemen'];
-        $denda = $data['denda'];
-
         $Package = Package::create([
             'business_id' => Session::get('business_id'),
             'kelas' => $request->kelas,
-            'harga' => json_encode($blok),
-            'abodemen' => $abodemen,
-            'denda' => $denda
-
+            'harga' => json_encode($blok)
         ]);
 
         return response()->json([
@@ -182,8 +165,6 @@ class PackageController extends Controller
         $data = $request->only([
             "kelas",
             "blok",
-            "abodemen",
-            "denda"
         ]);
         $rules = [
             'kelas' => 'required'
@@ -192,14 +173,6 @@ class PackageController extends Controller
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
-
-        $data['abodemen'] = str_replace(',', '', $data['abodemen']);
-        $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
-        $data['abodemen'] = floatval($data['abodemen']);
-
-        $data['denda'] = str_replace(',', '', $data['denda']);
-        $data['denda'] = str_replace('.00', '', $data['denda']);
-        $data['denda'] = floatval($data['denda']);
 
         $no = 0;
         $blok = [];
@@ -212,16 +185,11 @@ class PackageController extends Controller
             $no++;
         }
 
-        $abodemen = $data['abodemen'];
-        $denda = $data['denda'];
-
         // Update data 
         $update = Package::where('id', $package->id)->update([
             'business_id' => Session::get('business_id'),
             'kelas' => $request->kelas,
-            'harga' => $blok,
-            'abodemen' => $abodemen,
-            'denda' =>  $denda
+            'harga' => $blok
         ]);
         return response()->json([
             'success' => true,
