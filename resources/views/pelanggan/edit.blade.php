@@ -111,8 +111,8 @@
                                     <div class="position-relative mb-3">
                                         <label for="desa">Desa/Kelurahan</label>
                                         <select class="js-select-2 form-control" name="desa" id="desa">
-                                            <option value="">Pilih Desa/Kelurahan</option>
                                             @foreach ($desa as $ds)
+                                                <option value="">{{ $ds->nama }}</option>
                                                 <option value="{{ $ds->id }}"
                                                     {{ $customer->desa == $ds->id ? 'selected' : '' }}>
                                                     {{ $ds->nama }}
@@ -266,7 +266,7 @@
                             </div>
 
                             <div class="col-12 d-flex justify-content-end">
-                                <button id="kembali" class="btn btn-light btn-icon-split">
+                                <button id="kembali" class="btn btn-light btn-icon-split kembali">
                                     <span class="icon text-white-50">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-sign-turn-slight-left-fill"
@@ -297,12 +297,16 @@
         </div>
     </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).on('click', '#kembali', function(e) {
         e.preventDefault();
         window.location.href = '/customers';
     });
+</script>
 
+<script>
     $(document).ready(function() {
         $('.js-select-2').select2({
             theme: 'bootstrap4',
