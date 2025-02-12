@@ -112,10 +112,19 @@ class VillageController extends Controller
 
         ]);
 
-        $kode = Session::get('business_id');
-        $jumlah_desa = Village::where('kode', 'LIKE', $kode . '%')->count();
-        $kode .= str_pad(($jumlah_desa + 1), '3', '0', STR_PAD_LEFT);
+        $tahun = date('Y');
+        $business_id = str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
 
+        $jumlah_desa = 1;
+        $desa = Village::where('kode', 'LIKE', '%' . $business_id);
+        if ($desa->count() > 0) {
+            // kode_desa = 2025.0001.001
+            $desa = $desa->orderBy('kode', 'DESC')->first();
+            $kode_desa = explode('.', $desa->kode); // ['2025', '0001', '001']
+            $jumlah_desa = str_pad($kode_desa[1] + 1, 4, '0', STR_PAD_LEFT); // 0002
+        }
+        
+        $kode = $tahun .'.'. $jumlah_desa .'.'. $business_id;
         $desa = Region::where('kode', $request->desa)->first();
 
         Village::create([

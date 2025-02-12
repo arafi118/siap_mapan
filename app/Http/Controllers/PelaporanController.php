@@ -575,8 +575,7 @@ class PelaporanController extends Controller
         $hari = $data['hari'];
     
         // Mendapatkan bulan dan tahun sekarang
-        $bulanSekarang = $bln; // Bulan saat ini
-        $tahunSekarang = $thn; // Tahun saat ini
+        $bulanSekarang = $bln; 
     
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $data['judul'] = 'Laporan Keuangan';
@@ -593,8 +592,8 @@ class PelaporanController extends Controller
             ['kode_akun', 'LIKE', '4.1.%'],
             ['business_id', Session::get('business_id')]
         ])->with([
-            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
-                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+            'amount' => function ($query) use ($thn, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
                     $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
@@ -611,8 +610,8 @@ class PelaporanController extends Controller
         ])->orWhere('kode_akun', 'LIKE', '5.2.%')
         ->where('kode_akun', '!=', '5.2.01.01')
         ->with([
-            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
-                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+            'amount' => function ($query) use ($thn, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
                     $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
@@ -628,8 +627,8 @@ class PelaporanController extends Controller
         ])->orWhere('kode_akun', 'LIKE', '4.3.%')
         ->whereNotIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])
         ->with([
-            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
-                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+            'amount' => function ($query) use ($thn, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
                     $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
@@ -647,8 +646,8 @@ class PelaporanController extends Controller
         ->orWhere('kode_akun', 'LIKE', '5.4%')
         ->where('kode_akun', '!=', '5.4.01.01') // Mengecualikan kode akun 5.4.01.01
         ->with([
-            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
-                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+            'amount' => function ($query) use ($thn, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
                     $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
@@ -659,8 +658,8 @@ class PelaporanController extends Controller
         ])->orderBy('kode_akun', 'ASC')->get();
 
         $pph = Account::where([['kode_akun', '5.4.01.01'], ['business_id', Session::get('business_id')]])->with([
-            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
-                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+            'amount' => function ($query) use ($thn, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
                     $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
@@ -671,8 +670,8 @@ class PelaporanController extends Controller
         ])->orderBy('kode_akun', 'ASC')->get();
         
         $bebanPemasaran = Account::where([['kode_akun', '5.2.01.01'], ['business_id', Session::get('business_id')]])->with([
-            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
-                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+            'amount' => function ($query) use ($thn, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
                     $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
@@ -685,8 +684,8 @@ class PelaporanController extends Controller
         $pendluar = Account::whereIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])->where([
             ['business_id', Session::get('business_id')]
         ])->with([
-            'amount' => function ($query) use ($thn, $bln, $bulanSekarang) {
-                $query->where('tahun', $thn)->where(function ($query) use ($bln, $bulanSekarang) {
+            'amount' => function ($query) use ($thn, $bulanSekarang) {
+                $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
                     $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
