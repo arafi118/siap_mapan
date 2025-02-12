@@ -41,14 +41,14 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Kode Instalasi</span>
                                             <span class="badge badge-info"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->kode_instalasi }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Abodemen</span>
                                             <span class="badge badge-info"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ number_format($installation->abodemen, 2) }}
                                             </span>
                                         </td>
@@ -57,14 +57,14 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Order</span>
                                             <span class="badge badge-info"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->order }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Paket Instalasi</span>
                                             <span class="badge badge-info"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->package->kelas }}
                                             </span>
                                         </td>
@@ -73,7 +73,7 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Pasang</span>
                                             <span class="badge badge-info"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->pasang }}
                                             </span>
                                         </td>
@@ -81,7 +81,7 @@
                                             <span style="float: left;">Status Instalasi</span>
                                             @if ($installation->status == 'I')
                                                 <span class="badge badge-info"
-                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                    style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                     PASANG
                                                 </span>
                                             @endif
