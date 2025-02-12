@@ -324,10 +324,6 @@ class PelaporanController extends Controller
                 $query->where('tgl_akhir','<=', $data['tgl_kondisi']);
             },
         ])->get();
-        // $data['usages'] = Usage::with([
-        //     'customers',
-        //     'installation'
-        // ])->get();
         $data['title'] = 'Daftar pelanggan';
         $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
@@ -356,6 +352,7 @@ class PelaporanController extends Controller
             ['tgl_akhir','<=', $data['tgl_kondisi']],
             ['status','UNPAID']
         ])->get();
+        
         $data['title'] = 'Daftar Tagihan Pelanggan';
         $view = view('pelaporan.partials.views.tagihan_pelanggan', $data)->render();
         $pdf = PDF::loadHTML($view);
