@@ -1,6 +1,7 @@
 @extends('layouts.base')
 @php
     $status = $settings->swit_tombol ?? null;
+    $disabled = $installation->status === 'R' ? '' : 'disabled';
 @endphp
 @section('content')
     <!-- Form -->
@@ -44,14 +45,14 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">kode instalasi</span>
                                             <span class="badge badge-success"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->kode_instalasi }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Abodemen</span>
                                             <span class="badge badge-success"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ number_format($installation->abodemen, 2) }}
                                             </span>
                                         </td>
@@ -60,7 +61,7 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Tgl Order</span>
                                             <span class="badge badge-success"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->order }}
                                             </span>
                                         </td>
@@ -68,12 +69,12 @@
                                             <span style="float: left;">Status</span>
                                             @if (number_format($trx, 2) == number_format($installation->abodemen, 2))
                                                 <span class="badge badge-success"
-                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                    style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                     PAID
                                                 </span>
                                             @else
                                                 <span class="badge badge-warning"
-                                                    style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                    style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                     UNPAID
                                                 </span>
                                             @endif
@@ -84,7 +85,7 @@
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Paket Instalasi</span>
                                             <span class="badge badge-success"
-                                                style="float: right; width: 20%; padding: 5px; text-align: center;">
+                                                style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->package->kelas }}
                                             </span>
                                         </td>
@@ -142,7 +143,7 @@
                             </button>
                             @if ($status === 1)
                                 <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_R"
-                                    style="float: right; margin-left: 10px;"disabled>
+                                    style="float: right; margin-left: 10px;"<?= $disabled ?>>
                                     <span class="icon text-white-50">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
