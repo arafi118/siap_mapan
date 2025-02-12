@@ -105,12 +105,8 @@
                 data: form.serialize(),
                 success: function(result) {
                     if (result.success) {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: result.msg,
-                            showConfirmButton: false,
-                            timer: 1500
+                        toastMixin.fire({
+                            title: 'Pembaruhan Kelas & Biaya Pemakaian Berhasil'
                         });
 
                         setTimeout(() => {
