@@ -208,14 +208,6 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
-                                        <label for="nama_ibu">Nama Ibu Kandung</label>
-                                        <input autocomplete="off" type="text" name="nama_ibu" id="nama_ibu"
-                                            class="form-control" value="{{ $customer->nama_ibu }}">
-                                        <small class="text-danger">{{ $errors->first('nama_ibu') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
                                         <label for="tempat_kerja">Alamat Tempat Kerja</label>
                                         <input autocomplete="off" type="text" name="tempat_kerja" id="tempat_kerja"
                                             class="form-control" value="{{ $customer->tempat_kerja }}">
@@ -231,40 +223,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="nik_penjamin">NIK Penjamin</label>
-                                        <input autocomplete="off" type="text" name="nik_penjamin" id="nik_penjamin"
-                                            class="form-control" value="{{ $customer->nik_penjamin }}" maxlength="16"
-                                            minlength="16">
-                                        <small class="text-danger">{{ $errors->first('nik_penjamin') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="penjamin">Penjamin</label>
-                                        <input autocomplete="off" type="text" name="penjamin" id="penjamin"
-                                            class="form-control" value="{{ $customer->penjamin }}">
-                                        <small class="text-danger">{{ $errors->first('penjamin') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="hubungan">Hubungan</label>
-                                        <select class="js-select-2 form-control" name="hubungan" id="hubungan">
-                                            @foreach ($hubungan as $hb)
-                                                <option value="{{ $hb->id }}"
-                                                    {{ $customer->hubungan == $hb->id ? 'selected' : '' }}>
-                                                    {{ $hb->kekeluargaan }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <small class="text-danger">{{ $errors->first('hubungan') }}</small>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-12 d-flex justify-content-end">
                                 <button id="kembali" class="btn btn-light btn-icon-split kembali">
                                     <span class="icon text-white-50">
@@ -295,21 +253,20 @@
                 </div>
             </div>
         </div>
-    </div>
-@endsection
+    @endsection
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).on('click', '#kembali', function(e) {
-        e.preventDefault();
-        window.location.href = '/customers';
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        $('.js-select-2').select2({
-            theme: 'bootstrap4',
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).on('click', '#kembali', function(e) {
+            e.preventDefault();
+            window.location.href = '/customers';
         });
-    });
-</script>
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('.js-select-2').select2({
+                theme: 'bootstrap4',
+            });
+        });
+    </script>

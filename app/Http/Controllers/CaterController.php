@@ -3,15 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cater;
-use App\Models\jabatan;
-use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Utils\Tanggal;
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
-
 class CaterController extends Controller
 {
     /**
@@ -19,9 +14,7 @@ class CaterController extends Controller
      */
     public function index()
     {
-        $caters = Cater::with([
-            'position'
-        ])->get();
+        $caters = Cater::all();
         $title = 'Data Cater';
         return view('cater.index')->with(compact('title', 'caters'));
     }
@@ -31,10 +24,8 @@ class CaterController extends Controller
      */
     public function create()
     {
-        $positions = Position::all();
-
         $title = 'Register Cater';
-        return view('cater.create')->with(compact('positions', 'title'));
+        return view('cater.create')->with(compact('title'));
     }
 
     /**
@@ -46,9 +37,9 @@ class CaterController extends Controller
             "nama",
             "alamat",
             "telpon",
-            "jabatan",
             "username",
             "password",
+            "wilayah",
             "jenis_kelamin"
         ]);
 
@@ -56,9 +47,9 @@ class CaterController extends Controller
             'nama' => 'required',
             'alamat' => 'required',
             'telpon' => 'required',
-            'jabatan' => 'required',
             'username' => 'required',
             'password' => 'required',
+            'wilayah' => 'required',
             'jenis_kelamin' => 'required'
         ];
 
@@ -71,9 +62,9 @@ class CaterController extends Controller
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'telpon' => $request->telpon,
-            'jabatan' => $request->jabatan,
             'username' => $request->username,
             'password' => $request->password,
+            'wilayah' => $request->wilayah,
             'jenis_kelamin' => $request->jenis_kelamin,
             'business_id' => Session::get('business_id')
 
@@ -99,10 +90,9 @@ class CaterController extends Controller
      */
     public function edit(Cater $cater)
     {
-        $positions = Position::all();
-        $caters = Cater::with('position')->get();
+        $caters = Cater::all();
         $title = 'Edit Cater';
-        return view('cater.edit')->with(compact('title', 'positions', 'caters', 'cater'));
+        return view('cater.edit')->with(compact('title', 'caters', 'cater'));
     }
     /**
      * Update the specified resource in storage.
@@ -114,9 +104,9 @@ class CaterController extends Controller
             'nama' => 'required',
             'alamat' => 'required',
             'telpon' => 'required',
-            'jabatan' => 'required',
             'username' => 'required',
             'password' => 'required',
+            'wilayah' => 'required',
             'jenis_kelamin' => 'required'
         ]);
 
@@ -124,9 +114,9 @@ class CaterController extends Controller
         $cater->update([
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'wilayah' => $request->wilayah,
             'alamat' => $request->alamat,
             'telpon' => $request->telpon,
-            'jabatan' => $request->jabatan, // Pastikan data sesuai tipe
             'username' => $request->username,
             'password' => $request->password, // Enkripsi password
         ]);

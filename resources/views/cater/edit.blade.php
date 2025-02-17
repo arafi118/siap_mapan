@@ -44,8 +44,11 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="position-relative mb-3">
-                                    <label for="jabatan">Jabatan</label>
-                                    <select class="select2 form-control" name="jabatan" id="jabatan">
+                                    <label for="wilayah">Wilayah</label>
+                                    <input autocomplete="off" type="text" name="wilayah" id="wilayah"
+                                        value="{{ $cater->wilayah }}" class="form-control">
+                                    <small class="text-danger" id="msg_wilayah">{{ $errors->first('wilayah') }}</small>
+                                    {{-- <select class="select2 form-control" name="jabatan" id="jabatan">
                                         <option value="" disabled {{ $cater->position ? '' : 'selected' }}>Pilih
                                             Jabatan</option>
                                         @foreach ($positions as $position)
@@ -55,7 +58,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <small class="text-danger" id="msg_jabatan"></small>
+                                    <small class="text-danger" id="msg_jabatan"></small> --}}
                                 </div>
                             </div>
                             <div class="col-md-2">

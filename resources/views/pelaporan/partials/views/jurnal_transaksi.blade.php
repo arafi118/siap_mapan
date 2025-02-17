@@ -1,17 +1,20 @@
 <title>{{ $title }}</title>
 <style>
-     * {
+    * {
         font-family: 'Arial', sans-serif;
 
     }
+
     /* Gaya umum untuk tabel */
     table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 13px; /* Ukuran font default */
+        font-size: 13px;
+        /* Ukuran font default */
     }
 
-    table th, table td {
+    table th,
+    table td {
         border: 0px solid #000;
         padding: 8px;
     }
@@ -31,6 +34,7 @@
         background-color: #e0e0e0;
         color: #000;
     }
+
     .table-header {
         color: white;
     }
@@ -58,13 +62,19 @@
         <th width="15%" class="table-header">Debit</th>
         <th width="15%" class="table-header">Kredit</th>
         <th width="5%" class="table-header">Ins</th>
-    </tr>    
+    </tr>
+    @php
+        $totalDebit = 0;
+        $totalKredit = 0;
+    @endphp
     @foreach ($transactions as $transaction)
         @php
             $rowClass = $loop->iteration % 2 == 0 ? 'row-black' : 'row-white';
+            $totalDebit += $transaction->total;
+            $totalKredit += $transaction->total;
         @endphp
         <tr class="{{ $rowClass }}">
-            <td rowspan="2" align="center">{{ $loop->iteration }}</td> <!-- Cetak nomor -->
+            <td rowspan="2" align="center">{{ $loop->iteration }}</td>
             <td rowspan="2" align="center">{{ $transaction->tgl_transaksi }}</td>
             <td rowspan="2" align="left">{{ $transaction->id }}</td>
             <td align="center">{{ $transaction->acc_debit->kode_akun }}</td>
@@ -80,5 +90,10 @@
             <td align="right">{{ number_format($transaction->total, 2, ',', '.') }}</td>
         </tr>
     @endforeach
+    <tr style="background-color: #d3d3d3; color: #000;">
+        <td colspan="5" align="center"><strong>Total</strong></td>
+        <td align="right"><strong>{{ number_format($totalDebit, 2, ',', '.') }}</strong></td>
+        <td align="right"><strong>{{ number_format($totalKredit, 2, ',', '.') }}</strong></td>
+        <td></td>
+    </tr>
 </table>
-

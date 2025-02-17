@@ -87,7 +87,7 @@
     @endforeach
 
     <tr style="font-weight: bold;">
-        <td class="t l b" colspan="4" align="left">Jumlah Total</td>
+        <td class="t l b" colspan="4" align="left">Jumlah </td>
         <td class="t l b" align="right">{{ number_format($totalTagihan, 2) }}</td>
         <td class="t l b" align="right">{{ number_format($totalTerbayar, 2) }}</td>
         <td class="t l b r" align="right">{{ number_format($totalMenunggak, 2) }}</td>

@@ -47,11 +47,11 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm"
             aria-expanded="true" aria-controls="collapseForm">
             <i class="fas fa-sort-amount-up"></i>
-            <span>Pelayanan Instalasi</span>
+            <span>Instalasi Meter Air</span>
         </a>
         <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="/installations/create">Register Instalasi</a>
+                <a class="collapse-item" href="/installations/create">Registrasi Instalasi </a>
                 <a class="collapse-item" href="/installations">Status Instalasi</a>
                 <a class="collapse-item" href="/usages">Pemakaian</a>
             </div>
