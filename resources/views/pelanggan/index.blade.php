@@ -37,7 +37,7 @@
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             <a href="#" data-id="{{ $customer->nik }}"
-                                                class="btn-sm btn-danger mx-1 Hapus_pelanggan">
+                                                class="btn btn-danger btn-sm mx-1 Hapus_pelanggan">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>
                                         </td>
