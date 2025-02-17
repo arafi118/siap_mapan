@@ -38,7 +38,7 @@
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
                                         <a href="#" data-id="{{ $village->id }}"
-                                            class="btn-sm btn-danger mx-1 Hapus_desa"><i class="fas fa-trash-alt"></i>
+                                            class="btn btn-danger btn-sm mx-1 Hapus_desa"><i class="fas fa-trash-alt"></i>
                                         </a>
                                     </td>
                                 </tr>
