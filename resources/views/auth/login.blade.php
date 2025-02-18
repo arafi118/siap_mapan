@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="container-login100-form-btn">
-                        <button class="login100-form-btn">
+                        <button type="submit" class="login100-form-btn">
                             Login
                         </button>
                     </div>
@@ -81,7 +81,6 @@
     <script src="/Login/vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
     <script src="/Login/js/main.js"></script>
-
 </body>
 
 </html>

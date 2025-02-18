@@ -7,6 +7,8 @@ use App\Models\Installations;
 use App\Models\User;
 use App\Models\Settings;
 use App\Models\Usage;
+use App\Models\Menu;
+use App\Models\Tombol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -36,6 +38,7 @@ class AuthController extends Controller
         }
 
         if (Auth::attempt($data)) {
+
             $user = User::where('username', $data['username'])->first();
             $business = Business::where('id', $user->business_id)->first();
             $pengaturan = Settings::where('business_id', $business->id)->first();
@@ -61,6 +64,12 @@ class AuthController extends Controller
                 'auth_token' => $auth_token,
             ]);
 
+            $menu = Menu::where('parent_id', '0')->whereNotIn('id', json_decode($user->akses_menu, true))->with([
+                'child' => function ($query) use ($user) {
+                    $query->whereNotIn('id', json_decode($user->akses_menu, true));
+                }
+            ])->get();
+
             $request->session()->regenerate();
             session([
                 'nama_usaha' => $business->nama,
@@ -69,9 +78,10 @@ class AuthController extends Controller
                 'business_id' => $business->id,
                 'is_auth' => true,
                 'auth_token' => $auth_token,
+                'menu' => $menu
             ]);
 
-            return redirect('/')->with('success', 'Login Berhasil');
+            return redirect('/')->with('success', 'Selamat ' . $user->nama . ', berhasil login!');
         }
 
         return redirect()->back()->with('error', 'Login Gagal. Username atau Password salah');
