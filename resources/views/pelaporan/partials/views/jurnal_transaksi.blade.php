@@ -39,7 +39,9 @@
         color: white;
     }
 </style>
+@extends('pelaporan.layouts.base')
 
+@section('content')
 <table>
     <tr>
         <td colspan="7" align="center">
@@ -97,3 +99,4 @@
         <td></td>
     </tr>
 </table>
+@endsection

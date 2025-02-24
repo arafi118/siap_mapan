@@ -22,20 +22,31 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px; table-layout: fixed;">
     <!-- Header -->
     <tr style="background: rgb(232, 232, 232);">
-        <th rowspan="2" width="3%">No</th>
-        <th rowspan="2" width="6%">Tgl Beli</th>
-        <th rowspan="2" width="20%">Nama Barang</th>
-        <th rowspan="2" width="3%">Id</th>
-        <th rowspan="2" width="5%">Kondisi</th>
-        <th rowspan="2" width="4%">Unit</th>
-        <th rowspan="2" width="8%">Harga Satuan</th>
-        <th rowspan="2" width="8%">Harga Perolehan</th>
-        <th rowspan="2" width="4%">Umur Eko.</th>
-        <th rowspan="2" width="8%">Amortisasi</th>
-        <th colspan="2" width="12%">Tahun Ini</th>
-        <th colspan="2" width="12%">s.d. Tahun Ini</th>
-        <th rowspan="2" width="8%">Nilai Buku</th>
+        <th rowspan="2" width="3%" style="border: 0.5px solid black;">No</th>
+        <th rowspan="2" width="7%" style="border: 0.5px solid black;">Tgl Beli
+        </th>
+        <th rowspan="2" width="20%" style="border: 0.5px solid black;">Nama
+            Barang</th>
+        <th rowspan="2" width="3%" style="border: 0.5px solid black;">Id</th>
+        <th rowspan="2" width="5%" style="border: 0.5px solid black;">Kondisi
+        </th>
+        <th rowspan="2" width="4%" style="border: 0.5px solid black;">Unit</th>
+        <th rowspan="2" width="8%" style="border: 0.5px solid black;">Harga
+            Satuan</th>
+        <th rowspan="2" width="8%" style="border: 0.5px solid black;">Harga
+            Perolehan</th>
+        <th rowspan="2" width="4%" style="border: 0.5px solid black;">Umur Eko.
+        </th>
+        <th rowspan="2" width="8%" style="border: 0.5px solid black;">
+            Amortisasi</th>
+        <th colspan="2" width="12%" style="border: 0.5px solid black;">Tahun Ini
+        </th>
+        <th colspan="2" width="12%" style="border: 0.5px solid black;">s.d.
+            Tahun Ini</th>
+        <th rowspan="2" width="8%" style="border: 0.5px solid black;">Nilai
+            Buku</th>
     </tr>
+
     <tr style="background: rgb(232, 232, 232);">
         <th width="4%">Umur</th>
         <th width="8%">Biaya</th>
@@ -189,7 +200,7 @@
             <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
                 style="font-size: 12px; table-layout: fixed;">
                 <tr>
-                    <td class="t l b" width="37%" height="15">
+                    <td class="t l b" width="38%" height="15">
                         Jumlah
                     </td>
                     <td class="t l b" width="4%" align="center">{{ $t_unit }}</td>

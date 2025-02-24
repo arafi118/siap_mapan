@@ -191,7 +191,7 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
-    private function calk(array $data)
+    private function calkk(array $data)
     {
         $thn = $data['tahun'];
         $bln = $data['bulan'];
@@ -707,9 +707,17 @@ class PelaporanController extends Controller
 
 
         ];
-    
+
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['title'] = 'Laba Rugi';
+
+        $busines = Business::where('id', Session::get('business_id'))->first();
+        $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $busines->nomor_bh;
+        $data['info'] = strtoupper($busines->alamat) . ', Telp. ' . $busines->telpon;
+        $data['email'] = $busines->email;
+        $data['nama'] = strtoupper($busines->nama);
+        $data['alamat'] = $busines->alamat;
+
     
         // Menampilkan view dengan data yang sudah dihitung
         $view = view('pelaporan.partials.views.laba_rugi', $data)->render();

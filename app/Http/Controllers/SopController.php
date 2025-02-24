@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\Sop;
+use App\Models\AkunLevel1;
 use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -92,7 +93,7 @@ class SopController extends Controller
                 ]);
             }
 
-            return response()->json([
+            return response()->json([ 
                 'success' => true,
                 'Settings' => $Settings
             ], Response::HTTP_ACCEPTED);
@@ -102,7 +103,17 @@ class SopController extends Controller
         $title = 'Sop';
         return view('sop.partials.pasang_baru')->with(compact('title', 'tampil_settings'));
     }
+    public function coa()
+    {
+        $title = "Chart Of Account (CoA)";
+        $akun1 = AkunLevel1::with([
+            'akun2',
+            'akun2.akun3',
+            'akun2.akun3.accounts' 
+            ])->get();
 
+        return view('sop.partials.coa')->with(compact('title', 'akun1'));
+    }
     public function lembaga()
     {
         $business_id = Session::get('business_id');

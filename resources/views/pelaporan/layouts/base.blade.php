@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ ucwords(str_replace('_', ' ', $laporan)) }}</title>
+    <title></title>
     <style>
         * {
             font-family: Arial, Helvetica, sans-serif;
@@ -74,10 +74,10 @@
         <table width="100%" style="border-bottom: 1px solid grey;">
             <tr>
                 <td width="30">
-                    <img src="../storage/app/public/logo/{{ $logo }}" width="40" alt="">
+                    {{-- <img src="../storage/app/public/logo/{{ $logo }}" width="40" alt=""> --}}
                 </td>
                 <td>
-                    <div style="font-size: 12px;">{{ strtoupper($nama) }}</div>
+                    <div style="font-size: 12px; ">{{ strtoupper($nama) }}</div>
                     <div style="font-size: 12px;">
                         <b>{{ strtoupper($alamat) }}</b>
                     </div>

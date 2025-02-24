@@ -11,7 +11,9 @@
     }
 </style>
 <title>{{ $title }}</title>
+@extends('pelaporan.layouts.base')
 
+@section('content')
 <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
     <tr>
         <td colspan="3" align="center">
@@ -179,3 +181,4 @@
        <td align="right">{{ number_format($total_komulatif_kredit, 2) }}</td>
    </tr>   
 </table>
+@endsection

@@ -4,6 +4,9 @@
     }
 </style>
 <title>{{ $title }}</title>
+@extends('pelaporan.layouts.base')
+
+@section('content')
 <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
     <tr>
         <td colspan="3" align="center">
@@ -161,3 +164,4 @@
         </td>
     </tr>
 </table>
+@endsection

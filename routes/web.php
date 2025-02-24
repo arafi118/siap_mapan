@@ -6,6 +6,7 @@ use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CaterController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HakAksesController;
 use App\Http\Controllers\HamletController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
@@ -36,6 +37,14 @@ use Illuminate\Support\Facades\Route;
 // GET /customers/{customer}/edit         edit
 // PUT /customers/{customer}              update
 // DELETE /customers/{customer}           destroy
+Route::get('/pengaturan/coa', [SopController::class, 'coa']);
+
+
+Route::prefix('master')->group(function () {
+    Route::get('/', [HakAksesController::class, 'index']);
+});
+// Route::group('/master', function () {
+// });
 
 // Auth
 Route::get('/auth', [AuthController::class, 'index'])->name('auth')->middleware('guest');
@@ -108,6 +117,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
 
     // Setting || Pengaturan
     Route::get('/pengaturan/sop', [SopController::class, 'profil']);
+    Route::get('/pengaturan/coa', [SopController::class, 'coa']);
+
     Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
     Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
     Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
