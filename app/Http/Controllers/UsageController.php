@@ -117,7 +117,7 @@ class UsageController extends Controller
         }
 
         // Simpan data
-        // Usage::insert($insert);
+        Usage::insert($insert);
 
         return response()->json([
             'success' => true,
