@@ -13,7 +13,7 @@ use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UsageController extends Controller
 {
