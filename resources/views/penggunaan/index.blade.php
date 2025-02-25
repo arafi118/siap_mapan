@@ -19,11 +19,16 @@
                                 <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
                                 <b>Data Pemakaian</b>
                             </div>
-                            <div style="display: flex; justify-content: flex-end;">
-                                <a href="/usages/create" class="btn btn-primary" id="RegisterDusun">
+                            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                                <button class="btn btn-success" type="button" id="DetailCetakBuktiTagihan">
+                                    <i class="fas fa-info-circle">&nbsp;</i> Cetak Tagihan
+                                </button>
+                                <button class="btn btn-primary" id="Registerpemakaian">
                                     <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
-                                </a>
+                                </button>
                             </div>
+
+
                         </div>
                         <div>&nbsp;</div>
                         <thead class="thead-light" align="center">
@@ -33,7 +38,8 @@
                                 <th>AWAL PEMAKAIAN</th>
                                 <th>AKHIR PEMAKAIAN</th>
                                 <th>JUMLAH</th>
-                                <th>TGL AKHIR</th>
+                                <th>HARGA PAKET</th>
+                                <th>TANGGAL AKHIR</th>
                                 <th>Status</th>
                                 {{-- <th style="text-align: center;">AKSI</th> --}}
                             </tr>
@@ -46,6 +52,7 @@
                                     <td>{{ $usage->awal }}</td>
                                     <td>{{ $usage->akhir }}</td>
                                     <td>{{ $usage->jumlah }}</td>
+                                    <td>{{ number_format($usage->nominal, 2) }}</td>
                                     <td>{{ $usage->tgl_akhir }}</td>
                                     <td>
                                         @if ($usage->status === 'PAID')
@@ -72,6 +79,27 @@
         </div>
     </div>
 
+    <div class="modal fade" id="CetakBuktiTagihan" tabindex="-1" aria-labelledby="CetakBuktiTagihanLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="CetakBuktiTagihanLabel">
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <div id="LayoutCetakBuktiTagihan"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="BtnCetak" class="btn btn-sm btn-info">
+                        Print
+                    </button>
+                    <button type="button" id="kembali" class="btn btn-danger btn-sm">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form action="" method="post" id="FormHapusPemakaian">
         @method('DELETE')
         @csrf
@@ -79,9 +107,42 @@
 @endsection
 @section('script')
     <script>
+        $(document).on('click', '#kembali', function(e) {
+            e.preventDefault();
+            window.location.href = '/usages';
+        });
+
+        $(document).on(' click', '#Registerpemakaian', function(e) {
+            e.preventDefault();
+            window.location.href = '/usages/create';
+        });
+
         $(document).ready(function() {
             $('#TbPemakain').DataTable(); // ID From dataTable 
         });
+
+        $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
+            $.ajax({
+                url: '/usages/detail_tagihan',
+                type: 'get',
+                success: function(result) {
+                    console.log(result);
+                    $('#CetakBuktiTagihan').modal('show');
+                    $('#CetakBuktiTagihanLabel').html(result.label);
+                    $('#LayoutCetakBuktiTagihan').html(result.cetak);
+                }
+            });
+        });
+
+        $(document).on('click', '#BtnCetak', function(e) {
+            e.preventDefault()
+
+            if ($('#FormCetakBuktiTagihan').serializeArray().length > 1) {
+                $('#FormCetakBuktiTagihan').submit();
+            } else {
+                Swal.fire('Error', "Tidak ada transaksi yang dipilih.", 'error')
+            }
+        })
     </script>
 
     @if (Session::has('berhasil'))

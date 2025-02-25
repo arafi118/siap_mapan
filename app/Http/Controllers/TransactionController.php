@@ -956,12 +956,12 @@ class TransactionController extends Controller
             ->with('rek_debit', 'rek_kredit')
             ->get();
         $data['dir'] = User::where([
-            ['jabatan', 'Direktur'],
+            ['jabatan', '1'],
             ['business_id', Session::get('business_id')]
         ])->first();
 
         $data['sekr'] = User::where([
-            ['jabatan', 'Sekretaris'],
+            ['jabatan', '2'],
             ['business_id', Session::get('business_id')]
         ])->first();
 
