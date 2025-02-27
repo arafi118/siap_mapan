@@ -7,7 +7,6 @@ use App\Http\Controllers\CaterController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HakAksesController;
-use App\Http\Controllers\HamletController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PelaporanController;
@@ -37,14 +36,13 @@ use Illuminate\Support\Facades\Route;
 // GET /customers/{customer}/edit         edit
 // PUT /customers/{customer}              update
 // DELETE /customers/{customer}           destroy
-Route::get('/pengaturan/coa', [SopController::class, 'coa']);
 
 
 Route::prefix('master')->group(function () {
     Route::get('/', [HakAksesController::class, 'index']);
+    Route::get('/hakakses/{id_user}', [HakAksesController::class, 'hakAkses']);
+    Route::post('/hakakses/{id_user}', [HakAksesController::class, 'simpan']);
 });
-// Route::group('/master', function () {
-// });
 
 // Auth
 Route::get('/auth', [AuthController::class, 'index'])->name('auth')->middleware('guest');
@@ -56,6 +54,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/dashboard/installations', [DashboardController::class, 'installations']);
     Route::get('/dashboard/usages', [DashboardController::class, 'usages']);
     Route::get('/dashboard/tagihan', [DashboardController::class, 'tagihan']);
+
+    Route::get('/pengaturan/coa', [SopController::class, 'coa']);
 
     // Profil
     Route::get('/profil', [ProfilController::class, 'index']);
@@ -138,8 +138,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::delete('/villages/{village}', [VillageController::class, 'destroy']);
 
     // Dusun
-    Route::resource('/hamlets', HamletController::class);
-    Route::delete('/hamlets/{hamlet}', [HamletController::class, 'destroy']);
+    // Route::resource('/hamlets', HamletController::class);
+    // Route::delete('/hamlets/{hamlet}', [HamletController::class, 'destroy']);
 
     // Cater
     Route::resource('/caters', CaterController::class);
