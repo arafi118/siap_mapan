@@ -88,6 +88,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
 
     // Usages || Penggunaan
     Route::get('/usages/cari_anggota', [UsageController::class, 'carianggota']);
+    Route::get('/usages/detail_tagihan/', [UsageController::class, 'detailTagihan']);
+    Route::post('/usages/cetak', [UsageController::class, 'cetak']);
     Route::resource('/usages', UsageController::class);
 
     // Transactions || Transaksi

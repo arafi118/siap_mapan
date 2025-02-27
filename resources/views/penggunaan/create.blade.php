@@ -86,6 +86,8 @@
             </div>
         </div>
     </form>
+
+    <div style="display: none;" id="print"></div>
 @endsection
 
 @section('script')
@@ -202,7 +204,9 @@
         $(document).on('click', '#SimpanPemakaian', function(e) {
             e.preventDefault()
 
+            var id_cater = $('#caters').val();
             var data = []
+
             var checklist = $('.checklist')
             checklist.each(function(index, item) {
                 if ($(item).is(':checked')) {
@@ -213,6 +217,7 @@
                     var jumlah = $('#jumlah_' + id).val()
 
                     data.push({
+                        id_cater: id_cater,
                         id: id,
                         customer: customer,
                         awal: awal,
@@ -237,9 +242,19 @@
                             title: 'Berhasil',
                             text: result.message,
                             icon: 'success',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = '/usages'
+                        }).then((res) => {
+                            if (res.isConfirmed) {
+                                $('#print').html(result.view)
+
+                                var prtContent = document.getElementById("print");
+                                var WinPrint = window.open('', '',
+                                    'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0'
+                                );
+                                WinPrint.document.write(prtContent.innerHTML);
+                                WinPrint.document.close();
+                                WinPrint.focus();
+                                WinPrint.print();
+                                WinPrint.close();
                             }
                         })
                     }

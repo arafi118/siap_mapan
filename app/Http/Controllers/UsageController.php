@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\Cater;
 use App\Models\Customer;
 use App\Models\Installations;
 use App\Models\Settings;
 use App\Models\Usage;
+use App\Models\User;
+use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UsageController extends Controller
 {
@@ -43,9 +47,14 @@ class UsageController extends Controller
 
     public function store(Request $request)
     {
+
+        $keuangan = new Keuangan;
+
         $data_id = [];
+        $data_customer = [];
         foreach ($request->data as $data) {
             $data_id[] = $data['id'];
+            $data_customer[] = $data['customer'];
         }
 
         $data_installation = [];
@@ -56,7 +65,21 @@ class UsageController extends Controller
             $data_installation[$ins->id] = $ins->package->harga;
         }
 
+        $created_at = date('Y-m-d H:i:s');
         $setting = Settings::where('business_id', Session::get('business_id'))->first();
+        $bisnis = Business::where('id', Session::get('business_id'))->first();
+        $logo = $bisnis->logo;
+        if (empty($logo)) {
+            $gambar = '/storage/logo/1.png';
+        } else {
+            $gambar = '/storage/logo/' . $logo;
+        }
+
+        $customers = Customer::whereIn('id', $data_customer)->get();
+        $data_customer = [];
+        foreach ($customers as $cs) {
+            $data_customer[$cs->id] = $cs;
+        }
 
         $insert = [];
         $tanggal = Tanggal::tglNasional($request->tanggal);
@@ -86,19 +109,22 @@ class UsageController extends Controller
                 'id_instalasi' => $data['id'],
                 'tgl_akhir' => $tanggal,
                 'nominal' => $harga[$index_harga],
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'cater' =>  $data['id_cater'],
+                'user_id' => auth()->user()->id,
+                'created_at' => $created_at,
+                'updated_at' => $created_at
             ];
         }
 
         // Simpan data
         Usage::insert($insert);
+
         return response()->json([
             'success' => true,
-            'message' => 'Data berhasil disimpan'
+            'message' => 'Data berhasil disimpan',
+            'view' => view('penggunaan.partials.cetak_tagihan', ['usages' => (object) $insert, 'data_customer' => $data_customer, 'bisnis' => $bisnis, 'keuangan' => $keuangan, 'gambar' => $gambar])->render(),
         ]);
     }
-
 
     /**
      * Display the specified resource.
@@ -124,6 +150,41 @@ class UsageController extends Controller
 
         return response()->json($data_customer);
     }
+
+
+    public function detailTagihan()
+    {
+        $keuangan = new Keuangan;
+        $usages = Usage::where('status', 'UNPAID')->with([
+            'customers',
+            'installation'
+        ])->get();
+
+        return [
+            'label' => '<i class="fas fa-book"></i> ' . 'Detail Pemakaian Dengan Status <b>(UNPAID)</b>',
+            'cetak' => view('penggunaan.partials.DetailTagihan', ['usages' => $usages])->render()
+        ];
+    }
+
+    public function cetak(Request $request)
+    {
+        $keuangan = new Keuangan;
+        $id = $request->cetak;
+
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+        $data['usage'] = Usage::whereIn('id', $id)->with(
+            'customers'
+        )->get();
+
+        $logo = $data['bisnis']->logo;
+        $data['gambar'] = $logo;
+        $data['keuangan'] = $keuangan;
+
+        $view = view('penggunaan.partials.cetak', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
+        return $pdf->stream();
+    }
+
     public function show(Usage $usage)
     {
         //
