@@ -50,11 +50,13 @@
                         <div class="col-lg-12">
                             <div class="card mb-4">
                                 <div class="table-responsive p-3">
+                                    <!-- Input Search -->
+                                    <div class="mb-3">
+                                        <input type="text" id="searchInput" class="form-control"
+                                            placeholder="Cari Nama / Jabatan">
+                                    </div>
                                     <table class="table align-items-center table-flush mt-4 mb-4" id="hakakses">
                                         <thead class="thead-light">
-                                            <div
-                                                style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                                            </div>
                                             <tr>
                                                 <th>NAMA LENGKAP</th>
                                                 <th>JABATAN</th>
@@ -83,6 +85,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- JavaScript untuk Search -->
+                    <script>
+                        document.getElementById('searchInput').addEventListener('keyup', function() {
+                            var searchText = this.value.toLowerCase();
+                            var rows = document.querySelectorAll('#hakakses tbody tr');
+
+                            rows.forEach(row => {
+                                var nama = row.cells[0].textContent.toLowerCase();
+                                var jabatan = row.cells[1].textContent.toLowerCase();
+
+                                if (nama.includes(searchText) || jabatan.includes(searchText)) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+                        });
+                    </script>
+
                     <!--Row-->
                 </div>
                 <!---Container Fluid-->
