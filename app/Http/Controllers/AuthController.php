@@ -74,6 +74,7 @@ class AuthController extends Controller
             session([
                 'nama_usaha' => $business->nama,
                 'nama' => $user->nama,
+                'jabatan' => $user->jabatan,
                 'logo' => $business->logo,
                 'business_id' => $business->id,
                 'is_auth' => true,

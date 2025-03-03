@@ -22,10 +22,11 @@
                             <div style="display: flex; justify-content: flex-end; gap: 10px;">
                                 <button class="btn btn-success" type="button" id="DetailCetakBuktiTagihan">
                                     <i class="fas fa-info-circle">&nbsp;</i> Cetak Tagihan
-                                </button>
-                                <button class="btn btn-primary" id="Registerpemakaian">
+                                </button><button class="btn btn-primary" id="Registerpemakaian"
+                                    @if (Session::get('jabatan') == 6) disabled @endif>
                                     <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
                                 </button>
+
                             </div>
 
 
