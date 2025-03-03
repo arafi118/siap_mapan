@@ -15,4 +15,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Business::class);
     }
+        public function position()
+    {
+        return $this->belongsTo(Position::class, 'jabatan','id');
+    }
 }
