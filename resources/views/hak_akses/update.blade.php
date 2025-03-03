@@ -61,10 +61,8 @@
                                         </table>
                                     </form>
                                 </div>
-
                             </div>
                         </div>
-
                         <div class="col-lg-8">
                             <div class="card mb-4">
                                 <div
@@ -150,22 +148,7 @@
     <!-- Page level plugins -->
     <script src="/assets/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="/assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"
-        integrity="sha512-+UiyfI4KyV1uypmEqz9cOIJNwye+u+S58/hSwKEAeUMViTTqM9/L4lqu8UxJzhmzGpms8PzFJDzEqXL9niHyjA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"
-        integrity="sha512-Rdk63VC+1UYzGSgd3u2iadi0joUrcwX0IWp2rTh6KXFoAmgOjRS99Vynz1lJPT8dLjvo6JZOqpAHJyfCEZ5KoA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.3/typeahead.jquery.min.js"
-        integrity="sha512-FoYDcEN8AC55Q46d/gra+GO1tD9Bw7ZTLBUDqaza5YQ+g2UGysVxBoVOkXB6RVVM8wFyPJxr3vcEz9wxbFKM6g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
-    <script src="/assets/js/demo/ruang-admin.js"></script>
+
 
 </body>
 

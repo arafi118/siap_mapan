@@ -80,7 +80,6 @@ class AuthController extends Controller
                 'auth_token' => $auth_token,
                 'menu' => $menu
             ]);
-
             return redirect('/')->with('success', 'Selamat ' . $user->nama . ', berhasil login!');
         }
 
