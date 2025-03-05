@@ -120,7 +120,12 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     // Setting || Pengaturan
     Route::get('/pengaturan/sop', [SopController::class, 'profil']);
     Route::get('/pengaturan/coa', [SopController::class, 'coa']);
-
+    Route::get('/pengaturan/akun_coa', [SopController::class, 'akun_coa']);
+    Route::post('/pengaturan/coa', [SopController::class, 'CreateCoa']);
+    Route::put('/pengaturan/coa/{kode_akun}', [SopController::class, 'UpdateCoa']);
+    Route::delete('/pengaturan/coa/{account}', [SopController::class, 'DeleteCoa']);
+    
+    
     Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
     Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
     Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
