@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+
 class CaterController extends Controller
 {
     /**
@@ -14,7 +15,7 @@ class CaterController extends Controller
      */
     public function index()
     {
-        $caters = Cater::all();
+        $caters = Cater::where('business_id', Session::get('business_id'))->get();
         $title = 'Data Cater';
         return view('cater.index')->with(compact('title', 'caters'));
     }
@@ -90,7 +91,7 @@ class CaterController extends Controller
      */
     public function edit(Cater $cater)
     {
-        $caters = Cater::all();
+        $caters = Cater::where('business_id', Session::get('business_id'))->get();
         $title = 'Edit Cater';
         return view('cater.edit')->with(compact('title', 'caters', 'cater'));
     }

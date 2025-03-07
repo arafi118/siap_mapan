@@ -22,7 +22,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::with('installation')->get();
+        $customers = Customer::where('business_id', Session::get('business_id'))->with('installation')->get();
 
         $title = 'Data penduduk';
         return view('pelanggan.index')->with(compact('title', 'customers'));
@@ -150,7 +150,7 @@ class CustomerController extends Controller
         $this->validate($request, $validasi);
 
         // Update data customer
-        Customer::where('id', $customer->id)->update([
+        Customer::where('business_id', Session::get('business_id'))->where('id', $customer->id)->update([
             'nik' => $request->nik,
             'nama' => $request->nama_lengkap,
             'nama_panggilan' => $request->nama_panggilan,
@@ -174,7 +174,7 @@ class CustomerController extends Controller
     public function destroy(Customer $customer)
     {
         // Cek jika customer masih memiliki status di tabel installations
-        $Cek_Instal = Installations::where('customer_id', $customer->id)->exists();
+        $Cek_Instal = Installations::where('business_id', Session::get('business_id'))->where('customer_id', $customer->id)->exists();
 
         if ($Cek_Instal) {
             return response()->json([

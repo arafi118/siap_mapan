@@ -43,7 +43,7 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::all();
         $jenis_transaksi = JenisTransactions::all();
-        $rekening = Account::all();
+        $rekening = Account::where('business_id', Session::get('business_id'));
         $business = Business::where('id', Session::get('business_id'))->first();
 
         $title = ' Transaksi';
@@ -53,8 +53,8 @@ class TransactionController extends Controller
     public function pelunasan_instalasi()
     {
         $transactions = Transaction::all();
-        $installations = Installations::all();
-        $status_0 = Installations::where('status', '0')->with(
+        $installations = Installations::where('business_id', Session::get('business_id'));
+        $status_0 = Installations::where('business_id', Session::get('business_id'))->where('status', '0')->with(
             'customer',
             'village',
             'package'
@@ -66,9 +66,9 @@ class TransactionController extends Controller
     public function tagihan_bulanan()
     {
         $transactions = Transaction::all();
-        $installations = Installations::all();
-        $settings = Settings::all();
-        $status_0 = Installations::where('status', '0')->with(
+        $installations = Installations::where('business_id', Session::get('business_id'));
+        $settings = Settings::where('business_id', Session::get('business_id'));
+        $status_0 = Installations::where('business_id', Session::get('business_id'))->where('status', '0')->with(
             'customer',
             'village',
             'package'
@@ -88,7 +88,7 @@ class TransactionController extends Controller
         $tgl_kondisi = date('Y-m-t', strtotime($tahun . '-' . $bulan . '-01'));
 
         if ($id == 1) {
-            $rek1 = Account::where(function ($query) {
+            $rek1 = Account::where('business_id', Session::get('business_id'))->where(function ($query) {
                 $query->where(function ($query) {
                     $query->where('lev1', '2')->orWhere('lev1', '3')->orWhere('lev1', '4');
                 })->where([
@@ -101,11 +101,11 @@ class TransactionController extends Controller
                 ]);
             })->orderBy('kode_akun', 'ASC')->get();
 
-            $rek2 = Account::where('lev1', '1')->orderBy('kode_akun', 'ASC')->get();
+            $rek2 = Account::where('business_id', Session::get('business_id'))->where('lev1', '1')->orderBy('kode_akun', 'ASC')->get();
 
             $label2 = 'Disimpan Ke';
         } elseif ($id == 2) {
-            $rek1 = Account::where(function ($query) {
+            $rek1 = Account::where('business_id', Session::get('business_id'))->where(function ($query) {
                 $query->where(function ($query) {
                     $query->where('lev1', '1')->orWhere('lev1', '2');
                 })->where([
@@ -115,13 +115,13 @@ class TransactionController extends Controller
                 $query->whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi);
             })->orderBy('kode_akun', 'ASC')->get();
 
-            $rek2 = Account::where('lev1', '2')->orWhere('lev1', '3')->orWhere('lev1', '5')->orderBy('kode_akun', 'ASC')->get();
+            $rek2 = Account::where('business_id', Session::get('business_id'))->where('lev1', '2')->orWhere('lev1', '3')->orWhere('lev1', '5')->orderBy('kode_akun', 'ASC')->get();
 
             $label2 = 'Keperluan';
         } elseif ($id == 3) {
-            $rek1 = Account::whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi)->get();
+            $rek1 = Account::where('business_id', Session::get('business_id'))->whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi)->get();
 
-            $rek2 = Account::whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi)->get();
+            $rek2 = Account::where('business_id', Session::get('business_id'))->whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi)->get();
 
             $label2 = 'Disimpan Ke';
         }
@@ -139,8 +139,8 @@ class TransactionController extends Controller
         $disimpan_ke_id = request()->get('disimpan_ke');
 
         // Ambil kode_akun dari tabel Account berdasarkan id
-        $sumber_dana = Account::where('id', $sumber_dana_id)->value('kode_akun');
-        $disimpan_ke = Account::where('id', $disimpan_ke_id)->value('kode_akun');
+        $sumber_dana = Account::where('business_id', Session::get('business_id'))->where('id', $sumber_dana_id)->value('kode_akun');
+        $disimpan_ke = Account::where('business_id', Session::get('business_id'))->where('id', $disimpan_ke_id)->value('kode_akun');
 
 
         if (Keuangan::startWith($sumber_dana, '1.2.01') && Keuangan::startWith($disimpan_ke, '5.3.02.01') && $jenis_transaksi == 2) {
@@ -194,8 +194,8 @@ class TransactionController extends Controller
 
                 return view('transaksi.jurnal_umum.partials.form_inventaris')->with(compact('relasi'));
             } else {
-                $rek_sumber = Account::where('id', $sumber_dana)->first();
-                $rek_simpan = Account::where('id', $disimpan_ke)->first();
+                $rek_sumber = Account::where('business_id', Session::get('business_id'))->where('id', $sumber_dana)->first();
+                $rek_simpan = Account::where('business_id', Session::get('business_id'))->where('id', $disimpan_ke)->first();
 
                 $keterangan_transaksi = '';
                 if ($jenis_transaksi == 1) {
@@ -510,7 +510,7 @@ class TransactionController extends Controller
                     return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
                 }
 
-                $rek_simpan = Account::where('kode_akun', $disimpan_ke)->first();
+                $rek_simpan = Account::where('business_id', Session::get('business_id'))->where('kode_akun', $disimpan_ke)->first();
 
                 $insert = [
                     'tgl_transaksi' => (string) Tanggal::tglNasional($request->tgl_transaksi),
@@ -664,8 +664,8 @@ class TransactionController extends Controller
         $trx = Transaction::where('id', $id)->with([
             'Installations.customer'
         ])->first();
-        $user = User::where('id', $trx->user_id)->first();
-        $kode_akun = Account::where('id', $trx)->value('kode_akun');
+        $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
+        $kode_akun = Account::where('business_id', Session::get('business_id'))->where('id', $trx)->value('kode_akun');
 
         $jenis = 'Pembayaran Instalasi';
         $dari = ucwords($trx->Installations->customer->nama);
@@ -743,7 +743,7 @@ class TransactionController extends Controller
         ]);
 
         if ($biaya_tagihan == $biaya_instalasi) {
-            Usage::where('id', $request->id_usage)->update([
+            Usage::where('business_id', Session::get('business_id'))->where('id', $request->id_usage)->update([
                 'status' => 'PAID',
             ]);
         }
@@ -765,8 +765,8 @@ class TransactionController extends Controller
             'Installations.customer',
             'Usages'
         ])->first();
-        $user = User::where('id', $trx->user_id)->first();
-        $kode_akun = Account::where('id', $trx)->value('kode_akun');
+        $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
+        $kode_akun = Account::where('business_id', Session::get('business_id'))->where('id', $trx)->value('kode_akun');
 
         $jenis = 'Pembayaran Bulanan';
         $dari = ucwords($trx->Installations->customer->nama);
@@ -837,9 +837,9 @@ class TransactionController extends Controller
 
             $data['tgl_kondisi'] = $tgl;
             $kode_akun_by_id = $data['kode_akun'];
-            $kode_akun = Account::where('id', $kode_akun_by_id)->value('kode_akun');
+            $kode_akun = Account::where('business_id', Session::get('business_id'))->where('id', $kode_akun_by_id)->value('kode_akun');
 
-            $data['rek'] = Account::where('kode_akun', $kode_akun)->with([
+            $data['rek'] = Account::where('business_id', Session::get('business_id'))->where('kode_akun', $kode_akun)->with([
                 'amount' => function ($query) use ($data) {
                     $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
                         $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
@@ -918,7 +918,7 @@ class TransactionController extends Controller
         $data['is_dir'] = (auth()->guard('web')->user()->level == 1 && (auth()->guard('web')->user()->jabatan == 1 || auth()->guard('web')->user()->jabatan == 3)) ? true : false;
         $data['is_ben'] = (auth()->guard('web')->user()->level == 1 && (auth()->guard('web')->user()->jabatan == 3)) ? true : false;
 
-        $data['rek'] = Account::where('id', $kode_akun_by_id)->first();
+        $data['rek'] = Account::where('business_id', Session::get('business_id'))->where('id', $kode_akun_by_id)->first();
         $data['transaksi'] = Transaction::where('tgl_transaksi', 'LIKE', '%' . $tgl . '%')->where(function ($query) use ($kode_akun_by_id) {
             $query->where('rekening_debit', $kode_akun_by_id)->orwhere('rekening_kredit', $kode_akun_by_id);
         })->with([
@@ -955,12 +955,12 @@ class TransactionController extends Controller
             ->groupBy('id')
             ->with('rek_debit', 'rek_kredit')
             ->get();
-        $data['dir'] = User::where([
+        $data['dir'] = User::where('business_id', Session::get('business_id'))->where([
             ['jabatan', '1'],
             ['business_id', Session::get('business_id')]
         ])->first();
 
-        $data['sekr'] = User::where([
+        $data['sekr'] = User::where('business_id', Session::get('business_id'))->where([
             ['jabatan', '2'],
             ['business_id', Session::get('business_id')]
         ])->first();
@@ -980,9 +980,9 @@ class TransactionController extends Controller
 
         $bisnis = Business::where('id', Session::get('business_id'))->first();
         $trx = Transaction::where('id', $id)->first();
-        $user = User::where('id', $trx->user_id)->first();
+        $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
 
-        $kode_akun = Account::where('id', $trx)->value('kode_akun');
+        $kode_akun = where('business_id', Session::get('business_id'))->where('id', $trx)->value('kode_akun');
 
         $jenis = 'BKM';
         $dari = ucwords($trx->relasi);
@@ -1016,7 +1016,7 @@ class TransactionController extends Controller
 
         $business = Business::where('id', Session::get('business_id'))->first();
         $trx = Transaction::where('id', $id)->first();
-        $user = User::where('id', $trx->user_id)->first();
+        $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
 
         $jenis = 'BKM';
         $dari = ucwords($trx->relasi);
@@ -1046,14 +1046,14 @@ class TransactionController extends Controller
         $business = Business::where('id', Session::get('business_id'))->first();
         $trx = Transaction::where('id', $id)->with('rek_debit')->with('rek_kredit')->first();
 
-        $user = User::where('id', $trx->user_id)->first();
+        $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
 
-        $dir = User::where([
+        $dir = User::where('business_id', Session::get('business_id'))->where([
             ['jabatan', '1'],
             ['business_id', Session::get('business_id')]
         ])->first();
 
-        $sekr = User::where([
+        $sekr = User::where('business_id', Session::get('business_id'))->where([
             ['jabatan', '2'],
             ['business_id', Session::get('business_id')]
         ])->first();
@@ -1070,13 +1070,13 @@ class TransactionController extends Controller
 
         $business = Business::where('id', Session::get('business_id'))->first();
         $trx = Transaction::where('id', $id)->with('rek_debit')->with('rek_kredit')->first();
-        $user = User::where('id', $trx->id_user)->first();
-        $dir = User::where([
+        $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->id_user)->first();
+        $dir = User::where('business_id', Session::get('business_id'))->where([
             ['jabatan', '1'],
             ['business_id', Session::get('business_id')]
         ])->first();
 
-        $sekr = User::where([
+        $sekr = User::where('business_id', Session::get('business_id'))->where([
             ['jabatan', '2'],
             ['business_id', Session::get('business_id')]
         ])->first();
@@ -1093,14 +1093,14 @@ class TransactionController extends Controller
 
         $business = Business::where('id', Session::get('business_id'))->first();
         $trx = Transaction::where('id', $id)->with('rek_debit')->with('rek_kredit')->first();
-        $user = User::where('id', $trx->user_id)->first();
+        $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
 
-        $dir = User::where([
+        $dir = User::where('business_id', Session::get('business_id'))->where([
             ['jabatan', '1'],
             ['business_id', Session::get('business_id')]
         ])->first();
 
-        $sekr = User::where([
+        $sekr = User::where('business_id', Session::get('business_id'))->where([
             ['jabatan', '2'],
             ['business_id', Session::get('business_id')]
         ])->first();

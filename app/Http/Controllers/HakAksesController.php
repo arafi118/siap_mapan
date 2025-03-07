@@ -9,20 +9,20 @@ use Illuminate\Http\Request;
 
 class HakAksesController extends Controller
 {
-    public function index() 
+    public function index()
     {
-        $users = User::with('position')->get();
+        $users = User::where('business_id', Session::get('business_id'))->with('position')->get();
         $title = '';
-        return view('hak_akses.index')->with(compact('users','title'));
+        return view('hak_akses.index')->with(compact('users', 'title'));
     }
 
 
     public function hakAkses($id_user)
     {
-        
-        $user = User::with('position')->where('id', $id_user)->first();
+
+        $user = User::where('business_id', Session::get('business_id'))->with('position')->where('id', $id_user)->first();
         $menu = Menu::where('parent_id', '0')->with('child')->get();
-        return view('hak_akses.update')->with(compact('user','menu'));
+        return view('hak_akses.update')->with(compact('user', 'menu'));
     }
 
     public function simpan(Request $request, $id_user)

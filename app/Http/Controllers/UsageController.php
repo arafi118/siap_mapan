@@ -20,7 +20,7 @@ class UsageController extends Controller
 
     public function index()
     {
-        $usages = Usage::with([
+        $usages = Usage::where('business_id', Session::get('business_id'))->with([
             'customers',
             'installation'
         ])->orderBy('created_at', 'DESC')->get();
@@ -35,10 +35,10 @@ class UsageController extends Controller
     public function create()
     {
         // where('status','A')->
-        $customer = Installations::with('customer')->orderBy('id', 'ASC')->get();
-        $caters = Cater::all();
-        $usages = Usage::all();
-        $installasi = Installations::orderBy('id', 'ASC')->get();
+        $customer = Installations::where('business_id', Session::get('business_id'))->with('customer')->orderBy('id', 'ASC')->get();
+        $caters = Cater::where('business_id', Session::get('business_id'))->get();
+        $usages = Usage::where('business_id', Session::get('business_id'))->get();
+        $installasi = Installations::where('business_id', Session::get('business_id'))->orderBy('id', 'ASC')->get();
         $pilih_customer = 0;
 
         $title = 'Register Pemakaian';
@@ -58,7 +58,7 @@ class UsageController extends Controller
         }
 
         $data_installation = [];
-        $installations = Installations::whereIn('id', $data_id)->with([
+        $installations = Installations::where('business_id', Session::get('business_id'))->whereIn('id', $data_id)->with([
             'package'
         ])->get();
         foreach ($installations as $ins) {
@@ -75,7 +75,7 @@ class UsageController extends Controller
             $gambar = '/storage/logo/' . $logo;
         }
 
-        $customers = Customer::whereIn('id', $data_customer)->get();
+        $customers = Customer::where('business_id', Session::get('business_id'))->whereIn('id', $data_customer)->get();
         $data_customer = [];
         foreach ($customers as $cs) {
             $data_customer[$cs->id] = $cs;
@@ -133,13 +133,13 @@ class UsageController extends Controller
     {
         $query = $request->input('query');
 
-        $customer = Customer::join('installations', 'customers.id', 'installations.customer_id')
+        $customer = Customer::where('business_id', Session::get('business_id'))->join('installations', 'customers.id', 'installations.customer_id')
             ->where('customers.nama', 'LIKE', '%' . $query . '%')
             ->orwhere('installations.kode_instalasi', 'LIKE', '%' . $query . '%')->get();
 
         $data_customer = [];
         foreach ($customer as $cus) {
-            $usage = Usage::where('id_instalasi', $cus->id)->orderBy('created_at', 'DESC')->first();
+            $usage = Usage::where('business_id', Session::get('business_id'))->where('id_instalasi', $cus->id)->orderBy('created_at', 'DESC')->first();
 
             $data_customer[] = [
                 'customer' => $cus,
@@ -155,7 +155,7 @@ class UsageController extends Controller
     public function detailTagihan()
     {
         $keuangan = new Keuangan;
-        $usages = Usage::where('status', 'UNPAID')->with([
+        $usages = Usage::where('business_id', Session::get('business_id'))->where('status', 'UNPAID')->with([
             'customers',
             'installation'
         ])->get();
@@ -172,7 +172,7 @@ class UsageController extends Controller
         $id = $request->cetak;
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
-        $data['usage'] = Usage::whereIn('id', $id)->with(
+        $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id)->with(
             'customers'
         )->get();
 
@@ -195,7 +195,7 @@ class UsageController extends Controller
      */
     public function edit(Usage $usage)
     {
-        $usages = Usage::with([
+        $usages = Usage::where('business_id', Session::get('business_id'))->with([
             'customers',
             'installation'
         ])->get();

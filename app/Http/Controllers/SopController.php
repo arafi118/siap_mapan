@@ -94,7 +94,7 @@ class SopController extends Controller
                 ]);
             }
 
-            return response()->json([ 
+            return response()->json([
                 'success' => true,
                 'Settings' => $Settings
             ], Response::HTTP_ACCEPTED);
@@ -116,7 +116,7 @@ class SopController extends Controller
         $akun1 = AkunLevel1::with([
             'akun2',
             'akun2.akun3',
-            'akun2.akun3.accounts' 
+            'akun2.akun3.accounts'
         ])->get();
 
         $akun_id = 0;
@@ -126,14 +126,14 @@ class SopController extends Controller
                 'id' => $akun->kode_akun,
                 'text' => $akun->kode_akun . '. ' . $akun->nama_akun
             ];
-            
+
             $akun2_id = 0;
             foreach ($akun->akun2 as $akun2) {
                 $data_coa[$akun_id]['children'][$akun2_id] = [
                     'id' => $akun2->kode_akun,
                     'text' => $akun2->kode_akun . '. ' . $akun2->nama_akun
                 ];
-                
+
                 $akun3_id = 0;
                 foreach ($akun2->akun3 as $akun3) {
                     $data_coa[$akun_id]['children'][$akun2_id]['children'][$akun3_id] = [
@@ -151,7 +151,6 @@ class SopController extends Controller
                     $akun3_id++;
                 }
                 $akun2_id++;
-                
             }
             $akun_id++;
         }
@@ -165,7 +164,7 @@ class SopController extends Controller
             'nama_akun'
         ]);
 
-        $rek = Account::where('kode_akun', $data['id_akun'])->count();
+        $rek = Account::where('business_id', Session::get('business_id'))->where('kode_akun', $data['id_akun'])->count();
         if ($rek <= 0) {
             $kode_akun = explode('.', $data['id_akun']);
             $lev1 = $kode_akun[0];
@@ -190,11 +189,11 @@ class SopController extends Controller
             ];
 
             Account::create($insert);
-            
+
             return response()->json([
                 'success' => true,
                 'id' => $insert['kode_akun'],
-                'nama_akun'=> $insert['kode_akun'] . '. ' . $nama_akun,
+                'nama_akun' => $insert['kode_akun'] . '. ' . $nama_akun,
                 'msg' => 'COA berhasil dibuat'
             ], 201);
         }
@@ -203,7 +202,7 @@ class SopController extends Controller
         ], 201);
     }
 
-    public function UpdateCoa (Request $request, $kode_akun)
+    public function UpdateCoa(Request $request, $kode_akun)
     {
         $data = $request->only([
             'id_akun',
@@ -220,9 +219,9 @@ class SopController extends Controller
         $lev3 = explode('.', $data['id_akun'])[2];
         $lev4 = explode('.', $data['id_akun'])[3];
 
-        $rekening = Account::where('kode_akun', $kode_akun)->first();
+        $rekening = Account::where('business_id', Session::get('business_id'))->where('kode_akun', $kode_akun)->first();
         if ($rekening->nama_akun != $nama_akun && $rekening->kode_akun == $data['id_akun']) {
-            Account::where([
+            Account::where('business_id', Session::get('business_id'))->where([
                 ['kode_akun', $rekening->kode_akun],
                 ['business_id', Session::get('business_id')]
             ])->update([
@@ -244,13 +243,13 @@ class SopController extends Controller
             'nama_akun'
         ]);
 
-        $rekening = Account::where([
+        $rekening = Account::where('business_id', Session::get('business_id'))->where([
             ['kode_akun', $account],
             ['business_id', Session::get('business_id')]
         ])->first();
-        
+
         if ($rekening->kode_akun == $data['id_akun']) {
-            Account::where('id', $rekening->id)->delete();
+            Account::where('business_id', Session::get('business_id'))->where('id', $rekening->id)->delete();
             return response()->json([
                 'success' => true,
                 'msg' => 'Akun dengan kode ' . $data['id_akun'] . ' berhasil dihapus',

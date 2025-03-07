@@ -29,25 +29,25 @@ class InstallationsController extends Controller
      */
     public function index()
     {
-        $installations = Installations::all();
-        $status_R = Installations::whereIn('status', ['R', '0'])->with(
+        $installations = Installations::where('business_id', Session::get('business_id'))->get();
+        $status_R = Installations::where('business_id', Session::get('business_id'))->whereIn('status', ['R', '0'])->with(
             'customer',
             'village',
             'package'
         )->get();
-        $status_I = Installations::where('status', 'I')->with(
+        $status_I = Installations::where('business_id', Session::get('business_id'))->where('status', 'I')->with(
             'customer',
             'package'
         )->get();
-        $status_A = Installations::where('status', 'A')->with(
+        $status_A = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')->with(
             'customer',
             'package'
         )->get();
-        $status_B = Installations::where('status', 'B')->with(
+        $status_B = Installations::where('business_id', Session::get('business_id'))->where('status', 'B')->with(
             'customer',
             'package'
         )->get();
-        $status_C = Installations::where('status', 'C')->with(
+        $status_C = Installations::where('business_id', Session::get('business_id'))->where('status', 'C')->with(
             'customer',
             'package'
         )->get();
@@ -63,7 +63,7 @@ class InstallationsController extends Controller
     {
         $query = $request->input('query');
 
-        $customers = Customer::where(function ($q) use ($query) {
+        $customers = Customer::where('business_id', Session::get('business_id'))->where(function ($q) use ($query) {
             $q->where('nama', 'LIKE', "%{$query}%")
                 ->orWhere('nik', 'LIKE', "%{$query}%");
         })->with([
@@ -95,10 +95,14 @@ class InstallationsController extends Controller
             'customers.nik',
             'customers.hp'
         )
-            ->join('customers', 'customers.id', 'installations.customer_id')->where(function ($query) use ($params) {
+            ->join('customers', 'customers.id', 'installations.customer_id')
+            ->where(function ($query) use ($params) {
                 $query->where('customers.nama', 'LIKE', "%{$params}%")
                     ->orWhere('customers.nik', 'LIKE', "%{$params}%")
                     ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
+            })->where(function($query) {
+                $query->where('installations.business_id', Session::get('business_id'))
+                ->orWhere('customers.business_id', Session::get('business_id'));
             })->whereNotIn('installations.status', ['B', 'C'])->get();
 
         return response()->json($installations);
@@ -128,10 +132,10 @@ class InstallationsController extends Controller
 
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
-        $package = Package::all();
+        $package = Package::where('business_id', Session::get('business_id'))->get();
         $transaksi = Transaction::all();
 
-        $usages = Usage::where([
+        $usages = Usage::where('business_id', Session::get('business_id'))->where([
             ['id_instalasi', $installations->id],
             ['status', 'NOT LIKE', 'PAID']
         ])->get();
@@ -141,11 +145,11 @@ class InstallationsController extends Controller
 
         if ($jumlah_trx == $abodemen) {
 
-            $tagihan1 = Account::where([
+            $tagihan1 = Account::where('business_id', Session::get('business_id'))->where([
                 ['kode_akun', '1.1.01.01'],
                 ['business_id', Session::get('business_id')]
             ])->first();
-            $tagihan2 = Account::where([
+            $tagihan2 = Account::where('business_id', Session::get('business_id'))->where([
                 ['kode_akun', '4.2.01.04'],
                 ['business_id', Session::get('business_id')]
             ])->first();
@@ -158,11 +162,11 @@ class InstallationsController extends Controller
             ]);
         } else {
 
-            $pasang1 = Account::where([
+            $pasang1 = Account::where('business_id', Session::get('business_id'))->where([
                 ['kode_akun', '1.1.01.01'],
                 ['business_id', Session::get('business_id')]
             ])->first();
-            $pasang2 = Account::where([
+            $pasang2 = Account::where('business_id', Session::get('business_id'))->where([
                 ['kode_akun', '5.1.01.04'],
                 ['business_id', Session::get('business_id')]
             ])->first();
@@ -182,26 +186,26 @@ class InstallationsController extends Controller
     public function kode_instalasi()
     {
         $kd_desa = request()->get('kode');
-        $jumlah_kode_instalasi_by_desa = Installations::where('desa', $kd_desa)->orderBy('kode_instalasi', 'DESC');
+        $jumlah_kode_instalasi_by_desa = Installations::where('business_id', Session::get('business_id'))->where('desa', $kd_desa)->orderBy('kode_instalasi', 'DESC');
 
         $desa = Village::where('id', $kd_desa)->first();
         $kd_prov = substr($desa->kode, 0, 2);
         $kd_kab = substr($desa->kode, 2, 2);
         $kd_kec = substr($desa->kode, 4, 2);
         $kd_desa = substr($desa->kode, 6, 4);
-        $kode_instalasi = $kd_prov . '.' . $kd_kab . '.' . $kd_kec . '.' . $kd_desa;
+        $kode_instalasi = $kd_prov . '.' . $kd_kab  . $kd_kec  . $kd_desa;
 
         if ($jumlah_kode_instalasi_by_desa->count() > 0) {
             $jumlah = str_pad(($jumlah_kode_instalasi_by_desa->count() + 1), 3, "0", STR_PAD_LEFT);
         } else {
-            $jumlah = str_pad(Installations::where('desa', $kd_desa)->count() + 1, 3, "0", STR_PAD_LEFT);
+            $jumlah = str_pad(Installations::where('business_id', Session::get('business_id'))->where('desa', $kd_desa)->count() + 1, 3, "0", STR_PAD_LEFT);
         }
 
         $kode_instalasi .= '.' . $jumlah;
 
         if (request()->get('kd_instalasi')) {
             $kd_ins = request()->get('kd_instalasi');
-            $instalasi = Installations::where('kd_instalasi', $kd_ins);
+            $instalasi = Installations::where('business_id', Session::get('business_id'))->where('kd_instalasi', $kd_ins);
             if ($instalasi->count() > 0) {
                 $data_ins = $instalasi->first();
 
@@ -223,7 +227,7 @@ class InstallationsController extends Controller
     {
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
-        $package = Package::where('id', $id)->first();
+        $package = Package::where('business_id', Session::get('business_id'))->where('id', $id)->first();
 
 
         $tampil_settings = $pengaturan->first();
@@ -239,13 +243,13 @@ class InstallationsController extends Controller
 
     public function create()
     {
-        $paket = Package::all();
+        $paket = Package::where('business_id', Session::get('business_id'))->get();
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
         $settings = $pengaturan->first();
 
         $caters = Cater::where('business_id', $business_id)->get();
-        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $customer = Customer::where('business_id', Session::get('business_id'))->with('Village')->orderBy('id', 'ASC')->get();
         $desa = Village::all();
 
         $pilih_desa = 0;
@@ -262,9 +266,9 @@ class InstallationsController extends Controller
         $caters = Cater::where('business_id', $business_id)->get();
         $pengaturan = Settings::where('business_id', $business_id);
         $settings = $pengaturan->first();
-        $paket = Package::all();
-        $installations = Installations::all();
-        $REG_status = Installations::select(
+        $paket = Package::where('business_id', Session::get('business_id'))->get();
+        $installations = Installations::where('business_id', Session::get('business_id'))->get();
+        $REG_status = Installations::where('business_id', Session::get('business_id'))->select(
             'id',
             'status',
             'customer_id',
@@ -281,7 +285,7 @@ class InstallationsController extends Controller
         )->where('customer_id', $customer_id)->orderBy('created_at', 'DESC')->first();
 
 
-        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $customer = Customer::where('business_id', Session::get('business_id'))->with('Village')->orderBy('id', 'ASC')->get();
         $desa = Village::all();
 
         $pilih_desa = 0;
@@ -546,8 +550,8 @@ class InstallationsController extends Controller
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
         $settings = $pengaturan->first();
-        $paket = Package::all();
-        $customer = Customer::with('Village')->orderBy('id', 'ASC')->get();
+        $paket = Package::where('business_id', Session::get('business_id'))->get();
+        $customer = Customer::where('business_id', Session::get('business_id'))->with('Village')->orderBy('id', 'ASC')->get();
         $installations = $installation->with([
             'customer',
             'package',
@@ -594,7 +598,7 @@ class InstallationsController extends Controller
         }
 
         // Update data 
-        $update = Installations::where('id', $installation->id)->update([
+        $update = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'order' => Tanggal::tglNasional($request->order),
             'alamat' => $request->alamat,
@@ -625,7 +629,7 @@ class InstallationsController extends Controller
         }
 
         // Update data 
-        $update = Installations::where('id', $installation->id)->update([
+        $update = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'pasang' => Tanggal::tglNasional($request->pasang),
             'status' => 'I',
@@ -655,7 +659,7 @@ class InstallationsController extends Controller
         }
 
         // Update data 
-        $update = Installations::where('id', $installation->id)->update([
+        $update = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'pasang' => Tanggal::tglNasional($request->pasang),
             'status' => 'I',
@@ -686,7 +690,7 @@ class InstallationsController extends Controller
         }
 
         // INSTALLATION
-        $instal = Installations::where('id', $installation->id)->update([
+        $instal = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'aktif' => Tanggal::tglNasional($request->aktif),
             'status' => 'A',
@@ -737,7 +741,7 @@ class InstallationsController extends Controller
             $status = 'A';
         }
         // INSTALLATION
-        $instal = Installations::where('id', $installation->id)->update([
+        $instal = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'aktif' => Tanggal::tglNasional($request->aktif),
             'status' => 'A',
@@ -782,7 +786,7 @@ class InstallationsController extends Controller
         }
 
         // INSTALLATION
-        $instal = Installations::where('id', $installation->id)->update([
+        $instal = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'cabut' => Tanggal::tglNasional($request->cabut),
             'status' => 'C',
@@ -800,7 +804,7 @@ class InstallationsController extends Controller
      */
     public function KembaliStatus_A($id)
     {
-        $instal = Installations::where('id', $id)->update([
+        $instal = Installations::where('business_id', Session::get('business_id'))->where('id', $id)->update([
             'business_id' => Session::get('business_id'),
             'status' => 'A',
         ]);
@@ -834,7 +838,7 @@ class InstallationsController extends Controller
         $tanggal = request()->get('tanggal') ?: date('d/m/Y');
         $tanggal = Tanggal::tglNasional($tanggal);
 
-        $installations = Installations::where('cater_id', $cater_id)->with([
+        $installations = Installations::where('business_id', Session::get('business_id'))->where('cater_id', $cater_id)->with([
             'oneUsage' => function ($query) use ($tanggal) {
                 $query->where('tgl_akhir', '<=', $tanggal);
             },
