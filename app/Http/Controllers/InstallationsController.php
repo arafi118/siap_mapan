@@ -189,11 +189,11 @@ class InstallationsController extends Controller
         $jumlah_kode_instalasi_by_desa = Installations::where('business_id', Session::get('business_id'))->where('desa', $kd_desa)->orderBy('kode_instalasi', 'DESC');
 
         $desa = Village::where('id', $kd_desa)->first();
-        $kd_prov = substr($desa->kode, 0, 2);
-        $kd_kab = substr($desa->kode, 2, 2);
-        $kd_kec = substr($desa->kode, 4, 2);
-        $kd_desa = substr($desa->kode, 6, 4);
-        $kode_instalasi = $kd_prov . '.' . $kd_kab  . $kd_kec  . $kd_desa;
+        $kd_prov = substr($desa->kode, 5, 2);
+        $kd_kab = substr($desa->kode, 8, 2);
+        $kd_kec = substr($desa->kode, 11, 4);
+        $kd_desa = substr($desa->kode, 16, 3);
+        $kode_instalasi = $kd_prov . '.' . $kd_kab  .'.'. $kd_kec  .'.'. $kd_desa;
 
         if ($jumlah_kode_instalasi_by_desa->count() > 0) {
             $jumlah = str_pad(($jumlah_kode_instalasi_by_desa->count() + 1), 3, "0", STR_PAD_LEFT);
