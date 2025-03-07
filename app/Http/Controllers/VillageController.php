@@ -113,18 +113,21 @@ class VillageController extends Controller
         ]);
 
         $tahun = date('Y');
+        $bulan = date('m');
+        $hari = date('d');
+
         $business_id = str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
 
-        $jumlah_desa = 1;
+        $jumlah_desa = '0001';
         $desa = Village::where('kode', 'LIKE', '%' . $business_id);
         if ($desa->count() > 0) {
-            // kode_desa = 2025.0001.001
+            // kode_desa = 2025.01.01.0001.001
             $desa = $desa->orderBy('kode', 'DESC')->first();
-            $kode_desa = explode('.', $desa->kode); // ['2025', '0001', '001']
-            $jumlah_desa = str_pad($kode_desa[1] + 1, 4, '0', STR_PAD_LEFT); // 0002
+            $kode_desa = explode('.', $desa->kode); // ['2025', '01','01','0001', '001']
+            $jumlah_desa = str_pad($kode_desa[3] + 1, 4, '0', STR_PAD_LEFT); // 0002
         }
         
-        $kode = $tahun .'.'. $jumlah_desa .'.'. $business_id;
+        $kode = $tahun .'.'. $bulan .'.'. $hari .'.'. $jumlah_desa .'.'. $business_id;
         $desa = Region::where('kode', $request->desa)->first();
 
         Village::create([
@@ -134,7 +137,7 @@ class VillageController extends Controller
             'hp' => $request->hp
         ]);
 
-        return redirect('/villages')->with('berhasil', 'Customer berhasil ditambahkan!');
+        return redirect('/villages')->with('berhasil', 'Desa berhasil ditambahkan!');
     }
 
     /**
