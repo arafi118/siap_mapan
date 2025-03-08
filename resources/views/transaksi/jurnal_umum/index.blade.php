@@ -205,8 +205,8 @@
                                     </div>
                                 </div>
                                 <div class="col-12 d-flex justify-content-end">
-                                    <button class="btn btn-success btn-icon-split" type="button" id="BtndetailTransaksi"
-                                        style="float: right; margin-left: 10px;">
+                                    <button class="btn btn-secondary btn-icon-split" type="button"
+                                        id="BtndetailTransaksi" style="float: right; margin-left: 10px;">
                                         <span class="text" style="float: right;">Detail Transaksi</span>
                                     </button>
                                 </div>

@@ -32,6 +32,21 @@
 @extends('layouts.base')
 
 @section('content')
+    <style>
+        .nav-pills .nav-link {
+            background-color: #f8f9fa;
+            /* Warna default */
+            color: #000;
+            /* Warna teks */
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #00ccff !important;
+            /* Warna biru muda */
+            color: white !important;
+            /* Warna teks saat aktif */
+        }
+    </style>
     <div class="container-fluid" id="container-wrapper">
         <div class="row justify-content-center">
             <div class="col-lg-12">
@@ -60,6 +75,7 @@
                             </li>
                         </ul>
                     </div>
+
                 </div>
             </div>
         </div>

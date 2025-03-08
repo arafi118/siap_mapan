@@ -134,7 +134,7 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-end">
-                                <button class="btn btn-success" type="button" id="BtndetailTransaksi">
+                                <button class="btn btn-warning" type="button" id="BtndetailTransaksi">
                                     <span class="text">Detail</span>
                                 </button>
                                 <button class="btn btn-secondary btn-icon-split btn-struk" type="submit"

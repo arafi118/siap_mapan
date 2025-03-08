@@ -21,8 +21,8 @@
                 <!-- Alerts with Icon -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <div class="alert alert-success alert-dismissible custom-alert" role="alert">
-                            <h6><i class="fas fa-info-circle"></i>&nbsp;&nbsp;<b> Register Pelangan Baru !</b></h6>
+                        <div class="alert alert-info alert-dismissible custom-alert" role="alert">
+                            <h4><i class="fas fa-info-circle"></i>&nbsp;&nbsp; Register Pelangan Baru !</h4>
                         </div>
                     </div>
                 </div>
