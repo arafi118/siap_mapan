@@ -48,6 +48,12 @@ Route::prefix('master')->group(function () {
 Route::get('/auth', [AuthController::class, 'index'])->name('auth')->middleware('guest');
 Route::post('/auth', [AuthController::class, 'login']);
 
+Route::get('/link', function () {
+    $target = '/home/akubumdes/public_html/pamsides/storage/app/public';
+    $shortcut = '/home/akubumdes/public_html/pamsides/public/storage';
+    symlink($target, $shortcut);
+});
+
 Route::middleware(['auth', 'auth.token'])->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index']);
