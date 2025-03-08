@@ -41,7 +41,7 @@
         }
 
         .nav-pills .nav-link.active {
-            background-color: #00ccff !important;
+            background-color: #ff8400 !important;
             /* Warna biru muda */
             color: white !important;
             /* Warna teks saat aktif */
