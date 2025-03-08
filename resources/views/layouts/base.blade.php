@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ Session::get('icon') }}">
     <link rel="icon" type="image/png" href="{{ Session::get('icon') }}">
     <title>
-        {{ $title ?? 'x' }} &mdash; Aplikasi Pembayaran Meter SIAP MAPAN
+        {{ $title ?? 'x' }} &mdash; PAMSIDES
     </title>
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"

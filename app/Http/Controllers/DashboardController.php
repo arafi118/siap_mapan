@@ -18,15 +18,15 @@ class DashboardController extends Controller
     {
         $keuangan = new Keuangan;
 
-        $Installation = Installations::count();
-        $Usages = Installations::where('status', 'A')->with([
+        $Installation = Installations::where('business_id', Session::get('business_id'))->count();
+        $Usages = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')->with([
             'customer',
             'package',
             'oneUsage' => function ($query) {
                 $query->where('tgl_akhir', '<=', date('Y-m-d'));
             }
         ])->get();
-        $Tagihan = Usage::where([
+        $Tagihan = Usage::where('business_id', Session::get('business_id'))->where([
             ['status', 'UNPAID'],
             ['tgl_akhir', '<', date('Y-m-d')]
         ])->count();
@@ -63,15 +63,15 @@ class DashboardController extends Controller
 
     public function installations()
     {
-        $Permohonan = Installations::where('status', '0')->orwhere('status', 'R')->with([
+        $Permohonan = Installations::where('business_id', Session::get('business_id'))->where('status', '0')->orwhere('status', 'R')->with([
             'customer',
             'package'
         ])->get();
-        $Pasang = Installations::where('status', 'I')->with([
+        $Pasang = Installations::where('business_id', Session::get('business_id'))->where('status', 'I')->with([
             'customer',
             'package'
         ])->get();
-        $Aktif = Installations::where('status', 'A')->with([
+        $Aktif = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')->with([
             'customer',
             'package'
         ])->get();
@@ -85,7 +85,7 @@ class DashboardController extends Controller
 
     public function usages()
     {
-        $Usages = Installations::where('status', 'A')->with([
+        $Usages = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')->with([
             'customer',
             'package',
             'oneUsage' => function ($query) {
@@ -101,7 +101,7 @@ class DashboardController extends Controller
     public function tagihan()
     {
         $tgl_akhir = request()->get('tgl_akhir') ?: date('Y-m-d');
-        $Tagihan = Usage::where([
+        $Tagihan = Usage::where('business_id', Session::get('business_id'))->where([
             ['status', 'UNPAID'],
             ['tgl_akhir', '<', $tgl_akhir]
         ])->with([

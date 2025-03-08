@@ -24,7 +24,7 @@
 
             <div class="col-3">
                 <div class="form-group mb-0">
-                    <a href="#" class="btn btn-success w-100 custom-height" type="button" id="BtndetailTransaksi">
+                    <a href="#" class="btn btn-warning w-100 custom-height" type="button" id="BtndetailTransaksi">
                         <span class="text">Detail Transaksi</span>
                     </a>
                 </div>

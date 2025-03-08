@@ -21,7 +21,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="alert alert-info alert-dismissible custom-alert" role="alert">
-                            <h6><i class="fas fa-info-circle"></i>&nbsp;&nbsp;<b>Register Cater Baru !</b></h6>
+                            <h4><i class="fas fa-info-circle"></i>&nbsp;&nbsp; Register Cater Baru !</h4>
                         </div>
                     </div>
                 </div>

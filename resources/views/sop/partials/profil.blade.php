@@ -6,13 +6,13 @@
         <hr>
         <hr>
         <p style="text-align: justify;">
-            Penggunaan Aplikasi <b>{{ $business->nama }}</b>
-            Sebagai dasar penggunaan Aplikasi ini
-            Isilah sesuai dengan prosedur yang berlaku,
-            Klik Sidbar disamping untuk mengatur & masuk ke fitur" Aplikasi.
-            Gunakanlah secara bijak sesuai dengan wewenang Anda, semoga bermanfaat! <br>
-            Salam,
-            <b>Siap Tunai
+            Lakukan Pengaturan Aplikasi PAMSIDES mendasar
+            kepada Standar Operasional Prosedur yang berlaku
+            di <b>{{ $business->nama }}</b>, Klik Sidbar disamping untuk
+            mengatur & masuk ke fitur yang tersedia. Gunakanlah Aplikasi Pamsides
+            secara bijak sesuai dengan wewenang Anda, semoga bermanfaat.
+            <br>
+            <b> Salam Pamsides
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="30"
                     height="30"style="fill: rgb(255, 255, 255);">
                     <path

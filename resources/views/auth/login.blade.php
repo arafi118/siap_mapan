@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Login</title>
+    <title>Login {{ $business->nama }}</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--===============================================================================================-->
@@ -36,7 +36,7 @@
             <div class="wrap-login100">
                 <div class="login100-form-title" style="background-image: url(/Login/images/bg-01.jpg);">
                     <span class="login100-form-title-1">
-                        Sign In Aplikasi {{ $business->nama }}
+                        Sign In {{ $business->nama }}
                     </span>
                 </div>
                 <form class="login100-form validate-form user" action="{{ route('auth') }}" method="POST">

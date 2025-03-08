@@ -58,6 +58,7 @@
                                     <table class="table align-items-center table-flush mt-4 mb-4" id="hakakses">
                                         <thead class="thead-light">
                                             <tr>
+                                                <th>Business ID</th>
                                                 <th>NAMA LENGKAP</th>
                                                 <th>JABATAN</th>
                                                 <th style="text-align: center;">AKSI</th>
@@ -66,6 +67,7 @@
                                         <tbody>
                                             @foreach ($users as $user)
                                                 <tr>
+                                                    <td>{{ $user->business_id }}</td>
                                                     <td>{{ $user->nama }}</td>
                                                     <td>{{ $user->position->nama_jabatan ?? '' }}</td>
                                                     <td>
@@ -119,6 +121,19 @@
     <form action="/logout" method="post" id="logoutForm">
         @csrf
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Sukses!',
+                text: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        </script>
+    @endif
 </body>
 
 </html>

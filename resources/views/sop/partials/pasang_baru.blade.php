@@ -42,7 +42,7 @@
             </div>
         </div>
         <hr>
-        <p>Pilih A/B Jenis Pemansangan Meter Baru.</p>
+        <p>Pilih A/B Jenis Pemasangan Meter Baru.</p>
         <div class="col-12 d-flex justify-content-end">
             <button class="btn btn-dark btn-icon-split" type="button" id="SimpanSwit" class="btn btn-dark"
                 style="float: right; margin-left: 20px;">

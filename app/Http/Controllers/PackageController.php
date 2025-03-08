@@ -28,7 +28,7 @@ class PackageController extends Controller
     {
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
-        $packages = Package::all();
+        $packages = Package::where('business_id', Session::get('business_id'))->get();
 
         $tampil_settings = $pengaturan->first();
         $title = 'Data Paket';
@@ -42,7 +42,7 @@ class PackageController extends Controller
     {
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
-        $package = Package::all();
+        $package = Package::where('business_id', Session::get('business_id'))->get();
 
         $tampil_settings = $pengaturan->first();
         $title = 'Register Paket';
@@ -150,7 +150,7 @@ class PackageController extends Controller
     {
         $business_id = Session::get('business_id');
         $pengaturan = Settings::where('business_id', $business_id);
-        $paket = Package::all();
+        $paket = Package::where('business_id', Session::get('business_id'))->get();
 
         $tampil_settings = $pengaturan->first();
         $title = 'Edit Paket';
@@ -206,7 +206,7 @@ class PackageController extends Controller
 
         // $package->delete();
 
-        package::where('id', $package->id)->delete();
+        package::where('business_id', Session::get('business_id'))->where('id', $package->id)->delete();
         return response()->json([
             'success' => true,
             'msg' => 'Data Paket berhasil dihapus',
