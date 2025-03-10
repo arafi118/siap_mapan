@@ -4,10 +4,11 @@
 
     }
 </style>
+<title>{{ $title }}</title>
+
 @extends('pelaporan.layouts.base')
 
 @section('content')
-    <title>{{ $title }}</title>
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
         <tr>
             <td colspan="3" align="center">
@@ -174,65 +175,64 @@
                 </li>
             </ol>
         </li>
-        {{-- NERACA --}}
-        {{-- <li style="margin-top: 12px;">
-        <div style="text-transform: uppercase;">
-            Informasi Tambahan Laporan Keuangan
-        </div>
-        <div>
-            <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
-                <tr>
-                    <td colspan="3" height="5"></td>
-                </tr>
-                <tr style="background: #000; color: #fff;">
-                    <td width="30">Kode</td>
-                    <td width="300">Nama Akun</td>
-                    <td align="right">Saldo</td>
-                </tr>
-                <tr>
-                    <td colspan="3" height="2"></td>
-                </tr>
-                <tr style="background: rgb(74, 74, 74); color: #fff;">
-                    <td height="20" colspan="3" align="center">
-                        <b> </b>
-                    </td>
-                </tr>
-                <tr style="background: rgb(167, 167, 167); font-weight: bold;">
-                    <td>.</td>
-                    <td colspan="2"> </td>
-                </tr>
-                <tr style="background: rgb(200,200,200);">
-                    <td> .</td>
-                    <td> </td>
-                    <td align="right"> </td>
-                </tr>
-                <tr style="background: rgb(255,255,255);">
-                    <td> </td>
-                    <td> </td>
-                    <td align="right"> </td>
-                </tr>
-                <tr style="background: rgb(167, 167, 167); font-weight: bold;">
-                    <td height="20" colspan="2" align="left">
-                        <b> </b>
-                    </td>
-                    <td align="right"> </td>
-                </tr>
-                <tr>
-                    <td colspan="3" height="2"></td>
-                </tr>
-                <tr style="background: rgb(167, 167, 167); font-weight: bold;">
-                    <td height="20" colspan="2" align="left">
-                        <b>Jumlah Liabilitas + Ekuitas </b>
-                    </td>
-                    <td align="right"> </td>
-                </tr>
-            </table>
-        </div>
-        <div style="color: #f44335">
-            Ada selisih antara Jumlah Aset dan Jumlah Liabilitas + Ekuitas sebesar
-            <b></b>
-        </div>
-    </li> --}}
+        <li style="margin-top: 12px;">
+            <div style="text-transform: uppercase;">
+                Informasi Tambahan Laporan Keuangan
+            </div>
+            <div>
+                <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
+                    <tr>
+                        <td colspan="3" height="5"></td>
+                    </tr>
+                    <tr style="background: #000; color: #fff;">
+                        <td width="30">Kode</td>
+                        <td width="300">Nama Akun</td>
+                        <td align="right">Saldo</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" height="2"></td>
+                    </tr>
+                    <tr style="background: rgb(74, 74, 74); color: #fff;">
+                        <td height="20" colspan="3" align="center">
+                            <b> </b>
+                        </td>
+                    </tr>
+                    <tr style="background: rgb(167, 167, 167); font-weight: bold;">
+                        <td>.</td>
+                        <td colspan="2"> </td>
+                    </tr>
+                    <tr style="background: rgb(200,200,200);">
+                        <td> .</td>
+                        <td> </td>
+                        <td align="right"> </td>
+                    </tr>
+                    <tr style="background: rgb(255,255,255);">
+                        <td> </td>
+                        <td> </td>
+                        <td align="right"> </td>
+                    </tr>
+                    <tr style="background: rgb(167, 167, 167); font-weight: bold;">
+                        <td height="20" colspan="2" align="left">
+                            <b> </b>
+                        </td>
+                        <td align="right"> </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" height="2"></td>
+                    </tr>
+                    <tr style="background: rgb(167, 167, 167); font-weight: bold;">
+                        <td height="20" colspan="2" align="left">
+                            <b>Jumlah Liabilitas + Ekuitas </b>
+                        </td>
+                        <td align="right"> </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="color: #f44335">
+                Ada selisih antara Jumlah Aset dan Jumlah Liabilitas + Ekuitas sebesar
+                <b></b>
+            </div>
+        </li>
         <li style="margin-top: 12px;">
             <div style="text-transform: uppercase;">
                 Pembagian Laba Usaha
