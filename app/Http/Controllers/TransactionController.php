@@ -642,9 +642,18 @@ class TransactionController extends Controller
 
         $persen = ($penjumlahantrx / $abodemen) * 100;
 
+        $rekening_debit = Account::where([
+            ['kode_akun','1.1.01.01'],
+            ['business_id',Session::get('business_id')]
+        ])->first();
+        $rekening_kredit = Account::where([
+            ['kode_akun','4.1.01.01'],
+            ['business_id',Session::get('business_id')]
+        ])->first();
+
         $transaksi = Transaction::create([
-            'rekening_debit' => '1',
-            'rekening_kredit' => '67',
+            'rekening_debit' => $rekening_debit->id,
+            'rekening_kredit' => $rekening_kredit->id,
             'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
             'total' => $jumlah_instal,
             'installation_id' => $request->istallation_id,

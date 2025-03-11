@@ -201,6 +201,7 @@ class PelaporanController extends Controller
     }
     private function calkk(array $data)
     {
+        $keuangan = new Keuangan;
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
@@ -215,13 +216,38 @@ class PelaporanController extends Controller
         $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
             'akun2',
             'akun2.akun3',
-            'akun2.akun3.accounts',
+            'akun2.akun3.accounts' => function ($query) {
+                $query->where('business_id', Session::get('business_id'));
+            },
             'akun2.akun3.accounts.amount' => function ($query) use ($data) {
                 $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
                     $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
                 });
             },
         ])->orderBy('kode_akun', 'ASC')->get();
+
+        $laba_rugi = Account::where('business_id', Session::get('business_id'))->where('lev1', '>=', '4')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->get();
+
+        $pendapatan = 0;
+        $beban = 0;
+        foreach ($laba_rugi as $lr) {
+            $saldo = $keuangan->komSaldo($lr);
+            if ($lr->lev1 == '4') {
+                $pendapatan += $saldo;
+            }
+
+            if ($lr->lev1 == '5') {
+                $beban += $saldo;
+            }
+        }
+
+        $data['surplus'] = $pendapatan - $beban;
 
         $data['title'] = 'Calk';
         $view = view('pelaporan.partials.views.calk', $data)->render();
@@ -477,10 +503,11 @@ class PelaporanController extends Controller
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
         if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $tanggal = Tanggal::tglLatin($tgl);
+            $data['sub_judul'] = 'PER ' . $tanggal;  
         }
-
+            $tanggal = Tanggal::tglLatin($tgl);
+            $data['sub_judul'] = 'PER ' . $tanggal;     
         // SELECT * FROM account WHERE business_id = Session::get('business_id');
         $data['accounts'] = Account::where('business_id', Session::get('business_id'))->with([
             'amount' => function ($query) use ($data) {
@@ -505,8 +532,8 @@ class PelaporanController extends Controller
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
         if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $tanggal = Tanggal::tglLatin($tgl);
+            $data['sub_judul'] = 'PER ' . $tanggal;  
         }
         $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
             'akun2',
