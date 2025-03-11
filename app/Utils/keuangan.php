@@ -501,7 +501,7 @@ class Keuangan
         ])->where(function ($query) use ($tgl_kondisi) {
             $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
         })->with([
-            'kom_saldo' => function ($query) use ($tahun, $bulan) {
+            'amount' => function ($query) use ($tahun, $bulan) {
                 $query->where('tahun', $tahun)->where(function ($query) use ($bulan) {
                     $query->where('bulan', '0')->orwhere('bulan', $bulan);
                 })->orderBy('account_id', 'ASC')->get();
