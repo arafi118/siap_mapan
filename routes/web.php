@@ -108,6 +108,12 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/transactions/detail_transaksi_tagihan/', [TransactionController::class, 'detailTransaksiTagihan']);
     Route::get('/transactions/detail_transaksi_instalasi/', [TransactionController::class, 'detailTransaksiInstalasi']);
     Route::get('/transactions/detail_transaksi/', [TransactionController::class, 'detailTransaksi']);
+
+    Route::post('/transactions/tutup_buku/saldo_tutup_buku', [TransactionController::class, 'saldo_tutup_buku']);
+    Route::get('/transactions/tutup_buku', [TransactionController::class, 'jurnalTutupBuku']);
+    Route::post('/transactions/tutup_buku', [TransactionController::class, 'tutup_buku']);
+    Route::post('/transactions/simpan_laba', [TransactionController::class, 'simpanAlokasiLaba']);
+    Route::get('/transactions/ebudgeting', [TransactionController::class, 'ebudgeting']);
     Route::resource('/transactions', TransactionController::class);
 
     Route::get('/transactions/dokumen/struk_instalasi/{id}', [TransactionController::class, 'struk_instalasi']);
@@ -130,8 +136,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::post('/pengaturan/coa', [SopController::class, 'CreateCoa']);
     Route::put('/pengaturan/coa/{kode_akun}', [SopController::class, 'UpdateCoa']);
     Route::delete('/pengaturan/coa/{account}', [SopController::class, 'DeleteCoa']);
-    
-    
+
+
     Route::get('/pengaturan/sop/pasang_baru', [SopController::class, 'pasang_baru']);
     Route::get('/pengaturan/sop/lembaga', [SopController::class, 'lembaga']);
     Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);

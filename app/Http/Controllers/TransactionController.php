@@ -12,6 +12,11 @@ use App\Models\Transaction;
 use App\Models\Usage;
 use App\Models\Account;
 use App\Models\Business;
+use App\Models\AkunLevel1;
+use App\Models\AkunLevel2;
+use App\Models\AkunLevel3;
+use App\Models\Amount;
+use App\Models\Village;
 use App\Models\User;
 use App\Models\JenisTransactions;
 use App\Models\Inventory;
@@ -277,6 +282,312 @@ class TransactionController extends Controller
             }
         }
     }
+
+
+    public function ebudgeting()
+    {
+        $transactions = Transaction::all();
+        $jenis_transaksi = JenisTransactions::all();
+        $rekening = Account::where('business_id', Session::get('business_id'));
+        $business = Business::where('id', Session::get('business_id'))->first();
+
+        $title = ' Transaksi';
+        return view('transaksi.ebudgeting.index')->with(compact('title', 'business', 'rekening', 'transactions', 'jenis_transaksi'));
+    }
+
+    public function jurnalTutupBuku()
+    {
+        $business = Business::where('id', Session::get('business_id'))->first();
+        $title = 'Tutup Buku';
+        return view('transaksi.tutup_buku.index')->with(compact('title', 'business'));
+    }
+
+    public function tutup_buku(Request $request)
+    {
+
+        $keuangan = new Keuangan;
+
+        $tahun = $request->tahun;
+        $bulan = date('m');
+        if ($tahun < date('Y')) {
+            $bulan = 12;
+        }
+        $tgl_kondisi = $tahun . '-' . $bulan . '-' . date('t', strtotime($tahun . '-' . $bulan . '-01'));
+        $surplus = $keuangan->laba_rugi($tgl_kondisi);
+
+        $success = false;
+        $migrasi_saldo = false;
+        if ($request->pembagian_laba == 'false') {
+            $jumlah_riwayat = $request->jumlah_riwayat;
+            $total_riwayat = $request->total_riwayat;
+
+            if ($jumlah_riwayat < $total_riwayat) {
+                $migrasi_saldo = true;
+            }
+
+            $tahun_tb = $tahun + 1;
+            $kode_rekening = Account::where(function ($query) use ($tgl_kondisi) {
+                $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
+            })->with([
+                'Amount' => function ($query) use ($tahun, $bulan) {
+                    $query->where('tahun', $tahun)->where(function ($query) use ($bulan) {
+                        $query->where('bulan', '0')->orwhere('bulan', $bulan);
+                    });
+                }
+            ])->get();
+
+            $data_id = [];
+            $saldo_tutup_buku = [];
+            foreach ($kode_rekening as $rek) {
+                $saldo_awal_debit = 0;
+                $saldo_awal_kredit = 0;
+                $debit = 0;
+                $kredit = 0;
+
+                $bulan_tb = '0';
+                if ($rek->lev1 >= 4) {
+                    foreach ($rek->Amount as $saldo) {
+                        if ($saldo->bulan == 0) {
+                            if ($saldo->debit != 0) $saldo_awal_debit = floatval($saldo->debit);
+                            if ($saldo->kredit != 0) $saldo_awal_kredit = floatval($saldo->kredit);
+                        } else {
+                            if ($saldo->debit != 0) $debit = floatval($saldo->debit);
+                            if ($saldo->kredit != 0) $kredit = floatval($saldo->kredit);
+                        }
+                    }
+
+                    $saldo_debit = $debit;
+                    $saldo_kredit = $kredit;
+
+                    $id = str_replace('.', '', $rek->kode_akun) . $tahun . '13';
+                    if ($saldo_debit + $saldo_kredit != 0) {
+                        $saldo_tutup_buku[] = [
+                            'id' => $id,
+                            'account_id' => $rek->id,
+                            'tahun' => $tahun,
+                            'bulan' => 13,
+                            'debit' => (string) $saldo_debit,
+                            'kredit' => (string) $saldo_kredit
+                        ];
+
+                        $data_id[] = $id;
+                    }
+                }
+
+                $saldo_awal_debit = 0;
+                $saldo_awal_kredit = 0;
+                $debit = 0;
+                $kredit = 0;
+
+                if ($rek->lev1 < 4 && $rek->kode_akun != '3.2.02.01') {
+                    foreach ($rek->Amount as $saldo) {
+                        if ($saldo->bulan == 0) {
+                            if ($saldo->debit != 0) $saldo_awal_debit = floatval($saldo->debit);
+                            if ($saldo->kredit != 0) $saldo_awal_kredit = floatval($saldo->kredit);
+                        } else {
+                            if ($saldo->debit != 0) $debit = floatval($saldo->debit);
+                            if ($saldo->kredit != 0) $kredit = floatval($saldo->kredit);
+                        }
+                    }
+                }
+
+                $saldo_debit = $saldo_awal_debit + $debit;
+                $saldo_kredit = $saldo_awal_kredit + $kredit;
+
+                if ($rek->kode_akun == '3.2.01.01') {
+                    $saldo_kredit += $surplus;
+                }
+
+                $id = str_replace('.', '', $rek->id) . $tahun_tb . "00";
+                $saldo_tutup_buku[] = [
+                    'id' => $id,
+                    'account_id' => $rek->id,
+                    'tahun' => $tahun_tb,
+                    'bulan' => $bulan_tb,
+                    'debit' => (string) $saldo_debit,
+                    'kredit' => (string) $saldo_kredit
+                ];
+
+                $data_id[] = $id;
+            }
+
+            Amount::whereIn('id', $data_id)->delete();
+            Amount::insert($saldo_tutup_buku);
+
+            $success = true;
+
+            return redirect('/transactions/tutup_buku')->with('success', 'Tutup Buku Tahun ' . $tahun . ' berhasil.');
+        }
+
+        $surplus = $keuangan->laba_rugi($tahun . '-13-00');
+
+
+        $sp_bersih = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'like', '2.1.01%')->where(function ($query) use ($tgl_kondisi) {
+            $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
+        })->get();
+
+        $rekening = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'like', '2.1.01%')->where(function ($query) use ($tgl_kondisi) {
+            $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
+        })->get();
+
+        $title = 'Pembagian Laba';
+        return view('transaksi.tutup_buku.tutup_buku')->with(compact('title', 'sp_bersih', 'surplus', 'rekening', 'tgl_kondisi', 'tahun', 'migrasi_saldo', 'success'));
+    }
+
+    public function saldo_tutup_buku(Request $request)
+    {
+        $keuangan = new Keuangan;
+        $tgl_pakai = $request->tgl_pakai ?: date('Y-m-d');
+        $tahun = $request->tahun;
+        $tahun_lalu = $tahun - 1;
+        $tahun_pakai = Tanggal::tahun($tgl_pakai);
+        $bulan = date('m');
+        if ($tahun < date('Y')) {
+            $bulan = 12;
+        }
+
+        $akun1 = AkunLevel1::where('lev1', '<=', '3')->with([
+            'akun2',
+            'akun2.akun3',
+            'akun2.akun3.accounts',
+            'akun2.akun3.accounts.Amount' => function ($query) use ($tahun, $bulan) {
+                $query->where('tahun', $tahun)->where(function ($query) use ($bulan) {
+                    $query->where('bulan', '0')->orwhere('bulan', $bulan);
+                });
+            },
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $tgl_kondisi = $tahun . '-' . $bulan . '-' . date('t', strtotime($tahun . '-' . $bulan . '-01'));
+        $surplus = $keuangan->laba_rugi($tgl_kondisi);
+
+        $total_riwayat = ($tahun + 1) - $tahun_pakai;
+        $jumlah_riwayat = count(Amount::select('tahun')->whereRaw('LENGTH(account_id) = 9')->where('bulan', '0')->whereBetween('tahun', [$tahun_pakai, $tahun])->groupBy('tahun')->get());
+
+        return response()->json([
+            'success' => true,
+            'view' => view('transaksi.tutup_buku.partials.saldo')->with(compact('akun1', 'surplus', 'tgl_kondisi', 'tahun', 'tahun_lalu', 'total_riwayat', 'jumlah_riwayat'))->render()
+        ]);
+    }
+
+    public function simpanAlokasiLaba(Request $request)
+    {
+        $data = $request->only([
+            'tgl_kondisi',
+            'surplus',
+            'total_laba_ditahan',
+            'laba_ditahan',
+            'surplus_bersih',
+            'total_surplus_bersih',
+            'total_cadangan_resiko',
+            'cadangan_resiko'
+        ]);
+
+        $tanggal = $request->tgl_kondisi ?: date('Y-m-d');
+        $tahun = Tanggal::tahun($tanggal);
+        $tahun_tb = $tahun + 1;
+        $bulan = Tanggal::bulan($tanggal);
+
+        $akun_laba_ditahan = Account::where([
+            ['business_id', Session::get('business_id')],
+            ['kode_akun', '3.2.01.01']
+        ])->first();
+
+        $rekening = Account::with([
+            'amount' => function ($query) use ($tahun, $bulan) {
+                $query->where('tahun', $tahun)->where(function ($query) use ($bulan) {
+                    $query->where('bulan', '0')->orwhere('bulan', $bulan);
+                });
+            }
+        ])->get();
+
+        $alokasi_laba = [
+            '3.2.01.01' => 0
+        ];
+
+        $laba_ditahan = $data['laba_ditahan']; // Ditambahkan ke 3.2.01.01
+        foreach ($laba_ditahan as $key => $val) {
+            $value = str_replace(',', '', str_replace('.00', '', $val));
+            $alokasi_laba['3.2.01.01'] += floatval($value);
+        }
+
+        $cadangan_resiko = $data['cadangan_resiko'];
+        $laba_ditahan = $data['laba_ditahan'];
+
+        $trx = [];
+        $data_id = [];
+        $saldo_tutup_buku = [];
+        $trx['delete'] = [];
+        $trx['insert'] = [];
+
+        foreach ($rekening as $rek) {
+            $saldo_awal_debit = 0;
+            $saldo_awal_kredit = 0;
+            $debit = 0;
+            $kredit = 0;
+
+            if ($rek->lev1 < 4 && $rek->kode_akun != '3.2.02.01') {
+                foreach ($rek->amount as $saldo) {
+                    if ($saldo->bulan == 0) {
+                        if ($saldo->debit > 0) $saldo_awal_debit = $saldo->debit;
+                        if ($saldo->kredit > 0) $saldo_awal_kredit = $saldo->kredit;
+                    } else {
+                        if ($saldo->debit > 0) $debit = $saldo->debit;
+                        if ($saldo->kredit > 0) $kredit = $saldo->kredit;
+                    }
+                }
+            }
+
+            $saldo_debit = floatval($saldo_awal_debit) + floatval($debit);
+            $saldo_kredit = floatval($saldo_awal_kredit) + floatval($kredit);
+            $id = $rek->id . $tahun_tb . '00';
+
+            if ($rek->kode_akun == '3.2.01.01') {
+                $saldo_kredit += floatval($alokasi_laba['3.2.01.01']);
+            }
+
+            if (Keuangan::startWith($rek->kode_akun, '2.1.01')) {
+                $keterangan = $rek->nama_akun . ' tahun ' . $tahun;
+                $trx['insert'][] = [
+                    'tgl_transaksi' => date('Y-m-d'),
+                    'rekening_debit' => $akun_laba_ditahan->id,
+                    'rekening_kredit' => $rek->id,
+                    'denda' => '0',
+                    'usage_id' => '0',
+                    'installation_id' => '0',
+                    'keterangan' => $keterangan,
+                    'relasi' => '-',
+                    'total' => floatval(str_replace(',', '', str_replace('.00', '', $cadangan_resiko[$rek->kode_akun]))),
+                    'urutan' => '0',
+                    'user_id' => auth()->user()->id
+                ];
+
+                $alokasi_laba['3.2.01.01'] += floatval(str_replace(',', '', str_replace('.00', '', $cadangan_resiko[$rek->kode_akun])));
+                $trx['delete'][] = $keterangan;
+            } else {
+                $saldo_tutup_buku[] = [
+                    'id' => $id,
+                    'account_id' => $rek->id,
+                    'tahun' => $tahun_tb,
+                    'bulan' => '0',
+                    'debit' => (string) $saldo_debit,
+                    'kredit' => (string) $saldo_kredit
+                ];
+
+                $data_id[] = $id;
+            }
+        }
+
+        Amount::whereIn('id', $data_id)->delete();
+        Amount::insert($saldo_tutup_buku);
+
+        Transaction::whereIn('keterangan', $trx['delete'])->delete();
+        Transaction::insert($trx['insert']);
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Tutup Buku Tahun ' . $tahun . ' berhasil.'
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -403,12 +714,12 @@ class TransactionController extends Controller
             ];
 
             $rekening_debit = Account::where([
-                ['kode_akun','1.1.01.01'],
-                ['business_id',Session::get('business_id')]
+                ['kode_akun', '1.1.01.01'],
+                ['business_id', Session::get('business_id')]
             ])->first();
             $rekening_kredit = Account::where([
-                ['kode_akun','4.1.01.02'],
-                ['business_id',Session::get('business_id')]
+                ['kode_akun', '4.1.01.02'],
+                ['business_id', Session::get('business_id')]
             ])->first();
 
             $trx_penjualan = [
@@ -742,12 +1053,12 @@ class TransactionController extends Controller
         $biaya_instalasi = $data['pembayaran'];
 
         $rekening_debit = Account::where([
-            ['kode_akun','1.1.01.01'],
-            ['business_id',Session::get('business_id')]
+            ['kode_akun', '1.1.01.01'],
+            ['business_id', Session::get('business_id')]
         ])->first();
         $rekening_kredit = Account::where([
-            ['kode_akun','4.1.01.02'],
-            ['business_id',Session::get('business_id')]
+            ['kode_akun', '4.1.01.02'],
+            ['business_id', Session::get('business_id')]
         ])->first();
 
         $transaksi = Transaction::create([
