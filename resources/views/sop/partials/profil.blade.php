@@ -8,7 +8,7 @@
         <p style="text-align: justify;">
             Lakukan Pengaturan Aplikasi PAMSIDES mendasar
             kepada Standar Operasional Prosedur yang berlaku
-            di <b>{{ $business->nama }}</b>, Klik Sidbar disamping untuk
+            di <b>{{ $business->nama }}</b>, Klik Sidebar disamping untuk
             mengatur & masuk ke fitur yang tersedia. Gunakanlah Aplikasi Pamsides
             secara bijak sesuai dengan wewenang Anda, semoga bermanfaat.
             <br>
