@@ -8,6 +8,7 @@ use App\Models\AkunLevel1;
 use App\Models\Amount;
 use App\Models\Business;
 use App\Models\Calk;
+use App\Models\Village;
 use App\Models\Installations;
 use App\Models\Inventory;
 use App\Models\JenisLaporan;
@@ -137,8 +138,13 @@ class PelaporanController extends Controller
             'sub_laporan',
             'type'
         ]);
-        $busines = Business::where('id', Session::get('business_id'))->first();
 
+
+        $busines = Business::where('id', Session::get('business_id'))->first();
+        $direktur = User::where([
+            ['jabatan','1'],
+            ['business_id', Session::get('business_id')]
+        ])->with(['position'])->first();
 
         if ($data['tahun'] == null) {
             abort(404);
@@ -161,12 +167,15 @@ class PelaporanController extends Controller
         if ($laporan == 'tutup_buku') {
             $laporan = $request->sub_laporan;
         }
+        $data['logo'] = $busines->logo;
 
         $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $busines->nomor_bh;
         $data['info'] = $busines->alamat . ', Telp.' . $busines->telpon;
         $data['email'] = $busines->email;
         $data['nama'] = $busines->nama;
         $data['alamat'] = $busines->alamat;
+        $data['jabatan'] = $direktur->positions;
+        $data['direktur'] = $direktur;
 
         return $this->$laporan($data);
     }
@@ -221,6 +230,8 @@ class PelaporanController extends Controller
     }
     private function surat_pengantar(array $data)
     {
+        $villages = Village::where('id', Session::get('business_id'))->first();
+
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
@@ -241,6 +252,8 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::tahun($tgl);
         }
+        $data['nama_desa'] = $villages->nama;
+        $data['alamat_desa'] = $villages->alamat;
         $data['title'] = 'Surat Pengantar';
         $view = view('pelaporan.partials.views.surat_pengantar', $data)->render();
         $pdf = PDF::loadHTML($view);
@@ -579,12 +592,15 @@ class PelaporanController extends Controller
         $data['tgl'] = Tanggal::tahun($tgl);
 
         if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $awal_tahun = Tanggal::tglLatin(date('Y-m-d', strtotime($thn . '-01-01')));
+            $tanggal = Tanggal::tglLatin($tgl);
+
+            $data['sub_judul'] = 'PERIODE ' . $awal_tahun . ' s.d. ' . $tanggal;
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
         // Query untuk Pendapatan s.d. Bulan Lalu dan Bulan Ini
-        $dataPendapatan = Account::where([
+        $data['pendapatan'] = Account::where([
             ['kode_akun', 'LIKE', '4.1.%'],
             ['business_id', Session::get('business_id')]
         ])->with([
@@ -599,8 +615,7 @@ class PelaporanController extends Controller
             }
         ])->orderBy('kode_akun', 'ASC')->get();
 
-        // Query untuk Beban s.d. Bulan Lalu dan Bulan Ini
-        $dataBeban = Account::where([
+        $data['beban'] = Account::where([
             ['kode_akun', 'LIKE', '5.1.%'],
             ['business_id', Session::get('business_id')]
         ])->orWhere('kode_akun', 'LIKE', '5.2.%')
@@ -617,7 +632,7 @@ class PelaporanController extends Controller
                 }
             ])->orderBy('kode_akun', 'ASC')->get();
 
-        $dataPen = Account::where([
+        $data['pen'] = Account::where([
             ['kode_akun', 'LIKE', '4.2.%'],
             ['business_id', Session::get('business_id')]
         ])->orWhere('kode_akun', 'LIKE', '4.3.%')
@@ -634,8 +649,7 @@ class PelaporanController extends Controller
                 }
             ])->orderBy('kode_akun', 'ASC')->get();
 
-        // Query untuk Beb s.d. Bulan Lalu dan Bulan Ini
-        $dataBeb = Account::where([
+        $data['beb'] = Account::where([
             ['kode_akun', 'LIKE', '5.3.%'],
             ['business_id', Session::get('business_id')]
         ])
@@ -653,7 +667,7 @@ class PelaporanController extends Controller
                 }
             ])->orderBy('kode_akun', 'ASC')->get();
 
-        $pph = Account::where([['kode_akun', '5.4.01.01'], ['business_id', Session::get('business_id')]])->with([
+        $data['ph'] = Account::where([['kode_akun', '5.4.01.01'], ['business_id', Session::get('business_id')]])->with([
             'amount' => function ($query) use ($thn, $bulanSekarang) {
                 $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
@@ -665,7 +679,7 @@ class PelaporanController extends Controller
             }
         ])->orderBy('kode_akun', 'ASC')->get();
 
-        $bebanPemasaran = Account::where([['kode_akun', '5.2.01.01'], ['business_id', Session::get('business_id')]])->with([
+        $data['bp'] = Account::where([['kode_akun', '5.2.01.01'], ['business_id', Session::get('business_id')]])->with([
             'amount' => function ($query) use ($thn, $bulanSekarang) {
                 $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
                     // Data untuk Bulan Lalu (bulan aktif - 1)
@@ -677,7 +691,7 @@ class PelaporanController extends Controller
             }
         ])->orderBy('kode_akun', 'ASC')->get();
 
-        $pendluar = Account::whereIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])->where([
+        $data['pendl'] = Account::whereIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])->where([
             ['business_id', Session::get('business_id')]
         ])->with([
             'amount' => function ($query) use ($thn, $bulanSekarang) {
@@ -691,31 +705,7 @@ class PelaporanController extends Controller
             }
         ])->orderBy('kode_akun', 'ASC')->get();
 
-        // Menyiapkan data untuk view
-        $data = [
-            'pendapatan' => $dataPendapatan,
-            'beban' => $dataBeban,
-            'pen' => $dataPen,
-            'beb' => $dataBeb,
-            'ph' => $pph,
-            'bp' => $bebanPemasaran,
-            'pendl' => $pendluar
-
-
-        ];
-
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['title'] = 'Laba Rugi';
-
-        $busines = Business::where('id', Session::get('business_id'))->first();
-        $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $busines->nomor_bh;
-        $data['info'] = strtoupper($busines->alamat) . ', Telp. ' . $busines->telpon;
-        $data['email'] = $busines->email;
-        $data['nama'] = strtoupper($busines->nama);
-        $data['alamat'] = $busines->alamat;
-
-
-        // Menampilkan view dengan data yang sudah dihitung
         $view = view('pelaporan.partials.views.laba_rugi', $data)->render();
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
