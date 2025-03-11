@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cater;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 
@@ -15,7 +17,10 @@ class CaterController extends Controller
      */
     public function index()
     {
-        $caters = Cater::where('business_id', Session::get('business_id'))->get();
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->get();
         $title = 'Data Cater';
         return view('cater.index')->with(compact('title', 'caters'));
     }
@@ -40,7 +45,6 @@ class CaterController extends Controller
             "telpon",
             "username",
             "password",
-            "wilayah",
             "jenis_kelamin"
         ]);
 
@@ -48,9 +52,8 @@ class CaterController extends Controller
             'nama' => 'required',
             'alamat' => 'required',
             'telpon' => 'required',
-            'username' => 'required',
+            'username' => 'required|unique:users',
             'password' => 'required',
-            'wilayah' => 'required',
             'jenis_kelamin' => 'required'
         ];
 
@@ -59,16 +62,15 @@ class CaterController extends Controller
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $create = Cater::create([
+        $create = User::create([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'telpon' => $request->telpon,
             'username' => $request->username,
-            'password' => $request->password,
-            'wilayah' => $request->wilayah,
+            'password' => Hash::make($request->password),
             'jenis_kelamin' => $request->jenis_kelamin,
-            'business_id' => Session::get('business_id')
-
+            'business_id' => Session::get('business_id'),
+            'jabatan' => '5'
         ]);
 
         return response()->json([
@@ -89,37 +91,50 @@ class CaterController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cater $cater)
+    public function edit(User $cater)
     {
-        $caters = Cater::where('business_id', Session::get('business_id'))->get();
         $title = 'Edit Cater';
-        return view('cater.edit')->with(compact('title', 'caters', 'cater'));
+        return view('cater.edit')->with(compact('title', 'cater'));
     }
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cater $cater)
+    public function update(Request $request, User $cater)
     {
-        // Validasi input
-        $request->validate([
+        $data = $request->only([
+            'nama',
+            'jenis_kelamin',
+            'alamat',
+            'telpon',
+            'username',
+            'password'
+        ]);
+
+        $rules = [
             'nama' => 'required',
             'alamat' => 'required',
             'telpon' => 'required',
             'username' => 'required',
-            'password' => 'required',
-            'wilayah' => 'required',
             'jenis_kelamin' => 'required'
-        ]);
+        ];
 
-        // Update data
-        $cater->update([
+        if ($request->username != $cater->username) {
+            $rules['username'] = 'required|unique:users';
+        }
+
+        $request->validate($rules);
+        $password = $cater->password;
+        if ($request->password) {
+            $password = Hash::make($request->password);
+        }
+
+        User::where('id', $cater->id)->update([
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'wilayah' => $request->wilayah,
             'alamat' => $request->alamat,
             'telpon' => $request->telpon,
             'username' => $request->username,
-            'password' => $request->password, // Enkripsi password
+            'password' => $password,
         ]);
 
         return redirect('/caters')->with('jsedit', 'Cater berhasil diperbarui');
@@ -128,9 +143,9 @@ class CaterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cater $cater)
+    public function destroy(User $cater)
     {
-        $cater->delete();
+        User::where('id', $cater->id)->delete();
         return redirect('/caters')->with('success', 'Cater berhasil dihapus');
     }
 }
