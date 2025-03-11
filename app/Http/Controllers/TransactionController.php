@@ -402,10 +402,19 @@ class TransactionController extends Controller
                 'tgl_validasi'  => Tanggal::tglNasional($request->tgl_transaksi),
             ];
 
+            $rekening_debit = Account::where([
+                ['kode_akun','1.1.01.01'],
+                ['business_id',Session::get('business_id')]
+            ])->first();
+            $rekening_kredit = Account::where([
+                ['kode_akun','4.1.01.02'],
+                ['business_id',Session::get('business_id')]
+            ])->first();
+
             $trx_penjualan = [
                 'tgl_transaksi'  => (string) Tanggal::tglNasional($request->tgl_transaksi),
-                'rekening_debit'  => '1',
-                'rekening_kredit'  => '59',
+                'rekening_debit'  => $rekening_debit->id,
+                'rekening_kredit'  => $rekening_kredit->id,
                 'usage_id'          => '0',
                 'installation_id'     => '0',
                 'keterangan_transaksi' => (string) 'Penjualan ' . $request->unit . ' unit ' . $barang . ' (' . $id_inv . ')',
@@ -732,9 +741,18 @@ class TransactionController extends Controller
         $biaya_tagihan = $data['tagihan'];
         $biaya_instalasi = $data['pembayaran'];
 
+        $rekening_debit = Account::where([
+            ['kode_akun','1.1.01.01'],
+            ['business_id',Session::get('business_id')]
+        ])->first();
+        $rekening_kredit = Account::where([
+            ['kode_akun','4.1.01.02'],
+            ['business_id',Session::get('business_id')]
+        ])->first();
+
         $transaksi = Transaction::create([
-            'rekening_debit' => '1',
-            'rekening_kredit' => '59',
+            'rekening_debit' => $rekening_debit->id,
+            'rekening_kredit' => $rekening_kredit->id,
             'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
             'total' => $biaya_instalasi,
             'installation_id' => $request->id_trx,

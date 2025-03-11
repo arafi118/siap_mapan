@@ -31,7 +31,7 @@
     <tr>
         <td width="5%">Nomor</td>
         <td width="50%">: ______________________</td>
-        <td width="45%" align="right">{{ $alamat }}, {{ $tgl }}</td>
+        <td width="45%" align="right">{{ $nama_desa }}, {{ $tgl }}</td>
     </tr>
     <tr>
         <td>Lampiran</td>
@@ -43,9 +43,9 @@
     </tr>
     <tr>
         <td>&nbsp;</td>
-        <td style="padding-left: 8px;">
+        {{-- <td style="padding-left: 8px;">
             &nbsp; <u>Sampai Dengan {{ $sub_judul }}</u>
-        </td>
+        </td> --}}
     </tr>
     <tr>
         <td colspan="3" height="15"></td>
@@ -54,7 +54,7 @@
         <td>&nbsp;</td>
         <td colspan="2" align="left" style="padding-left: 8px;">
             <div><b>Kepada Yth.</b></div>
-            <div><b>Kepala Dinas PMD </b></div>
+            <div><b>Kepala Desa {{ $nama_desa }}</b></div>
             <div><b></b></div>
         </td>
     </tr>
@@ -87,14 +87,14 @@
     <tr>
         <td colspan="2"></td>
         <td align="center">
-            <div>......</div>
-            <div>......</div>
+            <div>{{ $nama }}</div>
+            <div>{{ $jabatan->nama_jabatan ?? '-' }}</div>
             <br>
             <br>
             <br>
             <br>
             <div>
-                <b>...</b>
+                <b>{{ $direktur->nama }}</b>
             </div>
         </td>
     </tr>

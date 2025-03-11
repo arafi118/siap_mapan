@@ -116,7 +116,9 @@ class SopController extends Controller
         $akun1 = AkunLevel1::with([
             'akun2',
             'akun2.akun3',
-            'akun2.akun3.accounts'
+            'akun2.akun3.accounts' => function ($query) {
+                $query->where('business_id', Session::get('business_id'));
+            }
         ])->get();
 
         $akun_id = 0;
