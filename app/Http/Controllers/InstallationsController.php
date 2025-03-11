@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cater;
 use App\Models\Customer;
-use App\Models\Family;
 use App\Models\Installations;
 use App\Models\Package;
-use App\Models\Region;
 use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\Account;
 use App\Models\Usage;
+use App\Models\User;
 use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Utils\Tanggal;
-use App\Utils\Keuangan;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
@@ -100,9 +97,9 @@ class InstallationsController extends Controller
                 $query->where('customers.nama', 'LIKE', "%{$params}%")
                     ->orWhere('customers.nik', 'LIKE', "%{$params}%")
                     ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
-            })->where(function($query) {
+            })->where(function ($query) {
                 $query->where('installations.business_id', Session::get('business_id'))
-                ->orWhere('customers.business_id', Session::get('business_id'));
+                    ->orWhere('customers.business_id', Session::get('business_id'));
             })->whereNotIn('installations.status', ['B', 'C'])->get();
 
         return response()->json($installations);
@@ -193,7 +190,7 @@ class InstallationsController extends Controller
         $kd_kab = substr($desa->kode, 8, 2);
         $kd_kec = substr($desa->kode, 11, 4);
         $kd_desa = substr($desa->kode, 16, 3);
-        $kode_instalasi = $kd_prov . '.' . $kd_kab  .'.'. $kd_kec  .'.'. $kd_desa;
+        $kode_instalasi = $kd_prov . '.' . $kd_kab  . '.' . $kd_kec  . '.' . $kd_desa;
 
         if ($jumlah_kode_instalasi_by_desa->count() > 0) {
             $jumlah = str_pad(($jumlah_kode_instalasi_by_desa->count() + 1), 3, "0", STR_PAD_LEFT);
@@ -248,7 +245,10 @@ class InstallationsController extends Controller
         $pengaturan = Settings::where('business_id', $business_id);
         $settings = $pengaturan->first();
 
-        $caters = Cater::where('business_id', $business_id)->get();
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->get();
         $customer = Customer::where('business_id', Session::get('business_id'))->with('Village')->orderBy('id', 'ASC')->get();
         $desa = Village::all();
 
@@ -263,7 +263,10 @@ class InstallationsController extends Controller
     public function reg_notifikasi($customer_id)
     {
         $business_id = Session::get('business_id');
-        $caters = Cater::where('business_id', $business_id)->get();
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->get();
         $pengaturan = Settings::where('business_id', $business_id);
         $settings = $pengaturan->first();
         $paket = Package::where('business_id', Session::get('business_id'))->get();

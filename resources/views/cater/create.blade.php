@@ -41,22 +41,7 @@
                                     <small class="text-danger" id="msg_nama">{{ $errors->first('nama') }}</small>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="position-relative mb-3">
-                                    <label for="wilayah">Wilayah</label>
-                                    <input autocomplete="off" type="text" name="wilayah" id="wilayah"
-                                        class="form-control">
-                                    <small class="text-danger" id="msg_wilayah">{{ $errors->first('wilayah') }}</small>
-                                    {{-- <select class="select2 form-control" name="jabatan" id="jabatan">
-                                        <option value="">Pilih Jabatan</option>
-                                        @foreach ($positions as $position)
-                                            <option value="{{ $position->id }}">{{ $position->nama_jabatan }}</option>
-                                        @endforeach
-                                    </select>
-                                    <small class="text-danger" id="msg_jabatan"></small> --}}
-                                </div>
-                            </div>
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <div class="position-relative mb-3">
                                     <label for="jenis_kelamin">Jenis Kelamin</label>
                                     <select class="select2 form-control" name="jenis_kelamin" id="jenis_kelamin">
@@ -97,7 +82,7 @@
                             <div class="col-md-4">
                                 <div class="position-relative mb-3">
                                     <label for="password">Pasword</label>
-                                    <input autocomplete="off" type="text" name="password" id="password"
+                                    <input autocomplete="off" type="password" name="password" id="password"
                                         class="form-control">
                                     <small class="text-danger" id="msg_password">{{ $errors->first('password') }}</small>
                                 </div>

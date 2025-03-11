@@ -43,7 +43,7 @@ class PelaporanController extends Controller
         ];
 
         if ($file == 'buku_besar') {
-            $accounts = Account::where('business_id', Session::get('business_id'));
+            $accounts = Account::where('business_id', Session::get('business_id'))->get();
             foreach ($accounts as $acc) {
                 $sub_laporan[] = [
                     'value' => $acc->kode_akun,
@@ -511,7 +511,9 @@ class PelaporanController extends Controller
         $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
             'akun2',
             'akun2.akun3',
-            'akun2.akun3.accounts',
+            'akun2.akun3.accounts' => function ($query) {
+                $query->where('business_id', Session::get('business_id'));
+            },
             'akun2.akun3.accounts.amount' => function ($query) use ($data) {
                 $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
                     $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);

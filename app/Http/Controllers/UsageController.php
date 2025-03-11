@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
-use App\Models\Cater;
 use App\Models\Customer;
 use App\Models\Installations;
 use App\Models\Settings;
@@ -36,7 +35,10 @@ class UsageController extends Controller
     {
         // where('status','A')->
         $customer = Installations::where('business_id', Session::get('business_id'))->with('customer')->orderBy('id', 'ASC')->get();
-        $caters = Cater::where('business_id', Session::get('business_id'))->get();
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->get();
         $usages = Usage::where('business_id', Session::get('business_id'))->get();
         $installasi = Installations::where('business_id', Session::get('business_id'))->orderBy('id', 'ASC')->get();
         $pilih_customer = 0;

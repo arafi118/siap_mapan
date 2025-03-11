@@ -26,9 +26,7 @@
                                 <th>NAMA</th>
                                 <th>ALAMAT</th>
                                 <th>TELPON</th>
-                                <th>WILAYAH</th>
                                 <th>USERNAME</th>
-                                <th>PASSWORD</th>
                                 <th style="text-align: center;">AKSI</th>
                             </tr>
                         </thead>
@@ -38,11 +36,7 @@
                                     <td>{{ $cater->nama }}</td>
                                     <td>{{ $cater->alamat }}</td>
                                     <td>{{ $cater->telpon }}</td>
-                                    {{-- <td>{{ $cater->jenis_kelamin }}</td> --}}
-                                    {{-- <td>{{ $cater->position->nama_jabatan }}</td> --}}
-                                    <td>{{ $cater->wilayah }}</td>
                                     <td>{{ $cater->username }}</td>
-                                    <td>{{ $cater->password }}</td>
                                     <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
                                         <a href="/caters/{{ $cater->id }}/edit" class="btn btn-warning btn-sm">
                                             <i class="fas fa-pencil-alt"></i>
