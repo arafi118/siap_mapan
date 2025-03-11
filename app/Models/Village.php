@@ -19,4 +19,9 @@ class Village extends Model
     {
         return $this->hasMany(Installations::class);
     }
+
+    public function saldo()
+    {
+        return $this->hasOne(Amount::class);
+    }
 }
