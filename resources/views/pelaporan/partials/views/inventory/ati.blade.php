@@ -19,13 +19,13 @@
     </tr>
 </table>
 <!-- Tabel Utama -->
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px; table-layout: fixed;">
+<table border="0"width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px; table-layout: fixed;">
     <!-- Header -->
     <tr style="background: rgb(232, 232, 232);">
         <th rowspan="2" width="3%" style="border: 0.5px solid black;">No</th>
         <th rowspan="2" width="7%" style="border: 0.5px solid black;">Tgl Beli
         </th>
-        <th rowspan="2" width="20%" style="border: 0.5px solid black;">Nama
+        <th rowspan="2" width="10%" style="border: 0.5px solid black;">Nama
             Barang</th>
         <th rowspan="2" width="3%" style="border: 0.5px solid black;">Id</th>
         <th rowspan="2" width="5%" style="border: 0.5px solid black;">Kondisi
@@ -81,7 +81,10 @@
         @endphp
         <tr style="color: rgb({{ $warna }})">
             @php
-                $satuan_susut = $inv->harsat <= 0 ? 0 : round(($inv->harsat * $inv->unit) / $inv->umur_ekonomis, 2);
+                $satuan_susut =
+                    $inv->harsat > 0 && $inv->umur_ekonomis > 0
+                        ? round(($inv->harsat * $inv->unit) / $inv->umur_ekonomis, 2)
+                        : 0;
                 $pakai_lalu = Inventaris::bulan($inv->tgl_beli, $tahun - 1 . '-12-31');
                 $nilai_buku = Inventaris::nilaiBuku($tgl_kondisi, $inv);
 
@@ -195,12 +198,15 @@
         <td class="t l b" align="right" colspan="2">{{ number_format($j_akum_susut, 2) }}</td>
         <td class="t l b r" align="right">{{ number_format($j_nilai_buku, 2) }}</td>
     </tr>
+    <tr style="background: rgb(167, 167, 167); font-weight: bold;">
+    <tr style="background: rgb(242, 242, 242); font-weight: bold; border: 0.5px solid black;">
+
     <tr>
         <td colspan="15" style="padding: 0px !important">
             <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
-                style="font-size: 12px; table-layout: fixed;">
+                style="font-size: 11px; table-layout: fixed;">
                 <tr>
-                    <td class="t l b" width="38%" height="15">
+                    <td class="t l b" width="28%" height="15">
                         Jumlah
                     </td>
                     <td class="t l b" width="4%" align="center">{{ $t_unit }}</td>
