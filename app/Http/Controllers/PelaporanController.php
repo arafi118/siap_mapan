@@ -981,7 +981,7 @@ class PelaporanController extends Controller
                 ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC');
             }
         ])->get();
-        $data['title'] = 'Daftar Aset Tetap';
+        $data['title'] = 'Aset Tetap Dan Inventaris';
         $view = view('pelaporan.partials.views.aset_tetap', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
         return $pdf->stream();
@@ -1041,7 +1041,7 @@ class PelaporanController extends Controller
         //     ['tgl_beli', '<=', $data['tgl_kondisi']]
         // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
 
-        $data['title'] = 'Daftar Aset Tak Berwujud';
+        $data['title'] = 'Aset Tak Berwujud';
         $view = view('pelaporan.partials.views.aset_tak_berwujud', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
         return $pdf->stream();
