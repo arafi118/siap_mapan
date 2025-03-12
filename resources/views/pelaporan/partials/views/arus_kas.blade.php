@@ -136,11 +136,29 @@
                     <td align="left">Jumlah {{ $ak->nama_akun }}</td>
                     <td align="right">{{ number_format($total_subtotal, 2) }}</td>
                 </tr>
+                {{-- <tr>
+                    <td colspan="3" style="padding: 0px !important;">
+                        <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
+                            style="font-size: 11px;">
+                            <tr style="background: rgb(128, 128, 128)">
+                                <td width="5%" align="center">&nbsp;</td>
+                                <td width="80%">Kenaikan (Penurunan) Kas</td>
+                                <td width="15%" align="right"></td>
+                            </tr>
+                            <tr style="background: rgb(128, 128, 128)">
+                                <td align="center">&nbsp;</td>
+                                <td>SALDO AKHIR KAS SETARA KAS</td>
+                                <td align="right"></td>
+                            </tr>
+                        </table>
+                        <div style="margin-top: 16px;"></div>
+                    </td>
+                </tr> --}}
             @endif
-
             @php
                 $nomor++;
             @endphp
         @endforeach
+
     </table>
 @endsection
