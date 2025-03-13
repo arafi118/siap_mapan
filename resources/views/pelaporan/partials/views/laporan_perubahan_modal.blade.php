@@ -89,12 +89,16 @@
             <tr>
                 <td class="l t" align="center">{{ $nomor++ }}</td>
                 <td class="l t">{{ $rek->nama_akun }}</td>
-                <td class="l t" align="right">{{ number_format($saldo, 2) }}</td>
+                <td class="l t" align="right">
+                    {{ $saldo < 0 ? '(' . number_format(abs($saldo), 2) . ')' : number_format($saldo, 2) }}
+                </td>
             </tr>
         @endforeach
         <tr>
             <td class="l t b" colspan="2" height="15">Total Saldo</td>
-            <td class="l t b" align="right">{{ number_format($total_saldo, 2) }}</td>
+            <td class="l t b" align="right">
+                {{ $total_saldo < 0 ? '(' . number_format(abs($total_saldo), 2) . ')' : number_format($total_saldo, 2) }}
+            </td>
         </tr>
     </table>
 @endsection

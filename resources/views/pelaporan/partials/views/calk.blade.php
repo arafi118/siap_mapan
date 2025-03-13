@@ -308,14 +308,18 @@
                                 <tr class="{{ $row_class }}">
                                     <td>&nbsp; {{ $lev3->kode_akun }}</td>
                                     <td>{{ $lev3->nama_akun }}</td>
-                                    <td class="right-align">{{ number_format($sum_saldo, 2) }}&nbsp;</td>
+                                    <td class="right-align">
+                                        {{ $sum_saldo < 0 ? '(' . number_format(abs($sum_saldo), 2) . ')' : number_format($sum_saldo, 2) }}
+                                        &nbsp;</td>
                                 </tr>
 
                                 @foreach ($dataAccount as $account)
                                     <tr>
                                         <td>&nbsp; {{ $account['kode_akun'] }}</td>
                                         <td>{{ $account['nama_akun'] }}</td>
-                                        <td class="right-align">{{ number_format($account['saldo'], 2) }}&nbsp;</td>
+                                        <td class="right-align">
+                                            {{ $account['saldo'] < 0 ? '(' . number_format(abs($account['saldo']), 2) . ')' : number_format($account['saldo'], 2) }}
+                                            &nbsp;</td>
                                     </tr>
                                 @endforeach
                             @endforeach
@@ -323,7 +327,9 @@
 
                         <tr class="summary-row">
                             <td colspan="2">&nbsp; Jumlah {{ $lev1->nama_akun }}</td>
-                            <td class="right-align">{{ number_format($saldo_akun, 2) }}&nbsp;</td>
+                            <td class="right-align">
+                                {{ $saldo_akun < 0 ? '(' . number_format(abs($saldo_akun), 2) . ')' : number_format($saldo_akun, 2) }}
+                                &nbsp;</td>
                         </tr>
                     @endforeach
 
@@ -336,7 +342,8 @@
                                         <b>&nbsp; Jumlah Liabilitas + Ekuitas </b>
                                     </td>
                                     <td align="right" width="20%">
-                                        {{ number_format($jumlah_liabilitas_equitas, 2) }}&nbsp; </td>
+                                        {{ $jumlah_liabilitas_equitas < 0 ? '(' . number_format(abs($jumlah_liabilitas_equitas), 2) . ')' : number_format($jumlah_liabilitas_equitas, 2) }}&nbsp;
+                                    </td>
                                 </tr>
                             </table>
                         </td>

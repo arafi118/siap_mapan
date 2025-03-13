@@ -131,7 +131,7 @@
             $tahun_validasi = substr($inv->tgl_validasi, 0, 4);
         @endphp
 
-        <tr style="color: rgb({{ $warna }});">
+        <tr style="color: rgb({{ $warna }}); font-size: 11px;">
             <td style="border: 1px solid black; padding: 5px;" align="center">{{ $loop->iteration }}</td>
             <td style="border: 1px solid black; padding: 5px;" align="center">{{ Tanggal::tglIndo($inv->tgl_beli) }}
             </td>
@@ -139,17 +139,27 @@
             <td style="border: 1px solid black; padding: 5px;" align="center">{{ $inv->id }}</td>
             <td style="border: 1px solid black; padding: 5px;" align="center">{{ $inv->status }}</td>
             <td style="border: 1px solid black; padding: 5px;" align="center">{{ $inv->unit }}</td>
-            <td style="border: 1px solid black; padding: 5px;" align="right">{{ number_format($inv->harsat, 2) }}</td>
             <td style="border: 1px solid black; padding: 5px;" align="right">
-                {{ number_format($inv->harsat * $inv->unit, 2) }}</td>
+                {{ $inv->harsat < 0 ? '(' . number_format(abs($inv->harsat), 2) . ')' : number_format($inv->harsat, 2) }}
+            </td>
+            <td style="border: 1px solid black; padding: 5px;" align="right">
+                {{ $inv->harsat * $inv->unit < 0 ? '(' . number_format(abs($inv->harsat * $inv->unit), 2) . ')' : number_format($inv->harsat * $inv->unit, 2) }}
+            </td>
             <td style="border: 1px solid black; padding: 5px;" align="center">{{ $inv->umur_ekonomis }}</td>
-            <td style="border: 1px solid black; padding: 5px;" align="right">{{ number_format($satuan_susut, 2) }}
+            <td style="border: 1px solid black; padding: 5px;" align="right">
+                {{ $satuan_susut < 0 ? '(' . number_format(abs($satuan_susut), 2) . ')' : number_format($satuan_susut, 2) }}
             </td>
             <td style="border: 1px solid black; padding: 5px;" align="center">{{ $umur_pakai }}</td>
-            <td style="border: 1px solid black; padding: 5px;" align="right">{{ number_format($penyusutan, 2) }}</td>
+            <td style="border: 1px solid black; padding: 5px;" align="right">
+                {{ $penyusutan < 0 ? '(' . number_format(abs($penyusutan), 2) . ')' : number_format($penyusutan, 2) }}
+            </td>
             <td style="border: 1px solid black; padding: 5px;" align="center">{{ $akum_umur }}</td>
-            <td style="border: 1px solid black; padding: 5px;" align="right">{{ number_format($akum_susut, 2) }}</td>
-            <td style="border: 1px solid black; padding: 5px;" align="right">{{ number_format($nilai_buku, 2) }}</td>
+            <td style="border: 1px solid black; padding: 5px;" align="right">
+                {{ $akum_susut < 0 ? '(' . number_format(abs($akum_susut), 2) . ')' : number_format($akum_susut, 2) }}
+            </td>
+            <td style="border: 1px solid black; padding: 5px;" align="right">
+                {{ $akum_susut < 0 ? '(' . number_format(abs($akum_susut), 2) . ')' : number_format($akum_susut, 2) }}
+            </td>
         </tr>
     @endforeach
 
@@ -158,7 +168,7 @@
     <tr>
         <td colspan="15" style="padding: 0px !important">
             <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
-                style="font-size: 10px; table-layout: fixed;">
+                style="font-size: 11px; table-layout: fixed;">
                 <tr>
                     <td class="t l b" width="40%" height="15">
                         Jumlah
