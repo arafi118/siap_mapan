@@ -35,7 +35,7 @@ class Account extends Model
     {
         return $this->hasMany(Transaction::class, 'rekening_debit');
     }
-    
+
     public function rek_kredit()
     {
         return $this->hasMany(Transaction::class, 'rekening_kredit');
@@ -48,6 +48,11 @@ class Account extends Model
 
     public function inventory()
     {
-        return $this->hasMany(Inventory::class, ['jenis','kategori'],['lev3','lev4']);
+        return $this->hasMany(Inventory::class, ['jenis', 'kategori'], ['lev3', 'lev4']);
+    }
+
+    public function eb()
+    {
+        return $this->hasOne(Ebudgeting::class, 'id', 'kode_akun');
     }
 }

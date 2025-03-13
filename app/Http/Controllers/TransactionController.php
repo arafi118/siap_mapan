@@ -17,6 +17,7 @@ use App\Models\AkunLevel2;
 use App\Models\AkunLevel3;
 use App\Models\Amount;
 use App\Models\Village;
+use App\Models\Ebudgeting;
 use App\Models\User;
 use App\Models\JenisTransactions;
 use App\Models\Inventory;
@@ -284,16 +285,119 @@ class TransactionController extends Controller
     }
 
 
+
     public function ebudgeting()
     {
-        $transactions = Transaction::all();
-        $jenis_transaksi = JenisTransactions::all();
-        $rekening = Account::where('business_id', Session::get('business_id'));
         $business = Business::where('id', Session::get('business_id'))->first();
 
-        $title = ' Transaksi';
-        return view('transaksi.ebudgeting.index')->with(compact('title', 'business', 'rekening', 'transactions', 'jenis_transaksi'));
+        $title = ' E-Budgeting';
+        return view('transaksi.ebudgeting.index')->with(compact('title', 'business'));
     }
+
+
+    public function anggaran(Request $request)
+    {
+        $data = $request->only(['tahun', 'bulan']);
+
+        $validate = Validator::make($data, [
+            'tahun' => 'required',
+            'bulan' => 'required'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        $cek = Ebudgeting::where([
+            ['tahun', $request->tahun],
+            ['bulan', $request->bulan]
+        ])->orderBy('bulan', 'ASC')->orderBy('kode_akun', 'ASC');
+
+        $jumlah = $cek->count();
+
+        $tgl_kondisi = date('Y-m-t', strtotime($request->tahun . '-' . $request->bulan . '-01'));
+
+        if ($jumlah > 0) {
+            $akun1 = AkunLevel1::where('lev1', '>=', '4')->with([
+                'akun2',
+                'akun2.akun3',
+                'akun2.akun3.accounts' => function ($query) use ($tgl_kondisi) {
+                    $query->where('business_id', Session::get('business_id'))
+                        ->where(function ($q) use ($tgl_kondisi) {
+                            $q->whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi);
+                        });
+                },
+                'akun2.akun3.accounts.amount.eb' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', $data['bulan']]
+                    ]);
+                },
+            ])->orderBy('kode_akun', 'ASC')->get();
+        } else {
+            $akun1 = AkunLevel1::where('lev1', '>=', '4')
+                ->with([
+                    'akun2',
+                    'akun2.akun3',
+                    'akun2.akun3.accounts' => function ($query) use ($tgl_kondisi) {
+                        $query->where('business_id', Session::get('business_id'))
+                            ->where(function ($q) use ($tgl_kondisi) {
+                                $q->whereNull('tgl_nonaktif')->orWhere('tgl_nonaktif', '>', $tgl_kondisi);
+                            });
+                    },
+                    'akun2.akun3.accounts.amount.eb' => function ($query) use ($data) {
+                        $query->where([
+                            ['tahun', $data['tahun']],
+                            ['bulan', $data['bulan'] - 1]
+                        ]);
+                    },
+                ])
+                ->orderBy('kode_akun', 'ASC')
+                ->get();
+        }
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+
+        return response()->json([
+            'success' => true,
+            'view' => view('transaksi.ebudgeting.create')->with(compact('akun1', 'jumlah', 'tahun', 'bulan'))->render()
+        ]);
+    }
+
+    public function simpananggaran(Request $request)
+    {
+        $data = $request->only(['tahun', 'bulan', 'jumlah']);
+        $validate = Validator::make($data, [
+            'tahun' => 'required',
+            'bulan' => 'required'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+        $insert = [];
+        foreach ($request->jumlah as $id => $nominal) {
+            $insert[] = [
+                'account_id' => $id,
+                'tahun' => $request->tahun,
+                'bulan' => $request->bulan,
+                'jumlah' => floatval(str_replace(',', '', $nominal))
+            ];
+        }
+        Ebudgeting::where([
+            ['tahun', $request->tahun],
+            ['bulan', $request->bulan],
+        ])->delete();
+        Ebudgeting::insert($insert);
+
+        $nama_bulan = Tanggal::namaBulan($request->tahun . '-' . $request->bulan . '-01');
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Rencana Anggaran bulan ' . $nama_bulan . ' berhasil disimpan.'
+        ]);
+    }
+
 
     public function jurnalTutupBuku()
     {
@@ -411,6 +515,7 @@ class TransactionController extends Controller
                 $data_id[] = $id;
             }
 
+
             Amount::whereIn('id', $data_id)->delete();
             Amount::insert($saldo_tutup_buku);
 
@@ -494,11 +599,13 @@ class TransactionController extends Controller
 
         $rekening = Account::with([
             'amount' => function ($query) use ($tahun, $bulan) {
-                $query->where('tahun', $tahun)->where(function ($query) use ($bulan) {
-                    $query->where('bulan', '0')->orwhere('bulan', $bulan);
-                });
+                $query->where('tahun', $tahun)
+                    ->where(function ($query) use ($bulan) {
+                        $query->where('bulan', '0')->orWhere('bulan', $bulan);
+                    });
             }
-        ])->get();
+        ])->where('business_id', Session::get('business_id'))->get();
+
 
         $alokasi_laba = [
             '3.2.01.01' => 0
@@ -576,7 +683,6 @@ class TransactionController extends Controller
                 $data_id[] = $id;
             }
         }
-
         Amount::whereIn('id', $data_id)->delete();
         Amount::insert($saldo_tutup_buku);
 
@@ -954,12 +1060,12 @@ class TransactionController extends Controller
         $persen = ($penjumlahantrx / $abodemen) * 100;
 
         $rekening_debit = Account::where([
-            ['kode_akun','1.1.01.01'],
-            ['business_id',Session::get('business_id')]
+            ['kode_akun', '1.1.01.01'],
+            ['business_id', Session::get('business_id')]
         ])->first();
         $rekening_kredit = Account::where([
-            ['kode_akun','4.1.01.01'],
-            ['business_id',Session::get('business_id')]
+            ['kode_akun', '4.1.01.01'],
+            ['business_id', Session::get('business_id')]
         ])->first();
 
         $transaksi = Transaction::create([
