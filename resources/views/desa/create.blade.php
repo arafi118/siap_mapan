@@ -1,6 +1,30 @@
 @extends('layouts.base')
 
 @section('content')
+    <style>
+        .custom-alert {
+            padding: 20px;
+            /* Jarak seragam di semua sisi dalam alert */
+            border-radius: 5px;
+            /* Membuat sudut sedikit melengkung */
+            margin: 1px;
+            /* Menambahkan jarak di luar alert */
+        }
+    </style>
+    <div class="row">
+        <!-- Datatables -->
+        <div class="col-lg-12">
+            <!-- Alerts with Icon -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="alert alert-info alert-dismissible custom-alert" role="alert">
+                        <h4><i class="fas fa-info-circle"></i>&nbsp;&nbsp; Register Desa Baru !</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form action="/villages" method="post" id="FormInputDesa">
         @csrf
         <!-- Alert -->
@@ -64,7 +88,7 @@
                     </div>
                 </div>
                 <div class="col-12 d-flex justify-content-end">
-                    <button id="kembali" class="btn btn-light btn-icon-split">
+                    {{-- <button id="kembali" class="btn btn-light btn-icon-split">
                         <span class="icon text-white-50">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
@@ -73,7 +97,7 @@
                             </svg>
                         </span>
                         <span class="text">Kembali</span>
-                    </button>
+                    </button> --}}
 
                     <button class="btn btn-secondary btn-icon-split" id="Simpandesa"
                         type="submit"style="float: right; margin-left: 10px;">
@@ -90,14 +114,14 @@
             </div>
 
         </div>
-    </form>
+    </form> <br>
 @endsection
 
 @section('script')
     <script>
         $(document).on('click', '#kembali', function(e) {
             e.preventDefault();
-            window.location.href = '/installations/create';
+            window.location.href = '/villages';
         });
 
         $(document).ready(function() {

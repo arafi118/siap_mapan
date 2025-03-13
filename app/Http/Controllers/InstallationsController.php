@@ -8,6 +8,7 @@ use App\Models\Package;
 use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\Account;
+use App\Models\Cater;
 use App\Models\Usage;
 use App\Models\User;
 use App\Models\Village;
@@ -59,18 +60,18 @@ class InstallationsController extends Controller
     public function CariPelunasanInstalasi(Request $request)
     {
         $query = $request->input('query');
-    
+
         // Cari akun berdasarkan kode_akun
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
             ['business_id', Session::get('business_id')]
         ])->first();
-    
+
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.02'],
             ['business_id', Session::get('business_id')]
         ])->first();
-    
+
         $customers = Customer::where('business_id', Session::get('business_id'))
             ->where(function ($q) use ($query) {
                 $q->where('nama', 'LIKE', "%{$query}%")
@@ -89,10 +90,10 @@ class InstallationsController extends Controller
                 'installation.village',
                 'installation.package',
             ])->get();
-    
+
         return response()->json($customers);
     }
-    
+
 
     /**
      * cari custommers trx tagihan bulanan .
@@ -132,12 +133,12 @@ class InstallationsController extends Controller
             ['kode_akun', '1.1.01.01'],
             ['business_id', $business_id]
         ])->first();
-        
+
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.02'],
             ['business_id', $business_id]
         ])->first();
-        
+
         $installations = Installations::where('kode_instalasi', $kode_instalasi)
             ->with([
                 'package',
@@ -156,7 +157,7 @@ class InstallationsController extends Controller
                 },
             ], 'total')
             ->first();
-        
+
 
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
@@ -213,15 +214,18 @@ class InstallationsController extends Controller
      */
     public function kode_instalasi()
     {
-        $kd_desa = request()->get('kode');
+        $kd_desa = request()->get('kode_desa');
+        $caters = request()->get('kode_cater');
+
         $jumlah_kode_instalasi_by_desa = Installations::where('business_id', Session::get('business_id'))->where('desa', $kd_desa)->orderBy('kode_instalasi', 'DESC');
 
         $desa = Village::where('id', $kd_desa)->first();
-        $kd_prov = substr($desa->kode, 5, 2);
-        $kd_kab = substr($desa->kode, 8, 2);
-        $kd_kec = substr($desa->kode, 11, 4);
-        $kd_desa = substr($desa->kode, 16, 3);
-        $kode_instalasi = $kd_prov . '.' . $kd_kab  . '.' . $kd_kec  . '.' . $kd_desa;
+        $cater = User::where('business_id', Session::get('business_id'))->where('id', $caters)->first();
+
+        $kd_bisnis = substr($desa->kode, 0, 3);
+        $kd_urutan = substr($desa->kode, 4, 4);
+
+        $kode_instalasi = $kd_urutan  . '.' . $cater->id;
 
         if ($jumlah_kode_instalasi_by_desa->count() > 0) {
             $jumlah = str_pad(($jumlah_kode_instalasi_by_desa->count() + 1), 3, "0", STR_PAD_LEFT);
@@ -408,16 +412,16 @@ class InstallationsController extends Controller
         $persen = 100 - ($jumlah / $abodemen * 100);
         if ($jumlah_instal > 0) {
             $business_id = Session::get('business_id');
-                $rekening_debit = Account::where([
-                ['kode_akun', '1.1.01.01'], 
+            $rekening_debit = Account::where([
+                ['kode_akun', '1.1.01.01'],
                 ['business_id', $business_id]
             ])->first();
-        
+
             $rekening_kredit = Account::where([
-                ['kode_akun', '4.1.01.02'], 
+                ['kode_akun', '4.1.01.02'],
                 ['business_id', $business_id]
             ])->first();
-        
+
             if ($rekening_debit && $rekening_kredit) {
                 $transaksi = Transaction::create([
                     'rekening_debit' => $rekening_debit->id,
@@ -434,13 +438,12 @@ class InstallationsController extends Controller
                 ], 400);
             }
         }
-        
+
         return response()->json([
             'success' => true,
             'msg' => 'Daftar & Instalasi berhasil disimpan',
             'installation' => $install
         ]);
-        
     }
 
     /**
@@ -464,23 +467,23 @@ class InstallationsController extends Controller
             'village'
         ])->where('id', $installation->id)->first();
         $rekening_debit = Account::where([
-            ['kode_akun', '1.1.01.01'], 
+            ['kode_akun', '1.1.01.01'],
             ['business_id', $business_id]
         ])->first();
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'], 
+            ['kode_akun', '4.1.01.02'],
             ['business_id', $business_id]
         ])->first();
-    
+
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
-    
+
         return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx'));
     }
-    
+
     /**
      * Menampilkan Detail dengan status R.
      */
@@ -495,24 +498,24 @@ class InstallationsController extends Controller
         ])->where('id', $installation->id)->first();
 
         $rekening_debit = Account::where([
-            ['kode_akun', '1.1.01.01'], 
+            ['kode_akun', '1.1.01.01'],
             ['business_id', $business_id]
         ])->first();
-    
+
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'], 
+            ['kode_akun', '4.1.01.02'],
             ['business_id', $business_id]
         ])->first();
-    
+
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
-    
+
         return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx'));
     }
-    
+
 
     /**
      * Menampilkan Detail dengan status I.
@@ -521,32 +524,32 @@ class InstallationsController extends Controller
     {
         $business_id = Session::get('business_id');
         $tampil_settings = Settings::where('business_id', $business_id)->first();
-    
+
         $installation = $installation->with([
             'customer',
             'package',
             'village'
         ])->where('id', $installation->id)->first();
-    
+
         $rekening_debit = Account::where([
-            ['kode_akun', '1.1.01.01'], 
+            ['kode_akun', '1.1.01.01'],
             ['business_id', $business_id]
         ])->first();
-    
+
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.02'],
             ['business_id', $business_id]
         ])->first();
-   
+
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
-    
+
         return view('perguliran.partials.pasang')->with(compact('installation', 'tampil_settings', 'trx'));
     }
-    
+
 
     /**
      * Menampilkan Detail dengan status A.
@@ -561,12 +564,12 @@ class InstallationsController extends Controller
             'village'
         ])->where('id', $installation->id)->first();
         $rekening_debit = Account::where([
-            ['kode_akun', '1.1.01.01'], 
+            ['kode_akun', '1.1.01.01'],
             ['business_id', $business_id]
         ])->first();
-    
+
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'], 
+            ['kode_akun', '4.1.01.02'],
             ['business_id', $business_id]
         ])->first();
         $trx = Transaction::where([
@@ -574,10 +577,10 @@ class InstallationsController extends Controller
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
-    
+
         return view('perguliran.partials.aktif')->with(compact('installation', 'tampil_settings', 'trx'));
     }
-    
+
 
     /**
      * Menampilkan Detail dengan status B.
@@ -585,10 +588,10 @@ class InstallationsController extends Controller
     private function detailB($installation)
     {
         $business_id = Session::get('business_id');
-    
+
         // Ambil pengaturan bisnis
         $tampil_settings = Settings::where('business_id', $business_id)->first();
-    
+
         // Pastikan data instalasi diambil dengan relasi yang diperlukan
         $installation = $installation->with([
             'customer',
@@ -596,12 +599,12 @@ class InstallationsController extends Controller
             'village'
         ])->where('id', $installation->id)->first();
         $rekening_debit = Account::where([
-            ['kode_akun', '1.1.01.01'], 
+            ['kode_akun', '1.1.01.01'],
             ['business_id', $business_id]
         ])->first();
-    
+
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'], 
+            ['kode_akun', '4.1.01.02'],
             ['business_id', $business_id]
         ])->first();
         $trx = Transaction::where([
@@ -609,10 +612,10 @@ class InstallationsController extends Controller
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
-    
+
         return view('perguliran.partials.blokir')->with(compact('installation', 'tampil_settings', 'trx'));
     }
-    
+
 
     /**
      * Menampilkan Detail dengan status C.
@@ -621,7 +624,7 @@ class InstallationsController extends Controller
     {
         $business_id = Session::get('business_id');
         $tampil_settings = Settings::where('business_id', $business_id)->first();
-    
+
         $installation = $installation->with([
             'customer',
             'package',
@@ -629,24 +632,24 @@ class InstallationsController extends Controller
         ])->where('id', $installation->id)->first();
 
         $rekening_debit = Account::where([
-            ['kode_akun', '1.1.01.01'], 
+            ['kode_akun', '1.1.01.01'],
             ['business_id', $business_id]
         ])->first();
-    
+
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'], 
+            ['kode_akun', '4.1.01.02'],
             ['business_id', $business_id]
         ])->first();
-    
+
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
-    
+
         return view('perguliran.partials.copot')->with(compact('installation', 'tampil_settings', 'trx'));
     }
-    
+
 
     /**
      * Show the form for editing the specified resource.

@@ -34,7 +34,7 @@
                                     </div>
                                     <!-- Tombol Register Desa -->
                                     <div class="col-md-3 text-end">
-                                        <a href="/villages/create" class="btn btn-success" id="RegisterDesa"
+                                        <a href="/customers/create" class="btn btn-success" id="RegisterDesa"
                                             style="background-color: #81d700;">
                                             <span class="icon text-white-50">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -44,7 +44,7 @@
                                                         d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
                                                 </svg>
                                             </span>&nbsp;
-                                            <span class="text">Register Desa</span>
+                                            <span class="text">Register Pelanggan</span>
                                         </a>
                                     </div>
                                 </div>
@@ -129,7 +129,8 @@
                                         <div class="col-md-4">
                                             <div class="position-relative mb-3">
                                                 <label for="jenis_paket">Paket/Kelas</label>
-                                                <select class="select2 form-control" name="package_id" id="jenis_paket">
+                                                <select class="select2 form-control package" name="package_id"
+                                                    id="jenis_paket">
                                                     <option>Pilih Paket/Kelas</option>
                                                     @foreach ($paket as $p)
                                                         <option value="{{ $p->id }}">
@@ -226,13 +227,20 @@
             format: 'd/m/Y'
         });
 
-        $(document).on('change', '#desa', function(e) {
-            e.preventDefault()
+        $(document).on('change', '#desa, #cater, .package', function(e) {
+            e.preventDefault();
 
-            var kd_desa = $(this).val()
-            $.get('/installations/kode_instalasi?kode=' + kd_desa, function(result) {
-                $('#kode_instalasi').val(result.kd_instalasi)
-            })
+            var kd_desa = $('#desa').val();
+            var kd_cater = $('#cater').val();
+            var package_val = $('.package').val();
+
+            $.get('/installations/kode_instalasi', {
+                kode_desa: kd_desa,
+                kode_cater: kd_cater,
+                package: package_val
+            }, function(result) {
+                $('#kode_instalasi').val(result.kd_instalasi);
+            });
         });
 
         $(document).on('change', '#jenis_paket', function() {
