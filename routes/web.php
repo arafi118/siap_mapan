@@ -48,6 +48,16 @@ Route::prefix('master')->group(function () {
 Route::get('/auth', [AuthController::class, 'index'])->name('auth')->middleware('guest');
 Route::post('/auth', [AuthController::class, 'login']);
 
+Route::get('/register', [AuthController::class, 'register'])->middleware('guest');
+Route::post('/register', [AuthController::class, 'proses_register'])->middleware('guest');
+
+Route::get('/migrasi/desa', [AuthController::class, 'migrasi_desa'])->middleware('guest');
+Route::get('/migrasi/paket', [AuthController::class, 'migrasi_paket'])->middleware('guest');
+Route::get('/migrasi/customer', [AuthController::class, 'migrasi_customer'])->middleware('guest');
+Route::get('/migrasi/instalasi', [AuthController::class, 'migrasi_instalasi'])->middleware('guest');
+Route::get('/migrasi/pemakaian', [AuthController::class, 'migrasi_pemakaian'])->middleware('guest');
+Route::get('/migrasi/sync', [AuthController::class, 'migrasi_sync'])->middleware('guest');
+
 Route::get('/link', function () {
     $target = '/home/akubumdes/public_html/pamsides/storage/app/public';
     $shortcut = '/home/akubumdes/public_html/pamsides/public/storage';

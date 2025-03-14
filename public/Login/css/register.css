@@ -1,0 +1,96 @@
+/* Warna utama putih dengan aksen hijau */
+body {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    max-width: 940px;
+    width: 100%;
+}
+
+/* Box Form */
+.register-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #57b846;
+    /* Aksen hijau */
+}
+
+h3 {
+    color: #333;
+    font-weight: bold;
+}
+
+/* Input Field */
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: calc(45px / 2);
+    transform: translateY(-50%);
+    color: #57b846;
+}
+
+.form-control {
+    padding-left: 40px;
+    height: 45px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: #57b846;
+    box-shadow: 0 0 5px rgba(87, 184, 70, 0.5);
+}
+
+/* Tombol Register */
+.btn-register {
+    background: #57b846;
+    color: #fff;
+    border-radius: 25px;
+    font-weight: bold;
+    padding: 10px;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.btn-register:hover {
+    background: #4cae4f;
+}
+
+/* Input File */
+.file-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.custom-file-input {
+    position: absolute;
+    cursor: pointer;
+}
+
+.custom-file-label {
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    background: #f9f9f9;
+    transition: 0.3s;
+}
+
+.custom-file-input:focus~.custom-file-label {
+    border-color: #57b846;
+    box-shadow: 0 0 5px rgba(87, 184, 70, 0.5);
+}
