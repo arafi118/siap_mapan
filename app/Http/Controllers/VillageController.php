@@ -61,8 +61,6 @@ class VillageController extends Controller
             $alamat .= ', Desa ' . ucfirst(strtolower($desa->nama));
         }
 
-
-
         return response()->json([
             'success' => true,
             'alamat' => $alamat
@@ -99,7 +97,6 @@ class VillageController extends Controller
         ]);
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
@@ -130,14 +127,18 @@ class VillageController extends Controller
         $kode = $business_id .  '.' . $jumlah_desa;
         $desa = Region::where('kode', $request->desa)->first();
 
-        Village::create([
+        $Desa = Village::create([
             'kode' => $kode,
             'nama' => $desa->nama,
             'alamat' => $request->alamat,
             'hp' => $request->hp
         ]);
 
-        return redirect('/villages')->with('berhasil', 'Desa berhasil ditambahkan!');
+        return response()->json([
+            'success' => true,
+            'msg' => 'Desa berhasil ditambahkan!',
+            'Desa' => $Desa
+        ]);
     }
 
     /**

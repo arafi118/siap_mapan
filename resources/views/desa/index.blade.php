@@ -63,33 +63,16 @@
 
     @if (session('jsedit'))
         <script>
-            //edit
             document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Edit Data Berhasil',
+                toastMixin.fire({
                     text: '{{ Session::get('jsedit') }}',
                     showConfirmButton: false,
-                    timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
+                    timer: 2000
                 });
             });
         </script>
     @endif
 
-    @if (Session::has('berhasil'))
-        <script>
-            //tambah
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: '{{ Session::get('berhasil') }}',
-                    showConfirmButton: false,
-                    timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
-                });
-            });
-        </script>
-    @endif
     <script>
         $(document).on('click', '.Hapus_desa', function(e) {
             e.preventDefault();

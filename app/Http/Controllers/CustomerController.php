@@ -96,7 +96,7 @@ class CustomerController extends Controller
 
         return response()->json([
             'success' => true,
-            'msg' => 'Customer berhasil Ditambahkan!',
+            'msg' => 'Pelanggan berhasil Ditambahkan!',
             'installation' => $create
         ]);
     }
@@ -164,7 +164,7 @@ class CustomerController extends Controller
             'hp' => $request->no_telp
         ]);
 
-        return redirect('/customers')->with('success', 'Customer berhasil diperbarui');
+        return redirect('/customers')->with('success', 'Pelanggan berhasil diperbarui');
     }
 
     /**

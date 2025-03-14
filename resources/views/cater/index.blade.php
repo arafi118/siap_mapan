@@ -68,14 +68,11 @@
 
     @if (session('jsedit'))
         <script>
-            //edit
             document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
+                toastMixin.fire({
                     text: '{{ Session::get('jsedit') }}',
                     showConfirmButton: false,
-                    timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
+                    timer: 2000
                 });
             });
         </script>

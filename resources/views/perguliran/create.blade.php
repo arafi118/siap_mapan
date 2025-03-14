@@ -16,7 +16,8 @@
                                 class="img-fluid">
                             <div class="w-100">
                                 <h3 class="alert-heading"><b>Register Instalasi</b></h3>
-                                <p>"Lengkapi data dan klik tombol ' <b>SIMPAN</b> ' untuk menyelesaikan pendaftaran."</p>
+                                <p>"Lengkapi data dan klik tombol ' <b>DAFTAR & SIMPAN</b> ' untuk menyelesaikan
+                                    pendaftaran."</p>
                                 <hr>
 
                                 <div class="row align-items-center mb-3">
@@ -36,15 +37,7 @@
                                     <div class="col-md-3 text-end">
                                         <a href="/customers/create" class="btn btn-success" id="RegisterDesa"
                                             style="background-color: #81d700;">
-                                            <span class="icon text-white-50">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-sign-intersection-fill"
-                                                    viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
-                                                </svg>
-                                            </span>&nbsp;
-                                            <span class="text">Register Pelanggan</span>
+                                            <span class="text">Reg. Pelanggan</span>
                                         </a>
                                     </div>
                                 </div>

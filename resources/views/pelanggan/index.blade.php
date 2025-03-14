@@ -1,7 +1,4 @@
 @extends('layouts.base')
-@php
-    // dd($customers);
-@endphp
 @section('content')
     <form action="/customers" method="post" id="HapusPenduduk">
         @csrf
@@ -60,14 +57,11 @@
 @section('script')
     @if (session('success'))
         <script>
-            //edit
             document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
+                toastMixin.fire({
                     text: '{{ Session::get('success') }}',
                     showConfirmButton: false,
-                    timer: 2000 // Notifikasi otomatis hilang setelah 2 detik
+                    timer: 2000
                 });
             });
         </script>

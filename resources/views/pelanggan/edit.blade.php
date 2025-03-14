@@ -48,7 +48,16 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row">
+                                <div class="col-md-4">
+                                    <div class="position-relative mb-3">
+                                        <label for="no_kk">No. KK</label>
+                                        <input autocomplete="off" type="text"maxlength="16" name="no_kk" id="no_kk"
+                                            class="form-control" value="{{ $customer->kk }}">
+                                        <small class="text-danger">{{ $errors->first('no_kk') }}</small>
+                                    </div>
+                                </div>
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="tempat_lahir">Tempat Lahir</label>
@@ -60,12 +69,13 @@
                                 <div class="col-md-2">
                                     <div class="form-group" for="tgl_lahir">
                                         <label for="simpleDataInput">Tgl Lahir</label>
-                                        <div class="input-group date">
-                                            <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control"
+                                        <div class="input-group">
+                                            <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control date"
                                                 value={{ $customer->tgl_lahir }} id="simpleDataInput">
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-md-2">
                                     <div class="position-relative mb-3">
                                         <label for="jenis_kelamin">Jenis Kelamin</label>
@@ -79,18 +89,32 @@
                                         <small class="text-danger">{{ $errors->first('jenis_kelamin') }}</small>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-2">
                                     <div class="position-relative mb-3">
-                                        <label for="no_kk">No. KK</label>
-                                        <input autocomplete="off" type="text"maxlength="16" name="no_kk" id="no_kk"
-                                            class="form-control" value="{{ $customer->kk }}">
-                                        <small class="text-danger">{{ $errors->first('no_kk') }}</small>
-
+                                        <label for="no_telp">No. Telp</label>
+                                        <input autocomplete="off" type="text" name="no_telp" id="no_telp"
+                                            class="form-control" value="{{ $customer->hp }}">
+                                        <small class="text-danger">{{ $errors->first('no_telp') }}</small>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="position-relative mb-3">
+                                        <label for="desa">Desa/Kelurahan</label>
+                                        <select class="js-select-2 form-control" name="desa" id="desa">
+                                            @foreach ($desa as $ds)
+                                                <option value="">{{ $ds->nama }}</option>
+                                                <option value="{{ $ds->id }}"
+                                                    {{ $customer->desa == $ds->id ? 'selected' : '' }}>
+                                                    {{ $ds->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="text-danger">{{ $errors->first('desa') }}</small>
+                                    </div>
+                                </div>
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="alamat">Alamat KTP</label>
@@ -107,122 +131,8 @@
                                         <small class="text-danger">{{ $errors->first('domisi') }}</small>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="desa">Desa/Kelurahan</label>
-                                        <select class="js-select-2 form-control" name="desa" id="desa">
-                                            @foreach ($desa as $ds)
-                                                <option value="">{{ $ds->nama }}</option>
-                                                <option value="{{ $ds->id }}"
-                                                    {{ $customer->desa == $ds->id ? 'selected' : '' }}>
-                                                    {{ $ds->nama }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <small class="text-danger">{{ $errors->first('desa') }}</small>
-                                    </div>
-                                </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="agama">Agama</label>
-                                        <select class="js-select-2 form-control" name="agama" id="agama"
-                                            class="form-control">
-                                            <option {{ $customer->agama == 'islam' ? 'selected' : '' }} value="islam">
-                                                Islam
-                                            </option>
-                                            <option {{ $customer->agama == 'kristen_protestan' ? 'selected' : '' }}
-                                                value="kristen_protestan">Kristen Protestan</option>
-                                            <option {{ $customer->agama == 'kristen_katolik' ? 'selected' : '' }}
-                                                value="kristen_katolik">Kristen Katolik</option>
-                                            <option {{ $customer->agama == 'hindu' ? 'selected' : '' }} value="hindu">
-                                                Hindu
-                                            </option>
-                                            <option {{ $customer->agama == 'buddha' ? 'selected' : '' }} value="buddha">
-                                                Buddha
-                                            </option>
-                                            <option {{ $customer->agama == 'konghucu' ? 'selected' : '' }}
-                                                value="konghucu">
-                                                Konghucu</option>
-                                        </select>
-                                        <small class="text-danger">{{ $errors->first('agama') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="position-relative mb-3">
-                                        <label for="pendidikan">Pendidikan</label>
-                                        <select class="js-select-2 form-control" name="pendidikan" id="pendidikan"
-                                            class="form-control">
-                                            <option {{ $customer->pendidikan == 'sd_mi' ? 'selected' : '' }}
-                                                value="sd_mi">
-                                                SD/MI</option>
-                                            <option {{ $customer->pendidikan == 'smp_mts' ? 'selected' : '' }}
-                                                value="smp_mts">SMP/MTs</option>
-                                            <option {{ $customer->pendidikan == 'sma_smk_ma' ? 'selected' : '' }}
-                                                value="sma_smk_ma">SMA/SMK/MA</option>
-                                            <option {{ $customer->pendidikan == 'diploma_1' ? 'selected' : '' }}
-                                                value="diploma_1">Diploma 1 (D1)</option>
-                                            <option {{ $customer->pendidikan == 'diploma_2' ? 'selected' : '' }}
-                                                value="diploma_2">Diploma 2 (D2)</option>
-                                            <option {{ $customer->pendidikan == 'diploma_3' ? 'selected' : '' }}
-                                                value="diploma_3">Diploma 3 (D3)</option>
-                                            <option {{ $customer->pendidikan == 'sarjana' ? 'selected' : '' }}
-                                                value="sarjana">Sarjana (S1)</option>
-                                            <option {{ $customer->pendidikan == 'magister' ? 'selected' : '' }}
-                                                value="magister">Magister (S2)</option>
-                                            <option {{ $customer->pendidikan == 'doktor' ? 'selected' : '' }}
-                                                value="doktor">
-                                                Doktor (S3)</option>
-                                        </select>
-                                        <small class="text-danger">{{ $errors->first('pendidikan') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="position-relative mb-3">
-                                        <label for="status_pernikahan">Status Pernikahan</label>
-                                        <select class="js-select-2 form-control" name="status_pernikahan"
-                                            id="status_pernikahan" class="form-control">
-                                            <option value="">{{ $customer->status_pernikahan }}</option>
-                                            <option {{ $customer->status_pernikahan == 'lajang' ? 'selected' : '' }}
-                                                value="lajang">Lajang</option>
-                                            <option {{ $customer->status_pernikahan == 'menikah' ? 'selected' : '' }}
-                                                value="menikah">Menikah</option>
-                                            <option {{ $customer->status_pernikahan == 'cerai hidup' ? 'selected' : '' }}
-                                                value="cerai hidup">Cerai Hidup</option>
-                                            <option {{ $customer->status_pernikahan == 'cerai mati' ? 'selected' : '' }}
-                                                value="cerai mati">Cerai Mati</option>
-                                        </select>
-                                        <small class="text-danger">{{ $errors->first('status_pernikahan') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="no_telp">No. Telp</label>
-                                        <input autocomplete="off" type="text" name="no_telp" id="no_telp"
-                                            class="form-control" value="{{ $customer->hp }}">
-                                        <small class="text-danger">{{ $errors->first('no_telp') }}</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="tempat_kerja">Alamat Tempat Kerja</label>
-                                        <input autocomplete="off" type="text" name="tempat_kerja" id="tempat_kerja"
-                                            class="form-control" value="{{ $customer->tempat_kerja }}">
-                                        <small class="text-danger">{{ $errors->first('tempat_kerja') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="usaha">Jenis Usaha</label>
-                                        <input autocomplete="off" type="text" name="jenis_usaha" id="jenis_usaha"
-                                            class="form-control" value="{{ $customer->usaha }}">
-                                        <small class="text-danger">{{ $errors->first('jenis_usaha') }}</small>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="col-12 d-flex justify-content-end">
                                 <button id="kembali" class="btn btn-light btn-icon-split kembali">
                                     <span class="icon text-white-50">
@@ -253,20 +163,41 @@
                 </div>
             </div>
         </div>
-    @endsection
+    </div>
+@endsection
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).on('click', '#kembali', function(e) {
-            e.preventDefault();
-            window.location.href = '/customers';
-        });
-    </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '#kembali', function(e) {
+        e.preventDefault();
+        window.location.href = '/customers';
+    });
+</script>
 
-    <script>
-        $(document).ready(function() {
-            $('.js-select-2').select2({
-                theme: 'bootstrap4',
-            });
+<script>
+    $(document).ready(function() {
+        $('.js-select-2').select2({
+            theme: 'bootstrap4',
         });
-    </script>
+    });
+
+
+    jQuery.datetimepicker.setLocale('de');
+    $('.date').datetimepicker({
+        i18n: {
+            de: {
+                months: [
+                    'Januar', 'Februar', 'März', 'April',
+                    'Mai', 'Juni', 'Juli', 'August',
+                    'September', 'Oktober', 'November', 'Dezember',
+                ],
+                dayOfWeek: [
+                    "So.", "Mo", "Di", "Mi",
+                    "Do", "Fr", "Sa.",
+                ]
+            }
+        },
+        timepicker: false,
+        format: 'd/m/Y'
+    });
+</script>

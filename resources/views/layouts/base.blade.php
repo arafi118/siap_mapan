@@ -394,18 +394,6 @@
     </script>
 
     @yield('script')
-
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                toastMixin.fire({
-                    text: '{{ Session::get('success') }}',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            });
-        </script>
-    @endif
 </body>
 
 </html>

@@ -183,5 +183,54 @@
                 return char.toUpperCase();
             });
         }
+
+
+        //simpan
+        $(document).on('click', '#Simpandesa', function(e) {
+            e.preventDefault();
+            $('small').html('');
+
+            var form = $('#FormInputDesa');
+            var actionUrl = form.attr('action');
+
+            $.ajax({
+                type: 'POST',
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        Swal.fire({
+                            title: result.msg,
+                            text: "Tambahkan Register Desa Baru?",
+                            icon: "success",
+                            showDenyButton: true,
+                            confirmButtonText: "Tambahkan",
+                            denyButtonText: `Tidak`
+                        }).then((res) => {
+                            if (res.isConfirmed) {
+                                window.location.reload()
+                            } else {
+                                window.location.href = '/villages/';
+                            }
+                        });
+                    }
+                },
+                error: function(result) {
+                    const response = result.responseJSON;
+
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
+
+                    if (response && typeof response === 'object') {
+                        $.each(response, function(key, message) {
+                            $('#' + key)
+                                .closest('.input-group.input-group-static')
+                                .addClass('is-invalid');
+
+                            $('#msg_' + key).html(message);
+                        });
+                    }
+                }
+            });
+        });
     </script>
 @endsection
