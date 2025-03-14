@@ -14,7 +14,7 @@
                                 <div class="page-title-heading">
                                     <div style="display: flex; align-items: center;">
                                         <i class="fa fa-user-secret" style="font-size: 30px; margin-right: 13px;"></i>
-                                        <b>Edit Desa</b>
+                                        <b>Edit Data Desa</b>
                                     </div>
                                 </div>
                             </div>

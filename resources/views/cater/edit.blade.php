@@ -18,21 +18,18 @@
         <div class="row">
             <!-- Datatables -->
             <div class="col-lg-12">
-                <!-- Alerts with Icon -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="alert alert-info alert-dismissible custom-alert" role="alert">
-                            <h6><i class="fas fa-info-circle"></i>&nbsp;<b> Form Edit Data Cater !</b></h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <!-- Datatables -->
-            <div class="col-lg-12">
                 <div class="card mb-4">
                     <div class="table-responsive p-3">
+                        <div class="app-page-title">
+                            <div class="page-title-wrapper">
+                                <div class="page-title-heading">
+                                    <div style="display: flex; align-items: center;">
+                                        <i class="fa fa-user-secret" style="font-size: 30px; margin-right: 13px;"></i>
+                                        <b>Edit Data Cater</b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><br>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="position-relative mb-3">
