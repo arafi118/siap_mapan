@@ -486,8 +486,9 @@ class PelaporanController extends Controller
             ['account_id', $data['account']->id]
         ])->first();
 
-        $data['transactions'] = Transaction::where('rekening_debit', $data['account']->id)
-            ->orwhere('rekening_kredit', $data['account']->id)->get();
+        $data['transactions'] = Transaction::where('tgl_transaksi','LIKE',$thn . '-' . $bln . '%')->where(function($query) use($data) {
+            $query->where('rekening_debit', $data['account']->id)->orwhere('rekening_kredit', $data['account']->id);
+        })->get();
 
         $view = view('pelaporan.partials.views.buku_besar', $data)->render();
         $pdf = PDF::loadHTML($view);

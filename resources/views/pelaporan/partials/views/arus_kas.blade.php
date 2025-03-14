@@ -121,7 +121,9 @@
                     <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-red' : 'bg-white' }}">
                         <td align="center"></td>
                         <td align="left" style="padding-left: 20px;">{{ $akun_level_3->nama_akun }}</td>
-                        <td align="right">{{ number_format($jumlah_saldo, 2) }}</td>
+                        <td align="right">
+                            {{ $jumlah_saldo < 0 ? '(' . number_format(abs($jumlah_saldo), 2) . ')' : number_format($jumlah_saldo, 2) }}
+                        </td>
                     </tr>
 
                     @php
@@ -134,7 +136,9 @@
                 <tr style="background: rgb(148, 148, 148); font-weight: bold;">
                     <td></td>
                     <td align="left">Jumlah {{ $ak->nama_akun }}</td>
-                    <td align="right">{{ number_format($total_subtotal, 2) }}</td>
+                    <td align="right">
+                        {{ $total_subtotal < 0 ? '(' . number_format(abs($total_subtotal), 2) . ')' : number_format($total_subtotal, 2) }}
+                    </td>
                 </tr>
                 {{-- <tr>
                     <td colspan="3" style="padding: 0px !important;">

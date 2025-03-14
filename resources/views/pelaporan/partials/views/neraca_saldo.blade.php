@@ -103,18 +103,32 @@
                 <td width="15%" align="left" style="border: 0.5px solid black; padding-left: 5px;">
                     <strong>{{ $rek->kode_akun . '. ' . $rek->nama_akun }}</strong>
                 </td>
-                <td width="15%" align="right" style="border: 0.5px solid black;">{{ number_format($saldo_debit, 2) }}
+                <td width="15%" align="right" style="border: 0.5px solid black;">
+                    {{ $saldo_debit < 0 ? '(' . number_format(abs($saldo_debit), 2) . ')' : number_format($saldo_debit, 2) }}
                 </td>
-                <td width="15%" align="right" style="border: 0.5px solid black;">{{ number_format($saldo_kredit, 2) }}
+                <td width="15%" align="right" style="border: 0.5px solid black;">
+                    {{ $saldo_kredit < 0 ? '(' . number_format(abs($saldo_kredit), 2) . ')' : number_format($saldo_kredit, 2) }}
                 </td>
                 <td width="15%" align="right" style="border: 0.5px solid black;">
-                    {{ number_format($saldo_laba_rugi_debit, 2) }}</td>
+                    {{ $saldo_laba_rugi_debit < 0
+                        ? '(' . number_format(abs($saldo_laba_rugi_debit), 2) . ')'
+                        : number_format($saldo_laba_rugi_debit, 2) }}
+                </td>
                 <td width="15%" align="right" style="border: 0.5px solid black;">
-                    {{ number_format($saldo_laba_rugi_kredit, 2) }}</td>
+                    {{ $saldo_laba_rugi_kredit < 0
+                        ? '(' . number_format(abs($saldo_laba_rugi_kredit), 2) . ')'
+                        : number_format($saldo_laba_rugi_kredit, 2) }}
+                </td>
                 <td width="15%" align="right" style="border: 0.5px solid black;">
-                    {{ number_format($saldo_neraca_debit, 2) }}</td>
+                    {{ $saldo_neraca_debit < 0
+                        ? '(' . number_format(abs($saldo_neraca_debit), 2) . ')'
+                        : number_format($saldo_neraca_debit, 2) }}
+                </td>
                 <td width="15%" align="right" style="border: 0.5px solid black;">
-                    {{ number_format($saldo_neraca_kredit, 2) }}</td>
+                    {{ $saldo_neraca_kredit < 0
+                        ? '(' . number_format(abs($saldo_neraca_kredit), 2) . ')'
+                        : number_format($saldo_neraca_kredit, 2) }}
+                </td>
             </tr>
         @endforeach
 
@@ -132,28 +146,50 @@
             <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
             <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
             <td width="15%"align="right" style="border: 0.5px solid black;">
-                {{ number_format($surplus_defisit, 2) }}
+                {{ $surplus_defisit < 0
+                    ? '(' . number_format(abs($surplus_defisit), 2) . ')'
+                    : number_format($surplus_defisit, 2) }}
             </td>
             <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
             <td width="15%"style="border: 0.5px solid black; text-align: center;"></td>
             <td width="15%"align="right" style="border: 0.5px solid black;">
-                {{ number_format($surplus_defisit, 2) }}
+                {{ $surplus_defisit < 0
+                    ? '(' . number_format(abs($surplus_defisit), 2) . ')'
+                    : number_format($surplus_defisit, 2) }}
             </td>
         </tr>
         <tr style="background: rgb(242, 242, 242); font-weight: bold; border: 0.5px solid black;">
             <td width="40%" align="center" style="border: 0.5px solid black;">Jumlah</td>
             <td width="15%" align="right" style="border: 0.5px solid black;">
-                {{ number_format($jumlah_saldo_debit, 2) }}</td>
+                {{ $jumlah_saldo_debit < 0
+                    ? '(' . number_format(abs($jumlah_saldo_debit), 2) . ')'
+                    : number_format($jumlah_saldo_debit, 2) }}
+            </td>
             <td width="15%" align="right" style="border: 0.5px solid black;">
-                {{ number_format($jumlah_saldo_kredit, 2) }}</td>
+                {{ $jumlah_saldo_kredit < 0
+                    ? '(' . number_format(abs($jumlah_saldo_kredit), 2) . ')'
+                    : number_format($jumlah_saldo_kredit, 2) }}
+            </td>
             <td width="15%" align="right" style="border: 0.5px solid black;">
-                {{ number_format($jumlah_saldo_laba_rugi_debit + $surplus_defisit, 2) }}</td>
+                {{ $jumlah_saldo_laba_rugi_debit + $surplus_defisit < 0
+                    ? '(' . number_format(abs($jumlah_saldo_laba_rugi_debit + $surplus_defisit), 2) . ')'
+                    : number_format($jumlah_saldo_laba_rugi_debit + $surplus_defisit, 2) }}
+            </td>
             <td width="15%" align="right" style="border: 0.5px solid black;">
-                {{ number_format($jumlah_saldo_laba_rugi_kredit, 2) }}</td>
+                {{ $jumlah_saldo_laba_rugi_kredit < 0
+                    ? '(' . number_format(abs($jumlah_saldo_laba_rugi_kredit), 2) . ')'
+                    : number_format($jumlah_saldo_laba_rugi_kredit, 2) }}
+            </td>
             <td width="15%" align="right" style="border: 0.5px solid black;">
-                {{ number_format($jumlah_saldo_neraca_debit, 2) }}</td>
+                {{ $jumlah_saldo_neraca_debit < 0
+                    ? '(' . number_format(abs($jumlah_saldo_neraca_debit), 2) . ')'
+                    : number_format($jumlah_saldo_neraca_debit, 2) }}
+            </td>
             <td width="15%" align="right" style="border: 0.5px solid black;">
-                {{ number_format($jumlah_saldo_neraca_kredit + $surplus_defisit, 2) }}</td>
+                {{ $jumlah_saldo_neraca_kredit + $surplus_defisit < 0
+                    ? '(' . number_format(abs($jumlah_saldo_neraca_kredit + $surplus_defisit), 2) . ')'
+                    : number_format($jumlah_saldo_neraca_kredit + $surplus_defisit, 2) }}
+            </td>
         </tr>
     </table>
 @endsection

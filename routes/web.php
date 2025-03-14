@@ -16,6 +16,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VillageController;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -123,8 +124,10 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/transactions/tutup_buku', [TransactionController::class, 'jurnalTutupBuku']);
     Route::post('/transactions/tutup_buku', [TransactionController::class, 'tutup_buku']);
     Route::post('/transactions/simpan_laba', [TransactionController::class, 'simpanAlokasiLaba']);
+
     Route::get('/transactions/ebudgeting', [TransactionController::class, 'ebudgeting']);
-    Route::resource('/transactions', TransactionController::class);
+    Route::post('/transactions/anggaran', [TransactionController::class, 'anggaran']);
+    Route::post('/transactions/simpan_anggaran', [TransactionController::class, 'simpananggaran']);
 
     Route::get('/transactions/dokumen/struk_instalasi/{id}', [TransactionController::class, 'struk_instalasi']);
     Route::get('/transactions/dokumen/struk_tagihan/{id}', [TransactionController::class, 'struk_tagihan']);
@@ -138,6 +141,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/transactions/data/{id}', [TransactionController::class, 'data']);
     Route::post('/transactions/reversal', [TransactionController::class, 'reversal']);
     Route::post('/transactions/hapus', [TransactionController::class, 'hapus']);
+    Route::resource('/transactions', TransactionController::class);
 
     // Setting || Pengaturan
     Route::get('/pengaturan/sop', [SopController::class, 'profil']);

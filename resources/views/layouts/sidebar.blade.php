@@ -1,3 +1,8 @@
+<style>
+    .nav-link span {
+        font-weight: normal !important;
+    }
+</style>
 <!-- Sidebar -->
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
@@ -11,7 +16,7 @@
                     <hr class="sidebar-divider" style="margin-bottom: 0;">
                 @endif
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{ $menu->link }}">
+                    <a class="nav-link fw-normal" href="{{ $menu->link }}">
                         <i class="{{ $menu->icon }}"></i>
                         <span>{{ $menu->title }}</span>
                     </a>

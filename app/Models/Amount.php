@@ -23,4 +23,9 @@ class Amount extends Model
     {
         return $this->belongsTo(Account::class);
     }
+
+    public function eb()
+    {
+        return $this->hasOne(Ebudgeting::class, 'id', 'kode_akun');
+    }
 }
