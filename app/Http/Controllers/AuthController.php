@@ -499,6 +499,7 @@ class AuthController extends Controller
             'business_id' => Session::get('business_id')
         ]);
 
+        Session::flush();
         return response()->json([
             'success' => true,
             'time' => date('Y-m-d h:i:s'),
