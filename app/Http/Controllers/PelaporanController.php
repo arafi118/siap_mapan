@@ -355,7 +355,10 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['installations'] = Installations::where('aktif', '<=', $data['tgl_kondisi'])->with([
+        $data['installations'] = Installations::where([
+            ['aktif', '<=', $data['tgl_kondisi']],
+            ['business_id', Session::get('business_id')]
+        ])->with([
             'customer',
             'usage' => function ($query) use ($data) {
                 $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
@@ -380,7 +383,7 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['usages'] = Usage::with([
+        $data['usages'] = Usage::where('business_id', Session::get('business_id'))->with([
             'customers',
             'customers.village',
             'installation',
