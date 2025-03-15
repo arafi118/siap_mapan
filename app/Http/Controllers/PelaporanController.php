@@ -411,7 +411,7 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        $data['installations'] = Installations::where('aktif', '<=', $data['tgl_kondisi'])->with([
+        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
             'customer',
             'usage' => function ($query) use ($data) {
                 $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
