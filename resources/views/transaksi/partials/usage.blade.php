@@ -42,19 +42,19 @@
              * ]
              */
 
-            $harga = 0;
-            $daftar_harga = json_decode($installations->package->harga, true);
+            // $harga = 0;
+            // $daftar_harga = json_decode($installations->package->harga, true);
 
-            foreach ($blok as $b => $val) {
-                $meter = str_replace(' ', '', $val['jarak']);
-                $meter = str_replace('M3', '', $meter);
-                $meter = explode('-', $meter); //[0, 10]
+            // foreach ($blok as $b => $val) {
+            //     $meter = str_replace(' ', '', $val['jarak']);
+            //     $meter = str_replace('M3', '', $meter);
+            //     $meter = explode('-', $meter); //[0, 10]
 
-                if ($meter[0] <= $usage->jumlah && $meter[1] >= $usage->jumlah) {
-                    $harga = $daftar_harga[$b];
-                    break;
-                }
-            }
+            //     if ($meter[0] <= $usage->jumlah && $meter[1] >= $usage->jumlah) {
+            //         $harga = $daftar_harga[$b];
+            //         break;
+            //     }
+            // }
 
         @endphp
         <div class="card">

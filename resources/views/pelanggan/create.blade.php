@@ -22,7 +22,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="alert alert-info alert-dismissible custom-alert" role="alert">
-                            <h4><i class="fas fa-info-circle"></i>&nbsp;&nbsp; Register Pelangan Baru !</h4>
+                            <h4><i class="fas fa-info-circle"></i>&nbsp;&nbsp; Register Pelanggan Baru !</h4>
                         </div>
                     </div>
                 </div>
@@ -102,7 +102,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="position-relative mb-3">

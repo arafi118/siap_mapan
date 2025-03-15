@@ -170,9 +170,9 @@ class InstallationsController extends Controller
         ])->get();
 
         $jumlah_trx = $installations->transaction_sum_total;
-        $abodemen = $installations->abodemen;
+        $biaya_instal = $installations->biaya_instalasi;
 
-        if ($jumlah_trx == $abodemen) {
+        if ($jumlah_trx == $biaya_instal) {
 
             $tagihan1 = Account::where('business_id', Session::get('business_id'))->where([
                 ['kode_akun', '1.1.01.01'],
