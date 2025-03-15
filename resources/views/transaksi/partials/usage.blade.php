@@ -126,7 +126,7 @@
                                                 <input type="text" class="form-control total perhitungan"
                                                     name="pembayaran" id="pembayaran"
                                                     value="{{ number_format($usage->nominal + $trx_settings->abodemen, 2) }}"
-                                                    {!! $trx_setting->swit_tombol == '1' ? 'readonly' : '' !!}>
+                                                    {!! $trx_settings->swit_tombol == '1' ? 'readonly' : '' !!}>
                                                 <small class="text-danger" id="msg_pembayaran"></small>
                                             </div>
                                         </div>
