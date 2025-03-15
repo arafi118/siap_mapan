@@ -38,7 +38,8 @@
                 <h5 class="mb-0 alert alert-light bg-white" data-toggle="collapse"
                     data-target="#Body-{{ $nomor }}" aria-expanded="true"
                     aria-controls="Body-{{ $nomor }}">
-                    Tagihan Bulan {{ Tanggal::namaBulan($usage->tgl_akhir) }}
+                    Tagihan Bulan
+                    {{ Tanggal::namaBulan(date('m', strtotime('+1 month', strtotime($usage->tgl_akhir)))) }}
                 </h5>
             </div>
 
@@ -124,11 +125,12 @@
                                                 <label for="pembayaran">Pembayaran</label>
                                                 <input type="text" class="form-control total perhitungan"
                                                     name="pembayaran" id="pembayaran"
-                                                    value="{{ number_format($usage->nominal + $trx_settings->abodemen, 2) }}">
+                                                    value="{{ number_format($usage->nominal + $trx_settings->abodemen, 2) }}"
+                                                    {!! $trx_setting->swit_tombol == '1' ? 'readonly' : '' !!}>
                                                 <small class="text-danger" id="msg_pembayaran"></small>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 d-none">
                                             <div class="position-relative mb-3">
                                                 <label for="total">Total</label>
                                                 <input type="text" class="form-control total" name="total"
