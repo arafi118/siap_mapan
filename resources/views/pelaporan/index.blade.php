@@ -99,7 +99,7 @@
 
                     <div class="row">
                         <div class="col-md-12 text-end">
-                            {{-- <button type="button" id="SimpanSaldo" class="btn btn-sm btn-danger me-2">Simpan Saldo</button> --}}
+                            <button type="button" id="SimpanSaldo" class="btn btn-sm btn-danger me-2">Simpan Saldo</button>
                             <button type="button" id="Excel" class="btn btn-sm btn-success me-2">Excel</button>
                             <button type="button" id="Preview" class="btn btn-sm btn-dark">Preview</button>
                         </div>
@@ -241,7 +241,8 @@
                 }
             })
 
-            childWindow = window.open('/simpan_saldo?tahun=' + tahun + '&bulan=' + bulan, '_blank');
+            var link = '/pelaporan/simpan_saldo/' + tahun + '/' + bulan;
+            childWindow = window.open(link, '_blank');
         })
 
         window.addEventListener('message', function(event) {
@@ -250,7 +251,6 @@
                 window.location.reload()
             }
         })
-
 
         function namaBulan(bulan) {
             switch (bulan) {

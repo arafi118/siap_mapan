@@ -142,7 +142,7 @@ class PelaporanController extends Controller
 
         $busines = Business::where('id', Session::get('business_id'))->first();
         $direktur = User::where([
-            ['jabatan','1'],
+            ['jabatan', '1'],
             ['business_id', Session::get('business_id')]
         ])->with(['position'])->first();
 
@@ -486,7 +486,7 @@ class PelaporanController extends Controller
             ['account_id', $data['account']->id]
         ])->first();
 
-        $data['transactions'] = Transaction::where('tgl_transaksi','LIKE',$thn . '-' . $bln . '%')->where(function($query) use($data) {
+        $data['transactions'] = Transaction::where('tgl_transaksi', 'LIKE', $thn . '-' . $bln . '%')->where(function ($query) use ($data) {
             $query->where('rekening_debit', $data['account']->id)->orwhere('rekening_kredit', $data['account']->id);
         })->get();
 
@@ -505,10 +505,10 @@ class PelaporanController extends Controller
         $data['tgl'] = Tanggal::tahun($tgl);
         if ($data['bulanan']) {
             $tanggal = Tanggal::tglLatin($tgl);
-            $data['sub_judul'] = 'PER ' . $tanggal;  
+            $data['sub_judul'] = 'PER ' . $tanggal;
         }
-            $tanggal = Tanggal::tglLatin($tgl);
-            $data['sub_judul'] = 'PER ' . $tanggal;     
+        $tanggal = Tanggal::tglLatin($tgl);
+        $data['sub_judul'] = 'PER ' . $tanggal;
         // SELECT * FROM account WHERE business_id = Session::get('business_id');
         $data['accounts'] = Account::where('business_id', Session::get('business_id'))->with([
             'amount' => function ($query) use ($data) {
@@ -534,7 +534,7 @@ class PelaporanController extends Controller
         $data['tgl'] = Tanggal::tahun($tgl);
         if ($data['bulanan']) {
             $tanggal = Tanggal::tglLatin($tgl);
-            $data['sub_judul'] = 'PER ' . $tanggal;  
+            $data['sub_judul'] = 'PER ' . $tanggal;
         }
         $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
             'akun2',
@@ -1065,5 +1065,78 @@ class PelaporanController extends Controller
         $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
         return $pdf->stream();
+    }
+
+    // 
+
+    public function simpanSaldo($tahun, $bulan = 1)
+    {
+        $bulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
+        $date = $tahun . '-' . $bulan . '-01';
+        $tgl_kondisi = date('Y-m-t', strtotime($date));
+        $accounts = Account::where('business_id', Session::get('business_id'))->with([
+            'trx_debit' => function ($query) use ($date, $tgl_kondisi) {
+                $query->whereBetween('tgl_transaksi', [$date, $tgl_kondisi]);
+            },
+            'trx_kredit' => function ($query) use ($date, $tgl_kondisi) {
+                $query->whereBetween('tgl_transaksi', [$date, $tgl_kondisi]);
+            },
+            'oneAmount' => function ($query) use ($tahun, $bulan) {
+                $bulan = str_pad(intval($bulan - 1), 2, '0', STR_PAD_LEFT);
+                $query->where('tahun', $tahun)->where('bulan', $bulan);
+            }
+        ])->get();
+
+        $amount = [];
+        $data_id = [];
+        foreach ($accounts as $account) {
+            $id = $account->id . $tahun . $bulan;
+
+            $saldo_debit = 0;
+            $saldo_kredit = 0;
+            if ($account->oneAmount && intval($bulan) > 1) {
+                $saldo_debit = $account->oneAmount->debit;
+                $saldo_kredit = $account->oneAmount->kredit;
+            }
+
+            foreach ($account->trx_debit as $trx_debit) {
+                $saldo_debit += $trx_debit->total;
+            }
+
+            foreach ($account->trx_kredit as $trx_kredit) {
+                $saldo_kredit += $trx_kredit->total;
+            }
+
+
+            $amount[] = [
+                'id' => $id,
+                'account_id' => $account->id,
+                'tahun' => $tahun,
+                'bulan' => $bulan,
+                'debit' => $saldo_debit,
+                'kredit' => $saldo_kredit
+            ];
+
+            $data_id[] = $id;
+        }
+
+        Amount::whereIn('id', $data_id)->delete();
+        Amount::insert($amount);
+
+        $link = request()->url('');
+        $param = '/' . $tahun . '/' . $bulan;
+
+        $bulan += 1;
+        $bulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
+        $param_baru = '/' . $tahun . '/' . $bulan;
+
+        $link = str_replace($param, $param_baru, $link);
+        if ($bulan < 13) {
+            echo '<a href="' . $link . '" id="next"></a><script>document.querySelector("#next").click()</script>';
+            exit;
+        } else {
+            echo '<script>window.opener.postMessage("closed", "*"); window.close();</script>';
+            exit;
+        }
     }
 }
