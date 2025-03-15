@@ -241,6 +241,11 @@
             });
         });
 
+        function cleanNumber(value) {
+            let cleanNumber = value.toString().replace(/,/g, '');
+            return parseFloat(cleanNumber);
+        }
+
         //form input denda
         $(document).on('change', '#tgl_transaksi', function() {
             var tglTransaksi = $('#tgl_transaksi').val();
@@ -249,21 +254,24 @@
 
             var tanggal = tglTransaksi.split('/')
             var bulan = tanggal[1]
+            var tgl = tanggal[0]
 
-            if (tglAkhir - bulan < 1) {
+            if (tglAkhir - bulan < 1 && tgl > 26) {
                 denda = denda;
             } else {
                 denda = 0;
             }
 
-            $("#denda_bulanan").val(numFormat.format(Math.abs(denda)));
+            var denda_tagihan = numFormat.format(Math.abs(denda))
+            var abodemen = cleanNumber($("#abodemen_bulanan").val());
+            var tagihan = cleanNumber($("#tagihan").val());
+            var denda = cleanNumber(denda_tagihan);
+
+            $("#denda_bulanan").val(denda_tagihan);
+            $('#pembayaran').val(numFormat.format(Math.abs(denda + abodemen + tagihan)))
         })
 
         $(document).on('change', '.perhitungan', function() {
-            function cleanNumber(value) {
-                let cleanNumber = value.toString().replace(/,/g, '');
-                return parseFloat(cleanNumber);
-            }
             var jumlah = cleanNumber($(this).val());
             var tagihan = cleanNumber($("#tagihan").val());
             var pembayaran = cleanNumber($("#pembayaran").val());
