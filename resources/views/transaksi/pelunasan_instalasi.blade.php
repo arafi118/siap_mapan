@@ -121,7 +121,7 @@
                                         <div class="position-relative mb-3">
                                             <label for="pembayaran">Pembayaran</label>
                                             <input type="text" class="form-control total" name="pembayaran"
-                                                id="pembayaran" value="0.00">
+                                                id="pembayaran" {!! $setting->swit_tombol == '1' ? 'readonly' : '' !!} value="0.00">
                                             <small class="text-danger" id="msg_pembayaran"></small>
                                         </div>
                                     </div>

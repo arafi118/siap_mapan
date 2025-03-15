@@ -3,7 +3,7 @@
 
     $biaya_sudah_dibayar = $installations->transaction_sum_total;
     $abodemen = $installations->abodemen;
-    $tagihan = $biaya_sudah_dibayar - $abodemen;
+    $tagihan = $biaya_sudah_dibayar;
 
 @endphp
 
