@@ -84,7 +84,7 @@
                                         <small class="text-danger" id="msg_tgl_transaksi"></small>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="d-none">
                                     <div class="position-relative mb-3">
                                         <label for="abodemen">Abodemen</label>
                                         <input type="text" class="form-control" id="abodemen" name="abodemen"
@@ -101,8 +101,6 @@
                                         <small class="text-danger"></small>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="tagihan">Tagihan</label>
@@ -111,7 +109,9 @@
                                         <small class="text-danger"></small>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="position-relative mb-3">
                                         <label for="pembayaran">Pembayaran</label>
                                         <input type="text" class="form-control total" name="pembayaran"
@@ -119,7 +119,7 @@
                                         <small class="text-danger" id="msg_pembayaran"></small>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="position-relative mb-3">
                                         <label for="total">Total</label>
                                         <input type="text" class="form-control" id="_total" readonly>
