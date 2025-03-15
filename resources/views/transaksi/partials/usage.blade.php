@@ -53,7 +53,8 @@
                         <input type="hidden" name="id_usage" id="id_usage" value="{{ $usage->id }}">
                         <input type="hidden" name="tgl_akhir" id="tgl_akhir"
                             value="{{ Tanggal::bulan($usage->tgl_akhir) }}">
-                        <input type="hidden" name="denda" id="denda" value="{{ $trx_settings->denda }}">
+                        <input type="hidden" name="denda" id="denda"
+                            value="{{ $installations->package->denda }}">
 
                         <div class="row">
                             <div class="col-lg-9">
@@ -84,7 +85,7 @@
                                             <div class="position-relative mb-3">
                                                 <label for="keterangan">Keterangan</label>
                                                 <input type="text" class="form-control" id="keterangan"
-                                                    value="Pembayaran Tagihan Bulanan {{ Tanggal::tglLatin($usage->tgl_akhir) }}"
+                                                    value="Pembayaran Tagihan Bulanan Atas Nama {{ $installations->customer->nama }}"
                                                     name="keterangan">
                                                 <small class="text-danger" id="msg_keterangan"></small>
                                             </div>
