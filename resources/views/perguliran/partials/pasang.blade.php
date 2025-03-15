@@ -121,7 +121,7 @@
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="biaya_instalasi">Status Pembayaran</label>
-                                        @if (number_format($trx, 2) == number_format($installation->abodemen, 2))
+                                        @if (number_format($trx, 2) == number_format($installation->biaya_instalasi, 2))
                                             <input type="text" class="form-control" value="PAID" disabled>
                                             <small class="text-info" id="msg_biaya_instalasi"></small>
                                         @else

@@ -93,7 +93,7 @@ class UsageController extends Controller
             foreach ($block as $index => $item) {
                 preg_match_all('/\d+/', $item['jarak'], $matches);
                 $start = (int)$matches[0][0];
-                $end = (int)$matches[0][1];
+                $end = (isset($matches[0][1])) ? $matches[0][1] : 1000000000;
 
                 for ($i = $start; $i <= $end; $i++) {
                     $result[$i] = $index;
