@@ -28,9 +28,4 @@ class Customer extends Model
     {
         return $this->belongsTo(Village::class, 'desa', 'id');
     }
-
-    public function getRouteKeyName()
-    {
-        return 'nik';
-    }
 }
