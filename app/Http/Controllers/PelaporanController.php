@@ -1055,20 +1055,86 @@ class PelaporanController extends Controller
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
-
+    
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $data['judul'] = 'Laporan Keuangan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
+    
         if ($data['bulanan']) {
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
+    
+        $list_bulan = explode(',', $data['sub_laporan']);
+        $bulan1 = $list_bulan[0];
+        $bulan2 = $list_bulan[1];
+        $bulan3 = $list_bulan[2];
+    
+        $data['query_bulan_1'] = Account::where([
+            ['business_id', Session::get('business_id')],
+            ['lev1', '>=', 4],
+            ['lev1', '<=', 5]
+        ])->with([
+            'amount' => function ($query) use ($thn, $bulan1) {
+                $query->where([
+                    ['tahun', $thn],
+                    ['bulan', $bulan1]
+                ]);
+            },
+            'eb' => function ($query) use ($thn, $bulan1) {
+                $query->where([
+                    ['tahun', $thn],
+                    ['bulan', $bulan1]
+                ]);
+            }
+        ])->get();
+    
+        $data['query_bulan_2'] = Account::where([
+            ['business_id', Session::get('business_id')],
+            ['lev1', '>=', 4],
+            ['lev1', '<=', 5]
+        ])->with([
+            'amount' => function ($query) use ($thn, $bulan2) {
+                $query->where([
+                    ['tahun', $thn],
+                    ['bulan', $bulan2]
+                ]);
+            },
+            'eb' => function ($query) use ($thn, $bulan2) {
+                $query->where([
+                    ['tahun', $thn],
+                    ['bulan', $bulan2]
+                ]);
+            }
+        ])->get();
+    
+        $data['query_bulan_3'] = Account::where([
+            ['business_id', Session::get('business_id')],
+            ['lev1', '>=', 4],
+            ['lev1', '<=', 5]
+        ])->with([
+            'amount' => function ($query) use ($thn, $bulan3) {
+                $query->where([
+                    ['tahun', $thn],
+                    ['bulan', $bulan3]
+                ]);
+            },
+            'eb' => function ($query) use ($thn, $bulan3) {
+                $query->where([
+                    ['tahun', $thn],
+                    ['bulan', $bulan3]
+                ]);
+            }
+        ])->get();
+    
         $data['title'] = 'E - Budgeting';
         $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
         return $pdf->stream();
     }
+    
+
 
     // 
 
