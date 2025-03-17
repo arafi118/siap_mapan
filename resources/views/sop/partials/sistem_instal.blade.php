@@ -10,6 +10,24 @@
                     <small class="text-danger" id="msg_batas_tagihan"></small>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Swit Tombol Trx.Tagihan</label>
+                    <div class="custom-control custom-checkbox">
+                        <input type="radio" class="custom-control-input" id="swit_tombol_trx_1" name="swit_tombol_trx"
+                            value="1"
+                            {{ isset($tampil_settings) && $tampil_settings->swit_tombol_trx == 1 ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="swit_tombol_trx_1">A. wajib Lunas</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="radio" class="custom-control-input" id="swit_tombol_trx_2" name="swit_tombol_trx"
+                            value="2"
+                            {{ isset($tampil_settings) && $tampil_settings->swit_tombol_trx == 2 ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="swit_tombol_trx_2">B. tidak Wajib Lunas</label>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <hr>
         <p style="text-align: justify;">

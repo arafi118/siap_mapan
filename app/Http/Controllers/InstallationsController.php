@@ -350,6 +350,7 @@ class InstallationsController extends Controller
             "alamat",
             "koordinate",
             "package_id",
+            "pasang_baru",
             "abodemen",
             "kode_instalasi",
             "total",
@@ -371,6 +372,10 @@ class InstallationsController extends Controller
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
+        $data['pasang_baru'] = str_replace(',', '', $data['pasang_baru']);
+        $data['pasang_baru'] = str_replace('.00', '', $data['pasang_baru']);
+        $data['pasang_baru'] = floatval($data['pasang_baru']);
+
         $data['abodemen'] = str_replace(',', '', $data['abodemen']);
         $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
         $data['abodemen'] = floatval($data['abodemen']);
@@ -379,10 +384,11 @@ class InstallationsController extends Controller
         $data['total'] = str_replace('.00', '', $data['total']);
         $data['total'] = floatval($data['total']);
 
-        $abodemen        = $data['abodemen'];
-        $biaya_instalasi = $data['total'];
+        $pasangbaru        = $data['pasang_baru'];
+        $abodemen          = $data['abodemen'];
+        $biaya_instalasi   = $data['total'];
 
-        $biaya_instal = $data['abodemen'] - $data['total'];
+        $biaya_instal = $pasangbaru - $biaya_instalasi;
 
         $status = '0';
         $jumlah = $biaya_instal;
@@ -402,13 +408,16 @@ class InstallationsController extends Controller
             'koordinate' => $request->koordinate,
             'package_id' => $request->package_id,
             'abodemen' => $abodemen,
-            'biaya_instalasi' => $biaya_instalasi,
+            'biaya_instalasi' => $pasangbaru,
             'status' => $status,
         ]);
 
         // TRANSACTION = simpan database
-        $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $abodemen;
-        $persen = 100 - ($jumlah / $abodemen * 100);
+        $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $pasangbaru;
+
+        $perse = round(100 - ($jumlah / $pasangbaru * 100));
+        $persen = max(1, min($perse, 100));
+
         if ($jumlah_instal > 0) {
             $business_id = Session::get('business_id');
             $rekening_debit = Account::where([
@@ -417,7 +426,7 @@ class InstallationsController extends Controller
             ])->first();
 
             $rekening_kredit = Account::where([
-                ['kode_akun', '4.1.01.02'],
+                ['kode_akun', '4.1.01.01'],
                 ['business_id', $business_id]
             ])->first();
 

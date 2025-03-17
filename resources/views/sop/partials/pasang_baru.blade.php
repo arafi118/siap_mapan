@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label>Swit Tombol</label>
+            <label>Swit Tombol Reg.Pelanggan</label>
             <div class="custom-control custom-checkbox">
                 <input type="radio" class="custom-control-input" id="swit_tombol_1" name="swit_tombol" value="1"
                     {{ isset($tampil_settings) && $tampil_settings->swit_tombol == 1 ? 'checked' : '' }}>

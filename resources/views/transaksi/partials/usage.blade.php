@@ -32,6 +32,9 @@
             $nomor = $loop->iteration;
             $blok = json_decode($trx_settings->block, true);
             $jumlah_blok = count($blok);
+
+            $harga = 0;
+            $daftar_harga = json_decode($installations->package->harga, true);
         @endphp
         <div class="card">
             <div class="card-header" id="Judul-{{ $nomor }}">
@@ -127,7 +130,7 @@
                                                 <input type="text" class="form-control total perhitungan"
                                                     name="pembayaran" id="pembayaran"
                                                     value="{{ number_format($usage->nominal + $trx_settings->abodemen, 2) }}"
-                                                    {!! $trx_settings->swit_tombol == '1' ? 'readonly' : '' !!}>
+                                                    {!! $trx_settings->swit_tombol_trx == '1' ? 'readonly' : '' !!}>
                                                 <small class="text-danger" id="msg_pembayaran"></small>
                                             </div>
                                         </div>
