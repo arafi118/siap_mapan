@@ -30,10 +30,10 @@
                                         <td>{{ $customer->alamat }}</td>
                                         <td>{{ $customer->hp }}</td>
                                         <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                            <a href="/customers/{{ $customer->nik }}/edit" class="btn btn-warning btn-sm">
+                                            <a href="/customers/{{ $customer->id }}/edit" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
-                                            <a href="#" data-id="{{ $customer->nik }}"
+                                            <a href="#" data-id="{{ $customer->id }}"
                                                 class="btn btn-danger btn-sm mx-1 Hapus_pelanggan">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>

@@ -24,7 +24,8 @@
                             style="border-radius: 1;">
                             <!-- Gambar -->
                             <img src="../../assets/img/meteran.png"
-                                style="max-height: 160px; margin-right: 15px; margin-left: 10px;" class="img-fluid">
+                                style="max-height: 160px; margin-right: 15px; margin-left: 10px;"
+                                class="img-fluid d-none d-lg-block">
 
                             <div class="flex-grow-1">
                                 <div class="mt-3">

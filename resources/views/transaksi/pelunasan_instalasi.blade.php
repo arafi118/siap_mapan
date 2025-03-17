@@ -21,7 +21,8 @@
                                 style="border-radius: 1;">
                                 <!-- Gambar -->
                                 <img src="../../assets/img/pls.png"
-                                    style="max-height: 160px; margin-right: 15px; margin-left: 10px;" class="img-fluid">
+                                    style="max-height: 160px; margin-right: 15px; margin-left: 10px;"
+                                    class="img-fluid  d-none d-lg-block">
 
                                 <!-- Konten Teks -->
                                 <div class="flex-grow-1">
@@ -91,7 +92,7 @@
                                             <small class="text-danger" id="msg_tgl_transaksi"></small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="d-none">
                                         <div class="position-relative mb-3">
                                             <label for="abodemen">Abodemen</label>
                                             <input type="text" class="form-control" id="abodemen" name="abodemen"
@@ -107,8 +108,6 @@
                                             <small class="text-danger"></small>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="position-relative mb-3">
                                             <label for="tagihan">Tagihan</label>
@@ -116,15 +115,17 @@
                                             <small class="text-danger"></small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="position-relative mb-3">
                                             <label for="pembayaran">Pembayaran</label>
                                             <input type="text" class="form-control total" name="pembayaran"
-                                                id="pembayaran" value="0.00">
+                                                id="pembayaran" {!! $setting->swit_tombol == '1' ? 'readonly' : '' !!} value="0.00">
                                             <small class="text-danger" id="msg_pembayaran"></small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="position-relative mb-3">
                                             <label for="total">Total</label>
                                             <input type="text" class="form-control" id="_total" readonly>

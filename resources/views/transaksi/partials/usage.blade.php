@@ -32,37 +32,14 @@
             $nomor = $loop->iteration;
             $blok = json_decode($trx_settings->block, true);
             $jumlah_blok = count($blok);
-
-            /**
-             * [
-             *      0 => [
-             *         "nama":"block 1",
-             *         "jarak":"0-10"
-             *      ]
-             * ]
-             */
-
-            $harga = 0;
-            $daftar_harga = json_decode($installations->package->harga, true);
-
-            foreach ($blok as $b => $val) {
-                $meter = str_replace(' ', '', $val['jarak']);
-                $meter = str_replace('M3', '', $meter);
-                $meter = explode('-', $meter); //[0, 10]
-
-                if ($meter[0] <= $usage->jumlah && $meter[1] >= $usage->jumlah) {
-                    $harga = $daftar_harga[$b];
-                    break;
-                }
-            }
-
         @endphp
         <div class="card">
             <div class="card-header" id="Judul-{{ $nomor }}">
                 <h5 class="mb-0 alert alert-light bg-white" data-toggle="collapse"
                     data-target="#Body-{{ $nomor }}" aria-expanded="true"
                     aria-controls="Body-{{ $nomor }}">
-                    Tagihan Bulan {{ Tanggal::namaBulan($usage->tgl_akhir) }}
+                    Tagihan Bulan
+                    {{ Tanggal::namaBulan(date('Y-m-d', strtotime('+1 month', strtotime($usage->tgl_akhir)))) }}
                 </h5>
             </div>
 
@@ -76,7 +53,8 @@
                         <input type="hidden" name="id_usage" id="id_usage" value="{{ $usage->id }}">
                         <input type="hidden" name="tgl_akhir" id="tgl_akhir"
                             value="{{ Tanggal::bulan($usage->tgl_akhir) }}">
-                        <input type="hidden" name="denda" id="denda" value="{{ $trx_settings->denda }}">
+                        <input type="hidden" name="denda" id="denda"
+                            value="{{ $installations->package->denda }}">
 
                         <div class="row">
                             <div class="col-lg-9">
@@ -107,7 +85,7 @@
                                             <div class="position-relative mb-3">
                                                 <label for="keterangan">Keterangan</label>
                                                 <input type="text" class="form-control" id="keterangan"
-                                                    value="Pembayaran Tagihan Bulanan {{ Tanggal::tglLatin($usage->tgl_akhir) }}"
+                                                    value="Pembayaran Tagihan Bulanan Atas Nama {{ $installations->customer->nama }}"
                                                     name="keterangan">
                                                 <small class="text-danger" id="msg_keterangan"></small>
                                             </div>
@@ -115,7 +93,7 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="position-relative mb-3">
                                                 <label for="tagihan">Tagihan</label>
                                                 <input type="text" class="form-control" name="tagihan" id="tagihan"
@@ -123,18 +101,16 @@
                                                 <small class="text-danger"></small>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="position-relative mb-3">
-                                                <label for="pembayaran">Pembayaran</label>
-                                                <input type="text" class="form-control total perhitungan"
-                                                    name="pembayaran" id="pembayaran" value="0.00">
-                                                <small class="text-danger" id="msg_pembayaran"></small>
+                                                <label for="abodemen">Abodemen</label>
+                                                <input type="text" class="form-control abodemen" name="abodemen"
+                                                    id="abodemen_bulanan" readonly placeholder="0.00"
+                                                    value="{{ number_format($trx_settings->abodemen, 2) }}">
+                                                <small class="text-danger"></small>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="position-relative mb-3">
                                                 <label for="denda">Denda</label>
                                                 <input type="text" class="form-control denda" name="denda"
@@ -142,7 +118,20 @@
                                                 <small class="text-danger"></small>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div class="row">
                                         <div class="col-md-6">
+                                            <div class="position-relative mb-3">
+                                                <label for="pembayaran">Pembayaran</label>
+                                                <input type="text" class="form-control total perhitungan"
+                                                    name="pembayaran" id="pembayaran"
+                                                    value="{{ number_format($usage->nominal + $trx_settings->abodemen, 2) }}"
+                                                    {!! $trx_settings->swit_tombol == '1' ? 'readonly' : '' !!}>
+                                                <small class="text-danger" id="msg_pembayaran"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 d-none">
                                             <div class="position-relative mb-3">
                                                 <label for="total">Total</label>
                                                 <input type="text" class="form-control total" name="total"

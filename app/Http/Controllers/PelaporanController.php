@@ -355,7 +355,10 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['installations'] = Installations::where('aktif', '<=', $data['tgl_kondisi'])->with([
+        $data['installations'] = Installations::where([
+            ['aktif', '<=', $data['tgl_kondisi']],
+            ['business_id', Session::get('business_id')]
+        ])->with([
             'customer',
             'usage' => function ($query) use ($data) {
                 $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
@@ -380,7 +383,7 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['usages'] = Usage::with([
+        $data['usages'] = Usage::where('business_id', Session::get('business_id'))->with([
             'customers',
             'customers.village',
             'installation',
@@ -411,7 +414,7 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        $data['installations'] = Installations::where('aktif', '<=', $data['tgl_kondisi'])->with([
+        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
             'customer',
             'usage' => function ($query) use ($data) {
                 $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
@@ -804,7 +807,7 @@ class PelaporanController extends Controller
             ])->orderBy('kode_akun', 'ASC')->get();
 
         // Query Beb awal tahun
-        $dataBeb = Account::where('kode_akun', 'LIKE', '5.3.%')
+        $dataBeb = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '5.3.%')
             ->orWhere('kode_akun', 'LIKE', '5.4.%')
             ->where('kode_akun', '!=', '5.4.01.01')
             ->with([
@@ -823,7 +826,7 @@ class PelaporanController extends Controller
             ])->orderBy('kode_akun', 'ASC')->get();
 
         // Query PPh awal tahun
-        $pph = Account::where('kode_akun', '5.4.01.01')->with([
+        $pph = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '5.4.01.01')->with([
             'amount' => function ($query) use ($data) {
                 $query->where([
                     ['tahun', $data['tahun']],
@@ -944,7 +947,7 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['accounts'] = Account::where('lev1', '3')->with([
+        $data['accounts'] = Account::where('business_id', Session::get('business_id'))->where('lev1', '3')->with([
             'amount' => function ($query) use ($data) {
                 $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
                     $query->where('bulan', '0')->orWhere('bulan', $data['bulan']);

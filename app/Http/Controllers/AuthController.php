@@ -380,7 +380,7 @@ class AuthController extends Controller
                 $paket_id = $data_paket[$paket];
 
                 $data_instalasi[$instalasi[0]] = [
-                    'kode_instalasi' => $kode_instalasi,
+                    'kode_instalasi' => $instalasi[0],
                     'customer_id' => $customer_id,
                     'business_id' => Session::get('business_id'),
                     'cater_id' => $cater_id,

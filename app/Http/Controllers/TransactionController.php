@@ -58,7 +58,7 @@ class TransactionController extends Controller
     //tampil pelunasan instalasi
     public function pelunasan_instalasi()
     {
-        $transactions = Transaction::all();
+        $setting = Settings::where('business_id', Session::get('business_id'))->first();
         $installations = Installations::where('business_id', Session::get('business_id'));
         $status_0 = Installations::where('business_id', Session::get('business_id'))->where('status', '0')->with(
             'customer',
@@ -66,7 +66,7 @@ class TransactionController extends Controller
             'package'
         )->get();
         $title = 'Pelunasan Instalasi';
-        return view('transaksi.pelunasan_instalasi')->with(compact('title', 'transactions', 'status_0'));
+        return view('transaksi.pelunasan_instalasi')->with(compact('title', 'setting', 'status_0'));
     }
     //tampil tagihan_bulanan
     public function tagihan_bulanan()
