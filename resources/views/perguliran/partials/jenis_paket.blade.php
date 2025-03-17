@@ -35,7 +35,8 @@
     <label for="pasang_baru">Biaya pasang baru</label>
     <div class="input-group mb-3">
         <input type="text" class="form-control nominal" name="pasang_baru" id="pasang_baru"
-            aria-describedby="basic-addon2" value="{{ number_format($tampil_settings->pasang_baru, 2) }}">
+            aria-describedby="basic-addon2" value="{{ number_format($tampil_settings->pasang_baru, 2) }}"
+            {!! $tampil_settings->swit_tombol == '1' ? 'readonly' : '' !!}>
     </div>
 </div>
 <div class="col-md-4">

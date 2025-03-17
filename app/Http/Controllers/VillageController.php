@@ -105,8 +105,7 @@ class VillageController extends Controller
         $this->validate($request, [
             'desa' => 'required',
             'alamat' => 'required',
-            'hp' => 'required'
-
+            'hp' => 'required',
         ]);
 
         $tahun = date('Y');
@@ -115,16 +114,25 @@ class VillageController extends Controller
 
         $business_id = str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
 
-        $jumlah_desa = '0001';
+        $jumlah_urutan = '0001';
         $desa = Village::where('kode', 'LIKE', $business_id . '%');
         if ($desa->count() > 0) {
-            // kode_desa = 2025.01.01.0001.001
+            // kode_desa = 2025.01.001
             $desa = $desa->orderBy('kode', 'DESC')->first();
-            $kode_desa = explode('.', $desa->kode); // ['2025', '01','01','0001', '001']
-            $jumlah_desa = str_pad($kode_desa[1] + 1, 4, '0', STR_PAD_LEFT); // 0002
+            $kode_desa = explode('.', $desa->kode); // ['2025', '01', '001']
+
+            $urutan = end($kode_desa);
+            $kd_desa = array_pop($kode_desa);  // ['2025', '01']
+            $jumlah_urutan = str_pad(intval($urutan) + 1, 4, '0', STR_PAD_LEFT);
+
+            if (is_array($kd_desa)) {
+                $kode_baru = implode('.', $kd_desa) . '.' . $jumlah_urutan;
+            } else {
+                $kode_baru = $kd_desa . '.' . $jumlah_urutan;
+            }
         }
 
-        $kode = $business_id .  '.' . $jumlah_desa;
+        $kode = $business_id .  '.' . $jumlah_urutan;
         $desa = Region::where('kode', $request->desa)->first();
 
         $Desa = Village::create([
