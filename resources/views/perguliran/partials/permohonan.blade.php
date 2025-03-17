@@ -67,7 +67,10 @@
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                             <span style="float: left;">Status</span>
-                                            @if (number_format($trx, 2) == number_format($installation->abodemen, 2))
+                                            @php
+                                                dd($installation->biaya_instalasi, $trx);
+                                            @endphp
+                                            @if (number_format($trx, 2) == number_format($installation->biaya_instalasi, 2))
                                                 <span class="badge badge-success"
                                                     style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                     PAID
