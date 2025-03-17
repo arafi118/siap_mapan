@@ -172,23 +172,22 @@ class InstallationsController extends Controller
         $jumlah_trx = $installations->transaction_sum_total;
         $biaya_instal = $installations->biaya_instalasi;
 
+        $tagihan1 = Account::where('business_id', Session::get('business_id'))->where([
+            ['kode_akun', '1.1.01.01'],
+            ['business_id', Session::get('business_id')]
+        ])->first();
+        $tagihan2 = Account::where('business_id', Session::get('business_id'))->where([
+            ['kode_akun', '4.2.01.04'],
+            ['business_id', Session::get('business_id')]
+        ])->first();
+
+        return response()->json([
+            'success' => true,
+            'view' => view('transaksi.partials.usage')->with(compact('installations', 'transaksi',  'usages', 'trx_settings', 'package'))->render(),
+            'rek_debit' => $tagihan1,
+            'rek_kredit' => $tagihan2,
+        ]);
         if ($jumlah_trx == $biaya_instal) {
-
-            $tagihan1 = Account::where('business_id', Session::get('business_id'))->where([
-                ['kode_akun', '1.1.01.01'],
-                ['business_id', Session::get('business_id')]
-            ])->first();
-            $tagihan2 = Account::where('business_id', Session::get('business_id'))->where([
-                ['kode_akun', '4.2.01.04'],
-                ['business_id', Session::get('business_id')]
-            ])->first();
-
-            return response()->json([
-                'success' => true,
-                'view' => view('transaksi.partials.usage')->with(compact('installations', 'transaksi',  'usages', 'trx_settings', 'package'))->render(),
-                'rek_debit' => $tagihan1,
-                'rek_kredit' => $tagihan2,
-            ]);
         } else {
 
             $pasang1 = Account::where('business_id', Session::get('business_id'))->where([

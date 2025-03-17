@@ -190,7 +190,7 @@
 
             var rek_debit = rekening_debit;
             var rek_kredit = rekening_kredit;
-            var tagihan = (sum_total - installation.abodemen);
+            var tagihan = (installation.biaya_instalasi);
 
             $("#installation").val(installation.id);
             $("#order").val(installation.order);
@@ -200,7 +200,8 @@
             $("#abodemen").val(numFormat.format(installation.abodemen));
             $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
             $("#tagihan").val(numFormat.format(tagihan));
-            $("#_total").val(numFormat.format(installation.abodemen - sum_total));
+            $("#pembayaran").val(numFormat.format(tagihan));
+            $("#_total").val(numFormat.format(sum_total));
             $("#rek_debit").val(rek_debit);
             $("#rek_kredit").val(rek_kredit);
 
