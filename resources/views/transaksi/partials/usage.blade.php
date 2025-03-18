@@ -3,27 +3,21 @@
 @endphp
 @if ($usages->isEmpty())
     <div class="card-body">
-        <div class="alert alert-success" role="alert">
+        <div class="alert alert-info" role="alert">
             <h4 class="alert-heading"><b>Pemberitahuan !</b></h4>
-            <div class="alert alert-success d-flex justify-content-center align-items-center text-center" role="alert">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                    class="bi bi-droplet-half me-3" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M7.615.162a.58.58 0 0 1 .77 0c.452.384 1.27 1.17 2.198 2.285C11.647 3.553 13 5.347 13 7.5c0 1.978-.676 3.623-1.778 4.776C10.15 13.393 8.866 14 8 14s-2.15-.607-3.222-1.724C3.676 11.123 3 9.478 3 7.5c0-2.153 1.353-3.947 2.417-5.053.928-1.115 1.746-1.9 2.198-2.285zM8 13c.737 0 1.663-.464 2.459-1.34C11.253 10.785 12 9.49 12 7.5c0-1.653-1.087-3.118-2.115-4.276-.686-.825-1.407-1.526-1.885-1.946-.478.42-1.199 1.121-1.885 1.946C5.087 4.382 4 5.847 4 7.5c0 1.99.747 3.285 1.541 4.16C6.337 12.536 7.263 13 8 13z" />
-                    <path fill-rule="evenodd"
-                        d="M10.083 7.5a2.083 2.083 0 1 1-4.166 0 2.083 2.083 0 0 1 4.166 0zm-1 0a1.083 1.083 0 1 0-2.166 0 1.083 1.083 0 0 0 2.166 0z" />
-                </svg>
+            <div class="alert alert-info d-flex justify-content-center align-items-center text-center" role="alert">
                 <div>
                     <h4 class="alert-heading">
                         Customer an. <b>{{ $installations->customer->nama }}</b> - kode instalasi
-                        <b>{{ $installations->kode_instalasi }}</b>
+                        <b>{{ $installations->kode_instalasi }}</b> <br> Tidak ada data <b>tagihan</b> untuk
+                        ditampilkan.
                     </h4>
                 </div>
             </div>
             <hr>
-            <p class="mb-0">
-                Tidak ada data tagihan untuk ditampilkan. <a href="/usages" class="btn btn-danger">Cek Pemakaian</a>
-            </p>
+            <div class="col-12 d-flex justify-content-end">
+                <a href="/usages" class="btn btn-danger">Cek Pemakaian</a>
+            </div>
         </div>
     </div>
 @else
@@ -52,7 +46,7 @@
                     <form action="/transactions" method="post" id="FormTagihan-{{ $nomor }}">
                         @csrf
                         <input type="hidden" name="clay" id="clay" value="TagihanBulanan">
-                        <input type="hidden" name="id_trx" id="id_trx" value="{{ $installations->id }}">
+                        <input type="hidden" name="id_instal" id="id_instal" value="{{ $installations->id }}">
                         <input type="hidden" name="id_usage" id="id_usage" value="{{ $usage->id }}">
                         <input type="hidden" name="tgl_akhir" id="tgl_akhir"
                             value="{{ Tanggal::bulan($usage->tgl_akhir) }}">

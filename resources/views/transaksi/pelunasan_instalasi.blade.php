@@ -27,7 +27,6 @@
                                 <!-- Konten Teks -->
                                 <div class="flex-grow-1">
                                     <div class="form-group">
-                                        {{-- <label for="validationServer01">Input with Success</label> --}}
                                         <input type="text" class="form-control is-valid" id="{{ $ketik_search }}"
                                             placeholder="{{ $label_search }}">
                                         <div class="valid-feedback" text-white>
@@ -79,8 +78,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Tabel di Bawah Customer -->
                             <br>
                             <div class="alert alert-light" role="alert">
                                 <div class="row">
@@ -111,7 +108,8 @@
                                     <div class="col-md-4">
                                         <div class="position-relative mb-3">
                                             <label for="tagihan">Tagihan</label>
-                                            <input type="text" class="form-control" id="tagihan" readonly>
+                                            <input type="text" class="form-control" name="tagihan" id="tagihan"
+                                                readonly>
                                             <small class="text-danger"></small>
                                         </div>
                                     </div>
@@ -177,7 +175,6 @@
 
     <form action="/transactions/hapus" method="post" id="formHapus">
         @csrf
-
         <input type="hidden" name="del_id" id="del_id">
         <input type="hidden" name="del_istal_id" id="del_istal_id">
     </form>
@@ -231,8 +228,8 @@
 
             var jumlah = cleanNumber($(this).val());
             var jumlah_bayar = cleanNumber($("#biaya_sudah_dibayar").val());
-            var abodemen = cleanNumber($("#abodemen").val());
-            var total = abodemen - (jumlah + jumlah_bayar);
+            var tagihan = cleanNumber($("#tagihan").val());
+            var total = tagihan - (jumlah + jumlah_bayar);
 
             $("#_total").val(numFormat.format(Math.abs(total)));
         });

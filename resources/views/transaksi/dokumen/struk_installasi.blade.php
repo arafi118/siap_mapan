@@ -7,272 +7,132 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Struk Pembayaran</title>
     <style>
         body {
-            font-size: 12px;
-            color: rgba(0, 0, 0, 0.8);
-            /* width: 20cm; */
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: medium;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        .font-roboto {
-            font-family: Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-size: 10px;
+            font-family: Arial, sans-serif;
+            width: 8cm;
+            margin: 1px;
+            padding: 1px;
+            text-align: center;
         }
 
         .container {
-            position: relative;
-            width: 20cm;
-            height: 10cm;
-            padding: 20px;
-            /*border: 1px solid rgba(0, 0, 0, 0.1);*/
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgb(154, 154, 154);
         }
 
-        .box {
-            border: 2px solid #000;
-            padding-top: 16px;
-            padding-bottom: 12px;
-            padding-right: 22px;
-            padding-left: 12px;
+        .header img {
+            width: 40px;
+            height: 40px;
         }
 
-        .box-header {
-            padding-left: 16px;
-            padding-right: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-        }
-
-        .flex {
-            display: flex;
-        }
-
-        .block {
-            display: block;
-        }
-
-        .inline-block {
-            display: inline-block;
-        }
-
-        .fw-bold {
+        .header,
+        .footer {
+            text-align: center;
             font-weight: bold;
         }
 
-        .fs-8 {
-            font-size: 8px;
-        }
-
-        .fs-10 {
-            font-size: 10px;
-        }
-
-        .fs-12 {
-            font-size: 12px;
-        }
-
-        .fs-14 {
-            font-size: 14px;
-        }
-
-        .fs-16 {
-            font-size: 16px;
-        }
-
-        .-mt-2 {
-            margin-top: -2px;
-        }
-
-        .ml-4 {
-            margin-left: 4px;
-        }
-
-        .align-items-center {
-            align-items: center;
-        }
-
-        .justify-content-between {
-            justify-content: space-between;
-        }
-
-        .box-body {
-            padding-top: 0px;
-            padding-left: 24px;
-            padding-right: 24px;
-        }
-
-        .keterangan {
-            padding: 6px;
-            padding-top: 4px;
-            padding-bottom: 4px;
-        }
-
-        .jajargenjang {
-            background-color: rgb(204, 204, 204);
-            -ms-transform: skew(-20deg);
-            -webkit-transform: skew(-20deg);
-            transform: skew(-20deg);
-            text-align: center;
-        }
-
-        .terbilang {
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-        }
-
-        @media print {
-            .jajargenjang {
-                background-color: rgb(204, 204, 204);
-                -ms-transform: skew(-20deg);
-                -webkit-transform: skew(-20deg);
-                transform: skew(-20deg);
-                text-align: center;
-            }
-        }
-
-        h4 {
-            margin: 14px 0;
-            width: 100%;
-            text-align: center;
-            border-bottom: 1px dashed #000;
-            line-height: 0px;
-            font-style: italic;
-        }
-
-        h4 span {
-            background: rgb(204, 204, 204);
-            padding: 0 10px;
-        }
-
-        .border-b {
-            border-bottom: 1px dashed rgba(0, 0, 0, 0.4);
-        }
-
-        .text-left {
-            padding-left: 6px;
-            padding-right: 6px;
-            padding-top: 2px;
-            padding-bottom: 4px;
+        .content {
             text-align: left;
+            margin-top: 5px;
         }
 
-        .fw-medium {
-            font-weight: 600;
+        .content table {
+            width: 100%;
         }
 
-        .tanggal {
-            font-size: 8px;
-            margin-left: 16px;
+        .border {
+            border-top: 1px dashed black;
+            border-bottom: 1px dashed black;
+            margin: 5px 0;
+            padding: 5px 0;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .footer {
+            margin-top: 10px;
         }
     </style>
 </head>
 
 <body onload="window.print()">
     <div class="container">
-        <div class="box">
-            <div class="box-header flex align-items-center justify-content-between">
-                <div class="flex align-items-center">
-                    <img src="{{ $gambar }}" width="50" height="50">
-                    <div class="ml-4">
-                        <div class="block fw-bold">{{ strtoupper($bisnis->nama) }}</div>
-                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $bisnis->nomor_bh }}</div>
-                        <div class="block fs-10">{{ $bisnis->alamat . ', Telp. ' . $bisnis->telpon }}</div>
-                    </div>
-                </div>
-                <div class="fw-medium">
-                    Nomor &nbsp; &nbsp; : {{ $trx->id . '/' . $jenis }}
-                </div>
-            </div>
-            <div class="box-body fs-14">
-                <table width="100%">
-                    <tr>
-                        <td colspan="5" class="fs-10" align="center">
-                            <h1 class="font-roboto">STRUK PASANG BARU</h1>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="30%">Nama Pelangan</td>
-                        <td width="2%">:</td>
-                        <td colspan="3" class="keterangan border-b">
-                            {{ $trx->Installations->customer->nama }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="30%">Tgl Bayar</td>
-                        <td width="2%">:</td>
-                        <td colspan="3" class="keterangan border-b">
-                            {{ Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
-                    </tr>
-                    <tr>
-                        <td width="30%">No Ref</td>
-                        <td width="2%">:</td>
-                        <td colspan="3" class="keterangan border-b">
-                            {{ md5($trx->id) }}</td>
-                    </tr>
-                    <tr>
-                        <td width="30%">Keterangan</td>
-                        <td width="2%">:</td>
-                        <td colspan="3" class="keterangan border-b">
-                            {{ $trx->keterangan }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="30%">Bayar</td>
-                        <td width="2%">:</td>
-                        <td colspan="3" class="keterangan fw-medium terbilang jajargenjang">
-                            <h4 {!! strlen($keuangan->terbilang($trx->total)) > 30 ? 'style="font-size: 8px;"' : '' !!}>
-                                <span>{{ ucwords($keuangan->terbilang($trx->total)) }} Rupiah</span>
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="30%">&nbsp;</td>
-                        <td width="2%">&nbsp;</td>
-                        <td colspan="3" class="keterangan border-b"></td>
-                    </tr>
-                </table>
+        <div class="header">
+            <div style="font-size: 14px">{{ strtoupper($bisnis->nama) }}</div>
+            <div>{{ 'SK Kemenkumham RI No. ' . $bisnis->nomor_bh }}</div>
+            <div>{{ $bisnis->alamat }}</div>
+            <div>Telp: {{ $bisnis->telpon }}</div>
+        </div><br>
+        <div class="border">
+            STRUK PASANG BARU
+        </div><br>
 
-                <table width="100%" class="fs-12" style="margin-top: 8px;">
+        <div class="content">
+            <table>
+                <tr>
+                    <td>No Ref</td>
+                    <td class="text-right">{{ md5($trx->id) }}</td>
+                </tr>
+                <tr>
+                    <td>Nomor</td>
+                    <td class="text-right">{{ $trx->id . '/' . $jenis }}</td>
+                </tr>
+                <tr>
+                    <td>Pelanggan</td>
+                    <td class="text-right">{{ $trx->Installations->customer->nama }}</td>
+                </tr>
+                </tr>
+                <tr>
+                    <td>Tgl Bayar</td>
+                    <td class="text-right">{{ Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
+                </tr>
+                <tr>
+                    <td>Keterangan</td>
+                    <td class="text-right">{{ $trx->keterangan }}</td>
+                </tr>
+
+                <tr>
+                    <td>Package</td>
+                    <td class="text-right">{{ $trx->Installations->package->kelas }}</td>
+                </tr>
+                <tr>
+                    <td>Kode Instalasi</td>
+                    <td class="text-right">{{ $trx->Installations->kode_instalasi }}</td>
+                </tr>
+            </table>
+
+            <div class="border">
+                <table>
                     <tr>
-                        <td width="40%" align="center" rowspan="6">
-                            <i>
-                                <h3 class="flex" style="padding-left: 18px;">
-                                    Terbilang Rp. &nbsp; <div class="jajargenjang text-left">
-                                        {{ number_format($trx->total, 2) }}</div>
-                                </h3>
-                            </i>
-                        </td>
+                        <td colspan="2">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td align="center">&nbsp;</td>
-                        <td align="center">{{ $bisnis->nama . ', ' . Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
+                        <td>Biaya Instalasi</td>
+                        <td class="text-right">Rp
+                            {{ number_format($trx->Installations->biaya_instalasi, 2, ',', '.') }}</td>
                     </tr>
                     <tr>
-                        <td width="30%" align="center">Dibayar Oleh</td>
-                        <td width="30%" align="center">Diterima Oleh</td>
+                        <td><b>Total Bayar</b></td>
+                        <td class="text-right"><b>Rp {{ number_format($trx->total, 2, ',', '.') }}</b></td>
                     </tr>
                     <tr>
-                        <td align="center">&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td align="center">&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td align="center">{{ $dari }}</td>
-                        <td align="center">{{ $oleh }}</td>
+                        <td colspan="2">&nbsp;</td>
                     </tr>
                 </table>
             </div>
         </div>
-
-        <div class="tanggal">Dicetak pada {{ date('Y-m-d H:i:s') }}</div>
+        <div class="footer">
+            <div>Terima Kasih!</div>
+            <div>Harap simpan struk ini sebagai bukti pembayaran</div>
+            <div>{{ date('Y-m-d H:i:s') }}</div>
+        </div>
     </div>
 </body>
 

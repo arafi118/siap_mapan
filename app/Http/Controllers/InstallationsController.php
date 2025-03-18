@@ -68,7 +68,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
+            ['kode_akun', '4.1.01.01'],
             ['business_id', Session::get('business_id')]
         ])->first();
 
@@ -589,18 +589,13 @@ class InstallationsController extends Controller
         return view('perguliran.partials.aktif')->with(compact('installation', 'tampil_settings', 'trx'));
     }
 
-
     /**
      * Menampilkan Detail dengan status B.
      */
     private function detailB($installation)
     {
         $business_id = Session::get('business_id');
-
-        // Ambil pengaturan bisnis
         $tampil_settings = Settings::where('business_id', $business_id)->first();
-
-        // Pastikan data instalasi diambil dengan relasi yang diperlukan
         $installation = $installation->with([
             'customer',
             'package',
@@ -623,7 +618,6 @@ class InstallationsController extends Controller
 
         return view('perguliran.partials.blokir')->with(compact('installation', 'tampil_settings', 'trx'));
     }
-
 
     /**
      * Menampilkan Detail dengan status C.
@@ -657,7 +651,6 @@ class InstallationsController extends Controller
 
         return view('perguliran.partials.copot')->with(compact('installation', 'tampil_settings', 'trx'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
