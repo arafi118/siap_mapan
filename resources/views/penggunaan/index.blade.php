@@ -40,7 +40,7 @@
                                 <th>TOTAL </th>
                                 <th>TANGGAL AKHIR</th>
                                 <th>Status</th>
-                                {{-- <th style="text-align: center;">AKSI</th> --}}
+                                <th style="text-align: center;">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,14 +60,14 @@
                                             <span class="badge badge-warning">UNPAID</span>
                                         @endif
                                     </td>
-                                    {{-- <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                        <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
+                                    <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                        {{-- <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
                                             <i class="fas fa-pencil-alt"></i>
-                                        </a>
+                                        </a> --}}
                                         <a href="#" data-id="{{ $usage->id }}"
                                             class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i>
                                         </a>
-                                    </td> --}}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
