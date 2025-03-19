@@ -145,7 +145,11 @@
                     if (result.success) {
                         loadNextItem(result);
                         if (result.next) {
-                            ajaxRequest(result.next);
+                            if (result.open_tab) {
+                                window.open(result.next);
+                            } else {
+                                ajaxRequest(result.next);
+                            }
                         }
 
                         if (result.finish) {
@@ -159,6 +163,16 @@
                     }
                 })
             }
+
+            window.addEventListener("message", (event) => {
+                const data = event.data;
+                if (data.success) {
+                    loadNextItem(data);
+                    if (data.next) {
+                        ajaxRequest(data.next);
+                    }
+                }
+            });
 
             function loadNextItem(data) {
                 const timelineItem = document.createElement("li");

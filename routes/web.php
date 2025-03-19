@@ -58,6 +58,8 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/migrasi/customer', [AuthController::class, 'migrasi_customer']);
     Route::get('/migrasi/instalasi', [AuthController::class, 'migrasi_instalasi']);
     Route::get('/migrasi/pemakaian', [AuthController::class, 'migrasi_pemakaian']);
+    Route::get('/migrasi/akun', [AuthController::class, 'migrasi_akun']);
+    Route::get('/migrasi/transaksi', [AuthController::class, 'migrasi_transaksi']);
     Route::get('/migrasi/sync', [AuthController::class, 'migrasi_sync']);
 });
 
