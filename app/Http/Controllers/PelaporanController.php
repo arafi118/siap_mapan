@@ -254,6 +254,62 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
+    private function calk_tutup_buku(array $data)
+    {
+        $keuangan = new Keuangan;
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
+            'akun2',
+            'akun2.akun3',
+            'akun2.akun3.accounts' => function ($query) {
+                $query->where('business_id', Session::get('business_id'));
+            },
+            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $laba_rugi = Account::where('business_id', Session::get('business_id'))->where('lev1', '>=', '4')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->get();
+
+        $pendapatan = 0;
+        $beban = 0;
+        foreach ($laba_rugi as $lr) {
+            $saldo = $keuangan->komSaldo($lr);
+            if ($lr->lev1 == '4') {
+                $pendapatan += $saldo;
+            }
+
+            if ($lr->lev1 == '5') {
+                $beban += $saldo;
+            }
+        }
+
+        $data['surplus'] = $pendapatan - $beban;
+
+        $data['title'] = 'Calk';
+        $view = view('pelaporan.partials.views.tutup_buku.calk', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
+    }
+    
     private function surat_pengantar(array $data)
     {
         $villages = Village::where('id', Session::get('business_id'))->first();
@@ -429,7 +485,7 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
-    private function alokasi_laba_tutup_buku(array $data)
+    private function alokasi_laba(array $data)
     {
 
         $thn = $data['tahun'];
@@ -1052,10 +1108,18 @@ class PelaporanController extends Controller
     }
     private function e_budgeting(array $data)
     {
+        $keuangan = new Keuangan;
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
     
+        $title = [
+            '1,2,3' => 'Januari - Maret',
+            '4,5,6' => 'April - Juni',
+            '7,8,9' => 'Juli - September',
+            '10,11,12' => 'Oktober - Desember'
+        ];
+        
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $data['judul'] = 'Laporan Keuangan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
@@ -1064,13 +1128,53 @@ class PelaporanController extends Controller
         if ($data['bulanan']) {
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['thn'] = Tanggal::tahun($tgl);
+
         }
     
         $list_bulan = explode(',', $data['sub_laporan']);
         $bulan1 = $list_bulan[0];
         $bulan2 = $list_bulan[1];
         $bulan3 = $list_bulan[2];
+        $bulan_komulatif = $bulan1 - 1;
     
+        $daftar_header = [];
+        $akun1 = AkunLevel1::where('lev1','>=', '4')->with('akun2.akun3')->get();
+        foreach ($akun1 as $lev1) {
+            $daftar_header[$lev1->kode_akun] = $lev1->kode_akun . '. ' . $lev1->nama_akun;
+            foreach ($lev1->akun2 as $lev2) {
+                $daftar_header[$lev2->kode_akun] = $lev2->kode_akun . '. ' . $lev2->nama_akun;
+                foreach ($lev2->akun3 as $lev3) {
+                    $daftar_header[$lev3->kode_akun] = $lev3->kode_akun . '. ' . $lev3->nama_akun;
+                }
+            }
+        }
+
+        $bulan_tampil = [];
+        foreach ($list_bulan as $key => $value) {
+            $bulan_tampil[] = str_pad($value, 2, '0', STR_PAD_LEFT);
+        }
+        $data['bulan_tampil'] = $bulan_tampil;
+
+        $data['query_komulatif'] = Account::where([
+            ['business_id', Session::get('business_id')],
+            ['lev1', '>=', 4],
+            ['lev1', '<=', 5]
+        ])->with([
+            'amount' => function ($query) use ($thn, $bulan_komulatif) {
+                $query->where([
+                    ['tahun', $thn],
+                    ['bulan', str_pad($bulan_komulatif, 2, '0', STR_PAD_LEFT)]
+                ]);
+            },
+            'eb' => function ($query) use ($thn, $bulan_komulatif) {
+                $query->where([
+                    ['tahun', $thn],
+                    ['bulan', $bulan_komulatif]
+                ]);
+            }
+        ])->get();
+
         $data['query_bulan_1'] = Account::where([
             ['business_id', Session::get('business_id')],
             ['lev1', '>=', 4],
@@ -1079,7 +1183,7 @@ class PelaporanController extends Controller
             'amount' => function ($query) use ($thn, $bulan1) {
                 $query->where([
                     ['tahun', $thn],
-                    ['bulan', $bulan1]
+                    ['bulan', str_pad($bulan1, 2, '0', STR_PAD_LEFT)]
                 ]);
             },
             'eb' => function ($query) use ($thn, $bulan1) {
@@ -1098,7 +1202,7 @@ class PelaporanController extends Controller
             'amount' => function ($query) use ($thn, $bulan2) {
                 $query->where([
                     ['tahun', $thn],
-                    ['bulan', $bulan2]
+                    ['bulan', str_pad($bulan2, 2, '0', STR_PAD_LEFT)]
                 ]);
             },
             'eb' => function ($query) use ($thn, $bulan2) {
@@ -1117,7 +1221,7 @@ class PelaporanController extends Controller
             'amount' => function ($query) use ($thn, $bulan3) {
                 $query->where([
                     ['tahun', $thn],
-                    ['bulan', $bulan3]
+                    ['bulan', str_pad($bulan3, 2, '0', STR_PAD_LEFT)]
                 ]);
             },
             'eb' => function ($query) use ($thn, $bulan3) {
@@ -1127,16 +1231,72 @@ class PelaporanController extends Controller
                 ]);
             }
         ])->get();
-    
+
+        $akun1 = [];
+        $akun2 = [];
+        $akun3 = [];
+        $data_e_budgeting = [];
+        foreach ($data['query_bulan_1'] as $index => $query) {
+            $komulatif = $data['query_komulatif'][$index];
+            $bulan1 = $data['query_bulan_1'][$index];
+            $bulan2 = $data['query_bulan_2'][$index];
+            $bulan3 = $data['query_bulan_3'][$index];
+
+            $lev1 = $query->lev1 . '.0.00.00';
+            $lev2 = $query->lev1 . '.' . $query->lev2 . '.00.00';
+            $lev3 = $query->lev1 . '.' . $query->lev2 . '.' . str_pad($query->lev3, 2, '0', STR_PAD_LEFT) . '.00';
+
+             if (!in_array($lev1, $akun1)) {
+                 $akun1[] = $lev1;
+                 $data_e_budgeting[] = [
+                     'nama' => $daftar_header[$lev1],
+                     'is_header' => true
+                 ];
+             }
+            
+             if (!in_array($lev2, $akun2)) {
+                 $akun2[] = $lev2;
+                 $data_e_budgeting[] = [
+                     'nama' => $daftar_header[$lev2],
+                     'is_header' => true
+                 ];
+             }
+            
+            // if (!in_array($lev3, $akun3)) {
+            //     $akun3[] = $lev3;
+            //     $data_e_budgeting[] = [
+            //         'nama' => $daftar_header[$lev3],
+            //         'is_header' => true
+            //     ];
+            // }
+
+            $saldo_komulatif = $keuangan->komSaldo($komulatif);
+            $saldo_bulan_1 = $keuangan->komSaldo($bulan1);
+            $saldo_bulan_2 = $keuangan->komSaldo($bulan2);
+            $saldo_bulan_3 = $keuangan->komSaldo($bulan3);
+
+            $data_e_budgeting[] = [
+                'nama' => $query->kode_akun . '. ' . $query->nama_akun,
+                'komulatif' => $saldo_komulatif,
+                'rencana1' => ($bulan1->eb) ? $bulan1->eb->jumlah:0,
+                'realisasi1' => $saldo_bulan_1,
+                'rencana2' => ($bulan2->eb) ? $bulan2->eb->jumlah:0,
+                'realisasi2' => $saldo_bulan_2 - $saldo_bulan_1,
+                'rencana3' => ($bulan3->eb) ? $bulan3->eb->jumlah:0,
+                'realisasi3' => $saldo_bulan_3 - $saldo_bulan_2 - $saldo_bulan_1,
+                'total' => $saldo_komulatif + $saldo_bulan_3,
+                'is_header' => false
+            ];
+        }
+        
+        $data['e_budgeting'] = $data_e_budgeting;
         $data['title'] = 'E - Budgeting';
+    
         $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-        return $pdf->stream();
-    }
     
-
-
-    // 
+        return $pdf->stream();
+    } 
 
     public function simpanSaldo($tahun, $bulan = 1)
     {
