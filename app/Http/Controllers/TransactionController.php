@@ -781,6 +781,7 @@ class TransactionController extends Controller
             $kategori = $inv->kategori;
 
             $trx_penghapusan = [
+                'business_id'           => Session::get('business_id'),
                 'tgl_transaksi'         => (string) Tanggal::tglNasional($request->tgl_transaksi),
                 'rekening_debit'        => (string) $request->disimpan_ke,
                 'rekening_kredit'       => (string) $request->sumber_dana,
@@ -826,6 +827,7 @@ class TransactionController extends Controller
             ])->first();
 
             $trx_penjualan = [
+                'business_id' => Session::get('business_id'),
                 'tgl_transaksi'  => (string) Tanggal::tglNasional($request->tgl_transaksi),
                 'rekening_debit'  => $rekening_debit->id,
                 'rekening_kredit'  => $rekening_kredit->id,
@@ -859,6 +861,7 @@ class TransactionController extends Controller
 
                 $insert_inventaris_baru = [
                     'business_id'   => Session::get('business_id'),
+                    'business_id'   => Session::get('business_id'),
                     'nama_barang'   => $barang,
                     'tgl_beli'      => Tanggal::tglNasional($request->tgl_transaksi),
                     'unit'          => $request->unit,
@@ -873,6 +876,7 @@ class TransactionController extends Controller
                 if ($harga_jual != $request->_nilai_buku) {
                     $jumlah = $harga_jual - $request->_nilai_buku;
                     $trx_revaluasi = [
+                        'business_id' => Session::get('business_id'),
                         'tgl_transaksi' => (string) Tanggal::tglNasional($request->tgl_transaksi),
                         'rekening_debit' => '1',
                         'rekening_kredit' => '61',
@@ -936,6 +940,7 @@ class TransactionController extends Controller
                 $rek_simpan = Account::where('business_id', Session::get('business_id'))->where('kode_akun', $disimpan_ke)->first();
 
                 $insert = [
+                    'business_id' => Session::get('business_id'),
                     'tgl_transaksi' => (string) Tanggal::tglNasional($request->tgl_transaksi),
                     'rekening_debit' => (string) $request->disimpan_ke,
                     'rekening_kredit' => (string) $request->sumber_dana,
@@ -991,6 +996,7 @@ class TransactionController extends Controller
                 $relasi = '';
                 if ($request->relasi) $relasi = $request->relasi;
                 $insert = [
+                    'business_id'       => Session::get('business_id'),
                     'tgl_transaksi'     => (string) Tanggal::tglNasional($request->tgl_transaksi),
                     'rekening_debit'    => (string) $request->disimpan_ke,
                     'rekening_kredit'   => (string) $request->sumber_dana,
@@ -1067,6 +1073,7 @@ class TransactionController extends Controller
         ])->first();
 
         $transaksi = Transaction::create([
+            'business_id' => Session::get('business_id'),
             'rekening_debit' => $rekening_debit->id,
             'rekening_kredit' => $rekening_kredit->id,
             'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
@@ -1176,6 +1183,7 @@ class TransactionController extends Controller
         ])->first();
 
         $transaksi = Transaction::create([
+            'business_id' => Session::get('business_id'),
             'rekening_debit' => $rekening_debit->id,
             'rekening_kredit' => $rekening_kredit->id,
             'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
@@ -1584,6 +1592,7 @@ class TransactionController extends Controller
         $kode_akun[$trx->rekening_kredit] = $trx->rekening_kredit;
 
         $reversal = Transaction::create([
+            'business_id' => Session::get('business_id'),
             'tgl_transaksi' => (string) date('Y-m-d'),
             'rekening_debit' => (string) $trx->rekening_debit,
             'rekening_kredit' => (string) $trx->rekening_kredit,

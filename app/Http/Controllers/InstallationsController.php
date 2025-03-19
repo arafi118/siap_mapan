@@ -162,7 +162,6 @@ class InstallationsController extends Controller
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
         $package = Package::where('business_id', Session::get('business_id'))->get();
-        $transaksi = Transaction::all();
 
         $usages = Usage::where('business_id', Session::get('business_id'))->where([
             ['id_instalasi', $installations->id],
@@ -183,7 +182,7 @@ class InstallationsController extends Controller
 
         return response()->json([
             'success' => true,
-            'view' => view('transaksi.partials.usage')->with(compact('installations', 'transaksi',  'usages', 'trx_settings', 'package'))->render(),
+            'view' => view('transaksi.partials.usage')->with(compact('installations',  'usages', 'trx_settings', 'package'))->render(),
             'rek_debit' => $tagihan1,
             'rek_kredit' => $tagihan2,
         ]);
@@ -432,6 +431,7 @@ class InstallationsController extends Controller
 
             if ($rekening_debit && $rekening_kredit) {
                 $transaksi = Transaction::create([
+                    'business_id' => Session::get('business_id'),
                     'rekening_debit' => $rekening_debit->id,
                     'rekening_kredit' => $rekening_kredit->id,
                     'tgl_transaksi' => Tanggal::tglNasional($request->order),
@@ -861,6 +861,7 @@ class InstallationsController extends Controller
         $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $pasang_baru;
         $persen = 100 - ($jumlah / $pasang_baru * 100);
         $transaksi = Transaction::create([
+            'business_id' => Session::get('business_id'),
             'rekening_debit' => '1',
             'rekening_kredit' => '59',
             'tgl_transaksi' => Tanggal::tglNasional($request->aktif),
