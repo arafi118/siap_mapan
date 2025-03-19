@@ -191,7 +191,7 @@
             allowNegative: true
         });
 
-        $("#total").maskMoney({
+        $(".total").maskMoney({
             allowNegative: true
         });
 
@@ -200,6 +200,25 @@
                 theme: 'bootstrap4',
             });
         });
+
+        $(document).on('change', '#total', function() {
+            function cleanNumber(value) {
+                let cleanNumber = value.toString().replace(/,/g, '');
+                return parseFloat(cleanNumber) || 0;
+            }
+
+            var pasang = cleanNumber($('#pasang_baru').val());
+            var total = cleanNumber($(this).val());
+
+            if (total > pasang) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Total Tidak Boleh Lebih Dari Pasang Baru!"
+                });
+            }
+        });
+
 
         jQuery.datetimepicker.setLocale('de');
         $('.date').datetimepicker({

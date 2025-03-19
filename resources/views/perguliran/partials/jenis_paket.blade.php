@@ -21,7 +21,7 @@
                     <td>{{ $blok[$i]['nama'] }}</td>
                     <td>{{ $blok[$i]['jarak'] }}</td>
                     <td class="text-right">
-                        <span class="badge badge-success" style="width: 20%; padding: 5px; text-align: right;">
+                        <span class="badge badge-success" style="width: 30%; padding: 5px; text-align: right;">
                             Rp. {{ number_format(isset($harga[$i]) ? $harga[$i] : '0', 2) }}
                         </span>
                     </td>
@@ -31,14 +31,22 @@
     </table>
 </div>
 
-<div class="col-md-6">
+<div class="col-md-4">
+    <label for="pasang_baru">Biaya pasang baru</label>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control nominal" name="pasang_baru" id="pasang_baru"
+            aria-describedby="basic-addon2" value="{{ number_format($tampil_settings->pasang_baru, 2) }}"
+            {!! $tampil_settings->swit_tombol == '1' ? 'readonly' : '' !!}>
+    </div>
+</div>
+<div class="col-md-4">
     <label for="abodemen">Abodemen</label>
     <div class="input-group mb-3">
-        <input type="text" class="form-control abodemen" name="abodemen" id="abodemen"
+        <input type="text" class="form-control nominal" name="abodemen" id="abodemen"readonly
             aria-describedby="basic-addon2" value="{{ number_format($tampil_settings->abodemen, 2) }}">
     </div>
 </div>
-<div class="col-md-6">
+<div class="col-md-4">
     <label for="denda">Denda</label>
     <div class="input-group mb-3">
         <input type="text" class="form-control"aria-describedby="basic-addon2" readonly
@@ -46,7 +54,7 @@
     </div>
 </div>
 <script>
-    $(".abodemen").maskMoney({
+    $(".nominal").maskMoney({
         allowNegative: true
     });
 

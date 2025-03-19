@@ -284,8 +284,6 @@ class TransactionController extends Controller
         }
     }
 
-
-
     public function ebudgeting()
     {
         $business = Business::where('id', Session::get('business_id'))->first();
@@ -293,7 +291,6 @@ class TransactionController extends Controller
         $title = ' E-Budgeting';
         return view('transaksi.ebudgeting.index')->with(compact('title', 'business'));
     }
-
 
     public function anggaran(Request $request)
     {
@@ -1038,12 +1035,13 @@ class TransactionController extends Controller
             "istallation_id",
             "abodemen",
             "biaya_sudah_dibayar",
+            "tagihan",
             "pembayaran",
         ]);
 
-        $data['abodemen'] = str_replace(',', '', $data['abodemen']);
-        $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
-        $data['abodemen'] = floatval($data['abodemen']);
+        $data['tagihan'] = str_replace(',', '', $data['tagihan']);
+        $data['tagihan'] = str_replace('.00', '', $data['tagihan']);
+        $data['tagihan'] = floatval($data['tagihan']);
 
         $data['biaya_sudah_dibayar'] = str_replace(',', '', $data['biaya_sudah_dibayar']);
         $data['biaya_sudah_dibayar'] = str_replace('.00', '', $data['biaya_sudah_dibayar']);
@@ -1053,17 +1051,17 @@ class TransactionController extends Controller
         $data['pembayaran'] = str_replace('.00', '', $data['pembayaran']);
         $data['pembayaran'] = floatval($data['pembayaran']);
 
-        $abodemen = $data['abodemen'];
+        $tagihan = $data['tagihan'];
         $biaya_sudah_dibayar = $data['biaya_sudah_dibayar'] ?? null;
         $biaya_instalasi = $data['pembayaran'];
 
         $penjumlahantrx = $biaya_sudah_dibayar + $biaya_instalasi;
 
-        $biaya_instal = $data['abodemen'] - $penjumlahantrx;
+        $biaya_instal = $data['tagihan'] - $penjumlahantrx;
 
         $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $biaya_sudah_dibayar;
 
-        $persen = ($penjumlahantrx / $abodemen) * 100;
+        $persen = ($penjumlahantrx / $tagihan) * 100;
 
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
@@ -1157,12 +1155,13 @@ class TransactionController extends Controller
     {
         $data = $request->only([
             "tgl_transaksi",
-            "id_trx",
+            "id_instal",
             "id_usage",
             "pembayaran",
             "tagihan",
             "keterangan",
         ]);
+
         $data['tagihan'] = str_replace(',', '', $data['tagihan']);
         $data['tagihan'] = str_replace('.00', '', $data['tagihan']);
         $data['tagihan'] = floatval($data['tagihan']);
@@ -1189,12 +1188,12 @@ class TransactionController extends Controller
             'rekening_kredit' => $rekening_kredit->id,
             'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
             'total' => $biaya_instalasi,
-            'installation_id' => $request->id_trx,
+            'installation_id' => $request->id_instal,
             'usage_id' => $request->id_usage,
             'keterangan' => $request->keterangan
         ]);
 
-        if ($biaya_tagihan == $biaya_instalasi) {
+        if ($biaya_instalasi  >= $biaya_tagihan) {
             Usage::where('business_id', Session::get('business_id'))->where('id', $request->id_usage)->update([
                 'status' => 'PAID',
             ]);
@@ -1213,6 +1212,7 @@ class TransactionController extends Controller
         $keuangan = new Keuangan;
 
         $bisnis = Business::where('id', Session::get('business_id'))->first();
+        $trx_settings = Settings::where('business_id', Session::get('business_id'))->first();
         $trx = Transaction::where('id', $id)->with([
             'Installations.customer',
             'Usages'
@@ -1231,7 +1231,7 @@ class TransactionController extends Controller
             $gambar = '/storage/logo/' . $logo;
         }
 
-        return view('transaksi.dokumen.struk_tagihan')->with(compact('trx', 'keuangan', 'dari', 'oleh', 'jenis', 'bisnis', 'gambar'));
+        return view('transaksi.dokumen.struk_tagihan')->with(compact('trx', 'trx_settings', 'keuangan', 'dari', 'oleh', 'jenis', 'bisnis', 'gambar'));
     }
 
     /**

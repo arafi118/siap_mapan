@@ -191,6 +191,7 @@
             var rek_debit = rekening_debit;
             var rek_kredit = rekening_kredit;
             var tagihan = (installation.biaya_instalasi);
+            console.log(sum_total);
 
             $("#installation").val(installation.id);
             $("#order").val(installation.order);

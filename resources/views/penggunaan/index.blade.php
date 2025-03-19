@@ -27,11 +27,7 @@
                                     @if (Session::get('jabatan') == 6) disabled @endif>
                                     <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
                                 </button>
-
-
                             </div>
-
-
                         </div>
                         <div>&nbsp;</div>
                         <thead class="thead-light" align="center">
@@ -40,8 +36,8 @@
                                 <th>KODE INSTALASI</th>
                                 <th>AWAL PEMAKAIAN</th>
                                 <th>AKHIR PEMAKAIAN</th>
-                                <th>JUMLAH</th>
-                                <th>HARGA PAKET</th>
+                                <th>JUMLAH PEMAKAIAN</th>
+                                <th>TOTAL </th>
                                 <th>TANGGAL AKHIR</th>
                                 <th>Status</th>
                                 {{-- <th style="text-align: center;">AKSI</th> --}}

@@ -321,9 +321,11 @@ class SopController extends Controller
 
         if (request()->ajax()) {
             $data['batas_tagihan'] = request()->get('batas_tagihan');
+            $data['swit_tombol_trx'] = request()->get('swit_tombol_trx');
 
             $validate = Validator::make($data, [
                 'batas_tagihan' => 'required',
+                'swit_tombol_trx' => 'required'
             ]);
 
             if ($validate->fails()) {
@@ -333,11 +335,13 @@ class SopController extends Controller
             if ($pengaturan->count() > 0) {
                 $Settings = $pengaturan->update([
                     'batas_tagihan' => $data['batas_tagihan'],
+                    'swit_tombol_trx' => $data['swit_tombol_trx'],
                 ]);
             } else {
                 $Settings = Settings::create([
                     'business_id' => $business_id,
-                    'batas_tagihan' => $data['batas_tagihan']
+                    'batas_tagihan' => $data['batas_tagihan'],
+                    'swit_tombol_trx' => $data['swit_tombol_trx'],
                 ]);
             }
 
