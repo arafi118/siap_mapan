@@ -53,6 +53,6 @@ class Account extends Model
 
     public function eb()
     {
-        return $this->hasMany(Ebudgeting::class, 'account_id');
+        return $this->hasOne(Ebudgeting::class, 'account_id');
     }
 }
