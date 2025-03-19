@@ -34,7 +34,7 @@
             @endif
             <h4 class="font-weight-normal mt-3">
                 <div class="row">
-                    <span class="col-sm-6"> &nbsp; Surplus/Devisit Tahun {{ Tanggal::tahun($tgl_kondisi) }}</span>
+                    <span class="col-sm-6"> &nbsp; Laba Tahun {{ Tanggal::tahun($tgl_kondisi) }}</span>
                     <span class="col-sm-6 text-end">Rp. {{ number_format($surplus, 2) }}</span>
                 </div>
             </h4>
@@ -52,7 +52,7 @@
                                     <div class="table-responsive mb-3">
                                         <table class="table table-striped midle">
                                             <thead class="bg-dark text-white">
-                                                <tr>
+                                                {{-- <tr>
                                                     <th width="50%">
                                                         <span class="text-sm">Cadangan Resiko</span>
                                                     </th>
@@ -66,9 +66,9 @@
                                                             </span>
                                                         </div>
                                                     </th>
-                                                </tr>
+                                                </tr> --}}
                                             </thead>
-                                            <tbody>
+                                            {{-- <tbody>
                                                 <input type="hidden" name="total_cadangan_resiko"
                                                     id="total_cadangan_resiko"
                                                     class="form-control total form-control-sm text-end" value="0">
@@ -86,11 +86,11 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
-                                            </tbody>
+                                            </tbody> --}}
                                         </table>
                                     </div>
                                     <h4 class="font-weight-normal">
-                                        Alokasi Surplus Bersih
+                                        Alokasi Laba
                                     </h4>
 
                                     <div class="table-responsive mb-3">
@@ -99,7 +99,7 @@
                                                 <tr>
                                                     <th width="50%">
                                                         <span class="text-sm">
-                                                            Alokasi Surplus Bersih
+                                                            Laba Dibagikan
                                                         </span>
                                                     </th>
                                                     <th width="50%">
@@ -114,9 +114,9 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($sp_bersih as $saldo)
-                                                    @if (substr($saldo->id, -1) <= 4)
+                                                    @if (substr($saldo->kode_akun, -1) <= 4)
                                                         <tr>
-                                                            <td>{{ $title_form[substr($saldo->id, -1)] }}</td>
+                                                            <td>{{ $title_form[substr($saldo->kode_akun, -1)] }}</td>
                                                             <td>
                                                                 <div class="input-group input-group-outline my-0">
                                                                     <input type="text"
