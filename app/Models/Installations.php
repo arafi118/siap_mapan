@@ -59,4 +59,8 @@ class Installations extends Model
     {
         return $this->belongsTo(Account::class, 'kode_akun', 'id');
     }
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'cater_id', 'id');
+    }
 }

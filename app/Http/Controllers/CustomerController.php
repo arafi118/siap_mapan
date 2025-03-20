@@ -53,9 +53,7 @@ class CustomerController extends Controller
             "tempat_lahir",
             "tgl_lahir",
             "jenis_kelamin",
-            "no_kk",
-            "domisi",
-            "desa",
+            "pekerjaan",
             "no_telp",
         ]);
 
@@ -67,9 +65,7 @@ class CustomerController extends Controller
             'tempat_lahir' => 'required',
             'tgl_lahir' => 'required',
             'jenis_kelamin' => 'required',
-            'no_kk' => 'required',
-            'domisi' => 'required',
-            'desa' => 'required',
+            'pekerjaan' => 'required',
             'no_telp' => 'required',
         ];
 
@@ -77,7 +73,6 @@ class CustomerController extends Controller
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
-
 
         $create = Customer::create([
             'business_id' => Session::get('business_id'),
@@ -88,9 +83,7 @@ class CustomerController extends Controller
             'tempat_lahir' => $request->tempat_lahir,
             'tgl_lahir' =>  Tanggal::tglNasional($request->tgl_lahir),
             'jk' => $request->jenis_kelamin,
-            'kk' => $request->no_kk,
-            'domisi' => $request->domisi,
-            'desa' => $request->desa,
+            'pekerjaan' => $request->pekerjaan,
             'hp' => $request->no_telp
         ]);
 
@@ -129,7 +122,18 @@ class CustomerController extends Controller
     public function update(Request $request, Customer $customer)
     {
         // Validasi input
-        $validasi = [
+        $data = $request->only([
+            "nik",
+            "nama_lengkap",
+            "nama_panggilan",
+            "alamat",
+            "tempat_lahir",
+            "tgl_lahir",
+            "jenis_kelamin",
+            "pekerjaan",
+            "no_telp"
+        ]);
+        $rules = [
             'nik' => 'required',
             'nama_lengkap' => 'required',
             'nama_panggilan' => 'required',
@@ -137,9 +141,7 @@ class CustomerController extends Controller
             'tempat_lahir' => 'required',
             'tgl_lahir' => 'required',
             'jenis_kelamin' => 'required',
-            'no_kk' => 'required',
-            'domisi' => 'required',
-            'desa' => 'required',
+            'pekerjaan' => 'required',
             'no_telp' => 'required'
         ];
 
@@ -147,7 +149,13 @@ class CustomerController extends Controller
             $validasi['nik'] = 'required|unique:customers';
         }
 
-        $this->validate($request, $validasi);
+        $validate = Validator::make(
+            $data,
+            $rules
+        );
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
 
         // Update data customer
         Customer::where('business_id', Session::get('business_id'))->where('id', $customer->id)->update([
@@ -158,9 +166,7 @@ class CustomerController extends Controller
             'tempat_lahir' => $request->tempat_lahir,
             'tgl_lahir' => $request->tgl_lahir,
             'jk' => $request->jenis_kelamin,
-            'kk' => $request->no_kk,
-            'domisi' => $request->domisi,
-            'desa' => $request->desa,
+            'pekerjaan' => $request->pekerjaan,
             'hp' => $request->no_telp
         ]);
 

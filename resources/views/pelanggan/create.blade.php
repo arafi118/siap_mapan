@@ -40,7 +40,7 @@
                                     <label for="nik">NIK</label>
                                     <input autocomplete="off" maxlength="16" type="text" name="nik" id="nik"
                                         class="form-control" value="">
-                                    <small class="text-danger" id="msg_nik">{{ $errors->first('nik') }}</small>
+                                    <small class="text-danger" id="msg_nik"></small>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -48,8 +48,7 @@
                                     <label for="nama_lengkap">Nama lengkap</label>
                                     <input autocomplete="off" type="text" name="nama_lengkap" id="nama_lengkap"
                                         class="form-control">
-                                    <small class="text-danger"
-                                        id="msg_nama_lengkap">{{ $errors->first('nama_lengkap') }}</small>
+                                    <small class="text-danger" id="msg_nama_lengkap"></small>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -57,26 +56,17 @@
                                     <label for="nama_panggilan">Nama Panggilan</label>
                                     <input autocomplete="off" type="text" name="nama_panggilan" id="nama_panggilan"
                                         class="form-control">
-                                    <small class="text-danger">{{ $errors->first('nama_panggilan') }}</small>
+                                    <small class="text-danger"></small>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="position-relative mb-3">
-                                    <label for="no_kk">No. KK</label>
-                                    <input autocomplete="off" type="text" name="no_kk" id="no_kk"
-                                        class="form-control" value="">
-                                    <small class="text-danger" id="msg_no_kk">{{ $errors->first('no_kk') }}</small>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="position-relative mb-3">
                                     <label for="tempat_lahir">Tempat Lahir</label>
                                     <input autocomplete="off" type="text" name="tempat_lahir" id="tempat_lahir"
                                         class="form-control" value="">
-                                    <small class="text-danger"
-                                        id="msg_tempat_lahir">{{ $errors->first('tempat_lahir') }}</small>
+                                    <small class="text-danger" id="msg_tempat_lahir"></small>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -85,8 +75,7 @@
                                     <div class="input-group date">
                                         <input type="text" class="form-control date" name="tgl_lahir" id="tgl_lahir"
                                             value="{{ date('d/m/Y') }}">
-                                        <small
-                                            class="text-danger"id="msg_tgl_lahir">{{ $errors->first('tgl_lahir') }}</small>
+                                        <small class="text-danger"id="msg_tgl_lahir"></small>
                                     </div>
                                 </div>
                             </div>
@@ -98,49 +87,37 @@
                                         <option value="L">Laki Laki</option>
                                         <option value="P">Perempuan</option>
                                     </select>
-                                    <small class="text-danger">{{ $errors->first('jenis_kelamin') }}</small>
+                                    <small class="text-danger"></small>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <div class="position-relative mb-3">
                                     <label for="no_telp">No. Telepon</label>
                                     <input autocomplete="off" type="text" name="no_telp" id="no_telp"
                                         class="form-control">
-                                    <small class="text-danger" id="msg_no_telp">{{ $errors->first('no_telp') }}</small>
+                                    <small class="text-danger" id="msg_no_telp"></small>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="position-relative mb-3">
-                                    <label for="desa">Desa/Kelurahan</label>
-                                    <select class="js-select-2 form-control" name="desa" id="desa">
-                                        <option>Pilih Desa/Kelurahan</option>
-                                        @foreach ($desa as $ds)
-                                            <option value="{{ $ds->id }}">
-                                                {{ $ds->nama }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="text-danger" id="msg_desa"></small>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="row">
+
                             <div class="col-md-4">
                                 <div class="position-relative mb-3">
-                                    <label for="alamat">Alamat KTP</label>
+                                    <label for="pekerjaan">Pekerjaan</label>
+                                    <input autocomplete="off" type="text" name="pekerjaan" id="pekerjaan"
+                                        class="form-control">
+                                    <small class="text-danger" id="msg_pekerjaan"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="position-relative mb-3">
+                                    <label for="alamat">Alamat Lengkap</label>
                                     <input autocomplete="off" type="text" name="alamat" id="alamat"
                                         class="form-control" value="">
-                                    <small class="text-danger" id="msg_alamat">{{ $errors->first('alamat') }}</small>
+                                    <small class="text-danger" id="msg_alamat"></small>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="position-relative mb-3">
-                                    <label for="domisi">Domisili saat ini</label>
-                                    <input autocomplete="off" type="text" name="domisi" id="domisi"
-                                        class="form-control">
-                                    <small class="text-danger" id="msg_domisi">{{ $errors->first('domisi') }}</small>
-                                </div>
-                            </div>
+
                         </div>
                         <div>
                             Catatan : ( Jika Ada data atau inputan yang kosong bisa di isi ( 0 ) atau ( - ) )
