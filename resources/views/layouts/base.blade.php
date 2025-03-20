@@ -395,6 +395,18 @@
         });
     </script>
 
+    @if (Session::get('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Login Berhasil',
+                text: '{{ Session::get('success') }}.',
+            }).then((result) => {
+                window.open('/dataset/{{ time() }}')
+            })
+        </script>
+    @endif
+
     @yield('script')
 </body>
 

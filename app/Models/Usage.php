@@ -28,7 +28,7 @@ class Usage extends Model
 
     public function transaction()
     {
-        return $this->hasMany(Transaction::class, 'installation_id');
+        return $this->hasMany(Transaction::class, 'usage_id');
     }
 
     public function usage()

@@ -12,6 +12,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PelaporanController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SopController;
+use App\Http\Controllers\SystemController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
@@ -75,6 +76,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/dashboard/installations', [DashboardController::class, 'installations']);
     Route::get('/dashboard/usages', [DashboardController::class, 'usages']);
     Route::get('/dashboard/tagihan', [DashboardController::class, 'tagihan']);
+
+    Route::get('/dataset/{time}', [SystemController::class, 'dataset']);
 
     Route::get('/pengaturan/coa', [SopController::class, 'coa']);
 

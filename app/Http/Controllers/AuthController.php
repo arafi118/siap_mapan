@@ -104,7 +104,7 @@ class AuthController extends Controller
                 'auth_token' => $auth_token,
                 'menu' => $menu
             ]);
-            return redirect('/')->with('success', 'Selamat ' . $user->nama . ', berhasil login!');
+            return redirect('/')->with('success', 'Selamat Datang ' . $user->nama);
         }
 
         return redirect()->back()->with('error', 'Login Gagal. Username atau Password salah');
@@ -707,6 +707,9 @@ class AuthController extends Controller
             DB::table('transactions')->insert($chunk->toArray());
         });
         DB::statement('SET @DISABLE_TRIGGER = 0');
+        Usage::where('business_id', Session::get('business_id'))->update([
+            'status' => 'PAID'
+        ]);
 
         return response()->json([
             'success' => true,
