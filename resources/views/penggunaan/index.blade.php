@@ -20,9 +20,11 @@
                                 <b>Data Pemakaian</b>
                             </div>
                             <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                                <button class="btn btn-danger" type="button" id="DetailCetakBuktiTagihan">
-                                    <i class="fas fa-info-circle">&nbsp;</i> Cetak Tagihan
-                                </button>
+                                @if (auth()->user()->jabatan == 1)
+                                    <button class="btn btn-danger" type="button" id="DetailCetakBuktiTagihan">
+                                        <i class="fas fa-info-circle">&nbsp;</i> Cetak Tagihan
+                                    </button>
+                                @endif
                                 <button class="btn btn-warning" id="Registerpemakaian"
                                     @if (Session::get('jabatan') == 6) disabled @endif>
                                     <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
@@ -40,7 +42,9 @@
                                 <th>TOTAL </th>
                                 <th>TANGGAL AKHIR</th>
                                 <th>Status</th>
-                                <th style="text-align: center;">AKSI</th>
+                                @if (auth()->user()->jabatan == 1)
+                                    <th style="text-align: center;">AKSI</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -60,14 +64,18 @@
                                             <span class="badge badge-warning">UNPAID</span>
                                         @endif
                                     </td>
-                                    <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                        {{-- <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a> --}}
-                                        <a href="#" data-id="{{ $usage->id }}"
-                                            class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i>
-                                        </a>
-                                    </td>
+                                    @if (auth()->user()->jabatan == 1)
+                                        <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                            {{-- <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
+            <i class="fas fa-pencil-alt"></i>
+        </a> --}}
+                                            <a href="#" data-id="{{ $usage->id }}"
+                                                class="btn-sm btn-danger mx-1 Hapus_pemakaian">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    @endif
+
                                 </tr>
                             @endforeach
                         </tbody>

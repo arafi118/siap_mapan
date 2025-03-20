@@ -17,7 +17,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="/customers/{{ $customer->nik }}" method="post" id="Penduduk">
+                        <form action="/customers/{{ $customer->id }}" method="post" id="Penduduk">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="_nik" id="_nik" value="{{ $customer->nik }}">
@@ -52,14 +52,6 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
-                                        <label for="no_kk">No. KK</label>
-                                        <input autocomplete="off" type="text"maxlength="16" name="no_kk" id="no_kk"
-                                            class="form-control" value="{{ $customer->kk }}">
-                                        <small class="text-danger">{{ $errors->first('no_kk') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
                                         <label for="tempat_lahir">Tempat Lahir</label>
                                         <input autocomplete="off" type="text" name="tempat_lahir" id="tempat_lahir"
                                             class="form-control" value="{{ $customer->tempat_lahir }}">
@@ -89,10 +81,8 @@
                                         <small class="text-danger">{{ $errors->first('jenis_kelamin') }}</small>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <div class="position-relative mb-3">
                                         <label for="no_telp">No. Telp</label>
                                         <input autocomplete="off" type="text" name="no_telp" id="no_telp"
@@ -100,35 +90,23 @@
                                         <small class="text-danger">{{ $errors->first('no_telp') }}</small>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <div class="position-relative mb-3">
-                                        <label for="desa">Desa/Kelurahan</label>
-                                        <select class="js-select-2 form-control" name="desa" id="desa">
-                                            @foreach ($desa as $ds)
-                                                <option value="">{{ $ds->nama }}</option>
-                                                <option value="{{ $ds->id }}"
-                                                    {{ $customer->desa == $ds->id ? 'selected' : '' }}>
-                                                    {{ $ds->nama }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <small class="text-danger">{{ $errors->first('desa') }}</small>
-                                    </div>
-                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="position-relative mb-3">
-                                        <label for="alamat">Alamat KTP</label>
+                                        <label for="pekerjaan">Pekerjaan</label>
+                                        <input autocomplete="off" type="text" name="pekerjaan" id="pekerjaan"
+                                            class="form-control" value="{{ $customer->pekerjaan }}">
+                                        <small class="text-danger">{{ $errors->first('pekerjaan') }}</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="position-relative mb-3">
+                                        <label for="alamat">Alamat Lengkap</label>
                                         <input autocomplete="off"type="text" name="alamat" id="alamat"
                                             class="form-control" value="{{ $customer->alamat }}">
                                         <small class="text-danger">{{ $errors->first('alamat') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="position-relative mb-3">
-                                        <label for="domisi">Domisi saat ini</label>
-                                        <input autocomplete="off" type="text" name="domisi" id="domisi"
-                                            class="form-control" value="{{ $customer->domisi }}">
-                                        <small class="text-danger">{{ $errors->first('domisi') }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -146,7 +124,7 @@
                                     <span class="text">Kembali</span>
                                 </button>
 
-                                <button class="btn btn-secondary btn-icon-split" id="SimpanPenduduk"
+                                <button class="btn btn-secondary btn-icon-split" id="EditPelanggan"
                                     type="submit"style="float: right; margin-left: 10px;">
                                     <span class="icon text-white-50">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -199,5 +177,43 @@
         },
         timepicker: false,
         format: 'd/m/Y'
+    });
+
+    $(document).on('click', '#EditPelanggan', function(e) {
+        e.preventDefault();
+        $('small').html('');
+
+        var form = $('#Penduduk');
+        var actionUrl = form.attr('action');
+
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: form.serialize(),
+            success: function(result) {
+                if (result.success) {
+                    toastMixin.fire({
+                        title: 'Pembaruhan Kelas & Biaya Pemakaian Berhasil'
+                    });
+
+                    setTimeout(() => {
+                        window.location.href = '/customers/';
+                    }, 1500);
+                }
+            },
+            error: function(result) {
+                const response = result.responseJSON;
+                Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error');
+                if (response && typeof response === 'object') {
+                    $.each(response, function(key, message) {
+                        $('#' + key)
+                            .closest('.input-group.input-group-static')
+                            .addClass('is-invalid');
+
+                        $('#msg_' + key).html(message);
+                    });
+                }
+            }
+        });
     });
 </script>

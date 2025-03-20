@@ -953,7 +953,10 @@ class InstallationsController extends Controller
             'oneUsage' => function ($query) use ($tanggal) {
                 $query->where('tgl_akhir', '<=', $tanggal);
             },
-            'customer'
+            'customer.village',
+            'package',
+            'village',
+            'users'
         ])->get();
 
         return response()->json([

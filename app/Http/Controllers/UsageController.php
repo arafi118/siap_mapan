@@ -101,7 +101,6 @@ class UsageController extends Controller
             }
 
             $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
-
             $insert[] = [
                 'business_id' => Session::get('business_id'),
                 'customer' => $data['customer'],
@@ -118,14 +117,34 @@ class UsageController extends Controller
             ];
         }
 
+        foreach ($installations as $installation) {
+            $unpaidCount = Usage::where('business_id', Session::get('business_id'))
+                ->where('id_instalasi', $installation->id)
+                ->where('status', 'UNPAID')
+                ->count();
+
+            $statusTagihan = $unpaidCount > 2 ? "SPS" : ($unpaidCount == 1 ? "SP" : "N");
+
+            Installations::where('id', $installation->id)->update([
+                'status_tunggakan' => $statusTagihan,
+                'updated_at' => $created_at
+            ]);
+        }
+
         // Simpan data
-        Usage::insert($insert);
+        // Usage::insert($insert);
 
         return response()->json([
             'success' => true,
-            'message' => 'Data berhasil disimpan',
-            'view' => view('penggunaan.partials.cetak_tagihan', ['usages' => (object) $insert, 'data_customer' => $data_customer, 'bisnis' => $bisnis, 'keuangan' => $keuangan, 'gambar' => $gambar])->render(),
+            'msg' => 'Input Pemakain Berhasil ',
+            'pemakaian' => $request
         ]);
+
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Data berhasil disimpan',
+        //     'view' => view('penggunaan.partials.cetak_tagihan', ['usages' => (object) $insert, 'data_customer' => $data_customer, 'bisnis' => $bisnis, 'keuangan' => $keuangan, 'gambar' => $gambar])->render(),
+        // ]);
     }
 
     /**

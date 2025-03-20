@@ -12,7 +12,6 @@
     @endif
     <form action="/usages" method="post" id="FormInputPemakaian">
         @csrf
-        <input type="hidden" name="customer_id" id="customer_id">
         <input type="hidden" name="id_instalasi" id="id_instalasi">
 
         <div class="row">
@@ -37,9 +36,9 @@
                                         <select class="select2 form-control" name="caters" id="caters">
                                             <option value=""></option>
                                             @foreach ($caters as $cater)
-                                                <option value="{{ $cater->id }}">
-                                                    {{ $cater->nama }}
-                                                </option>
+                                                @if (auth()->user()->jabatan != 5 || $cater->id == auth()->id())
+                                                    <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
@@ -56,20 +55,26 @@
                             <!-- Datatables -->
                             <div class="col-lg-12">
                                 <div class="card mb-4">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Daftar Pemakaian</h5>
+                                        <input type="text" id="searchInput" class="form-control w-25"
+                                            placeholder="Cari...">
+                                    </div>
                                     <div class="table-responsive p-3">
-                                        <table class="table align-items-center table-flush table-center" id="TbPemakain">
+                                        <table class="table align-items-center table-flush table-center table-hover"
+                                            id="TbPemakain">
                                             <thead class="thead-light" align="center">
                                                 <tr>
-                                                    <th>Checklist</th>
                                                     <th>NAMA</th>
                                                     <th>KODE INSTALASI</th>
                                                     <th>AWAL PERMAKAIAN</th>
                                                     <th>AKHIR PERMAKAIAN</th>
                                                     <th>JUMLAH</th>
-                                                    {{-- <th style="text-align: center;">AKSI</th> --}}
                                                 </tr>
                                             </thead>
-                                            <tbody id="DaftarInstalasi"></tbody>
+                                            <tbody id="DaftarInstalasi">
+                                                <!-- Data akan ditambahkan di sini -->
+                                            </tbody>
                                         </table>
                                     </div>
                                 </div>
@@ -77,10 +82,7 @@
                         </div>
 
                         <div class="col-12 d-flex justify-content-end">
-                            <a href="/usages" class="btn btn-white">Kembali</a>
-                            &nbsp;
-                            <a href="#" type="button" id="SimpanPemakaian" class="btn btn-secondary">Simpan
-                                Pemakaian</a>
+                            <a href="/usages" class="btn btn-secondary">Kembali</a>
                         </div>
                     </div>
                 </div>
@@ -89,10 +91,13 @@
     </form>
 
     <div style="display: none;" id="print"></div>
+    @include('penggunaan.partials.pemakaian')
 @endsection
 
 @section('script')
     <script>
+        let dataInstallation;
+
         $(document).ready(function() {
             $('.select2').select2({
                 theme: 'bootstrap4',
@@ -144,37 +149,64 @@
             var tanggal = $('#tanggal').val();
             $.get('/installations/cater/' + id_cater + '?tanggal=' + tanggal, function(result) {
                 if (result.success) {
-
-                    var table = $('#DaftarInstalasi')
-                    table.html('')
-
-                    result.installations.forEach((item, index) => {
-                        var nilai_akhir = (item.one_usage) ? item.one_usage.akhir : '0'
-                        table.append(`
-                            <tr>
-                                <td>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input checklist" name="check[${item.id}]" id="check_${item.id}" value="${item.id}">   
-                                        <label class="custom-control-label" for="check_${item.id}"></label>
-                                    </div>
-                                </td>    
-                                <td>${item.customer.nama}</td>    
-                                <td>${item.kode_instalasi}</td>    
-                                <td>${nilai_akhir}</td>    
-                                <td>
-                                    <input type="hidden" class="form-control" name="customer[item.id]" id="customer_${item.id}" value="${item.customer.id}">    
-                                    <input type="hidden" class="form-control input-nilai-awal" name="awal[item.id]" id="awal_${item.id}" value="${nilai_akhir}">    
-                                    <input type="text" class="form-control input-nilai-akhir" name="akhir[item.id]" id="akhir_${item.id}" value="${nilai_akhir}">    
-                                </td>    
-                                <td>
-                                    <input type="text" class="form-control input-jumlah" name="jumlah[item.id]" id="jumlah_${item.id}" value="0" readonly>     
-                                </td>    
-                            </tr>
-                        `)
-                    });
+                    dataInstallation = result.installations;
+                    setTable(dataInstallation)
                 }
             })
         })
+
+        $(document).on('click', '#TbPemakain #DaftarInstalasi tr td', function() {
+            var parent = $(this).parent()
+            var index = parent.attr('data-index')
+            var installation = dataInstallation[index]
+            $('.namaCustomer').html('<b>' + installation.customer.nama + '</b>')
+            $('.customer').val(installation.customer_id)
+            $('.NikCustomer').html(installation.customer.nik)
+            $('.TlpCustomer').html(installation.customer.hp)
+            $('.AlamatCustomer').html(installation.customer.alamat)
+            $('.pekerjaan').html(installation.customer.pekerjaan)
+            $('.KdInstallasi').html(installation.kode_instalasi)
+            $('.CaterInstallasi').html(installation.users.nama)
+            $('.PackageInstallasi').html(installation.package.kelas)
+            $('.AlamatInstallasi').html(installation.alamat)
+            $('.AkhirUsage').val(installation.one_usage.akhir)
+
+            $('#staticBackdrop').modal('show')
+        })
+
+        $(document).on('change', '#searchInput', function() {
+            searching($(this).val());
+        });
+
+        function searching(search) {
+            let data = dataInstallation;
+
+            let dataSearch = data.filter((element) => {
+                return (element.kode_instalasi.includes(search) || element.customer.nama.includes(search))
+            });
+
+            setTable(dataSearch)
+        }
+
+        function setTable(data) {
+            var table = $('#DaftarInstalasi')
+            table.html('')
+
+            data.forEach((item, index) => {
+                var nilai_akhir = (item.one_usage) ? item.one_usage.akhir : '0'
+                var nilai_jumalah = (item.one_usage) ? item.one_usage.jumlah : '0'
+                table.append(`
+                    <tr data-index="${index}">
+                        <td align="left">${item.customer.nama}</td>    
+                        <td align="center">${item.kode_instalasi}</td>    
+                        <td align="right">${nilai_akhir}</td> 
+                        <td align="right">${nilai_akhir}</td> 
+                        <td align="right">${nilai_jumalah}</td> 
+                           
+                    </tr>
+                `)
+            });
+        }
 
         $(document).on('focus', '.input-nilai-akhir', function(e) {
             e.preventDefault();
@@ -187,6 +219,7 @@
             var id = $(this).attr('id').split('_')[1]
             var nilai_akhir = $(this).val()
             var nilai_awal = $('#awal_' + id).val()
+
             if (nilai_akhir - nilai_awal < 0) {
                 Swal.fire({
                     title: 'Periksa kembali nilai yang dimasukkan',
@@ -206,7 +239,21 @@
             e.preventDefault()
 
             var id_cater = $('#caters').val();
-            var data = []
+            var customer = $('#customer').val();
+            var awal = $('#awal_').val();
+            var akhir = $('#akhir_').val();
+            var jumlah = $('#jumlah_').val();
+
+            var data = [{
+                id: 1,
+                id_cater: id_cater,
+                customer: customer,
+                awal: awal,
+                akhir: akhir,
+                jumlah: jumlah
+            }]
+            console.log(data);
+
 
             var checklist = $('.checklist')
             checklist.each(function(index, item) {
@@ -237,29 +284,37 @@
                     tanggal: $('#tanggal').val(),
                     data: data
                 },
+                // success: function(result) {
+                //     if (result.success) {
+                //         Swal.fire({
+                //             title: 'Berhasil',
+                //             text: result.message,
+                //             icon: 'success',
+                //         }).then((res) => {
+                //             if (res.isConfirmed) {
+                //                 $('#print').html(result.view)
+
+                //                 var prtContent = document.getElementById("print");
+                //                 var WinPrint = window.open('', '',
+                //                     'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0'
+                //                 );
+                //                 WinPrint.document.write(prtContent.innerHTML);
+                //                 WinPrint.document.close();
+                //                 WinPrint.focus();
+                //                 WinPrint.print();
+                //                 WinPrint.close();
+                //             }
+                //         })
+                //     }
+                // }
                 success: function(result) {
                     if (result.success) {
-                        Swal.fire({
-                            title: 'Berhasil',
-                            text: result.message,
-                            icon: 'success',
-                        }).then((res) => {
-                            if (res.isConfirmed) {
-                                $('#print').html(result.view)
-
-                                var prtContent = document.getElementById("print");
-                                var WinPrint = window.open('', '',
-                                    'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0'
-                                );
-                                WinPrint.document.write(prtContent.innerHTML);
-                                WinPrint.document.close();
-                                WinPrint.focus();
-                                WinPrint.print();
-                                WinPrint.close();
-                            }
-                        })
+                        toastMixin.fire({
+                            title: 'Pemakaian Berhasil di Input'
+                        });
+                        setTimeout(() => window.location.reload(), 3000);
                     }
-                }
+                },
             })
         })
     </script>
