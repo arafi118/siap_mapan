@@ -104,6 +104,11 @@ class AuthController extends Controller
                 'auth_token' => $auth_token,
                 'menu' => $menu
             ]);
+
+            if ($user->jabatan == '5') {
+                return redirect('/usages/create')->with('success', 'Selamat Datang ' . $user->nama);
+            }
+
             return redirect('/')->with('success', 'Selamat Datang ' . $user->nama);
         }
 

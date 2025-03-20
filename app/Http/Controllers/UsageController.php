@@ -117,22 +117,8 @@ class UsageController extends Controller
             ];
         }
 
-        foreach ($installations as $installation) {
-            $unpaidCount = Usage::where('business_id', Session::get('business_id'))
-                ->where('id_instalasi', $installation->id)
-                ->where('status', 'UNPAID')
-                ->count();
-
-            $statusTagihan = $unpaidCount > 2 ? "SPS" : ($unpaidCount == 1 ? "SP" : "N");
-
-            Installations::where('id', $installation->id)->update([
-                'status_tunggakan' => $statusTagihan,
-                'updated_at' => $created_at
-            ]);
-        }
-
         // Simpan data
-        // Usage::insert($insert);
+        Usage::insert($insert);
 
         return response()->json([
             'success' => true,

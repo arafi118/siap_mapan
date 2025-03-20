@@ -19,8 +19,8 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <!-- Bagian Informasi Customer -->
-                        <div class="alert alert-info d-flex align-items-center m-0 text-white" role="alert"
-                            style="border-radius: 1;">
+                        <div class="alert alert-info align-items-center text-white {{ auth()->user()->jabatan == '5' ? 'd-none' : 'd-flex mb-3' }}"
+                            role="alert" style="border-radius: 1;">
                             <!-- Gambar -->
                             <img src="../../assets/img/meteran.png"
                                 style="max-height: 160px; margin-right: 15px; margin-left: 10px;"
@@ -36,9 +36,7 @@
                                         <select class="select2 form-control" name="caters" id="caters">
                                             <option value=""></option>
                                             @foreach ($caters as $cater)
-                                                @if (auth()->user()->jabatan != 5 || $cater->id == auth()->id())
-                                                    <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
-                                                @endif
+                                                <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -50,15 +48,20 @@
                             </div>
                         </div>
                         <!-- Tabel di Bawah Customer -->
-                        <br>
                         <div class="row">
                             <!-- Datatables -->
                             <div class="col-lg-12">
                                 <div class="card mb-4">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0">Daftar Pemakaian</h5>
-                                        <input type="text" id="searchInput" class="form-control w-25"
-                                            placeholder="Cari...">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-md-9 mb-2">
+                                                <h5 class="mb-0">Daftar Pemakaian</h5>
+                                            </div>
+                                            <div class="col-md-3 mb-2">
+                                                <input type="text" id="searchInput" class="form-control w-full"
+                                                    placeholder="Cari...">
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="table-responsive p-3">
                                         <table class="table align-items-center table-flush table-center table-hover"
@@ -97,6 +100,11 @@
 @section('script')
     <script>
         let dataInstallation;
+        var id_user = '{{ auth()->user()->id }}'
+        $(document).ready(function() {
+            $('#caters').val(id_user).change()
+        })
+
 
         $(document).ready(function() {
             $('.select2').select2({
