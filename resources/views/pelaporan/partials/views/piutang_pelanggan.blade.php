@@ -91,7 +91,7 @@
                         $tagihan = $usage->nominal;
                         $menunggak = $usage->status == 'UNPAID' ? $beban + $denda + $tagihan : 0;
                         $toleransi = date('Y-m-d', strtotime('+1 month', strtotime($usage->tgl_akhir)));
-                        if ($toleransi >= date('Y-m', strtotime($tgl_kondisi) . '-27')) {
+                        if ($toleransi >= date('Y-m', strtotime($tgl_kondisi)) . '-27') {
                             $menunggak = 0;
                         }
 
