@@ -101,7 +101,7 @@
             @endphp
             <tr style="border: 0.5px solid black;">
                 <td width="15%" align="left" style="border: 0.5px solid black; padding-left: 5px;">
-                    <strong>{{ $rek->kode_akun . '. ' . $rek->nama_akun }}</strong>
+                    {{ $rek->kode_akun . '. ' . $rek->nama_akun }}
                 </td>
                 <td width="15%" align="right" style="border: 0.5px solid black;">
                     {{ $saldo_debit < 0 ? '(' . number_format(abs($saldo_debit), 2) . ')' : number_format($saldo_debit, 2) }}

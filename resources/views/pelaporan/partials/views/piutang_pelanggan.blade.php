@@ -1,3 +1,6 @@
+@php
+    use App\Utils\Tanggal;
+@endphp
 <style>
     * {
         font-family: 'Arial', sans-serif;
@@ -9,73 +12,129 @@
 @section('content')
     <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
         <tr>
-            <td colspan="3" align="center">
+            <th colspan="3" align="center">
                 <div style="font-size: 18px; font-weight: bold;">Piutang Pelanggan</div>
                 <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
-            </td>
+            </th>
         </tr>
         <tr>
-            <td colspan="3" height="10"></td>
+            <th colspan="3" height="10"></th>
         </tr>
     </table>
 
     <table border="0" width="100%" cellspacing="0" cellpadding="0"
         style="font-size: 11px; border-collapse: collapse; table-layout: fixed;">
         <tr style="background-color: rgb(230, 230, 230); font-weight: bold;">
-            <th style="border: 1px solid black; padding: 5px;" width="3%">No</th>
-            <th style="border: 1px solid black; padding: 5px;" width="10%">Nama</th>
-            <th style="border: 1px solid black; padding: 5px;" width="10%">Kode Instalasi</th>
-            <th style="border: 1px solid black; padding: 5px;" width="8%">Periode</th>
-            <th style="border: 1px solid black; padding: 5px;" width="8%">Tagihan</th>
-            <th style="border: 1px solid black; padding: 5px;" width="9%">Terbayar</th>
-            <th style="border: 1px solid black; padding: 5px;" width="9%">Menunggak</th>
+            <th style="border: 1px solid black; padding: 5px;" width="3%" rowspan="3">No</th>
+            <th style="border: 1px solid black; padding: 5px;" width="10%" rowspan="3">Nama</th>
+            <th style="border: 1px solid black; padding: 5px;" width="10%" rowspan="3">No. Induk</th>
+            <th style="border: 1px solid black; padding: 5px;" width="8%" colspan="{{ count($bulan_tampil) }}">Tunggakan
+            </th>
+            <th style="border: 1px solid black; padding: 5px;" width="8%" rowspan="3">Dibayar</th>
+            <th style="border: 1px solid black; padding: 5px;" width="8%" rowspan="3">Kategori</th>
         </tr>
-
+        <tr style="background: rgb(230, 230, 230); font-weight: bold;">
+            <th class="t l b" width="6%">s/d 3 Bulan Lalu</th>
+            <th class="t l b" width="6%">Bulan Lalu</th>
+            <th class="t l b" width="6%"style="border: 1px solid black; padding: 5px;">Bulan Ini</th>
+        </tr>
+        <tr style="background: rgb(230, 230, 230); font-weight: bold;">
+            @foreach ($bulan_tampil as $bt)
+                <th class="t l b" width="6%">
+                    {{ Tanggal::namaBulan($bt . '-01') }}
+                </th>
+            @endforeach
+        </tr>
         @php
             use Carbon\Carbon;
             $no = 1;
             $totalTagihan = 0;
             $totalTerbayar = 0;
             $totalMenunggak = 0;
+            $totalDenda = 0;
+            $data_desa = [];
+
+            $totalMenunggakPerBulan = [];
+
         @endphp
 
-        @foreach ($installations as $installation)
-            @foreach ($installation->usage as $usage)
-                @php
-                    $terbayar = $usage->transaction->sum('total');
-                    $menunggak = $usage->nominal - $terbayar;
 
-                    $totalTagihan += $usage->nominal;
-                    $totalTerbayar += $terbayar;
-                    $totalMenunggak += $menunggak;
-                @endphp
+        @foreach ($installations as $installation)
+            @if (!in_array($installation->village, $data_desa))
                 <tr>
-                    <td style="border: 1px solid black; padding: 5px;" align="center">{{ $no++ }}</td>
-                    <td style="border: 1px solid black; padding: 5px;" align="left">{{ $installation->customer->nama }}
-                    </td>
-                    <td style="border: 1px solid black; padding: 5px;" align="center">{{ $installation->kode_instalasi }}
-                    </td>
-                    <td style="border: 1px solid black; padding: 5px;" align="center">
-                        {{ Carbon::parse($usage->tgl_akhir)->translatedFormat('F Y') }}
-                    </td>
-                    <td style="border: 1px solid black; padding: 5px;" align="right">
-                        {{ number_format($usage->nominal, 2) }}
-                    </td>
-                    <td style="border: 1px solid black; padding: 5px;" align="right">
-                        {{ number_format($terbayar, 2) }}
-                    </td>
-                    <td style="border: 1px solid black; padding: 5px;" align="right">
-                        {{ number_format($menunggak, 2) }}
-                    </td>
+                    <th colspan="8" style="border: 1px solid black; padding: 5px; font-weight: normal;" align="left">
+                        Dusun {{ $installation->village->dusun }} Kalurahan {{ $installation->village->nama }}
+                    </th>
                 </tr>
-            @endforeach
+
+                @php
+                    $data_desa[] = $installation->village;
+                @endphp
+            @endif
+
+            <tr>
+                <th style="border: 1px solid black; padding: 5px;font-weight: normal;" align="center">{{ $no++ }}
+                </th>
+                <th style="border: 1px solid black; padding: 5px;font-weight: normal;" align="left">
+                    {{ $installation->customer->nama }}
+                </th>
+                <th style="border: 1px solid black; padding: 5px;font-weight: normal;" align="center">
+                    {{ $installation->kode_instalasi }}
+                </th>
+
+                @php
+                    $data_menunggak = [];
+                    foreach ($installation->usage as $usage) {
+                        $beban = $installation->abodemen;
+                        $denda = $installation->settings->denda;
+                        $dibayar = $usage->transaction->sum('total');
+                        $tagihan = $usage->nominal;
+                        $menunggak = $usage->status == 'UNPAID' ? $beban + $denda + $tagihan : 0;
+
+                        $bulan = Carbon::parse($usage->tgl_akhir)->format('Y-m');
+                        if ($menunggak > 0) {
+                            if (!isset($totalMenunggakPerBulan[$bulan])) {
+                                $totalMenunggakPerBulan[$bulan] = 0;
+                            }
+                            $totalMenunggakPerBulan[$bulan] += $menunggak;
+                        }
+
+                        $data_menunggak[$bulan] = $menunggak;
+                    }
+                @endphp
+
+                @foreach ($bulan_tampil as $bt)
+                    @php
+                        $bulan = Carbon::parse($bt)->format('Y-m');
+                    @endphp
+                    <th style="border: 1px solid black; padding: 5px; font-weight: normal" align="right">
+                        {{ isset($data_menunggak[$bulan]) ? number_format($data_menunggak[$bulan], 2) : number_format(0, 2) }}
+                    </th>
+                @endforeach
+
+                <th style="border: 1px solid black; padding: 5px; font-weight: normal;" align="right">
+                    {{ number_format($dibayar, 2) }}
+                </th>
+                <th style="border: 1px solid black; padding: 5px; font-weight: normal;" align="center">
+                    {{ $installation->status_tunggakan }}
+                </th>
+            </tr>
         @endforeach
 
         <tr style="font-weight: bold;">
-            <td style="border: 1px solid black; padding: 5px;" colspan="4" align="left">Jumlah</td>
-            <td style="border: 1px solid black; padding: 5px;" align="right">{{ number_format($totalTagihan, 2) }}</td>
-            <td style="border: 1px solid black; padding: 5px;" align="right">{{ number_format($totalTerbayar, 2) }}</td>
-            <td style="border: 1px solid black; padding: 5px;" align="right">{{ number_format($totalMenunggak, 2) }}</td>
+            <th style="border: 1px solid black; padding: 5px;" colspan="3" align="left">Jumlah</th>
+            @foreach ($bulan_tampil as $bt)
+                @php
+                    $bulan = Carbon::parse($bt)->format('Y-m');
+                @endphp
+                <th style="border: 1px solid black; padding: 5px;" align="right">
+                    {{ isset($totalMenunggakPerBulan[$bulan]) ? number_format($totalMenunggakPerBulan[$bulan], 2) : number_format(0, 2) }}
+                </th>
+            @endforeach
+
+            <th style="border: 1px solid black; padding: 5px;" align="right">
+            </th>
+            <th style="border: 1px solid black; padding: 5px;" align="right"></th>
         </tr>
     </table>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Usage;
+use Carbon\Carbon;
 use App\Models\AkunLevel1;
 use App\Models\Amount;
 use App\Models\Business;
@@ -469,16 +470,28 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-
-        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
+        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->where('status_tunggakan', '!=', 'lancar')->with([
             'customer',
+            'village',
+            'settings',
             'usage' => function ($query) use ($data) {
-                $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
+                $tgl_awal = date('Y-m', strtotime('-3 month', strtotime($data['tgl_kondisi']))) . '-01';
+                $query->whereBetween('tgl_akhir', [$tgl_awal, $data['tgl_kondisi']]);
             },
             'usage.transaction' => function ($query) use ($data) {
                 $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
             },
         ])->get();
+
+        $bulan_tampil = [];
+        $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
+    
+        for ($i = 0; $i < 3; $i++) {
+            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m'); // Format YYYY-MM untuk handle perubahan tahun
+        }
+    
+        $data['bulan_tampil'] = array_reverse($bulan_tampil); // Urutkan agar tampil dari yang paling lama ke terbaru
+
 
         $data['title'] = 'Daftar Piutang Pelanggan';
         $view = view('pelaporan.partials.views.piutang_pelanggan', $data)->render();
