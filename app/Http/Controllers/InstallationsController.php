@@ -944,14 +944,21 @@ class InstallationsController extends Controller
             'installation' => $installation
         ]);
     }
-    public function list($cater_id)
+    public function list($cater_id = 0)
     {
         $tanggal = request()->get('tanggal') ?: date('d/m/Y');
         $tanggal = Tanggal::tglNasional($tanggal);
 
+        if ($cater_id == '0') {
+            return response()->json([
+                'success' => true,
+                'installations' => []
+            ]);
+        }
+
         $installations = Installations::where('business_id', Session::get('business_id'))->where('cater_id', $cater_id)->with([
             'oneUsage' => function ($query) use ($tanggal) {
-                $query->where('tgl_akhir', '<=', $tanggal);
+                $query->where('tgl_akhir', '<=', $tanggal)->orderBy('id', 'DESC');
             },
             'customer.village',
             'package',

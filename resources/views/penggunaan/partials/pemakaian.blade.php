@@ -79,6 +79,7 @@
 
                     <input type="hidden" name="customer" class="customer" id="customer">
                     <input type="hidden" name="jumlah_" class="jumlah_" id="jumlah_">
+                    <input type="hidden" name="id_instalasi" class="id_instalasi" id="id_instalasi">
                     <div class="modal-footer py-2">
                         <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Kembali</button>
                         <button type="button" id="SimpanPemakaian" class="btn btn-info">Simpan Pemakaian</button>

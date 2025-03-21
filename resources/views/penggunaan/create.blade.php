@@ -12,7 +12,6 @@
     @endif
     <form action="/usages" method="post" id="FormInputPemakaian">
         @csrf
-        <input type="hidden" name="id_instalasi" id="id_instalasi">
 
         <div class="row">
             <div class="col-lg-12">
@@ -170,6 +169,7 @@
             $('.namaCustomer').html('<b>' + installation.customer.nama + '</b>')
             $('.customer').val(installation.customer_id)
             $('.NikCustomer').html(installation.customer.nik)
+            $('.id_instalasi').val(installation.id)
             $('.TlpCustomer').html(installation.customer.hp)
             $('.AlamatCustomer').html(installation.customer.alamat)
             $('.pekerjaan').html(installation.customer.pekerjaan)
@@ -177,7 +177,7 @@
             $('.CaterInstallasi').html(installation.users.nama)
             $('.PackageInstallasi').html(installation.package.kelas)
             $('.AlamatInstallasi').html(installation.alamat)
-            $('.AkhirUsage').val(installation.one_usage.akhir)
+            $('.AkhirUsage').val(installation.one_usage?.akhir || 0)
 
             $('#staticBackdrop').modal('show')
         })
@@ -197,22 +197,36 @@
         }
 
         function setTable(data) {
-            var table = $('#DaftarInstalasi')
-            table.html('')
+            var table = $('#DaftarInstalasi');
+            table.html('');
 
             data.forEach((item, index) => {
-                var nilai_akhir = (item.one_usage) ? item.one_usage.akhir : '0'
-                var nilai_jumalah = (item.one_usage) ? item.one_usage.jumlah : '0'
+                var nilai_awal = (item.one_usage) ? item.one_usage.awal : '0';
+                var nilai_akhir = (item.one_usage) ? item.one_usage.akhir : '0';
+                var nilai_jumlah = (item.one_usage) ? item.one_usage.jumlah : '0';
+
+                //set warna
+                var today = new Date();
+                var todayDate = today.toISOString().split('T')[0];
+                var lastReset = localStorage.getItem('lastReset');
+                var colorClass = (today.getDate() === 26) ?
+                    'text-danger' :
+                    (nilai_akhir > nilai_awal ? 'text-success' : 'text-danger');
+                if (today.getDate() === 26 && lastReset !== todayDate)
+                    localStorage.setItem('lastReset', todayDate);
+                if (today.getDate() === 25) setTimeout(() => location.reload(),
+                    new Date(today.getFullYear(), today.getMonth(), 26, 0, 0, 1) - today);
+                //endset
+
                 table.append(`
-                    <tr data-index="${index}">
-                        <td align="left">${item.customer.nama}</td>    
-                        <td align="center">${item.kode_instalasi}</td>    
-                        <td align="right">${nilai_akhir}</td> 
-                        <td align="right">${nilai_akhir}</td> 
-                        <td align="right">${nilai_jumalah}</td> 
-                           
-                    </tr>
-                `)
+            <tr data-index="${index}">
+                <td align="left">${item.customer.nama}</td>    
+                <td align="center">${item.kode_instalasi}</td>    
+                <td align="right"><b>${nilai_akhir}</b></td> 
+                <td align="right" class="${colorClass}"><b>${nilai_akhir}</b></td> 
+                <td align="right">${nilai_jumlah}</td> 
+            </tr>
+        `);
             });
         }
 
@@ -251,16 +265,17 @@
             var awal = $('#awal_').val();
             var akhir = $('#akhir_').val();
             var jumlah = $('#jumlah_').val();
+            var id = $('#id_instalasi').val();
 
             var data = [{
-                id: 1,
+                id: id,
                 id_cater: id_cater,
                 customer: customer,
                 awal: awal,
                 akhir: akhir,
                 jumlah: jumlah
             }]
-
+            console.log(data);
 
             var checklist = $('.checklist')
             checklist.each(function(index, item) {
@@ -319,7 +334,11 @@
                         toastMixin.fire({
                             title: 'Pemakaian Berhasil di Input'
                         });
-                        setTimeout(() => window.location.reload(), 3000);
+
+                        $('#caters').val('0').change()
+                        setTimeout(() => {
+                            $('#caters').val(id_user).change()
+                        }, 500);
                     }
                 },
             })
