@@ -11,7 +11,7 @@
                     <div class="alert alert-info d-flex align-items-center text-black" role="alert">
                         <!-- Gambar -->
                         <img src="../../assets/img/user_edit.png" style="max-height: 100px; margin-right: 20px;"
-                            class="img-fluid">
+                            class="img-fluid  d-none d-lg-block">
                         <div class="w-100">
                             <h3 class="text-black"><b>Edit Custommer an. {{ $installations->customer->nama }}</b> Loan id
                                 <b>( {{ $installations->id }} )</b>
@@ -28,13 +28,20 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                    <span style="float: left;">Tgl Order</span>
-                                    <span class="badge badge-success"
-                                        style="float: right; width: 30%; padding: 5px; text-align: center;">
-                                        {{ $installations->order }}
-                                    </span>
-                                </td>
+                                <div class="row">
+                                    <div class="col-md-8 mb-2">
+                                        <select class="select2 form-control" name="caters" id="caters">
+                                            <option value=""></option>
+                                            @foreach ($caters as $cater)
+                                                <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <input type="text" name="tanggal" id="tanggal" class="form-control date"
+                                            value="{{ date('d/m/Y') }}">
+                                    </div>
+                                </div>
                                 <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
                                     <span style="float: left;">Paket Instalasi</span>
                                     <span class="badge badge-success"

@@ -15,7 +15,7 @@
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
                             <!-- Gambar -->
                             <img src="../../assets/img/user.png" style="max-height: 150px; margin-right: 20px;"
-                                class="img-fluid">
+                                class="img-fluid  d-none d-lg-block">
 
                             <!-- Konten Teks -->
                             <div>

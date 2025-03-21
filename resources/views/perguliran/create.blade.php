@@ -16,13 +16,14 @@
                                 class="img-fluid d-none d-lg-block">
                             <div class="w-100">
                                 <h3 class="alert-heading"><b>Register Instalasi</b></h3>
-                                <p>"Lengkapi data dan klik tombol ' <b>DAFTAR & SIMPAN</b> ' untuk menyelesaikan
-                                    pendaftaran."</p>
-                                <hr>
+                                <p class="text-justify">
+                                    "Lengkapi data dan klik tombol *<b>DAFTAR & SIMPAN</b>* untuk menyelesaikan
+                                    pendaftaran."
+                                </p>
 
-                                <div class="row align-items-center mb-3">
-                                    <!-- Select Customer -->
-                                    <div class="col-md-9">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-8 mb-2">
                                         <div class="position-relative">
                                             <select class="select2 form-control" name="customer_id" id="customer_id">
                                                 @foreach ($customer as $anggota)
@@ -33,11 +34,10 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <!-- Tombol Register Desa -->
-                                    <div class="col-md-3 text-end">
+                                    <div class="col-md-4 mb-2">
                                         <a href="/customers/create" class="btn btn-success" id="RegisterDesa"
                                             style="background-color: #81d700;">
-                                            <span class="text">Reg. Pelanggan</span>
+                                            <span class="text">Reg. Pelanggan Baru</span>
                                         </a>
                                     </div>
                                 </div>

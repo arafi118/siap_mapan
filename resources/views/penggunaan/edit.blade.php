@@ -25,8 +25,8 @@
                                 <div class="col-md-6">
                                     <div class="position-relative mb-3">
                                         <label for="customer">Nama Pemakai</label>
-                                        <input type="text" class="form-control date" name="customer"
-                                            id="customer"value="{{ $usage->customers->nama }}" readonly>
+                                        <input type="text" class="form-control" name="customer" id="customer"
+                                            value="{{ $usage->customers->nama }}" readonly>
                                         <small class="text-danger" id="msg_customer"></small>
                                     </div>
                                 </div>
@@ -51,8 +51,8 @@
                                 <div class="col-md-6">
                                     <div class="position-relative mb-3">
                                         <label for="awal">Awal Pemakaian</label>
-                                        <input type="text" class="form-control hitungan" id="awal" name="awal"
-                                            value="{{ $usage->awal }}" readonly>
+                                        <input type="text" class="form-control hitungan input-nilai-awal" id="awal"
+                                            name="awal" value="{{ $usage->akhir }}">
                                         <small class="text-danger" id="msg_awal"></small>
                                     </div>
                                 </div>
@@ -61,8 +61,8 @@
                                 <div class="col-md-6">
                                     <div class="position-relative mb-3">
                                         <label for="akhir">Akhir Pemakaian</label>
-                                        <input type="text" class="form-control total hitungan" name="akhir"
-                                            value="{{ $usage->akhir }}" id="akhir"readonly>
+                                        <input type="text" class="form-control total hitungan input-nilai-akhir"
+                                            name="akhir" value="{{ $usage->akhir }}" id="akhir">
                                         <small class="text-danger" id="msg_akhir"></small>
                                     </div>
                                 </div>
@@ -121,5 +121,27 @@
             timepicker: false,
             format: 'd/m/Y'
         });
+
+        $(document).on('change', '.input-nilai-akhir', function(e) {
+            e.preventDefault()
+
+            var id = $(this).attr('id').split('_')[1]
+            var nilai_akhir = $(this).val()
+            var nilai_awal = $('#awal_' + id).val()
+
+            if (nilai_akhir - nilai_awal < 0) {
+                Swal.fire({
+                    title: 'Periksa kembali nilai yang dimasukkan',
+                    text: 'Nilai Akhir tidak boleh lebih kecil dari Nilai Awal',
+                    icon: 'warning',
+                })
+
+                $(this).val(nilai_awal)
+                return;
+            }
+
+            var jumlah = nilai_akhir - nilai_awal
+            $('#jumlah' + id).val(jumlah)
+        })
     </script>
 @endsection

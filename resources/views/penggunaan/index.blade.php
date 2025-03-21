@@ -12,26 +12,29 @@
         <div class="col-lg-12">
             <div class="card mb-4">
                 <div class="table-responsive p-3">
-                    <table class="table align-items-center table-flush" id="TbPemakain">
-                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                            <!-- Data Desa -->
-                            <div style="display: flex; align-items: center;">
+                    <div style="card-header">
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
                                 <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
                                 <b>Data Pemakaian</b>
                             </div>
-                            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                            <div class="col-md-3 mb-2" align="right">
                                 @if (auth()->user()->jabatan == 1)
                                     <button class="btn btn-danger" type="button" id="DetailCetakBuktiTagihan">
                                         <i class="fas fa-info-circle">&nbsp;</i> Cetak Tagihan
                                     </button>
                                 @endif
+                            </div>
+                            <div class="col-md-3 mb-2" align="right">
                                 <button class="btn btn-warning" id="Registerpemakaian"
                                     @if (Session::get('jabatan') == 6) disabled @endif>
                                     <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
                                 </button>
                             </div>
                         </div>
-                        <div>&nbsp;</div>
+                    </div>
+                    <div>&nbsp;</div>
+                    <table class="table align-items-center table-flush" id="TbPemakain">
                         <thead class="thead-light" align="center">
                             <tr>
                                 <th>NAMA</th>
@@ -66,9 +69,9 @@
                                     </td>
                                     @if (auth()->user()->jabatan == 1)
                                         <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                            {{-- <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
-            <i class="fas fa-pencil-alt"></i>
-        </a> --}}
+                                            <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </a>
                                             <a href="#" data-id="{{ $usage->id }}"
                                                 class="btn-sm btn-danger mx-1 Hapus_pemakaian">
                                                 <i class="fas fa-trash-alt"></i>
@@ -154,23 +157,10 @@
 
     @if (Session::has('berhasil'))
         <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
+            toastMixin.fire({
                 text: '{{ Session::get('berhasil') }}',
                 showConfirmButton: false,
                 timer: 2000
-            });
-        </script>
-        <script>
-            // Menghilangkan notifikasi setelah 5 detik
-            document.addEventListener('DOMContentLoaded', function() {
-                const alert = document.getElementById('success-alert');
-                if (alert) {
-                    setTimeout(() => {
-                        alert.style.display = 'none';
-                    }, 2000); // 2000ms = 2 detik
-                }
             });
         </script>
     @endif

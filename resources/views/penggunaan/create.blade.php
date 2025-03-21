@@ -32,7 +32,7 @@
                                 </div>
                                 <hr class="my-2 bg-white">
                                 <div class="row">
-                                    <div class="col-6 col-md-8">
+                                    <div class="col-md-8 mb-2">
                                         <select class="select2 form-control" name="caters" id="caters">
                                             <option value=""></option>
                                             @foreach ($caters as $cater)
@@ -40,7 +40,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-6 col-md-4">
+                                    <div class="col-md-4 mb-2">
                                         <input type="text" name="tanggal" id="tanggal" class="form-control date"
                                             value="{{ date('d/m/Y') }}">
                                     </div>
@@ -260,7 +260,6 @@
                 akhir: akhir,
                 jumlah: jumlah
             }]
-            console.log(data);
 
 
             var checklist = $('.checklist')

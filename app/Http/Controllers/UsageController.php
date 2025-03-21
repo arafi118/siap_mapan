@@ -12,6 +12,8 @@ use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class UsageController extends Controller
@@ -215,17 +217,33 @@ class UsageController extends Controller
      */
     public function update(Request $request, Usage $usage)
     {
-        $this->validate($request, [
-
-            'tgl_akhir' => 'required|date'
+        $data = $request->only([
+            "tgl_akhir",
+            "awal",
+            "akhir",
+            "jumlah",
         ]);
+
+        $rules = [
+            'awal'   => 'required',
+            'akhir'   => 'required',
+            'jumlah'   => 'required',
+            'tgl_akhir' => 'required'
+        ];
+        $validate = Validator::make($data, $rules);
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
 
         // Mengubah format tanggal dari d/m/Y ke Y-m-d
         $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
 
         $usage->update([
-
-            'tgl_akhir' => $tgl_akhir
+            'tgl_akhir' =>
+            Tanggal::tglNasional($request->tgl_akhir),
+            'awal'      => $request->awal,
+            'akhir'     => $request->akhir,
+            'jumlah'    => $request->jumlah
         ]);
 
         return redirect('/usages')->with('berhasil', 'Usage berhasil diperbarui!');
