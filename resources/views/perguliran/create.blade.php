@@ -1,7 +1,9 @@
 @extends('layouts.base')
 @php
     $status = $settings->swit_tombol ?? null;
+    $hanyaDusun = $desa->contains('kategori', 1);
 @endphp
+
 @section('content')
     <form action="/installations" method="post" id="FormRegisterPermohonan">
         @csrf
@@ -67,14 +69,17 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="position-relative mb-3">
-                                                <label for="desa">Nama/Desa</label>
+                                                <label for="desa">Nama/Desa & Dusun</label>
                                                 <select class="select2 form-control" name="desa" id="desa">
-                                                    <option>Pilih Nama/Desa</option>
+                                                    <option>Pilih Nama/Desa & Dusun</option>
                                                     @foreach ($desa as $ds)
-                                                        <option
-                                                            {{ $pilih_desa == $ds->kode ? 'selected' : '' }}value="{{ $ds->id }}">
-                                                            {{ $ds->kode }} - [{{ $ds->nama }}]
-                                                        </option>
+                                                        @if (!$hanyaDusun || $ds->kategori == 1)
+                                                            <option {{ $pilih_desa == $ds->kode ? 'selected' : '' }}
+                                                                value="{{ $ds->id }}">
+                                                                {{ $ds->kode }} -
+                                                                [{{ $hanyaDusun ? $ds->dusun : $ds->nama }}]
+                                                            </option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                                 <small class="text-danger" id="msg_desa"></small>
@@ -94,12 +99,30 @@
                                                 <small class="text-danger" id="msg_cater"></small>
                                             </div>
                                         </div>
-                                        <div class="col-md-12">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <div class="position-relative mb-3">
-                                                <label for="alamat">Alamat</label>
-                                                <input type="text" class="form-control" id="alamat" name="alamat"
-                                                    aria-describedby="alamat" placeholder="Alamat">
-                                                <small class="text-danger" id="msg_alamat"></small>
+                                                <label for="jalan">Jalan</label>
+                                                <input type="text" class="form-control" id="jalan" name="jalan"
+                                                    aria-describedby="jalan" placeholder="Jalan">
+                                                <small class="text-danger" id="msg_jalan"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="position-relative mb-3">
+                                                <label for="rw">RW</label>
+                                                <input type="number" class="form-control" id="rw" name="rw"
+                                                    aria-describedby="rw" placeholder="Rw">
+                                                <small class="text-danger" id="msg_rw"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="position-relative mb-3">
+                                                <label for="rt">RT</label>
+                                                <input type="number" class="form-control" id="rt" name="rt"
+                                                    aria-describedby="rt" placeholder="Rt">
+                                                <small class="text-danger" id="msg_rt"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -239,17 +262,15 @@
             format: 'd/m/Y'
         });
 
-        $(document).on('change', '#desa, #cater, .package', function(e) {
+        $(document).on('change', '#desa, #rt', function(e) {
             e.preventDefault();
 
             var kd_desa = $('#desa').val();
-            var kd_cater = $('#cater').val();
-            var package_val = $('.package').val();
+            var rt = $('#rt').val();
 
             $.get('/installations/kode_instalasi', {
                 kode_desa: kd_desa,
-                kode_cater: kd_cater,
-                package: package_val
+                kode_rt: rt,
             }, function(result) {
                 $('#kode_instalasi').val(result.kd_instalasi);
             });
