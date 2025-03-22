@@ -212,18 +212,18 @@ class InstallationsController extends Controller
      */
     public function kode_instalasi()
     {
+        $bisnis = Session::get('business_id');
         $kd_desa = request()->get('kode_desa');
-        $caters = request()->get('kode_cater');
+        $rt = request()->get('kode_rt');
 
         $jumlah_kode_instalasi_by_desa = Installations::where('business_id', Session::get('business_id'))->where('desa', $kd_desa)->orderBy('kode_instalasi', 'DESC');
 
         $desa = Village::where('id', $kd_desa)->first();
-        $cater = User::where('business_id', Session::get('business_id'))->where('id', $caters)->first();
-
         $kd_bisnis = substr($desa->kode, 0, 3);
-        $kd_urutan = substr($desa->kode, 4, 4);
+        $kd_desa = substr($desa->kode, 4, 4);
+        $kd_dusun = substr($desa->kode, 9,);
 
-        $kode_instalasi = $kd_urutan  . '.' . $cater->id;
+        $kode_instalasi = $bisnis . '.' . $kd_dusun  . '.' .  $rt;
 
         if ($jumlah_kode_instalasi_by_desa->count() > 0) {
             $jumlah = str_pad(($jumlah_kode_instalasi_by_desa->count() + 1), 3, "0", STR_PAD_LEFT);
@@ -346,7 +346,9 @@ class InstallationsController extends Controller
             "order",
             "desa",
             "cater",
-            "alamat",
+            "jalan",
+            "rw",
+            "rt",
             "koordinate",
             "package_id",
             "pasang_baru",
@@ -361,7 +363,9 @@ class InstallationsController extends Controller
             'cater' => 'required',
             'order' => 'required',
             'desa' => 'required',
-            'alamat' => 'required',
+            'jalan' => 'required',
+            'rw' => 'required',
+            'rt' => 'required',
             'koordinate' => 'required',
             'package_id' => 'required'
         ];
@@ -403,7 +407,7 @@ class InstallationsController extends Controller
             'cater_id' => $request->cater,
             'order' => Tanggal::tglNasional($request->order),
             'desa' => $request->desa,
-            'alamat' => $request->alamat,
+            'alamat' => $request->jalan, $request->rw, $request->rt,
             'koordinate' => $request->koordinate,
             'package_id' => $request->package_id,
             'abodemen' => $abodemen,
