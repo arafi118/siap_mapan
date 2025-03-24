@@ -52,6 +52,7 @@
             $totalTerbayar = 0;
             $totalMenunggak = 0;
             $totalDenda = 0;
+            $dibayar = 0;
             $data_desa = [];
 
             $totalMenunggakPerBulan = [];
@@ -83,36 +84,45 @@
                 </th>
 
                 @php
+                    $nomor = 1;
                     $data_menunggak = [];
+                    $tunggakan_tampil = [];
                     foreach ($installation->usage as $usage) {
                         $beban = $installation->abodemen;
-                        $denda = $installation->settings->denda;
+                        $denda = intval($installation->package->denda);
                         $dibayar = $usage->transaction->sum('total');
                         $tagihan = $usage->nominal;
                         $menunggak = $usage->status == 'UNPAID' ? $beban + $denda + $tagihan : 0;
+
                         $toleransi = date('Y-m-d', strtotime('+1 month', strtotime($usage->tgl_akhir)));
-                        if ($toleransi >= date('Y-m', strtotime($tgl_kondisi)) . '-27') {
+                        $laporan_dibuka = date('Y-m', strtotime($tgl_kondisi)) . '-27';
+                        if ($toleransi >= $laporan_dibuka) {
                             $menunggak = 0;
                         }
 
-                        $bulan = Carbon::parse($usage->tgl_akhir)->format('Y-m');
-                        if ($menunggak > 0) {
-                            if (!isset($totalMenunggakPerBulan[$bulan])) {
-                                $totalMenunggakPerBulan[$bulan] = 0;
-                            }
-                            $totalMenunggakPerBulan[$bulan] += $menunggak;
+                        if ($nomor > 1) {
+                            $data_menunggak[$nomor] = $menunggak + $data_menunggak[$nomor - 1];
+                        } else {
+                            $data_menunggak[$nomor] = $menunggak;
                         }
 
-                        $data_menunggak[$bulan] = $menunggak;
+                        $bulan = Carbon::parse($usage->tgl_akhir)->format('Y-m');
+                        if (in_array($bulan, $bulan_tampil)) {
+                            $tunggakan_tampil[$bulan] = $data_menunggak[$nomor];
+                        }
+
+                        $nomor++;
                     }
                 @endphp
 
                 @foreach ($bulan_tampil as $bt)
                     @php
+                        $tunggakan = 0;
                         $bulan = Carbon::parse($bt)->format('Y-m');
+                        $tunggakan = isset($tunggakan_tampil[$bt]) ? $tunggakan_tampil[$bt] : 0;
                     @endphp
                     <th style="border: 1px solid black; padding: 5px; font-weight: normal" align="right">
-                        {{ isset($data_menunggak[$bulan]) ? number_format($data_menunggak[$bulan], 2) : number_format(0, 2) }}
+                        {{ number_format($tunggakan, 2) }}
                     </th>
                 @endforeach
 
