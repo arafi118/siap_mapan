@@ -414,8 +414,8 @@ class PelaporanController extends Controller
         }
         $data['installations'] = Installations::where([
             ['aktif', '<=', $data['tgl_kondisi']],
-            ['business_id', Session::get('business_id')]
-        ])->with([
+            ['business_id', Session::get('business_id')],
+        ])->whereNotIn('status', ['B','C'])->with([
             'customer',
             'usage' => function ($query) use ($data) {
                 $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
@@ -473,10 +473,9 @@ class PelaporanController extends Controller
         $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->where('status_tunggakan', '!=', 'lancar')->with([
             'customer',
             'village',
-            'settings',
+            'package',
             'usage' => function ($query) use ($data) {
-                $tgl_awal = date('Y-m', strtotime('-3 month', strtotime($data['tgl_kondisi']))) . '-01';
-                $query->whereBetween('tgl_akhir', [$tgl_awal, $data['tgl_kondisi']]);
+                $query->where('tgl_akhir', '<=', $data['tgl_kondisi'])->where('status', 'UNPAID')->orderBy('tgl_akhir')->orderBy('id');
             },
             'usage.transaction' => function ($query) use ($data) {
                 $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);

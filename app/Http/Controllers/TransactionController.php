@@ -822,7 +822,7 @@ class TransactionController extends Controller
                 ['business_id', Session::get('business_id')]
             ])->first();
             $rekening_kredit = Account::where([
-                ['kode_akun', '4.1.01.02'],
+                ['kode_akun', '4.1.01.03'],
                 ['business_id', Session::get('business_id')]
             ])->first();
 
@@ -1162,6 +1162,7 @@ class TransactionController extends Controller
             "keterangan",
         ]);
 
+        dd($data);
         $data['tagihan'] = str_replace(',', '', $data['tagihan']);
         $data['tagihan'] = str_replace('.00', '', $data['tagihan']);
         $data['tagihan'] = floatval($data['tagihan']);
@@ -1173,19 +1174,24 @@ class TransactionController extends Controller
         $biaya_tagihan = $data['tagihan'];
         $biaya_instalasi = $data['pembayaran'];
 
-        $rekening_debit = Account::where([
-            ['kode_akun', '1.1.01.01'],
-            ['business_id', Session::get('business_id')]
-        ])->first();
-        $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
-            ['business_id', Session::get('business_id')]
-        ])->first();
+        $transaksi = Transaction::where([
+            ['usage_id', $data['id_usage']]
+        ])->count();
+
+        $accounts = Account::where('business_id', Session::get('business_id'))
+            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.02', '4.1.01.03', '4.1.01.04'])
+            ->get()
+            ->keyBy('kode_akun');
+
+        $kode_kas = $accounts['1.1.01.01'] ?? null;
+        $kode_abodemen = $accounts['4.1.01.02'] ?? null;
+        $kode_pemakaian = $accounts['4.1.01.03'] ?? null;
+        $kode_denda = $accounts['4.1.01.04'] ?? null;
 
         $transaksi = Transaction::create([
             'business_id' => Session::get('business_id'),
-            'rekening_debit' => $rekening_debit->id,
-            'rekening_kredit' => $rekening_kredit->id,
+            'rekening_debit' => $kode_kas->id,
+            'rekening_kredit' => $kode_pemakaian->id,
             'tgl_transaksi' => Tanggal::tglNasional($request->tgl_transaksi),
             'total' => $biaya_instalasi,
             'installation_id' => $request->id_instal,
@@ -1434,7 +1440,7 @@ class TransactionController extends Controller
         $trx = Transaction::where('id', $id)->first();
         $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
 
-        $kode_akun = where('business_id', Session::get('business_id'))->where('id', $trx)->value('kode_akun');
+        $kode_akun = Account::where('business_id', Session::get('business_id'))->where('id', $trx)->value('kode_akun');
 
         $jenis = 'BKM';
         $dari = ucwords($trx->relasi);

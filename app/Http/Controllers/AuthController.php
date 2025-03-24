@@ -656,13 +656,13 @@ class AuthController extends Controller
         $businessId = Session::get('business_id');
 
         $accounts = Account::where('business_id', $businessId)
-            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.02'])
+            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.03'])
             ->get()
             ->keyBy('kode_akun');
 
         $kode_kas = $accounts['1.1.01.01'] ?? null;
         $kode_instalasi = $accounts['4.1.01.01'] ?? null;
-        $kode_tagihan = $accounts['4.1.01.02'] ?? null;
+        $kode_tagihan = $accounts['4.1.01.03'] ?? null;
 
         $data_instalasi = [];
         $data_transaksi = [];
@@ -731,13 +731,13 @@ class AuthController extends Controller
         $businessId = Session::get('business_id');
 
         $accounts = Account::where('business_id', $businessId)
-            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.02'])
+            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.03'])
             ->get()
             ->keyBy('kode_akun');
 
         $kode_kas = $accounts['1.1.01.01'] ?? null;
         $kode_instalasi = $accounts['4.1.01.01'] ?? null;
-        $kode_tagihan = $accounts['4.1.01.02'] ?? null;
+        $kode_tagihan = $accounts['4.1.01.03'] ?? null;
 
         $data_trx_instalasi = [];
         $created_at = date('Y-m-d H:i:s');
@@ -780,13 +780,13 @@ class AuthController extends Controller
         $businessId = Session::get('business_id');
 
         $accounts = Account::where('business_id', $businessId)
-            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.02'])
+            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.03'])
             ->get()
             ->keyBy('kode_akun');
 
         $kode_kas = $accounts['1.1.01.01'] ?? null;
         $kode_instalasi = $accounts['4.1.01.01'] ?? null;
-        $kode_tagihan = $accounts['4.1.01.02'] ?? null;
+        $kode_tagihan = $accounts['4.1.01.03'] ?? null;
 
         $limit = 500;
         $start = $page * $limit;
