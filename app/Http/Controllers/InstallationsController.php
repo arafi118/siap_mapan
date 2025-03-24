@@ -135,7 +135,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
+            ['kode_akun', '4.1.01.03'],
             ['business_id', $business_id]
         ])->first();
 
@@ -479,7 +479,7 @@ class InstallationsController extends Controller
             ['business_id', $business_id]
         ])->first();
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
+            ['kode_akun', '4.1.01.03'],
             ['business_id', $business_id]
         ])->first();
 
@@ -511,7 +511,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
+            ['kode_akun', '4.1.01.03'],
             ['business_id', $business_id]
         ])->first();
 
@@ -545,7 +545,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
+            ['kode_akun', '4.1.01.03'],
             ['business_id', $business_id]
         ])->first();
 
@@ -577,7 +577,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
+            ['kode_akun', '4.1.01.03'],
             ['business_id', $business_id]
         ])->first();
         $trx = Transaction::where([
@@ -607,7 +607,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
+            ['kode_akun', '4.1.01.03'],
             ['business_id', $business_id]
         ])->first();
         $trx = Transaction::where([
@@ -639,7 +639,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.02'],
+            ['kode_akun', '4.1.01.03'],
             ['business_id', $business_id]
         ])->first();
 
