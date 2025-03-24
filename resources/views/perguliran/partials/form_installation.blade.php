@@ -42,12 +42,32 @@
                         <small class="text-danger" id="msg_cater"></small>
                     </div>
                 </div>
-                <div class="col-md-12">
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
                     <div class="position-relative mb-3">
-                        <label for="alamat">Alamat</label>
-                        <input type="text" class="form-control" id="alamat" name="alamat"
-                            aria-describedby="alamat" placeholder="Alamat">
-                        <small class="text-danger" id="msg_alamat"></small>
+                        <label for="jalan">Jalan</label>
+                        <input type="text" class="form-control" id="jalan" name="jalan"
+                            aria-describedby="jalan" placeholder="Jalan">
+                        <small class="text-danger" id="msg_jalan"></small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="position-relative mb-3">
+                        <label for="rw">RW</label>
+                        <input type="number" class="form-control" id="rw" name="rw" aria-describedby="rw"
+                            placeholder="Rw">
+                        <small class="text-danger" id="msg_rw"></small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="position-relative mb-3">
+                        <label for="rt">RT</label>
+                        <input type="number" class="form-control" id="rt" name="rt" aria-describedby="rt"
+                            placeholder="Rt">
+                        <small class="text-danger" id="msg_rt"></small>
                     </div>
                 </div>
             </div>
