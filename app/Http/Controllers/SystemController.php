@@ -99,7 +99,6 @@ class SystemController extends Controller
             }
         }
 
-        dd($trx_tunggakan);
         // Installations::whereIn('id', $update_sps)->update(['status_tunggakan' => 'sps']);
         // DB::statement('SET @DISABLE_TRIGGER = 1');
         // Transaction::insert($trx_tunggakan);
