@@ -407,7 +407,7 @@ class InstallationsController extends Controller
             'cater_id' => $request->cater,
             'order' => Tanggal::tglNasional($request->order),
             'desa' => $request->desa,
-            'alamat' => $request->jalan, $request->rw, $request->rt,
+            'alamat' => $request->jalan . ' Rw-' . $request->rw . ' Rt-' . $request->rt,
             'koordinate' => $request->koordinate,
             'package_id' => $request->package_id,
             'abodemen' => $abodemen,
