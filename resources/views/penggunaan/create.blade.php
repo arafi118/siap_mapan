@@ -53,14 +53,18 @@
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <div class="row">
-                                            <div class="col-md-9 mb-2">
+                                            <div class="col-md-8 mb-2">
                                                 <h5 class="mb-0">Daftar Pemakaian</h5>
                                             </div>
-                                            <div class="col-md-3 mb-2">
-                                                <input type="text" id="searchInput" class="form-control w-full"
-                                                    placeholder="Cari...">
+                                            <div class="col-md-4 mb-2">
+                                                <div class="input-group">
+                                                    <input type="text" id="searchInput" class="form-control"
+                                                        placeholder="Cari...">
+                                                    <a class="btn btn-primary text-white" id="searchButton">Search</a>
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
                                     <div class="table-responsive p-3">
                                         <table class="table align-items-center table-flush table-center table-hover"
@@ -266,9 +270,11 @@
             var akhir = $('#akhir_').val();
             var jumlah = $('#jumlah_').val();
             var id = $('#id_instalasi').val();
+            var tgl = $('#tgl_pemakaian').val();
 
             var data = [{
                 id: id,
+                tgl_pemakaian: tgl,
                 id_cater: id_cater,
                 customer: customer,
                 awal: awal,

@@ -105,6 +105,7 @@ class UsageController extends Controller
             $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
             $insert[] = [
                 'business_id' => Session::get('business_id'),
+                'tgl_pemakaian' => Tanggal::tglNasional($data['tgl_pemakaian']),
                 'customer' => $data['customer'],
                 'awal' => $data['awal'],
                 'akhir' => $data['akhir'],
@@ -118,7 +119,6 @@ class UsageController extends Controller
                 'updated_at' => $created_at
             ];
         }
-
         // Simpan data
         Usage::insert($insert);
 

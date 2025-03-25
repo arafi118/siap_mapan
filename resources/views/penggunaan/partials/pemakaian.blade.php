@@ -66,15 +66,23 @@
                             </table>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-1">
+                                <label for="tgl_pemakaian">Tanggal Pemakaian</label>
+                                <input type="text" class="form-control date" value=" {{ date('d/m/Y') }}"
+                                    name="tgl_pemakaian" id="tgl_pemakaian" placeholder="tanggal pemakaian">
+                            </div>
+                            <div class="form-group mb-1">
+                                <label for="awal">Awal Pemakaian</label>
                                 <input type="text" class="form-control AkhirUsage input-nilai-awal" name="awal_"
                                     id="awal_" placeholder="Awal Pemakaian" readonly>
                             </div>
                             <div class="form-group">
+                                <label for="akhir">Akhir Pemakaian</label>
                                 <input type="text" class="form-control input-nilai-akhir" name="akhir_"
                                     id="akhir_" placeholder="Akhir Pemakaian">
                             </div>
                         </div>
+
                     </div>
 
                     <input type="hidden" name="customer" class="customer" id="customer">
@@ -89,3 +97,24 @@
         </div>
     </div>
 </div>
+<script>
+    //tanggal
+    jQuery.datetimepicker.setLocale('de');
+    $('.date').datetimepicker({
+        i18n: {
+            de: {
+                months: [
+                    'Januar', 'Februar', 'März', 'April',
+                    'Mai', 'Juni', 'Juli', 'August',
+                    'September', 'Oktober', 'November', 'Dezember',
+                ],
+                dayOfWeek: [
+                    "So.", "Mo", "Di", "Mi",
+                    "Do", "Fr", "Sa.",
+                ]
+            }
+        },
+        timepicker: false,
+        format: 'd/m/Y'
+    });
+</script>
