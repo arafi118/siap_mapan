@@ -22,8 +22,13 @@
                 <div class="position-relative mb-3 d-md-flex flex-column flex-md-row align-items-md-center">
                     <label for="batas_tagihan" class="me-md-3 mb-2 mb-md-0" style="min-width: 200px;">Toleransi
                         Menunggak</label>
-                    <input type="number" class="form-control" id="batas_tagihan" name="batas_tagihan"
-                        placeholder="3 bulan" value="{{ $tampil_settings->batas_tagihan }}">
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="batas_tagihan" name="batas_tagihan"
+                            value="{{ $tampil_settings->batas_tagihan }}">
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-secondary border-secondary" id="batas_tagihan">Bulan</span>
+                        </div>
+                    </div>
                 </div>
                 <small class="text-danger" id="msg_batas_tagihan"></small>
 
@@ -32,11 +37,17 @@
             <div class="col-md-4">
                 <div class="position-relative mb-3">
                     <label for="tanggal_toleransi " class="mb-1">Batas Tagihan Bulanan</label>
-                    <input type="number" class="form-control" id="tanggal_toleransi " placeholder="Setiap Tanggal"
-                        name="tanggal_toleransi " value="{{ $tampil_settings->tanggal_toleransi }}">
-
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-secondary border-secondary" id="tanggal_toleransi">Setiap
+                                tanggal</span>
+                        </div>
+                        <input type="number" class="form-control" id="tanggal_toleransi " name="tanggal_toleransi "
+                            value="{{ $tampil_settings->tanggal_toleransi }}">
+                    </div>
                     <small class="text-danger" id="msg_tanggal_toleransi"></small>
                 </div>
+
 
                 <div class="position-relative mb-3">
                     <label for="biaya_aktivasi" class="mb-1">Biaya Aktivasi Ulang</label>
@@ -49,7 +60,8 @@
         </div>
         <hr>
         <p style="text-align: justify;">
-            Apabila Instalasi dengan Status <b>AKTIF</b> memiliki tagihan menunggakan sesuai angka diatas, maka aplikasi
+            Apabila Instalasi dengan Status <b>AKTIF</b> memiliki tagihan menunggakan sesuai toleransi menunggak, maka
+            aplikasi
             pamsimas secara otomatis merubah status Instalasi menjadi status <b>BLOKIR</b> dan sekaligus menjadi
             perintah untuk dilakukan penutupan air sementara sampai dengan dilakukan pembayaran tunggakan ditambah biaya
             aktivasi ulang.</p>
