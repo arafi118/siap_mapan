@@ -304,7 +304,6 @@ class AuthController extends Controller
                 $data_customer[$customer[0]] = [
                     'business_id' => Session::get('business_id'),
                     'nama' => ucwords(strtolower($customer[4])),
-                    'desa' => $id_desa,
                     'status' => $customer[0]
                 ];
 
