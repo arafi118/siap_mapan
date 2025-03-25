@@ -7,7 +7,6 @@
         <div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
             <i class="fas fa-check-circle"></i>
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
     <form action="/usages" method="post" id="FormInputPemakaian">
