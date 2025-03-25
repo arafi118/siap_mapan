@@ -3,12 +3,6 @@
     $label_search = 'Nama/Kode Installasi';
 @endphp
 @section('content')
-    @if (session('success'))
-        <div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
-            <i class="fas fa-check-circle"></i>
-            {{ session('success') }}
-        </div>
-    @endif
     <form action="/usages" method="post" id="FormInputPemakaian">
         @csrf
         <input type="hidden" id="tgl_toleransi" value="{{ $settings->tanggal_toleransi }}">
