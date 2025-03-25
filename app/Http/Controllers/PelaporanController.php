@@ -428,6 +428,7 @@ class PelaporanController extends Controller
     }
     private function tagihan_pelanggan(array $data)
     {
+
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
@@ -440,15 +441,27 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['usages'] = Usage::where('business_id', Session::get('business_id'))->with([
-            'customers',
-            'customers.village',
-            'installation',
-            'transaction',
-        ])->where([
-            ['tgl_akhir', '<=', $data['tgl_kondisi']],
-            ['status', 'UNPAID']
+        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->where('status_tunggakan', '!=', 'lancar')->with([
+            'customer',
+            'village',
+            'settings',
+            'usage' => function ($query) use ($data) {
+                $tgl_awal = date('Y-m', strtotime('-3 month', strtotime($data['tgl_kondisi']))) . '-01';
+                $query->whereBetween('tgl_akhir', [$tgl_awal, $data['tgl_kondisi']]);
+            },
+            'usage.transaction' => function ($query) use ($data) {
+                $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
+            },
         ])->get();
+
+        $bulan_tampil = [];
+        $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
+    
+        for ($i = 0; $i < 3; $i++) {
+            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m'); 
+        }
+    
+        $data['bulan_tampil'] = array_reverse($bulan_tampil);
 
         $data['title'] = 'Daftar Tagihan Pelanggan';
         $view = view('pelaporan.partials.views.tagihan_pelanggan', $data)->render();
