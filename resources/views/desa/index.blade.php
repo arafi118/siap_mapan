@@ -17,11 +17,12 @@
                             </div>
                             <div>&nbsp;</div>
                             <tr>
-                                <th>KODE</th>
-                                <th>NAMA DESA</th>
-                                <th>ALAMAT</th>
-                                <th>TELPON</th>
-                                <th style="text-align: center;">AKSI</th>
+                                <th>Kode</th>
+                                <th>Desa/Kalurahan</th>
+                                <th>Dusun/Pedukuhan</th>
+                                <th>Alamat</th>
+                                <th>Telpon</th>
+                                <th style="text-align: center;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,6 +30,7 @@
                                 <tr>
                                     <td>{{ $village->kode }}</td>
                                     <td>{{ $village->nama }}</td>
+                                    <td>{{ $village->dusun }}</td>
                                     <td style="padding: 3px; word-wrap: break-word; max-width: 200px;">
                                         {{ $village->alamat }}
                                     </td>

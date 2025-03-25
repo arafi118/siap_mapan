@@ -42,9 +42,7 @@
                         <small class="text-danger" id="msg_cater"></small>
                     </div>
                 </div>
-
             </div>
-
             <div class="row">
                 <div class="col-md-6">
                     <div class="position-relative mb-3">

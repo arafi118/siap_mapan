@@ -6,6 +6,9 @@ use App\Models\Customer;
 use App\Models\Region;
 use App\Models\Village;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 
 class VillageController extends Controller
@@ -15,7 +18,8 @@ class VillageController extends Controller
      */
     public function index()
     {
-        $villages = Village::all();
+        $villages = Village::where('kategori', '!=', 0)->get();
+
 
         $title = 'Data Desa';
         return view('desa.index')->with(compact('title', 'villages'));
@@ -102,50 +106,76 @@ class VillageController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'desa' => 'required',
-            'alamat' => 'required',
-            'hp' => 'required',
+        $data = $request->only([
+            "desa",
+            "dusun",
+            "alamat",
+            "hp",
         ]);
 
-        $tahun = date('Y');
-        $bulan = date('m');
-        $hari = date('d');
+        $rules = [
+            'desa' => 'required',
+            'dusun' => 'required',
+            'alamat' => 'required',
+            'hp' => 'required',
+        ];
 
+        $validate = Validator::make($data, $rules);
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        $region = Region::where('kode', $request->desa)->first();
         $business_id = str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
 
         $jumlah_urutan = '0001';
-        $desa = Village::where('kode', 'LIKE', $business_id . '%');
-        if ($desa->count() > 0) {
-            // kode_desa = 2025.01.001
-            $desa = $desa->orderBy('kode', 'DESC')->first();
-            $kode_desa = explode('.', $desa->kode); // ['2025', '01', '001']
+        $queryDesa = Village::where('kode', 'LIKE', $business_id . '%')->whereRaw('LENGTH(kode)=8');
+        if ($queryDesa->count() > 0) {
+            $desa = $queryDesa->orderBy('kode', 'DESC')->first();
+            $kode_desa = explode('.', $desa->kode);
 
             $urutan = end($kode_desa);
-            $kd_desa = array_pop($kode_desa);  // ['2025', '01']
             $jumlah_urutan = str_pad(intval($urutan) + 1, 4, '0', STR_PAD_LEFT);
-
-            if (is_array($kd_desa)) {
-                $kode_baru = implode('.', $kd_desa) . '.' . $jumlah_urutan;
-            } else {
-                $kode_baru = $kd_desa . '.' . $jumlah_urutan;
-            }
         }
 
         $kode = $business_id .  '.' . $jumlah_urutan;
-        $desa = Region::where('kode', $request->desa)->first();
+        $cekDesa = $queryDesa->where('nama', $region->nama);
+        if ($cekDesa->count() <= 0) {
+            $Desa = Village::create([
+                'kode' => $kode,
+                'nama' => $region->nama,
+                'alamat' => $request->alamat,
+                'hp' => $request->hp
+            ]);
+        } else {
+            $desa = $cekDesa->first();
+            $kode = $desa->kode;
+        }
 
-        $Desa = Village::create([
-            'kode' => $kode,
-            'nama' => $desa->nama,
+        $kode_desa = $kode;
+        $jumlah_urutan = '0001';
+        $queryDusun = Village::where('kode', 'LIKE', $kode_desa . '%')->whereRaw('LENGTH(kode)>8');
+        if ($queryDusun->count() > 0) {
+            $dusun = $queryDusun->orderBy('kode', 'DESC')->first();
+            $kode_dusun = explode('.', $dusun->kode);
+
+            $urutan = end($kode_dusun);
+            $jumlah_urutan = str_pad(intval($urutan) + 1, 4, '0', STR_PAD_LEFT);
+        }
+
+        $kode_dusun = $kode_desa .  '.' . $jumlah_urutan;
+        $Dusun = Village::create([
+            'kode' => $kode_dusun,
+            'nama' => $region->nama,
+            'dusun' => $request->dusun,
             'alamat' => $request->alamat,
+            'kategori' => "1",
             'hp' => $request->hp
         ]);
 
         return response()->json([
             'success' => true,
             'msg' => 'Desa berhasil ditambahkan!',
-            'Desa' => $Desa
         ]);
     }
 
@@ -175,6 +205,7 @@ class VillageController extends Controller
         $validasi = [
             'kode' => 'required',
             'nama' => 'required',
+            'dusun' => 'required',
             'alamat' => 'required',
             'hp' => 'required'
         ];
@@ -185,6 +216,7 @@ class VillageController extends Controller
         Village::where('id', $village->id)->update([
             'kode' => $request->kode,
             'nama' => $request->nama,
+            'dusun' => $request->dusun,
             'alamat' => $request->alamat,
             'hp' => $request->hp
         ]);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Amount;
 use App\Models\Installations;
+use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\Usage;
 use Illuminate\Http\Request;
@@ -15,8 +16,11 @@ class SystemController extends Controller
 {
     public function dataset($waktu)
     {
+        $setting = Settings::where('business_id', Session::get('business_id'))->first();
+
         $date = date('Y-m-d', $waktu);
         $created_at = date('Y-m-d H:i:s');
+        $batas_toleransi = $setting->tanggal_toleransi ?: '27';
         $businessId = Session::get('business_id');
         $installations = Installations::where('business_id', Session::get('business_id'))->with([
             'package',
@@ -27,11 +31,11 @@ class SystemController extends Controller
         ])->get();
 
         $accounts = Account::where('business_id', $businessId)
-            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.02', '4.1.01.03', '4.1.01.04'])
+            ->whereIn('kode_akun', ['1.1.03.01', '4.1.01.02', '4.1.01.03', '4.1.01.04'])
             ->get()
             ->keyBy('kode_akun');
 
-        $kode_kas = $accounts['1.1.01.01'] ?? null;
+        $kode_piutang = $accounts['1.1.03.01'] ?? null;
         $kode_abodemen = $accounts['4.1.01.02'] ?? null;
         $kode_pemakaian = $accounts['4.1.01.03'] ?? null;
         $kode_denda = $accounts['4.1.01.04'] ?? null;
@@ -46,12 +50,20 @@ class SystemController extends Controller
             $abodemen = $ins->abodemen;
             $denda = $ins->package->denda;
             foreach ($ins->usage as $usage) {
-                $tgl_toleransi = date('Y-m', strtotime('+1 month', strtotime($usage->tgl_akhir))) . '-27';
-                if ($tgl_toleransi <= $date && count($usage->transaction) == 0) {
+                $tgl_toleransi = date('Y-m', strtotime('+1 month', strtotime($usage->tgl_akhir))) . '-' . $batas_toleransi;
+
+                $jumlah_pembayaran = 0;
+                foreach ($usage->transaction as $trx) {
+                    if ($trx->rekening_kredit == $kode_pemakaian->id) {
+                        $jumlah_pembayaran += $trx->total;
+                    }
+                }
+
+                if ($tgl_toleransi <= $date && $jumlah_pembayaran < $usage->nominal) {
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
                         'tgl_transaksi' => $date,
-                        'rekening_debit' => $kode_kas->id,
+                        'rekening_debit' => $kode_piutang->id,
                         'rekening_kredit' => $kode_abodemen->id,
                         'user_id' => '1',
                         'usage_id' => $usage->id,
@@ -59,7 +71,7 @@ class SystemController extends Controller
                         'total' => $abodemen,
                         'denda' => '0',
                         'relasi' => $usage->customers->nama,
-                        'keterangan' => 'Pendapatan Abodemen pemakaian atas nama ' . $usage->customers->nama,
+                        'keterangan' => 'Hutang Abodemen pemakaian atas nama ' . $usage->customers->nama . ' (' . $ins->id . ')',
                         'urutan' => '0',
                         'created_at' => $created_at
                     ];
@@ -67,15 +79,15 @@ class SystemController extends Controller
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
                         'tgl_transaksi' => $date,
-                        'rekening_debit' => $kode_kas->id,
+                        'rekening_debit' => $kode_piutang->id,
                         'rekening_kredit' => $kode_pemakaian->id,
                         'user_id' => '1',
                         'usage_id' => $usage->id,
                         'installation_id' => $usage->id_instalasi,
-                        'total' => $usage->nominal,
+                        'total' => $usage->nominal - $jumlah_pembayaran,
                         'denda' => '0',
                         'relasi' => $usage->customers->nama,
-                        'keterangan' => 'Pendapatan Piutang pemakaian atas nama ' . $usage->customers->nama,
+                        'keterangan' => 'Hutang Pemakaian atas nama ' . $usage->customers->nama . ' (' . $ins->id . ')',
                         'urutan' => '0',
                         'created_at' => $created_at
                     ];
@@ -83,7 +95,7 @@ class SystemController extends Controller
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
                         'tgl_transaksi' => $date,
-                        'rekening_debit' => $kode_kas->id,
+                        'rekening_debit' => $kode_piutang->id,
                         'rekening_kredit' => $kode_denda->id,
                         'user_id' => '1',
                         'usage_id' => $usage->id,
@@ -91,7 +103,7 @@ class SystemController extends Controller
                         'total' => $denda,
                         'denda' => '0',
                         'relasi' => $usage->customers->nama,
-                        'keterangan' => 'Pendapatan Denda pemakaian atas nama ' . $usage->customers->nama,
+                        'keterangan' => 'Hutang Denda pemakaian atas nama ' . $usage->customers->nama . ' (' . $ins->id . ')',
                         'urutan' => '0',
                         'created_at' => $created_at
                     ];
@@ -99,12 +111,13 @@ class SystemController extends Controller
             }
         }
 
+        // dd($trx_tunggakan);
         // Installations::whereIn('id', $update_sps)->update(['status_tunggakan' => 'sps']);
         // DB::statement('SET @DISABLE_TRIGGER = 1');
         // Transaction::insert($trx_tunggakan);
         // DB::statement('SET @DISABLE_TRIGGER = 0');
 
-        // $this->saldo(date('Y', $waktu), date('m', $waktu), $kode_kas->id, $kode_abodemen->id, $kode_pemakaian->id, $kode_denda->id);
+        // $this->saldo(date('Y', $waktu), date('m', $waktu), $kode_piutang->id, $kode_abodemen->id, $kode_pemakaian->id, $kode_denda->id);
         echo '<script>window.close()</script>';
         exit;
     }

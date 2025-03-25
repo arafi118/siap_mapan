@@ -26,7 +26,7 @@
                                     <div class="position-relative mb-3">
                                         <label for="kode">Kode</label>
                                         <input autocomplete="off" maxlength="16" type="text" name="kode"
-                                            id="kode" class="form-control" value="{{ $village->kode }}">
+                                            id="kode" class="form-control" value="{{ $village->kode }}" disabled>
                                         <small class="text-danger" id="msg_kode">{{ $errors->first('kode') }}</small>
                                     </div>
                                 </div>
@@ -40,20 +40,29 @@
                                 </div>
                             </div>
                             <div class="row">
+
+                                <div class="col-md-3">
+                                    <div class="position-relative mb-3">
+                                        <label for="dusun">Dusun/Pedukuhan</label>
+                                        <input type="text" name="dusun" id="dusun" value="{{ $village->dusun }}"
+                                            class="form-control">
+                                        <small class="text-danger" id="msg_dusun"></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="position-relative mb-3">
+                                        <label for="hp">No Hp</label>
+                                        <input type="text" name="hp" id="hp" value="{{ $village->hp }}"
+                                            class="form-control">
+                                        <small class="text-danger" id="msg_hp"></small>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="position-relative mb-3">
                                         <label for="alamat">Alamat</label>
                                         <input autocomplete="off" type="text" name="alamat" id="alamat"
                                             class="form-control" value="{{ $village->alamat }}">
                                         <small class="text-danger">{{ $errors->first('alamat') }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="position-relative mb-3">
-                                        <label for="hp">Telpon</label>
-                                        <input autocomplete="off" type="text" name="hp" id="hp"
-                                            class="form-control" value="{{ $village->hp }}">
-                                        <small class="text-danger">{{ $errors->first('hp') }}</small>
                                     </div>
                                 </div>
                             </div>
