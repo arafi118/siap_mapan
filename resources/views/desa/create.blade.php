@@ -64,7 +64,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="position-relative mb-3">
-                            <label for="desa">Nama Desa</label>
+                            <label for="desa">Desa/Kalurahan</label>
                             <select name="desa" id="desa" class="form-control form-control-sm">
                                 <option value="">Pilih Nama Desa</option>
                             </select>
@@ -72,7 +72,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-3">
+                        <div class="position-relative mb-3">
+                            <label for="dusun">Dusun/Pedukuhan</label>
+                            <input type="text" name="dusun" id="dusun" class="form-control">
+                            <small class="text-danger" id="msg_dusun"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="position-relative mb-3">
                             <label for="hp">No Hp</label>
                             <input type="text" name="hp" id="hp" class="form-control">
