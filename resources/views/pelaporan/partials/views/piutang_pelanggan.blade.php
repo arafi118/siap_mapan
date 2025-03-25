@@ -54,12 +54,9 @@
             $totalDenda = 0;
             $dibayar = 0;
             $data_desa = [];
-
             $totalMenunggakPerBulan = [];
-
+            $cek_bulan = [];
         @endphp
-
-
         @foreach ($installations as $installation)
             @if (!in_array($installation->village, $data_desa))
                 <tr>
@@ -67,12 +64,10 @@
                         Dusun {{ $installation->village->dusun }} Kalurahan {{ $installation->village->nama }}
                     </th>
                 </tr>
-
                 @php
                     $data_desa[] = $installation->village;
                 @endphp
             @endif
-
             <tr>
                 <th style="border: 1px solid black; padding: 5px;font-weight: normal;" align="center">{{ $no++ }}
                 </th>
@@ -82,7 +77,6 @@
                 <th style="border: 1px solid black; padding: 5px;font-weight: normal;" align="center">
                     {{ $installation->kode_instalasi }}
                 </th>
-
                 @php
                     $nomor = 1;
                     $data_menunggak = [];
@@ -114,12 +108,22 @@
                         $nomor++;
                     }
                 @endphp
-
                 @foreach ($bulan_tampil as $bt)
                     @php
                         $tunggakan = 0;
+                        $dibayarPerBulan = 0;
                         $bulan = Carbon::parse($bt)->format('Y-m');
                         $tunggakan = isset($tunggakan_tampil[$bt]) ? $tunggakan_tampil[$bt] : 0;
+                        $dibayarPerBulan = isset($dibayar_tampil[$bt]) ? $dibayar_tampil[$bt] : 0; // Ambil data dibayar
+
+                        if (in_array($bt, $cek_bulan)) {
+                            $totalMenunggakPerBulan[$bt] += $tunggakan;
+                            $totalDibayarPerBulan[$bt] += $dibayarPerBulan;
+                        } else {
+                            $totalMenunggakPerBulan[$bt] = $tunggakan;
+                            $totalDibayarPerBulan[$bt] = $dibayarPerBulan;
+                            $cek_bulan[$bt] = $bt;
+                        }
                     @endphp
                     <th style="border: 1px solid black; padding: 5px; font-weight: normal" align="right">
                         {{ number_format($tunggakan, 2) }}
@@ -145,10 +149,10 @@
                     {{ isset($totalMenunggakPerBulan[$bulan]) ? number_format($totalMenunggakPerBulan[$bulan], 2) : number_format(0, 2) }}
                 </th>
             @endforeach
-
             <th style="border: 1px solid black; padding: 5px;" align="right">
             </th>
             <th style="border: 1px solid black; padding: 5px;" align="right"></th>
         </tr>
+
     </table>
 @endsection
