@@ -35,7 +35,7 @@ class UsageController extends Controller
      */
     public function create()
     {
-        // where('status','A')->
+        $settings = Settings::where('business_id', Session::get('business_id'))->first();
         $customer = Installations::where('business_id', Session::get('business_id'))->with('customer')->orderBy('id', 'ASC')->get();
         $caters = User::where([
             ['business_id', Session::get('business_id')],
@@ -46,7 +46,7 @@ class UsageController extends Controller
         $pilih_customer = 0;
 
         $title = 'Register Pemakaian';
-        return view('penggunaan.create')->with(compact('customer', 'pilih_customer', 'caters', 'title', 'usages'));
+        return view('penggunaan.create')->with(compact('customer', 'settings', 'pilih_customer', 'caters', 'title', 'usages'));
     }
 
     public function store(Request $request)
