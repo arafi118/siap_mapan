@@ -303,8 +303,7 @@ class AuthController extends Controller
                 $id_desa = $data_desa[ucwords(strtolower($customer[3]))];
                 $data_customer[$customer[0]] = [
                     'business_id' => Session::get('business_id'),
-                    'nama' => ucwords(strtolower($customer[4])),
-                    'status' => $customer[0]
+                    'nama' => ucwords(strtolower($customer[4]))
                 ];
 
                 $cater = strtolower($customer[5]);
