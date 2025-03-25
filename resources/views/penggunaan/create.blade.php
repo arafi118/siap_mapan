@@ -12,7 +12,7 @@
     @endif
     <form action="/usages" method="post" id="FormInputPemakaian">
         @csrf
-
+        <input type="hidden" id="tgl_toleransi" value="{{ $settings->tanggal_toleransi }}">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
@@ -64,7 +64,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="table-responsive p-3">
                                         <table class="table align-items-center table-flush table-center table-hover"
@@ -211,15 +210,16 @@
 
                 //set warna
                 var today = new Date();
+                var tgl_toleransi = $('#tgl_toleransi').val()
                 var todayDate = today.toISOString().split('T')[0];
                 var lastReset = localStorage.getItem('lastReset');
-                var colorClass = (today.getDate() === 26) ?
+                var colorClass = (today.getDate() === tgl_toleransi) ?
                     'text-danger' :
                     (nilai_akhir > nilai_awal ? 'text-success' : 'text-danger');
-                if (today.getDate() === 26 && lastReset !== todayDate)
+                if (today.getDate() === tgl_toleransi && lastReset !== todayDate)
                     localStorage.setItem('lastReset', todayDate);
-                if (today.getDate() === 25) setTimeout(() => location.reload(),
-                    new Date(today.getFullYear(), today.getMonth(), 26, 0, 0, 1) - today);
+                if (today.getDate() === tgl_toleransi - 1) setTimeout(() => location.reload(),
+                    new Date(today.getFullYear(), today.getMonth(), tgl_toleransi, 0, 0, 1) - today);
                 //endset
 
                 table.append(`
