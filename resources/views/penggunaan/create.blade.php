@@ -1,6 +1,7 @@
 @extends('layouts.base')
 @php
     $label_search = 'Nama/Kode Installasi';
+
 @endphp
 @section('content')
     <form action="/usages" method="post" id="FormInputPemakaian">
@@ -33,8 +34,8 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4 mb-2">
-                                        <input type="text" name="tanggal" id="tanggal" class="form-control date"
-                                            value="{{ date('d/m/Y') }}">
+                                        <input type="text" name="tanggal" id="tanggal"
+                                            class="form-control tanggal date" value="{{ date('d/m/Y') }}">
                                     </div>
                                 </div>
                             </div>
@@ -46,14 +47,19 @@
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <div class="row">
-                                            <div class="col-md-8 mb-2">
+                                            <div class="col-md-5 mb-2">
                                                 <h5 class="mb-0">Daftar Pemakaian</h5>
+                                            </div>
+                                            <div class="col-md-3 mb-2">
+                                                <div class="input-group">
+                                                    <input type="text" id="tanggal" class="form-control tanggal date"
+                                                        value="{{ date('d/m/Y') }}">
+                                                </div>
                                             </div>
                                             <div class="col-md-4 mb-2">
                                                 <div class="input-group">
                                                     <input type="text" id="searchInput" class="form-control"
-                                                        placeholder="Cari...">
-                                                    <a class="btn btn-primary text-white" id="searchButton">Search</a>
+                                                        placeholder="Search ...">
                                                 </div>
                                             </div>
                                         </div>
@@ -95,6 +101,9 @@
 @section('script')
     <script>
         let dataInstallation;
+        let dataSearch;
+        let dataPemakaian;
+
         var id_user = '{{ auth()->user()->id }}'
         $(document).ready(function() {
             $('#caters').val(id_user).change()
@@ -145,7 +154,11 @@
             format: 'd/m/Y'
         });
 
-        $(document).on('change', '#caters, #tanggal', function(e) {
+        $(document).on('change', '.tanggal', function(e) {
+            $('.tanggal').val($(this).val());
+        })
+
+        $(document).on('change', '#caters, .tanggal', function(e) {
             e.preventDefault()
 
             var id_cater = $('#caters').val();
@@ -153,6 +166,7 @@
             $.get('/installations/cater/' + id_cater + '?tanggal=' + tanggal, function(result) {
                 if (result.success) {
                     dataInstallation = result.installations;
+                    dataSearch = dataInstallation
                     setTable(dataInstallation)
                 }
             })
@@ -161,7 +175,7 @@
         $(document).on('click', '#TbPemakain #DaftarInstalasi tr td', function() {
             var parent = $(this).parent()
             var index = parent.attr('data-index')
-            var installation = dataInstallation[index]
+            var installation = dataSearch[index]
             $('.namaCustomer').html('<b>' + installation.customer.nama + '</b>')
             $('.customer').val(installation.customer_id)
             $('.NikCustomer').html(installation.customer.nik)
@@ -174,19 +188,24 @@
             $('.PackageInstallasi').html(installation.package.kelas)
             $('.AlamatInstallasi').html(installation.alamat)
             $('.AkhirUsage').val(installation.one_usage?.akhir || 0)
+            $('.TglAkhirUsage').val(installation.one_usage?.tgl_akhir || 0)
+            $('.PemakaianUsage').val(installation.one_usage?.tgl_pemakaian || 0)
 
             $('#staticBackdrop').modal('show')
         })
 
-        $(document).on('change', '#searchInput', function() {
+        $(document).on('keyup', '#searchInput', function() {
             searching($(this).val());
         });
 
         function searching(search) {
             let data = dataInstallation;
 
-            let dataSearch = data.filter((element) => {
-                return (element.kode_instalasi.includes(search) || element.customer.nama.includes(search))
+            dataSearch = data.filter((element) => {
+                return (
+                    element.kode_instalasi.includes(search) ||
+                    element.customer.nama.toLowerCase().includes(search)
+                )
             });
 
             setTable(dataSearch)
@@ -202,21 +221,48 @@
                 var nilai_jumlah = (item.one_usage) ? item.one_usage.jumlah : '0';
 
                 //set warna
-                var today = new Date();
-                var tgl_toleransi = $('#tgl_toleransi').val()
-                var todayDate = today.toISOString().split('T')[0];
-                var lastReset = localStorage.getItem('lastReset');
-                var colorClass = (today.getDate() === tgl_toleransi) ?
-                    'text-danger' :
-                    (nilai_akhir > nilai_awal ? 'text-success' : 'text-danger');
-                if (today.getDate() === tgl_toleransi && lastReset !== todayDate)
-                    localStorage.setItem('lastReset', todayDate);
-                if (today.getDate() === tgl_toleransi - 1) setTimeout(() => location.reload(),
-                    new Date(today.getFullYear(), today.getMonth(), tgl_toleransi, 0, 0, 1) - today);
-                //endset
+                function formatbulan1(tanggal,
+                    dataReturn = 'date') {
+                    if (!tanggal) return '';
+                    let parts = tanggal.split('/');
+                    if (parts.length === 3) {
+                        let [day, month, year] = parts;
+                        if (
+                            dataReturn == 'month') {
+                            return month;
+                        }
+                    }
+                }
 
+                function formatbulan2(tanggal,
+                    dataReturn = 'date') {
+                    if (!tanggal) return '';
+                    let parts = tanggal.split('-');
+                    if (parts.length === 3) {
+                        let [day, month, year] = parts;
+                        if (
+                            dataReturn == 'month') {
+                            return month;
+                        }
+                    }
+                }
+
+                var tgl_pemakaian = (item.one_usage) ? formatbulan2(item.one_usage.tgl_pemakaian, 'month') : '0';
+                var tgl_akhir = (item.one_usage) ? formatbulan2(item.one_usage.tgl_akhir, 'month') : '0';
+                var tgl_hariini = formatbulan1($('#tanggal').val(), 'month');
+
+                var colorClass = 'text-danger';
+                if (tgl_akhir <= tgl_hariini) {
+                    colorClass = 'text-warning';
+                }
+
+                if (tgl_pemakaian >= tgl_hariini) {
+                    colorClass = 'text-success';
+                }
+
+                //endset
                 table.append(`
-            <tr data-index="${index}">
+            <tr data-index="${index}" ${tgl_pemakaian}-${tgl_akhir}-${tgl_hariini}>
                 <td align="left">${item.customer.nama}</td>    
                 <td align="center">${item.kode_instalasi}</td>    
                 <td align="right"><b>${nilai_akhir}</b></td> 
@@ -263,7 +309,8 @@
             var akhir = $('#akhir_').val();
             var jumlah = $('#jumlah_').val();
             var id = $('#id_instalasi').val();
-            var tgl = $('#tgl_pemakaian').val();
+            var tgl = $('#tanggal').val();
+            var toleransi = $('#tgl_toleransi').val();
 
             var data = [{
                 id: id,
@@ -272,9 +319,9 @@
                 customer: customer,
                 awal: awal,
                 akhir: akhir,
-                jumlah: jumlah
+                jumlah: jumlah,
+                toleransi: toleransi
             }]
-            console.log(data);
 
             var checklist = $('.checklist')
             checklist.each(function(index, item) {
@@ -333,6 +380,8 @@
                         toastMixin.fire({
                             title: 'Pemakaian Berhasil di Input'
                         });
+
+                        let dataPemakaian = result.pemakaian;
 
                         $('#caters').val('0').change()
                         setTimeout(() => {

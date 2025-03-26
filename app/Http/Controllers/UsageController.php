@@ -86,7 +86,6 @@ class UsageController extends Controller
         }
 
         $insert = [];
-        $tanggal = Tanggal::tglNasional($request->tanggal);
         foreach ($request->data as $data) {
             $harga = json_decode($data_installation[$data['id']], true);
 
@@ -103,6 +102,10 @@ class UsageController extends Controller
             }
 
             $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
+
+            $tglPakai = Tanggal::tglNasional($data['tgl_pemakaian']);
+            $tglAkhir = date('Y-m', strtotime('+1 month', strtotime($tglPakai))) . '-' . str_pad($data['toleransi'], 2, '0', STR_PAD_LEFT);
+
             $insert[] = [
                 'business_id' => Session::get('business_id'),
                 'tgl_pemakaian' => Tanggal::tglNasional($data['tgl_pemakaian']),
@@ -111,7 +114,7 @@ class UsageController extends Controller
                 'akhir' => $data['akhir'],
                 'jumlah' => $data['jumlah'],
                 'id_instalasi' => $data['id'],
-                'tgl_akhir' => $tanggal,
+                'tgl_akhir' => $tglAkhir,
                 'nominal' => $harga[$index_harga] * $data['jumlah'],
                 'cater' =>  $data['id_cater'],
                 'user_id' => auth()->user()->id,
@@ -125,7 +128,7 @@ class UsageController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Input Pemakain Berhasil ',
-            'pemakaian' => $request
+            'pemakaian' => $insert
         ]);
 
         // return response()->json([
