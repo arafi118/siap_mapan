@@ -18,7 +18,7 @@
                 <td align="center" width="100">Awal Pemakaian</td>
                 <td align="center" width="100">Akhir Pemkaian</td>
                 <td align="center" width="100">Jumlah Pemakaian</td>
-                <td align="center" width="100">Harga Paket</td>
+                <td align="center" width="100">Jumlah Tagihan</td>
                 <td align="center" width="100">Tanggal Akhir</td>
             </tr>
         </thead>

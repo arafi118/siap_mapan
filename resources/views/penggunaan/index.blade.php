@@ -42,7 +42,7 @@
                                 <th>AWAL PEMAKAIAN</th>
                                 <th>AKHIR PEMAKAIAN</th>
                                 <th>JUMLAH PEMAKAIAN</th>
-                                <th>TOTAL </th>
+                                <th>JUMLAH TAGIHAN </th>
                                 <th>TANGGAL AKHIR</th>
                                 <th>Status</th>
                                 @if (auth()->user()->jabatan == 1)

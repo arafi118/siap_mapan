@@ -47,14 +47,10 @@ class SopController extends Controller
         if (request()->ajax()) {
             $data['swit_tombol'] = request()->get('swit_tombol');
             $data['pasang_baru'] = request()->get('pasang_baru');
-            $data['abodemen'] = request()->get('abodemen');
-            $data['denda'] = request()->get('denda');
 
             $validate = Validator::make($data, [
                 'swit_tombol' => 'required',
                 'pasang_baru' => 'required',
-                'abodemen'    => 'required',
-                'denda'       => 'required'
             ]);
 
             if ($validate->fails()) {
@@ -65,32 +61,18 @@ class SopController extends Controller
             $data['pasang_baru'] = str_replace('.00', '', $data['pasang_baru']);
             $data['pasang_baru'] = floatval($data['pasang_baru']);
 
-            $data['abodemen'] = str_replace(',', '', $data['abodemen']);
-            $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
-            $data['abodemen'] = floatval($data['abodemen']);
-
-            $data['denda'] = str_replace(',', '', $data['denda']);
-            $data['denda'] = str_replace('.00', '', $data['denda']);
-            $data['denda'] = floatval($data['denda']);
-
             $pasang_baru = $data['pasang_baru'];
-            $abodemen    = $data['abodemen'];
-            $denda       = $data['denda'];
 
             if ($pengaturan->count() > 0) {
                 $Settings = $pengaturan->update([
                     'swit_tombol' => $data['swit_tombol'],
                     'pasang_baru' => $pasang_baru,
-                    'abodemen'    => $abodemen,
-                    'denda'       => $denda,
                 ]);
             } else {
                 $Settings = Settings::create([
                     'business_id' => $business_id,
                     'swit_tombol' => $data['swit_tombol'],
                     'pasang_baru' => $pasang_baru,
-                    'abodemen'    => $abodemen,
-                    'denda'       => $denda,
                 ]);
             }
 
@@ -321,27 +303,52 @@ class SopController extends Controller
 
         if (request()->ajax()) {
             $data['batas_tagihan'] = request()->get('batas_tagihan');
-            $data['swit_tombol_trx'] = request()->get('swit_tombol_trx');
+            $data['abodemen'] = request()->get('abodemen');
+            $data['denda']  = request()->get('denda');
+            $data['biaya_aktivasi'] = request()->get('biaya_aktivasi');
 
             $validate = Validator::make($data, [
                 'batas_tagihan' => 'required',
-                'swit_tombol_trx' => 'required'
+                'abodemen'      => 'required',
+                'denda'         => 'required',
+                'biaya_aktivasi' => 'required',
             ]);
 
             if ($validate->fails()) {
                 return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
             }
 
+            $data['abodemen'] = str_replace(',', '', $data['abodemen']);
+            $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
+            $data['abodemen'] = floatval($data['abodemen']);
+
+            $data['denda'] = str_replace(',', '', $data['denda']);
+            $data['denda'] = str_replace('.00', '', $data['denda']);
+            $data['denda'] = floatval($data['denda']);
+
+            $data['biaya_aktivasi'] = str_replace(',', '', $data['biaya_aktivasi']);
+            $data['biaya_aktivasi'] = str_replace('.00', '', $data['biaya_aktivasi']);
+            $data['biaya_aktivasi'] = floatval($data['biaya_aktivasi']);
+
+            $abodemen = $data['abodemen'];
+            $denda = $data['denda'];
+            $biaya_aktivasi = $data['biaya_aktivasi'];
+
+
             if ($pengaturan->count() > 0) {
                 $Settings = $pengaturan->update([
                     'batas_tagihan' => $data['batas_tagihan'],
-                    'swit_tombol_trx' => $data['swit_tombol_trx'],
+                    'abodemen'      => $abodemen,
+                    'denda'         => $denda,
+                    'biaya_aktivasi' => $biaya_aktivasi,
                 ]);
             } else {
                 $Settings = Settings::create([
-                    'business_id' => $business_id,
+                    'business_id'   => $business_id,
                     'batas_tagihan' => $data['batas_tagihan'],
-                    'swit_tombol_trx' => $data['swit_tombol_trx'],
+                    'abodemen'      => $abodemen,
+                    'denda'         => $denda,
+                    'biaya_aktivasi' => $biaya_aktivasi,
                 ]);
             }
 

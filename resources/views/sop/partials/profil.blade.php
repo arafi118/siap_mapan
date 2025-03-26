@@ -1,18 +1,19 @@
 <div class="alert alert-info d-flex align-items-center" role="alert">
     <!-- Gambar -->
-    <img src="../../assets/img/sop.png" style="max-height: 300px; margin-right: 20px;" class="img-fluid">
+    <img src="../../assets/img/sop.png" style="max-height: 300px; margin-right: 20px;"
+        class="mb-3 img-fluid  d-none d-lg-block">
     <div>
         <h4 class="alert-heading"><b>Standar Operasional Prosedur (SOP)</b></h4>
         <hr>
         <hr>
         <p style="text-align: justify;">
-            Lakukan Pengaturan Aplikasi PAMSIDES mendasar
+            Lakukan Pengaturan Aplikasi PAMSIMAS mendasar
             kepada Standar Operasional Prosedur yang berlaku
             di <b>{{ $business->nama }}</b>, Klik Sidebar disamping untuk
-            mengatur & masuk ke fitur yang tersedia. Gunakanlah Aplikasi Pamsides
+            mengatur & masuk ke fitur yang tersedia. Gunakanlah Aplikasi Pamsimas
             secara bijak sesuai dengan wewenang Anda, semoga bermanfaat.
             <br>
-            <b> Salam Pamsides
+            <b> Salam Pamsimas
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="30"
                     height="30"style="fill: rgb(255, 255, 255);">
                     <path

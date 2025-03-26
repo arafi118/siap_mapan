@@ -304,8 +304,7 @@ class AuthController extends Controller
                 $data_customer[$customer[0]] = [
                     'business_id' => Session::get('business_id'),
                     'nama' => ucwords(strtolower($customer[4])),
-                    'desa' => $id_desa,
-                    'status' => $customer[0]
+                    'foto' => $customer[0]
                 ];
 
                 $cater = strtolower($customer[5]);
@@ -365,7 +364,7 @@ class AuthController extends Controller
             $customer = Customer::where('business_id', Session::get('business_id'))->get();
             $data_customer = [];
             foreach ($customer as $cs) {
-                $data_customer[$cs->status] = $cs->id;
+                $data_customer[$cs->foto] = $cs->id;
             }
 
             $data_cater = [];

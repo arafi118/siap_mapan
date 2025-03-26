@@ -198,12 +198,6 @@
         $("#pasang_baru").maskMoney({
             allowNegative: true
         });
-        $("#abodemen").maskMoney({
-            allowNegative: true
-        });
-        $("#denda").maskMoney({
-            allowNegative: true
-        });
         $(document).on('click', '#SimpanSwit', function(e) {
             e.preventDefault();
             var form = $('#Fromswit');
@@ -216,7 +210,7 @@
                 success: function(result) {
                     if (result.success) {
                         toastMixin.fire({
-                            title: 'Pembaruhan Sistem Instalasi Berhasil'
+                            title: 'Pembaruhan Pasang Baru Berhasil'
                         });
                         // setTimeout(() => window.location.reload(), 3000);
                     }
@@ -254,6 +248,16 @@
     </script>
     <script>
         // sistem instal
+        $("#abodemen").maskMoney({
+            allowNegative: true
+        });
+        $("#denda").maskMoney({
+            allowNegative: true
+        });
+        $("#biaya_aktivasi").maskMoney({
+            allowNegative: true
+        });
+
         $(document).on('click', '#SimpanInstal', function(e) {
             e.preventDefault();
             var form = $('#FromInstal');
@@ -275,7 +279,7 @@
                 success: function(result) {
                     if (result.success) {
                         toastMixin.fire({
-                            title: 'Pembaruhan Sistem Instalasi Berhasil'
+                            title: 'Pembaruhan Sistem Tagihan Berhasil'
                         });
                         // setTimeout(() => window.location.reload(), 3000);
                     }

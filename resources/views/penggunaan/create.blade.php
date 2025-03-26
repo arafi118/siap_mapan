@@ -3,16 +3,9 @@
     $label_search = 'Nama/Kode Installasi';
 @endphp
 @section('content')
-    @if (session('success'))
-        <div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
-            <i class="fas fa-check-circle"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
     <form action="/usages" method="post" id="FormInputPemakaian">
         @csrf
-
+        <input type="hidden" id="tgl_toleransi" value="{{ $settings->tanggal_toleransi }}">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
@@ -53,12 +46,15 @@
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <div class="row">
-                                            <div class="col-md-9 mb-2">
+                                            <div class="col-md-8 mb-2">
                                                 <h5 class="mb-0">Daftar Pemakaian</h5>
                                             </div>
-                                            <div class="col-md-3 mb-2">
-                                                <input type="text" id="searchInput" class="form-control w-full"
-                                                    placeholder="Cari...">
+                                            <div class="col-md-4 mb-2">
+                                                <div class="input-group">
+                                                    <input type="text" id="searchInput" class="form-control"
+                                                        placeholder="Cari...">
+                                                    <a class="btn btn-primary text-white" id="searchButton">Search</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -207,15 +203,16 @@
 
                 //set warna
                 var today = new Date();
+                var tgl_toleransi = $('#tgl_toleransi').val()
                 var todayDate = today.toISOString().split('T')[0];
                 var lastReset = localStorage.getItem('lastReset');
-                var colorClass = (today.getDate() === 26) ?
+                var colorClass = (today.getDate() === tgl_toleransi) ?
                     'text-danger' :
                     (nilai_akhir > nilai_awal ? 'text-success' : 'text-danger');
-                if (today.getDate() === 26 && lastReset !== todayDate)
+                if (today.getDate() === tgl_toleransi && lastReset !== todayDate)
                     localStorage.setItem('lastReset', todayDate);
-                if (today.getDate() === 25) setTimeout(() => location.reload(),
-                    new Date(today.getFullYear(), today.getMonth(), 26, 0, 0, 1) - today);
+                if (today.getDate() === tgl_toleransi - 1) setTimeout(() => location.reload(),
+                    new Date(today.getFullYear(), today.getMonth(), tgl_toleransi, 0, 0, 1) - today);
                 //endset
 
                 table.append(`
@@ -266,9 +263,11 @@
             var akhir = $('#akhir_').val();
             var jumlah = $('#jumlah_').val();
             var id = $('#id_instalasi').val();
+            var tgl = $('#tgl_pemakaian').val();
 
             var data = [{
                 id: id,
+                tgl_pemakaian: tgl,
                 id_cater: id_cater,
                 customer: customer,
                 awal: awal,
