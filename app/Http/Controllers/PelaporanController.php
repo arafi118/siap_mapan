@@ -133,7 +133,12 @@ class PelaporanController extends Controller
                 ['jabatan','5']
             ])->get();
 
-            $sub_laporan = [];
+            $sub_laporan = [
+                0 => [
+                    'value' => '',
+                    'title' => 'Pilih Cater'
+                ]
+            ];
 
             foreach ($caters as $ct) {
                 $sub_laporan[] = [
