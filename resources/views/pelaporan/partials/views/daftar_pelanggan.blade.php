@@ -23,6 +23,7 @@
     @php
         $no = 1;
     @endphp
+
     <table border="0" width="100%" cellspacing="0" cellpadding="0"
         style="font-size: 12px; table-layout: fixed; border-collapse: collapse;">
         <tr style="background: rgb(232, 232, 232); font-weight: bold;">
@@ -34,7 +35,7 @@
             <th width="10%" style="border: 1px solid black; padding: 5px;">Kode Instalasi</th>
             <th width="8%" style="border: 1px solid black; padding: 5px;">Status</th>
         </tr>
-        @foreach ($installations as $installation)
+        @forelse ($installations as $installation)
             <tr>
                 <td align="center" style="border: 1px solid black; padding: 5px;">{{ $no++ }}</td>
                 <td align="left" style="border: 1px solid black; padding: 5px;">{{ $installation->customer->nama }}</td>
@@ -56,6 +57,12 @@
                     @endif
                 </td>
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="7" align="center" style="border: 1px solid black; padding: 5px;">
+                    Tidak ada data pelanggan.
+                </td>
+            </tr>
+        @endforelse
     </table>
 @endsection

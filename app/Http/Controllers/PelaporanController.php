@@ -112,6 +112,7 @@ class PelaporanController extends Controller
                 ]
             ];
         }
+        
         if ($file == 'calk') {
             $tahun = request()->get('tahun');
             $bulan = request()->get('bulan');
@@ -123,6 +124,22 @@ class PelaporanController extends Controller
             $keterangan = '';
             if ($calk) {
                 $keterangan = $calk->catatan;
+            }
+        }
+
+        if ($file == 'daftar_pelanggan') {
+            $caters = User::where([
+                ['business_id', Session::get('business_id')],
+                ['jabatan','5']
+            ])->get();
+
+            $sub_laporan = [];
+
+            foreach ($caters as $ct) {
+                $sub_laporan[] = [
+                    'value' => $ct->id,
+                    'title' => $ct->nama
+                ];
             }
         }
 
@@ -167,6 +184,9 @@ class PelaporanController extends Controller
         $laporan = $request->laporan;
         if ($laporan == 'tutup_buku') {
             $laporan = $request->sub_laporan;
+        }
+        if ($laporan == 'daftar_pelanggan') {
+            $data['cater'] = $request->sub_laporan;
         }
         $data['logo'] = $busines->logo;
 
@@ -398,34 +418,48 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
-    private function daftar_pelanggan(array $data)
+    private function daftar_pelanggan(array $data) 
     {
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
-
+    
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $data['judul'] = 'Laporan Keuangan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
+    
+        $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+    
+        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
+    
         $data['installations'] = Installations::where([
             ['aktif', '<=', $data['tgl_kondisi']],
-            ['business_id', Session::get('business_id')],
-        ])->whereNotIn('status', ['B','C'])->with([
+            ['business_id', Session::get('business_id')]
+        ])
+        ->whereNotIn('status', ['B', 'C'])
+        ->with([
             'customer',
             'usage' => function ($query) use ($data) {
                 $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
             },
-        ])->get();
-        $data['title'] = 'Daftar pelanggan';
-        $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
+        ]);
+
+        if (!empty($data['cater'])) {
+            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
+        }
+
+        $data['installations'] = $data['installations']->get();
+    
+        $data['title'] = 'Daftar Pelanggan';
+            $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
+    
         return $pdf->stream();
     }
+    
+    
     private function tagihan_pelanggan(array $data)
     {
 
