@@ -196,3 +196,18 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
+/**
+ * 2025-03-24
+ * + 1 bulan = 2025-04-24
+ * ubah tanggal menjadi tanggal toleransi = 2025-04-27
+ * =======================================
+ * tgl pakai = 2025-02-24
+ * tgl akhir = 2025-03-27
+ * tgl hari ini = 2025-03-26
+ * 
+ * (tgl_akhir <= tgl hari ini)
+ * tgl akhir <= hari ini : bulan llalu
+ * 
+ */

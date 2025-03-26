@@ -962,7 +962,7 @@ class InstallationsController extends Controller
 
         $installations = Installations::where('business_id', Session::get('business_id'))->where('cater_id', $cater_id)->with([
             'oneUsage' => function ($query) use ($tanggal) {
-                $query->where('tgl_akhir', '<=', $tanggal)->orderBy('id', 'DESC');
+                $query->orderBy('id', 'DESC');
             },
             'customer.village',
             'package',
