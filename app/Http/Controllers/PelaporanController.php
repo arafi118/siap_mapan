@@ -239,7 +239,12 @@ class PelaporanController extends Controller
         $data['jabatan'] = $direktur->positions;
         $data['direktur'] = $direktur;
 
-        return $this->$laporan($data);
+        try {
+            return $this->$laporan($data);
+        } catch (\Exception $e) {
+            Log::error('Error di pelaporan/preview: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     private function cover(array $data)
