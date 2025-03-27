@@ -24,7 +24,7 @@
         @foreach ($transaksi as $trx)
             @php
 
-                if ($trx->rekening_debit) {
+                if ($trx->rekening_debit == $akun_kas->id) {
                     $ref = $trx->rek_debit->kode_akun;
                     $debit = $trx->total;
                 } else {
