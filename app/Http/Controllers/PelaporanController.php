@@ -102,7 +102,7 @@ class PelaporanController extends Controller
                 ]
             ];
         }
-        
+
         if ($file == 'calk') {
             $tahun = request()->get('tahun');
             $bulan = request()->get('bulan');
@@ -120,7 +120,7 @@ class PelaporanController extends Controller
         if ($file == 'daftar_pelanggan') {
             $caters = User::where([
                 ['business_id', Session::get('business_id')],
-                ['jabatan','5']
+                ['jabatan', '5']
             ])->get();
 
             $sub_laporan = [
@@ -137,11 +137,11 @@ class PelaporanController extends Controller
                 ];
             }
         }
-        
+
         if ($file == 'piutang_pelanggan') {
             $caters = User::where([
                 ['business_id', Session::get('business_id')],
-                ['jabatan','5']
+                ['jabatan', '5']
             ])->get();
 
             $sub_laporan = [
@@ -161,7 +161,7 @@ class PelaporanController extends Controller
         if ($file == 'tagihan_pelanggan') {
             $caters = User::where([
                 ['business_id', Session::get('business_id')],
-                ['jabatan','5']
+                ['jabatan', '5']
             ])->get();
 
             $sub_laporan = [
@@ -184,15 +184,14 @@ class PelaporanController extends Controller
 
     public function preview(Request $request, $business_id = null)
     {
-        $data = $request->only([
-            'tahun',
-            'bulan',
-            'hari',
-            'laporan',
-            'sub_laporan',
-            'type'
-        ]);
-
+        $data = [
+            'tahun' => $request->get('tahun'),
+            'bulan' => $request->get('bulan'),
+            'hari' => $request->get('hari'),
+            'laporan' => $request->get('laporan'),
+            'sub_laporan' => $request->get('sub_laporan'),
+            'type' => $request->get('type'),
+        ];
 
         $busines = Business::where('id', Session::get('business_id'))->first();
         $direktur = User::where([
@@ -217,18 +216,18 @@ class PelaporanController extends Controller
         }
 
         $data['tgl_kondisi'] = $data['tahun'] . '-' . $data['bulan'] . '-' . $data['hari'];
-        $laporan = $request->laporan;
+        $laporan = $request->get('laporan');
         if ($laporan == 'tutup_buku') {
-            $laporan = $request->sub_laporan;
+            $laporan = $request->get('sub_laporan');
         }
         if ($laporan == 'daftar_pelanggan') {
-            $data['cater'] = $request->sub_laporan;
+            $data['cater'] = $request->get('sub_laporan');
         }
         if ($laporan == 'piutang_pelanggan') {
-            $data['cater'] = $request->sub_laporan;
+            $data['cater'] = $request->get('sub_laporan');
         }
         if ($laporan == 'tagihan_pelanggan') {
-            $data['cater'] = $request->sub_laporan;
+            $data['cater'] = $request->get('sub_laporan');
         }
         $data['logo'] = $busines->logo;
 
@@ -372,7 +371,7 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
-    
+
     private function surat_pengantar(array $data)
     {
         $villages = Village::where('id', Session::get('business_id'))->first();
@@ -460,48 +459,48 @@ class PelaporanController extends Controller
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
-    private function daftar_pelanggan(array $data) 
+    private function daftar_pelanggan(array $data)
     {
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
-    
+
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $data['judul'] = 'Laporan Keuangan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
-    
+
         $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-    
+
         $data['cater'] = $data['cater'] ?? request()->input('cater', null);
-    
+
         $data['installations'] = Installations::where([
             ['aktif', '<=', $data['tgl_kondisi']],
             ['business_id', Session::get('business_id')]
         ])
-        ->whereNotIn('status', ['B', 'C'])
-        ->with([
-            'customer',
-            'usage' => function ($query) use ($data) {
-                $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
-            },
-        ]);
+            ->whereNotIn('status', ['B', 'C'])
+            ->with([
+                'customer',
+                'usage' => function ($query) use ($data) {
+                    $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
+                },
+            ]);
 
         if (!empty($data['cater'])) {
             $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
         }
 
         $data['installations'] = $data['installations']->get();
-    
+
         $data['title'] = 'Daftar Pelanggan';
-            $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
+        $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-    
+
         return $pdf->stream();
     }
-    
-    
+
+
     private function tagihan_pelanggan(array $data)
     {
 
@@ -529,7 +528,7 @@ class PelaporanController extends Controller
             'usage.transaction' => function ($query) use ($data) {
                 $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
             },
-      
+
         ]);
 
         if (!empty($data['cater'])) {
@@ -540,11 +539,11 @@ class PelaporanController extends Controller
 
         $bulan_tampil = [];
         $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
-    
+
         for ($i = 0; $i < 3; $i++) {
-            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m'); 
+            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m');
         }
-    
+
         $data['bulan_tampil'] = array_reverse($bulan_tampil);
 
         $data['title'] = 'Daftar Tagihan Pelanggan';
@@ -589,11 +588,11 @@ class PelaporanController extends Controller
 
         $bulan_tampil = [];
         $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
-    
+
         for ($i = 0; $i < 3; $i++) {
             $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m'); // Format YYYY-MM untuk handle perubahan tahun
         }
-    
+
         $data['bulan_tampil'] = array_reverse($bulan_tampil); // Urutkan agar tampil dari yang paling lama ke terbaru
 
 
@@ -1229,34 +1228,33 @@ class PelaporanController extends Controller
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
-    
+
         $title = [
             '1,2,3' => 'Januari - Maret',
             '4,5,6' => 'April - Juni',
             '7,8,9' => 'Juli - September',
             '10,11,12' => 'Oktober - Desember'
         ];
-        
+
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $data['judul'] = 'Laporan Keuangan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
-    
+
         if ($data['bulanan']) {
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['thn'] = Tanggal::tahun($tgl);
-
         }
-    
+
         $list_bulan = explode(',', $data['sub_laporan']);
         $bulan1 = $list_bulan[0];
         $bulan2 = $list_bulan[1];
         $bulan3 = $list_bulan[2];
         $bulan_komulatif = $bulan1 - 1;
-    
+
         $daftar_header = [];
-        $akun1 = AkunLevel1::where('lev1','>=', '4')->with('akun2.akun3')->get();
+        $akun1 = AkunLevel1::where('lev1', '>=', '4')->with('akun2.akun3')->get();
         foreach ($akun1 as $lev1) {
             $daftar_header[$lev1->kode_akun] = $lev1->kode_akun . '. ' . $lev1->nama_akun;
             foreach ($lev1->akun2 as $lev2) {
@@ -1310,7 +1308,7 @@ class PelaporanController extends Controller
                 ]);
             }
         ])->get();
-    
+
         $data['query_bulan_2'] = Account::where([
             ['business_id', Session::get('business_id')],
             ['lev1', '>=', 4],
@@ -1329,7 +1327,7 @@ class PelaporanController extends Controller
                 ]);
             }
         ])->get();
-    
+
         $data['query_bulan_3'] = Account::where([
             ['business_id', Session::get('business_id')],
             ['lev1', '>=', 4],
@@ -1363,22 +1361,22 @@ class PelaporanController extends Controller
             $lev2 = $query->lev1 . '.' . $query->lev2 . '.00.00';
             $lev3 = $query->lev1 . '.' . $query->lev2 . '.' . str_pad($query->lev3, 2, '0', STR_PAD_LEFT) . '.00';
 
-             if (!in_array($lev1, $akun1)) {
-                 $akun1[] = $lev1;
-                 $data_e_budgeting[] = [
-                     'nama' => $daftar_header[$lev1],
-                     'is_header' => true
-                 ];
-             }
-            
-             if (!in_array($lev2, $akun2)) {
-                 $akun2[] = $lev2;
-                 $data_e_budgeting[] = [
-                     'nama' => $daftar_header[$lev2],
-                     'is_header' => true
-                 ];
-             }
-            
+            if (!in_array($lev1, $akun1)) {
+                $akun1[] = $lev1;
+                $data_e_budgeting[] = [
+                    'nama' => $daftar_header[$lev1],
+                    'is_header' => true
+                ];
+            }
+
+            if (!in_array($lev2, $akun2)) {
+                $akun2[] = $lev2;
+                $data_e_budgeting[] = [
+                    'nama' => $daftar_header[$lev2],
+                    'is_header' => true
+                ];
+            }
+
             // if (!in_array($lev3, $akun3)) {
             //     $akun3[] = $lev3;
             //     $data_e_budgeting[] = [
@@ -1395,25 +1393,25 @@ class PelaporanController extends Controller
             $data_e_budgeting[] = [
                 'nama' => $query->kode_akun . '. ' . $query->nama_akun,
                 'komulatif' => $saldo_komulatif,
-                'rencana1' => ($bulan1->eb) ? $bulan1->eb->jumlah:0,
+                'rencana1' => ($bulan1->eb) ? $bulan1->eb->jumlah : 0,
                 'realisasi1' => $saldo_bulan_1,
-                'rencana2' => ($bulan2->eb) ? $bulan2->eb->jumlah:0,
+                'rencana2' => ($bulan2->eb) ? $bulan2->eb->jumlah : 0,
                 'realisasi2' => $saldo_bulan_2 - $saldo_bulan_1,
-                'rencana3' => ($bulan3->eb) ? $bulan3->eb->jumlah:0,
+                'rencana3' => ($bulan3->eb) ? $bulan3->eb->jumlah : 0,
                 'realisasi3' => $saldo_bulan_3 - $saldo_bulan_2 - $saldo_bulan_1,
                 'total' => $saldo_komulatif + $saldo_bulan_3,
                 'is_header' => false
             ];
         }
-        
+
         $data['e_budgeting'] = $data_e_budgeting;
         $data['title'] = 'E - Budgeting';
-    
+
         $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-    
+
         return $pdf->stream();
-    } 
+    }
 
     public function simpanSaldo($tahun, $bulan = 1)
     {

@@ -189,7 +189,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
 
     //pelaporan
     Route::get('/pelaporan', [PelaporanController::class, 'index']);
-    Route::post('/pelaporan/preview', [PelaporanController::class, 'preview']);
+    Route::get('/pelaporan/preview', [PelaporanController::class, 'preview']);
     Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan']);
     Route::get('/pelaporan/simpan_saldo/{tahun}/{bulan?}', [PelaporanController::class, 'simpanSaldo']);
 

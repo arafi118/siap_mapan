@@ -9,9 +9,8 @@
 
         <div class="main-card mb-3 card">
             <div class="card-body">
-                <form action="/pelaporan/preview" class="needs-validation" novalidate method="post" id="FormPelaporan"
+                <form action="/pelaporan/preview" class="needs-validation" novalidate method="GET" id="FormPelaporan"
                     target="_blank">
-                    @csrf
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <div class="form-group">
