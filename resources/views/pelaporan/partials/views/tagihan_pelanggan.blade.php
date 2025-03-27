@@ -27,11 +27,11 @@
         <tr style="background-color: rgb(230, 230, 230); font-weight: bold;">
             <th style="border: 1px solid black; padding: 5px;" width="3%" rowspan="3">No</th>
             <th style="border: 1px solid black; padding: 5px;" width="10%" rowspan="3">Nama</th>
-            <th style="border: 1px solid black; padding: 5px;" width="10%" rowspan="3">No. Induk</th>
+            <th style="border: 1px solid black; padding: 5px;" width="6%" rowspan="3">No. Induk</th>
             <th style="border: 1px solid black; padding: 5px;" width="8%" colspan="{{ count($bulan_tampil) }}">Tunggakan
             </th>
-            <th style="border: 1px solid black; padding: 5px;" width="8%" rowspan="3">Dibayar</th>
-            <th style="border: 1px solid black; padding: 5px;" width="8%" rowspan="3">Kategori</th>
+            <th style="border: 1px solid black; padding: 5px;" width="5%" rowspan="3">Dibayar</th>
+            <th style="border: 1px solid black; padding: 5px;" width="6%" rowspan="3">mrnunggak2</th>
         </tr>
         <tr style="background: rgb(230, 230, 230); font-weight: bold;">
             <th class="t l b" width="6%">s/d 3 Bulan Lalu</th>
@@ -55,6 +55,7 @@
             $data_desa = [];
             $totalMenunggakPerBulan = [];
             $totalDibayarKeseluruhan = 0; // Tambahkan variabel untuk total dibayar
+            $cek_bulan = [];
         @endphp
 
         @foreach ($installations as $installation)
@@ -81,40 +82,62 @@
                 </th>
 
                 @php
+                    $nomor = 1;
                     $data_menunggak = [];
-                    $dibayarPelanggan = 0; // Menyimpan total pembayaran per pelanggan
+                    $tunggakan_tampil = [];
                     foreach ($installation->usage as $usage) {
                         $beban = $installation->abodemen;
                         $denda = intval($installation->package->denda);
                         $dibayar = $usage->transaction->sum('total');
                         $tagihan = $usage->nominal;
-                        $menunggak = $usage->status == 'UNPAID' ? $beban + $denda + $tagihan : 0;
-
-                        $bulan = Carbon::parse($usage->tgl_akhir)->format('Y-m');
-                        if ($menunggak > 0) {
-                            if (!isset($totalMenunggakPerBulan[$bulan])) {
-                                $totalMenunggakPerBulan[$bulan] = 0;
-                            }
-                            $totalMenunggakPerBulan[$bulan] += $menunggak;
+                        $menunggak = $beban + $denda + $tagihan;
+                        if (date('m', strtotime($usage->tgl_akhir)) < date('m', strtotime($tgl_kondisi))) {
+                            $menunggak = 0;
                         }
 
-                        $data_menunggak[$bulan] = $menunggak;
-                        $dibayarPelanggan += $dibayar; // Akumulasi pembayaran per pelanggan
-                    }
-                    $totalDibayarKeseluruhan += $dibayarPelanggan; // Akumulasi semua pembayaran
-                @endphp
+                        $toleransi = $usage->tgl_akhir;
+                        if ($toleransi >= $tgl_kondisi) {
+                            $menunggak = 0;
+                        }
 
+                        if ($nomor > 1) {
+                            $data_menunggak[$nomor] = $menunggak + $data_menunggak[$nomor - 1];
+                        } else {
+                            $data_menunggak[$nomor] = $menunggak;
+                        }
+
+                        $bulan = Carbon::parse($usage->tgl_akhir)->format('Y-m');
+                        if (in_array($bulan, $bulan_tampil)) {
+                            $tunggakan_tampil[$bulan] = $data_menunggak[$nomor];
+                        }
+
+                        $nomor++;
+                    }
+                @endphp
                 @foreach ($bulan_tampil as $bt)
                     @php
+                        $tunggakan = 0;
+                        $dibayarPerBulan = 0;
                         $bulan = Carbon::parse($bt)->format('Y-m');
+                        $tunggakan = isset($tunggakan_tampil[$bt]) ? $tunggakan_tampil[$bt] : 0;
+                        $dibayarPerBulan = isset($dibayar_tampil[$bt]) ? $dibayar_tampil[$bt] : 0; // Ambil data dibayar
+
+                        if (in_array($bt, $cek_bulan)) {
+                            $totalMenunggakPerBulan[$bt] += $tunggakan;
+                            $totalDibayarPerBulan[$bt] += $dibayarPerBulan;
+                        } else {
+                            $totalMenunggakPerBulan[$bt] = $tunggakan;
+                            $totalDibayarPerBulan[$bt] = $dibayarPerBulan;
+                            $cek_bulan[$bt] = $bt;
+                        }
                     @endphp
                     <th style="border: 1px solid black; padding: 5px; font-weight: normal" align="right">
-                        {{ isset($data_menunggak[$bulan]) ? number_format($data_menunggak[$bulan], 2) : number_format(0, 2) }}
+                        {{ number_format($tunggakan, 0, ',', '.') . ',-' }}
                     </th>
                 @endforeach
 
                 <th style="border: 1px solid black; padding: 5px; font-weight: normal;" align="right">
-                    {{ number_format($dibayar, 2) }}
+                    {{ number_format($dibayar, 0, ',', '.') . ',-' }}
                 </th>
                 <th style="border: 1px solid black; padding: 5px; font-weight: normal;" align="center">
                     {{ $installation->status_tunggakan }}
@@ -129,7 +152,7 @@
                     $bulan = Carbon::parse($bt)->format('Y-m');
                 @endphp
                 <th style="border: 1px solid black; padding: 5px;" align="right">
-                    {{ isset($totalMenunggakPerBulan[$bulan]) ? number_format($totalMenunggakPerBulan[$bulan], 2) : number_format(0, 2) }}
+                    {{ isset($totalMenunggakPerBulan[$bulan]) ? number_format($totalMenunggakPerBulan[$bulan], 0, ',', '.') . ',-' : '0,-' }}
                 </th>
             @endforeach
 

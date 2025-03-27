@@ -126,12 +126,12 @@
                         }
                     @endphp
                     <th style="border: 1px solid black; padding: 5px; font-weight: normal" align="right">
-                        {{ number_format($tunggakan, 2) }}
+                        {{ number_format($tunggakan, 0, ',', '.') . ',-' }}
                     </th>
                 @endforeach
 
                 <th style="border: 1px solid black; padding: 5px; font-weight: normal;" align="right">
-                    {{ number_format($dibayar, 2) }}
+                    {{ number_format($dibayar, 0, ',', '.') . ',-' }}
                 </th>
                 <th style="border: 1px solid black; padding: 5px; font-weight: normal;" align="center">
                     {{ $installation->status_tunggakan }}
@@ -146,7 +146,7 @@
                     $bulan = Carbon::parse($bt)->format('Y-m');
                 @endphp
                 <th style="border: 1px solid black; padding: 5px;" align="right">
-                    {{ isset($totalMenunggakPerBulan[$bulan]) ? number_format($totalMenunggakPerBulan[$bulan], 2) : number_format(0, 2) }}
+                    {{ isset($totalMenunggakPerBulan[$bulan]) ? number_format($totalMenunggakPerBulan[$bulan], 0, ',', '.') . ',-' : '0,-' }}
                 </th>
             @endforeach
             <th style="border: 1px solid black; padding: 5px;" align="right">

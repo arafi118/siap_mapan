@@ -544,19 +544,13 @@ class AuthController extends Controller
                 $cater_id = $instalasi['cater_id'];
                 $paket_id = $instalasi['package_id'];
 
-                for ($i = 11; $i < count($pemakaian); $i++) {
+                for ($i = 12; $i < count($pemakaian); $i++) {
                     $tanggal = Date::excelToDateTimeObject($pemakaian[10])->format('Y-m-d');
                     $thn = explode('-', $tanggal)[0];
                     $bln = $bulan[$i];
                     $hari = explode('-', $tanggal)[2];
 
                     $awal = $pemakaian[$i - 1];
-                    if ($i == 11) {
-                        $awal = 0;
-
-                        $thn = $thn - 1;
-                        $bln = 12;
-                    }
                     $akhir = $pemakaian[$i];
 
                     $nominal = 0;
@@ -570,7 +564,7 @@ class AuthController extends Controller
                         };
                     }
 
-                    $tgl_akhir = $thn . '-' . $bln . '-' . $hari;
+                    $tgl_pemakaian = $thn . '-' . $bln . '-' . $hari;
                     $data_pemakaian[] = [
                         'business_id' => $business_id,
                         'id_instalasi' => $id_instalasi,
@@ -579,9 +573,10 @@ class AuthController extends Controller
                         'akhir' => $akhir,
                         'jumlah' => $akhir - $awal,
                         'nominal' => $nominal,
-                        'tgl_akhir' => $tgl_akhir,
+                        'tgl_pemakaian' => $tgl_pemakaian,
+                        'tgl_akhir' => date('Y-m', strtotime('+1 month', strtotime($tgl_pemakaian))) . '-27',
                         'cater' => $cater_id,
-                        'status' => 'UNPAID'
+                        'status' => 'PAID'
                     ];
                 }
             }
@@ -642,38 +637,33 @@ class AuthController extends Controller
         $businessId = Session::get('business_id');
 
         $accounts = Account::where('business_id', $businessId)
-            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.03'])
+            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.02', '4.1.01.03'])
             ->get()
             ->keyBy('kode_akun');
 
         $kode_kas = $accounts['1.1.01.01'] ?? null;
-        $kode_instalasi = $accounts['4.1.01.01'] ?? null;
+        $kode_abodemen = $accounts['4.1.01.02'] ?? null;
         $kode_tagihan = $accounts['4.1.01.03'] ?? null;
 
-        $data_instalasi = [];
         $data_transaksi = [];
         $created_at = date('Y-m-d H:i:s');
         $usages = Usage::where('business_id', $businessId)->with('customers', 'installation')->get();
         foreach ($usages as $usage) {
-            if (!in_array($usage->id_instalasi, $data_instalasi)) {
-                $data_instalasi[] = $usage->id_instalasi;
-
-                $data_transaksi[] = [
-                    'business_id' => $businessId,
-                    'tgl_transaksi' => $usage->installation->order,
-                    'rekening_debit' => $kode_kas->id,
-                    'rekening_kredit' => $kode_instalasi->id,
-                    'user_id' => '1',
-                    'usage_id' => '0',
-                    'installation_id' => $usage->installation->id,
-                    'total' => $usage->installation->biaya_instalasi,
-                    'denda' => '0',
-                    'relasi' => $usage->customers->nama,
-                    'keterangan' => 'Pembayaran Biaya Instalasi Atas Nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
-                    'urutan' => '0',
-                    'created_at' => $created_at
-                ];
-            }
+            $data_transaksi[] = [
+                'business_id' => $businessId,
+                'tgl_transaksi' => $usage->tgl_akhir,
+                'rekening_debit' => $kode_kas->id,
+                'rekening_kredit' => $kode_abodemen->id,
+                'user_id' => '1',
+                'usage_id' => $usage->id,
+                'installation_id' => $usage->id_instalasi,
+                'total' => $usage->installation->abodemen,
+                'denda' => '0',
+                'relasi' => $usage->customers->nama,
+                'keterangan' => 'Pembayaran Abodemen Pemakaian Atas Nama ' . $usage->customers->nama . ' (' . $usage->installation->id . ')',
+                'urutan' => '0',
+                'created_at' => $created_at
+            ];
 
             $data_transaksi[] = [
                 'business_id' => $businessId,
@@ -698,9 +688,6 @@ class AuthController extends Controller
             DB::table('transactions')->insert($chunk->toArray());
         });
         DB::statement('SET @DISABLE_TRIGGER = 0');
-        Usage::where('business_id', Session::get('business_id'))->update([
-            'status' => 'PAID'
-        ]);
 
         return response()->json([
             'success' => true,
@@ -710,117 +697,6 @@ class AuthController extends Controller
             'open_tab' => false,
             'finish' => false
         ]);
-    }
-
-    public function migrasi_transaksi_instalasi()
-    {
-        $businessId = Session::get('business_id');
-
-        $accounts = Account::where('business_id', $businessId)
-            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.03'])
-            ->get()
-            ->keyBy('kode_akun');
-
-        $kode_kas = $accounts['1.1.01.01'] ?? null;
-        $kode_instalasi = $accounts['4.1.01.01'] ?? null;
-        $kode_tagihan = $accounts['4.1.01.03'] ?? null;
-
-        $data_trx_instalasi = [];
-        $created_at = date('Y-m-d H:i:s');
-        $instalasi = Installations::where('business_id', $businessId)->with('customer')->get();
-        foreach ($instalasi as $instal) {
-            $data_trx_instalasi[] = [
-                'business_id' => $businessId,
-                'tgl_transaksi' => $instal->order,
-                'rekening_debit' => $kode_kas->id,
-                'rekening_kredit' => $kode_instalasi->id,
-                'user_id' => '1',
-                'usage_id' => '0',
-                'installation_id' => $instal->id,
-                'total' => $instal->biaya_instalasi,
-                'denda' => '0',
-                'relasi' => $instal->customer->nama,
-                'keterangan' => 'Pembayaran Biaya Instalasi Atas Nama ' . $instal->customer->nama . ' (' . $instal->id . ')',
-                'urutan' => '0',
-                'created_at' => $created_at
-            ];
-        }
-
-        Transaction::where('created_at', $created_at)->delete();
-        collect($data_trx_instalasi)->chunk(500)->each(function ($chunk) {
-            DB::table('transactions')->insert($chunk->toArray());
-        });
-
-        return response()->json([
-            'success' => true,
-            'time' => date('Y-m-d H:i:s'),
-            'msg' => 'Migrasi transaksi instalasi selesai',
-            'next' => '/migrasi/transaksi_pemakaian',
-            'open_tab' => true,
-            'finish' => false
-        ]);
-    }
-
-    public function migrasi_transaksi_pemakaian($page = 0)
-    {
-        $businessId = Session::get('business_id');
-
-        $accounts = Account::where('business_id', $businessId)
-            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.01', '4.1.01.03'])
-            ->get()
-            ->keyBy('kode_akun');
-
-        $kode_kas = $accounts['1.1.01.01'] ?? null;
-        $kode_instalasi = $accounts['4.1.01.01'] ?? null;
-        $kode_tagihan = $accounts['4.1.01.03'] ?? null;
-
-        $limit = 500;
-        $start = $page * $limit;
-
-        $data_trx_pemakaian = [];
-        $created_at = date('Y-m-d H:i:s');
-        $usages = Usage::where('business_id', $businessId)->with('customers')->offset($start)->limit($limit)->get();
-        foreach ($usages as $usage) {
-            $data_trx_pemakaian[] = [
-                'business_id' => $businessId,
-                'tgl_transaksi' => $usage->tgl_akhir,
-                'rekening_debit' => $kode_kas->id,
-                'rekening_kredit' => $kode_tagihan->id,
-                'user_id' => '1',
-                'usage_id' => $usage->id,
-                'installation_id' => $usage->id_instalasi,
-                'total' => $usage->nominal,
-                'denda' => '0',
-                'relasi' => $usage->customers->nama,
-                'keterangan' => 'Pembayaran Tagihan Bulanan Atas Nama ' . $usage->customers->nama . ' (' . $usage->installation->id . ')',
-                'urutan' => '0',
-                'created_at' => $created_at
-            ];
-        }
-
-        if (count($usages) > 0) {
-            Transaction::where('created_at', $created_at)->delete();
-            Transaction::insert($data_trx_pemakaian);
-
-            $link = '/migrasi/transaksi_pemakaian/' . ($page + 1);
-            echo '<a href="' . $link . '" id="next"></a><script>document.querySelector("#next").click()</script>';
-            exit;
-        }
-
-        Usage::where('business_id', Session::get('business_id'))->update([
-            'status' => 'PAID'
-        ]);
-
-        $response = [
-            'success' => true,
-            'time' => date('Y-m-d H:i:s'),
-            'msg' => 'Migrasi transaksi pemakaian selesai',
-            'next' => '/migrasi/sync'
-        ];
-
-        $response = json_encode($response);
-        echo '<script>window.opener.postMessage(' . $response . ', "*"); window.close();</script>';
-        exit;
     }
 
     public function migrasi_sync()
