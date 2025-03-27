@@ -1336,6 +1336,11 @@ class TransactionController extends Controller
         $data['rek_debit'] = $request->rek_debit;
         $data['rek_kredit'] = $request->rek_kredit;
 
+        $data['akun_kas'] = Account::where([
+            ['business_id', Session::get('business_id')],
+            ['kode_akun', '1.1.01.01']
+        ])->first();
+
         $data['judul'] = 'Detail Transaksi';
         $data['sub_judul'] = 'Tagihan Bulanan';
         $data['transaksi'] = Transaction::where(function ($query) use ($data) {
