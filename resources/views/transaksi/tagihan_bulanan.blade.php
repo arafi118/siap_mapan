@@ -169,6 +169,8 @@
                             icon: "success",
                             draggable: true
                         });
+
+                        formTagihanBulanan(result.installation)
                         window.open('/transactions/dokumen/struk_tagihan/' + result.transaction_id)
                     }
                 },
@@ -247,34 +249,40 @@
         }
 
         //form input denda
-        $(document).on('change', '#tgl_transaksi', function() {
-            var tglTransaksi = $('#tgl_transaksi').val();
-            var tglAkhir = $('#tgl_akhir').val();
-            var denda = $('#denda').val();
+        $(document).on('change', '.tgl_transaksi', function() {
+            var tglTransaksi = $(this).val();
 
-            var tanggal = tglTransaksi.split('/')
-            var bulan = tanggal[1]
-            var tgl = tanggal[0]
+            var id = $(this).attr('data-id');
+            var tglAkhir = new Date($('#tgl-akhir-' + id).val()).getTime();
+            var denda = $('#denda-' + id).val();
 
-            if (tglAkhir - bulan < 1 && tgl > 26) {
+            let tgl = tglTransaksi.split('/');
+            let hari = tgl[0];
+            let bulan = tgl[1];
+            let tahun = tgl[2];
+
+            var tanggal = new Date(`${tahun}-${bulan}-${hari}`).getTime();
+            if (tanggal >= tglAkhir) {
                 denda = denda;
             } else {
                 denda = 0;
             }
 
             var denda_tagihan = numFormat.format(Math.abs(denda))
-            var abodemen = cleanNumber($("#abodemen_bulanan").val());
-            var tagihan = cleanNumber($("#tagihan").val());
+            var abodemen = cleanNumber($("#abodemen-bulanan-" + id).val());
+            var tagihan = cleanNumber($("#tagihan-" + id).val());
             var denda = cleanNumber(denda_tagihan);
 
-            $("#denda_bulanan").val(denda_tagihan);
-            $('#pembayaran').val(numFormat.format(Math.abs(denda + abodemen + tagihan)))
+            $("#denda-bulanan-" + id).val(denda_tagihan);
+            $('#pembayaran-' + id).val(numFormat.format(Math.abs(denda + abodemen + tagihan)))
         })
 
         $(document).on('change', '.perhitungan', function() {
             var jumlah = cleanNumber($(this).val());
-            var tagihan = cleanNumber($("#tagihan").val());
-            var pembayaran = cleanNumber($("#pembayaran").val());
+
+            var id = $(this).attr('data-id');
+            var tagihan = cleanNumber($("#tagihan-" + id).val());
+            var pembayaran = cleanNumber($("#pembayaran-" + id).val());
 
             if (pembayaran > tagihan) {
                 Swal.fire({
@@ -283,7 +291,7 @@
                     text: 'Pembayaran tidak boleh melebihi tagihan.',
                     confirmButtonText: 'Coba lagi'
                 });
-                $('#pembayaran').val('');
+                $('#pembayaran-' + id).val('');
                 return;
             }
         });
