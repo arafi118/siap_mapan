@@ -239,7 +239,7 @@ class PelaporanController extends Controller
         $data['alamat'] = $busines->alamat;
         $data['jabatan'] = $direktur->positions;
         $data['direktur'] = $direktur;
-        
+
 
         try {
             return $this->$laporan($data);
@@ -426,15 +426,18 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        // SELECT * FROM transactions WHERE tgl_transaksi LIKE '2025-01%';
         $data['transactions'] = Transaction::where('tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%')
             ->with([
                 'acc_debit',
                 'acc_kredit',
-            ])->get();
+            ])->cursor();
 
         $data['title'] = 'Jurnal Transaksi';
+
+        ob_start();
         $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
+        ob_get_clean();
+
         $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
