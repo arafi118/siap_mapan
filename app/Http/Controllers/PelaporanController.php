@@ -78,16 +78,6 @@ class PelaporanController extends Controller
             ];
         }
 
-        if ($file == 'piutang_pelanggan') {
-            $laporan_pinj = JenisLaporanPinjaman::all();
-            foreach ($laporan_pinj as $lp) {
-                $sub_laporan[] = [
-                    'value' => $lp->file,
-                    'title' => $lp->nama_laporan
-                ];
-            }
-        }
-
         if ($file == 'tutup_buku') {
             $sub_laporan = [
                 0 => [
@@ -128,6 +118,47 @@ class PelaporanController extends Controller
         }
 
         if ($file == 'daftar_pelanggan') {
+            $caters = User::where([
+                ['business_id', Session::get('business_id')],
+                ['jabatan','5']
+            ])->get();
+
+            $sub_laporan = [
+                0 => [
+                    'value' => '',
+                    'title' => 'Pilih Cater'
+                ]
+            ];
+
+            foreach ($caters as $ct) {
+                $sub_laporan[] = [
+                    'value' => $ct->id,
+                    'title' => $ct->nama
+                ];
+            }
+        }
+        
+        if ($file == 'piutang_pelanggan') {
+            $caters = User::where([
+                ['business_id', Session::get('business_id')],
+                ['jabatan','5']
+            ])->get();
+
+            $sub_laporan = [
+                0 => [
+                    'value' => '',
+                    'title' => 'Pilih Cater'
+                ]
+            ];
+
+            foreach ($caters as $ct) {
+                $sub_laporan[] = [
+                    'value' => $ct->id,
+                    'title' => $ct->nama
+                ];
+            }
+        }
+        if ($file == 'tagihan_pelanggan') {
             $caters = User::where([
                 ['business_id', Session::get('business_id')],
                 ['jabatan','5']
@@ -191,6 +222,12 @@ class PelaporanController extends Controller
             $laporan = $request->sub_laporan;
         }
         if ($laporan == 'daftar_pelanggan') {
+            $data['cater'] = $request->sub_laporan;
+        }
+        if ($laporan == 'piutang_pelanggan') {
+            $data['cater'] = $request->sub_laporan;
+        }
+        if ($laporan == 'tagihan_pelanggan') {
             $data['cater'] = $request->sub_laporan;
         }
         $data['logo'] = $busines->logo;
@@ -476,6 +513,7 @@ class PelaporanController extends Controller
         $data['judul'] = 'Laporan Keuangan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
+        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
         if ($data['bulanan']) {
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
@@ -491,7 +529,14 @@ class PelaporanController extends Controller
             'usage.transaction' => function ($query) use ($data) {
                 $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
             },
-        ])->get();
+      
+        ]);
+
+        if (!empty($data['cater'])) {
+            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
+        }
+
+        $data['installations'] = $data['installations']->get();
 
         $bulan_tampil = [];
         $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
@@ -518,6 +563,8 @@ class PelaporanController extends Controller
         $data['judul'] = 'Laporan Keuangan';
         $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::tahun($tgl);
+        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
+
         if ($data['bulanan']) {
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
@@ -532,7 +579,13 @@ class PelaporanController extends Controller
             'usage.transaction' => function ($query) use ($data) {
                 $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
             },
-        ])->get();
+        ]);
+
+        if (!empty($data['cater'])) {
+            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
+        }
+
+        $data['installations'] = $data['installations']->get();
 
         $bulan_tampil = [];
         $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
