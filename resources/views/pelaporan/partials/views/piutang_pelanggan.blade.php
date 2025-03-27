@@ -88,7 +88,7 @@
                         $tagihan = $usage->nominal;
                         $menunggak = $usage->status == 'UNPAID' ? $beban + $denda + $tagihan : 0;
 
-                        $toleransi = date('Y-m-d', strtotime('+1 month', strtotime($usage->tgl_akhir)));
+                        $toleransi = $usage->tgl_akhir;
                         $laporan_dibuka = date('Y-m', strtotime($tgl_kondisi)) . '-27';
                         if ($toleransi >= $laporan_dibuka) {
                             $menunggak = 0;
@@ -100,7 +100,7 @@
                             $data_menunggak[$nomor] = $menunggak;
                         }
 
-                        $bulan = Carbon::parse($usage->tgl_akhir)->format('Y-m');
+                        $bulan = Carbon::parse($usage->tgl_pemakaian)->format('Y-m');
                         if (in_array($bulan, $bulan_tampil)) {
                             $tunggakan_tampil[$bulan] = $data_menunggak[$nomor];
                         }
