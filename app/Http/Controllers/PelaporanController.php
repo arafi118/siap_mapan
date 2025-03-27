@@ -480,7 +480,7 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->where('status_tunggakan', '!=', 'lancar')->with([
+        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
             'customer',
             'village',
             'settings',

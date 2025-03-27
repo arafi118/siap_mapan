@@ -36,7 +36,7 @@
                     data-target="#Body-{{ $nomor }}" aria-expanded="true"
                     aria-controls="Body-{{ $nomor }}">
                     Tagihan Bulan
-                    {{ Tanggal::namaBulan(date('Y-m-d', strtotime('+1 month', strtotime($usage->tgl_akhir)))) }}
+                    {{ Tanggal::namaBulan($usage->tgl_akhir) }}
                 </h5>
             </div>
 
