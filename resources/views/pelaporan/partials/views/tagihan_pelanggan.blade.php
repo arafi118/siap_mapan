@@ -91,13 +91,12 @@
                         $dibayar = $usage->transaction->sum('total');
                         $tagihan = $usage->nominal;
                         $menunggak = $beban + $denda + $tagihan;
+                        if (date('m', strtotime($usage->tgl_akhir)) < date('m', strtotime($tgl_kondisi))) {
+                            $menunggak = 0;
+                        }
 
                         $toleransi = $usage->tgl_akhir;
-                        $laporan_dibuka = date('Y-m', strtotime($tgl_kondisi)) . '-27';
-                        if (
-                            $toleransi >= $laporan_dibuka &&
-                            date('m', strtotime($toleransi)) != date('m', strtotime($tgl_kondisi))
-                        ) {
+                        if ($toleransi >= $tgl_kondisi) {
                             $menunggak = 0;
                         }
 
@@ -107,7 +106,7 @@
                             $data_menunggak[$nomor] = $menunggak;
                         }
 
-                        $bulan = Carbon::parse($usage->tgl_pemakaian)->format('Y-m');
+                        $bulan = Carbon::parse($usage->tgl_akhir)->format('Y-m');
                         if (in_array($bulan, $bulan_tampil)) {
                             $tunggakan_tampil[$bulan] = $data_menunggak[$nomor];
                         }
