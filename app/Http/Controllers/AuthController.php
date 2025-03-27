@@ -544,19 +544,13 @@ class AuthController extends Controller
                 $cater_id = $instalasi['cater_id'];
                 $paket_id = $instalasi['package_id'];
 
-                for ($i = 11; $i < count($pemakaian); $i++) {
+                for ($i = 12; $i < count($pemakaian); $i++) {
                     $tanggal = Date::excelToDateTimeObject($pemakaian[10])->format('Y-m-d');
                     $thn = explode('-', $tanggal)[0];
                     $bln = $bulan[$i];
                     $hari = explode('-', $tanggal)[2];
 
                     $awal = $pemakaian[$i - 1];
-                    if ($i == 11) {
-                        $awal = 0;
-
-                        $thn = $thn - 1;
-                        $bln = 12;
-                    }
                     $akhir = $pemakaian[$i];
 
                     $nominal = 0;
