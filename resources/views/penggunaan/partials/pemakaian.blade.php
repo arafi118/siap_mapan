@@ -73,7 +73,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="akhir">Akhir Pemakaian</label>
-                                <input type="text" class="form-control input-nilai-akhir" name="akhir_"
+                                <input type="text" class="form-control AkhirUsage input-nilai-akhir" name="akhir_"
                                     id="akhir_" placeholder="Akhir Pemakaian">
                             </div>
                         </div>
