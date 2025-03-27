@@ -254,7 +254,7 @@
                 var colorClass = 'text-danger';
                 if (tgl_akhir <= tgl_hariini) {
                     colorClass = 'text-warning';
-                    hasildata = 0;
+                    hasildata = nilai_awal;
                     jumlahN = 0;
                 }
 
@@ -391,6 +391,10 @@
                         setTimeout(() => {
                             $('#caters').val(id_user).change()
                         }, 500);
+
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
                     }
                 },
             })
