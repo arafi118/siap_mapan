@@ -426,11 +426,13 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        $data['transactions'] = Transaction::where('tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%')
-            ->with([
-                'acc_debit',
-                'acc_kredit',
-            ])->cursor();
+        $data['transactions'] = Transaction::where([
+            ['tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%'],
+            ['business_id', Session::get('business_id')]
+        ])->with([
+            'acc_debit',
+            'acc_kredit',
+        ])->lazy();
 
         $data['title'] = 'Jurnal Transaksi';
 
