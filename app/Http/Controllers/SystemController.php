@@ -50,8 +50,6 @@ class SystemController extends Controller
             $abodemen = $ins->abodemen;
             $denda = $ins->package->denda;
             foreach ($ins->usage as $usage) {
-                $tgl_toleransi = date('Y-m', strtotime('+1 month', strtotime($usage->tgl_akhir))) . '-' . $batas_toleransi;
-
                 $jumlah_pembayaran = 0;
                 foreach ($usage->transaction as $trx) {
                     if ($trx->rekening_kredit == $kode_pemakaian->id) {
@@ -59,7 +57,7 @@ class SystemController extends Controller
                     }
                 }
 
-                if ($tgl_toleransi <= $date && $jumlah_pembayaran < $usage->nominal) {
+                if ($usage->tgl_akhir <= $date && $jumlah_pembayaran < $usage->nominal) {
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
                         'tgl_transaksi' => $date,
@@ -117,7 +115,7 @@ class SystemController extends Controller
         // Transaction::insert($trx_tunggakan);
         // DB::statement('SET @DISABLE_TRIGGER = 0');
 
-        // $this->saldo(date('Y', $waktu), date('m', $waktu), $kode_piutang->id, $kode_abodemen->id, $kode_pemakaian->id, $kode_denda->id);
+        $this->saldo(date('Y', $waktu), date('m', $waktu), $kode_piutang->id, $kode_abodemen->id, $kode_pemakaian->id, $kode_denda->id);
         echo '<script>window.close()</script>';
         exit;
     }
