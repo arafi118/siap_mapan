@@ -93,7 +93,7 @@
 
                         $toleransi = $usage->tgl_akhir;
                         $laporan_dibuka = date('Y-m', strtotime($tgl_kondisi)) . '-27';
-                        if ($toleransi >= $laporan_dibuka) {
+                        if ($toleransi >= $laporan_dibuka && date('m', strtotime($toleransi)) != date('m',strtotime($tgl_kondisi))) {
                             $menunggak = 0;
                         }
 
