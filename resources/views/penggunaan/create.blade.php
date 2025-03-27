@@ -255,11 +255,13 @@
                 if (tgl_akhir <= tgl_hariini) {
                     colorClass = 'text-warning';
                     hasildata = 0;
+                    jumlahN = 0;
                 }
 
                 if (tgl_pemakaian >= tgl_hariini) {
                     colorClass = 'text-success';
                     hasildata = nilai_akhir;
+                    jumlahN = nilai_jumlah;
                 }
                 //endset
 
@@ -269,7 +271,7 @@
                 <td align="center">${item.kode_instalasi}</td>    
                 <td align="right"><b>${nilai_awal}</b></td> 
                 <td align="right" class="${colorClass}"><b>${hasildata}</b></td> 
-                <td align="right">${nilai_jumlah}</td> 
+                <td align="right">${jumlahN}</td> 
             </tr>
         `);
             });
