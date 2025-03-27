@@ -91,6 +91,9 @@
                         $dibayar = $usage->transaction->sum('total');
                         $tagihan = $usage->nominal;
                         $menunggak = $beban + $denda + $tagihan;
+                        if (date('m', strtotime($usage->tgl_akhir)) < date('m', strtotime($tgl_kondisi))) {
+                            $menunggak = 0;
+                        }
 
                         $toleransi = $usage->tgl_akhir;
                         if ($toleransi >= $tgl_kondisi) {
