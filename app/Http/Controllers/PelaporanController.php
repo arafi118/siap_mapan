@@ -229,6 +229,7 @@ class PelaporanController extends Controller
         if ($laporan == 'tagihan_pelanggan') {
             $data['cater'] = $request->get('sub_laporan');
         }
+
         $data['logo'] = $busines->logo;
 
         $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $busines->nomor_bh;
@@ -238,6 +239,7 @@ class PelaporanController extends Controller
         $data['alamat'] = $busines->alamat;
         $data['jabatan'] = $direktur->positions;
         $data['direktur'] = $direktur;
+        
 
         try {
             return $this->$laporan($data);
@@ -539,7 +541,6 @@ class PelaporanController extends Controller
         if (!empty($data['cater'])) {
             $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
         }
-
         $data['installations'] = $data['installations']->get();
 
         $bulan_tampil = [];
