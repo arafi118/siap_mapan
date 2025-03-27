@@ -78,7 +78,7 @@
                             </div>
                         </div>
                     </div>
-                    <p>Data Sudah di Input, Untuk Pengeditan Data Bisa Request Ke <b>Direktur</b> ! </p>
+                    {{-- <p>Data Sudah di Input, Untuk Pengeditan Data Bisa Request Ke <b>Direktur</b> ! </p> --}}
 
                     <input type="hidden" id="tgl_akhir" class="TglAkhirUsage">
                     <input type="hidden" id="tgl_pemakaian" class="PemakaianUsage">
