@@ -637,17 +637,34 @@ class AuthController extends Controller
         $businessId = Session::get('business_id');
 
         $accounts = Account::where('business_id', $businessId)
-            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.03'])
+            ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.02', '4.1.01.03'])
             ->get()
             ->keyBy('kode_akun');
 
         $kode_kas = $accounts['1.1.01.01'] ?? null;
+        $kode_abodemen = $accounts['4.1.01.02'] ?? null;
         $kode_tagihan = $accounts['4.1.01.03'] ?? null;
 
         $data_transaksi = [];
         $created_at = date('Y-m-d H:i:s');
         $usages = Usage::where('business_id', $businessId)->with('customers', 'installation')->get();
         foreach ($usages as $usage) {
+            $data_transaksi[] = [
+                'business_id' => $businessId,
+                'tgl_transaksi' => $usage->tgl_akhir,
+                'rekening_debit' => $kode_kas->id,
+                'rekening_kredit' => $kode_abodemen->id,
+                'user_id' => '1',
+                'usage_id' => $usage->id,
+                'installation_id' => $usage->id_instalasi,
+                'total' => $usage->installation->abodemen,
+                'denda' => '0',
+                'relasi' => $usage->customers->nama,
+                'keterangan' => 'Pembayaran Abodemen Pemakaian Atas Nama ' . $usage->customers->nama . ' (' . $usage->installation->id . ')',
+                'urutan' => '0',
+                'created_at' => $created_at
+            ];
+
             $data_transaksi[] = [
                 'business_id' => $businessId,
                 'tgl_transaksi' => $usage->tgl_akhir,
