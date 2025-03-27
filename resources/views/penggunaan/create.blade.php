@@ -254,20 +254,24 @@
                 var colorClass = 'text-danger';
                 if (tgl_akhir <= tgl_hariini) {
                     colorClass = 'text-warning';
+                    hasildata = 0;
+                    jumlahN = 0;
                 }
 
                 if (tgl_pemakaian >= tgl_hariini) {
                     colorClass = 'text-success';
+                    hasildata = nilai_akhir;
+                    jumlahN = nilai_jumlah;
                 }
-
                 //endset
+
                 table.append(`
             <tr data-index="${index}" ${tgl_pemakaian}-${tgl_akhir}-${tgl_hariini}>
                 <td align="left">${item.customer.nama}</td>    
                 <td align="center">${item.kode_instalasi}</td>    
-                <td align="right"><b>${nilai_akhir}</b></td> 
-                <td align="right" class="${colorClass}"><b>${nilai_akhir}</b></td> 
-                <td align="right">${nilai_jumlah}</td> 
+                <td align="right"><b>${nilai_awal}</b></td> 
+                <td align="right" class="${colorClass}"><b>${hasildata}</b></td> 
+                <td align="right">${jumlahN}</td> 
             </tr>
         `);
             });
