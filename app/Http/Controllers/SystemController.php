@@ -60,7 +60,7 @@ class SystemController extends Controller
                 if ($usage->tgl_akhir <= $date && $jumlah_pembayaran < $usage->nominal) {
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
-                        'tgl_transaksi' => $date,
+                        'tgl_transaksi' => $usage->tgl_akhir,
                         'rekening_debit' => $kode_piutang->id,
                         'rekening_kredit' => $kode_abodemen->id,
                         'user_id' => '1',
@@ -76,7 +76,7 @@ class SystemController extends Controller
 
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
-                        'tgl_transaksi' => $date,
+                        'tgl_transaksi' => $usage->tgl_akhir,
                         'rekening_debit' => $kode_piutang->id,
                         'rekening_kredit' => $kode_pemakaian->id,
                         'user_id' => '1',
@@ -92,7 +92,7 @@ class SystemController extends Controller
 
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
-                        'tgl_transaksi' => $date,
+                        'tgl_transaksi' => $usage->tgl_akhir,
                         'rekening_debit' => $kode_piutang->id,
                         'rekening_kredit' => $kode_denda->id,
                         'user_id' => '1',
@@ -110,10 +110,10 @@ class SystemController extends Controller
         }
 
         // dd($trx_tunggakan);
-        // Installations::whereIn('id', $update_sps)->update(['status_tunggakan' => 'sps']);
-        // DB::statement('SET @DISABLE_TRIGGER = 1');
-        // Transaction::insert($trx_tunggakan);
-        // DB::statement('SET @DISABLE_TRIGGER = 0');
+        Installations::whereIn('id', $update_sps)->update(['status_tunggakan' => 'sps']);
+        DB::statement('SET @DISABLE_TRIGGER = 1');
+        Transaction::insert($trx_tunggakan);
+        DB::statement('SET @DISABLE_TRIGGER = 0');
 
         $this->saldo(date('Y', $waktu), date('m', $waktu), $kode_piutang->id, $kode_abodemen->id, $kode_pemakaian->id, $kode_denda->id);
         echo '<script>window.close()</script>';

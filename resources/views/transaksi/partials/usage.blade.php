@@ -23,34 +23,40 @@
 @else
     @foreach ($usages as $usage)
         @php
-            $nomor = $loop->iteration;
             $blok = json_decode($trx_settings->block, true);
             $jumlah_blok = count($blok);
 
             $harga = 0;
             $daftar_harga = json_decode($installations->package->harga, true);
+
+            $denda = 0;
+            if (date('Y-m-d') > $usage->tgl_akhir) {
+                $denda = $installations->package->denda;
+            }
         @endphp
         <div class="card">
-            <div class="card-header" id="Judul-{{ $nomor }}">
+            <div class="card-header" id="Judul-{{ $usage->id }}">
                 <h5 class="mb-0 alert alert-light bg-white" data-toggle="collapse"
-                    data-target="#Body-{{ $nomor }}" aria-expanded="true"
-                    aria-controls="Body-{{ $nomor }}">
+                    data-target="#Body-{{ $usage->id }}" aria-expanded="true"
+                    aria-controls="Body-{{ $usage->id }}">
                     Tagihan Bulan
                     {{ Tanggal::namaBulan($usage->tgl_akhir) }}
                 </h5>
             </div>
 
-            <div id="Body-{{ $nomor }}" class="collapse" aria-labelledby="Judul-{{ $nomor }}"
+            <div id="Body-{{ $usage->id }}" class="collapse" aria-labelledby="Judul-{{ $usage->id }}"
                 data-parent="#accordion">
-                <div class="card-body">
-                    <form action="/transactions" method="post" id="FormTagihan-{{ $nomor }}">
+                <div class="card-body pt-0">
+                    <form action="/transactions" method="post" id="FormTagihan-{{ $usage->id }}">
                         @csrf
                         <input type="hidden" name="clay" id="clay" value="TagihanBulanan">
-                        <input type="hidden" name="id_instal" id="id_instal" value="{{ $installations->id }}">
-                        <input type="hidden" name="id_usage" id="id_usage" value="{{ $usage->id }}">
-                        <input type="hidden" name="tgl_akhir" id="tgl_akhir"
-                            value="{{ Tanggal::bulan($usage->tgl_akhir) }}">
-                        <input type="hidden" name="denda" id="denda"
+                        <input type="hidden" name="id_instal" id="id_instal-{{ $usage->id }}"
+                            value="{{ $installations->id }}">
+                        <input type="hidden" name="id_usage" id="id_usage-{{ $usage->id }}"
+                            value="{{ $usage->id }}">
+                        <input type="hidden" name="tgl_akhir" id="tgl-akhir-{{ $usage->id }}"
+                            value="{{ $usage->tgl_akhir }}">
+                        <input type="hidden" name="denda" id="denda-{{ $usage->id }}"
                             value="{{ $installations->package->denda }}">
 
                         <div class="row">
@@ -61,15 +67,18 @@
                                         <div class="col-md-6">
                                             <div class="position-relative mb-3">
                                                 <label for="tgl_transaksi">Tanggal Transaksi</label>
-                                                <input type="text" class="form-control date" name="tgl_transaksi"
-                                                    value=" {{ date('d/m/Y') }}" id="tgl_transaksi">
+                                                <input type="text" class="form-control date tgl_transaksi"
+                                                    data-id="{{ $usage->id }}" name="tgl_transaksi"
+                                                    value=" {{ date('d/m/Y') }}"
+                                                    id="tgl_transaksi-{{ $usage->id }}">
                                                 <small class="text-danger"></small>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="position-relative mb-3">
                                                 <label for="kode_instalasi">Kode Instalasi</label>
-                                                <input type="text" class="form-control" id="kode_instalasi"
+                                                <input type="text" class="form-control"
+                                                    id="kode_instalasi-{{ $usage->id }}"
                                                     value="{{ $installations->kode_instalasi }}" name="kode_instalasi"
                                                     readonly>
                                                 <small class="text-danger" id="msg_kode_instalasi"></small>
@@ -81,7 +90,8 @@
                                         <div class="col-md-12">
                                             <div class="position-relative mb-3">
                                                 <label for="keterangan">Keterangan</label>
-                                                <input type="text" class="form-control" id="keterangan"
+                                                <input type="text" class="form-control"
+                                                    id="keterangan-{{ $usage->id }}"
                                                     value="Pembayaran Tagihan Bulanan Atas Nama {{ $installations->customer->nama }}"
                                                     name="keterangan">
                                                 <small class="text-danger" id="msg_keterangan"></small>
@@ -93,7 +103,8 @@
                                         <div class="col-md-4">
                                             <div class="position-relative mb-3">
                                                 <label for="tagihan">Tagihan</label>
-                                                <input type="text" class="form-control" name="tagihan" id="tagihan"
+                                                <input type="text" class="form-control" name="tagihan"
+                                                    id="tagihan-{{ $usage->id }}"
                                                     value="{{ number_format($usage->nominal, 2) }}"readonly>
                                                 <small class="text-danger"></small>
                                             </div>
@@ -102,7 +113,8 @@
                                             <div class="position-relative mb-3">
                                                 <label for="abodemen">Abodemen</label>
                                                 <input type="text" class="form-control abodemen" name="abodemen"
-                                                    id="abodemen_bulanan" readonly placeholder="0.00"
+                                                    id="abodemen-bulanan-{{ $usage->id }}" readonly
+                                                    placeholder="0.00"
                                                     value="{{ number_format($trx_settings->abodemen, 2) }}">
                                                 <small class="text-danger"></small>
                                             </div>
@@ -111,19 +123,21 @@
                                             <div class="position-relative mb-3">
                                                 <label for="denda">Denda</label>
                                                 <input type="text" class="form-control denda" name="denda"
-                                                    id="denda_bulanan" readonly placeholder="0.00">
+                                                    id="denda-bulanan-{{ $usage->id }}" readonly
+                                                    placeholder="0.00" value="{{ number_format($denda, 2) }}">
                                                 <small class="text-danger"></small>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <div class="position-relative mb-3">
                                                 <label for="pembayaran">Pembayaran</label>
                                                 <input type="text" class="form-control total perhitungan"
-                                                    name="pembayaran" id="pembayaran"
-                                                    value="{{ number_format($usage->nominal + $trx_settings->abodemen, 2) }}"
+                                                    name="pembayaran" id="pembayaran-{{ $usage->id }}"
+                                                    data-id="{{ $usage->id }}"
+                                                    value="{{ number_format($usage->nominal + $trx_settings->abodemen + $denda, 2) }}"
                                                     {!! $trx_settings->swit_tombol_trx == '1' ? 'readonly' : '' !!}>
                                                 <small class="text-danger" id="msg_pembayaran"></small>
                                             </div>
@@ -132,7 +146,7 @@
                                             <div class="position-relative mb-3">
                                                 <label for="total">Total</label>
                                                 <input type="text" class="form-control total" name="total"
-                                                    id="total" readonly placeholder="0.00">
+                                                    id="total-{{ $usage->id }}" readonly placeholder="0.00">
                                                 <small class="text-danger"></small>
                                             </div>
                                         </div>
@@ -141,7 +155,7 @@
                                 </div>
                                 <div class="col-12 d-flex justify-content-end">
                                     <button class="btn btn-warning btn-icon-split" type="button"
-                                        data-bs-target="#DetailTRX" data-bs-toggle="modal">
+                                        data-bs-target="#DetailTRX-{{ $usage->id }}" data-bs-toggle="modal">
                                         <span class="icon text-white-50">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-sign-intersection-fill"
@@ -153,7 +167,7 @@
                                         <span class="text" style="float: right;">Info Tagihan</span>
                                     </button>
                                     <button class="btn btn-secondary btn-icon-split SimpanTagihan" type="submit"
-                                        data-form="#FormTagihan-{{ $nomor }}"
+                                        data-form="#FormTagihan-{{ $usage->id }}"
                                         style="float: right; margin-left: 10px;">
                                         <span class="icon text-white-50">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -169,10 +183,6 @@
                             </div>
                             <div class="col-lg-3">
                                 <div class="card">
-                                    <div
-                                        class="card-header py-4 bg-primary d-flex flex-row align-items-center justify-content-between">
-                                        <h6 class="m-0 font-weight-bold text-light">Pemakaian Air</h6>
-                                    </div>
                                     <div class="card-body">
                                         <div class="alert alert-info" role="alert">
                                             <div class="row">
@@ -180,7 +190,8 @@
                                                     <div class="position-relative mb-3">
                                                         <label for="awal">Awal Pemakaian</label>
                                                         <input type="text" class="form-control awal"
-                                                            id="awal" value="{{ $usage->awal }}" disabled>
+                                                            id="awal-{{ $usage->id }}"
+                                                            value="{{ $usage->awal }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -189,7 +200,8 @@
                                                     <div class="position-relative mb-3">
                                                         <label for="akhir">Akhir Pemakaian</label>
                                                         <input type="text" class="form-control akhir"
-                                                            id="akhir" value="{{ $usage->akhir }}" disabled>
+                                                            id="akhir-{{ $usage->id }}"
+                                                            value="{{ $usage->akhir }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -198,7 +210,8 @@
                                                     <div class="position-relative mb-3">
                                                         <label for="selisih">Pemakaian Periode ini</label>
                                                         <input type="text" class="form-control selisih"
-                                                            id="selisih" value="{{ $usage->jumlah }}" disabled>
+                                                            id="selisih-{{ $usage->id }}"
+                                                            value="{{ $usage->jumlah }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -214,8 +227,8 @@
         </div><br>
 
         <!-- Modal -->
-        <div class="modal fade" id="DetailTRX" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="DetailTRX-{{ $usage->id }}" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="row">

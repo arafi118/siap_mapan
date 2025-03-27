@@ -264,7 +264,11 @@
             items: 10
 
         }).bind('typeahead:selected', function(event, item) {
-            $.get('/installations/usage/' + item.kode_instalasi, (result) => {
+            formTagihanBulanan(item.item);
+        });
+
+        function formTagihanBulanan(installation) {
+            $.get('/installations/usage/' + installation.kode_instalasi, (result) => {
                 if (result.success) {
                     $('#accordion').html(result.view)
                 } else {
@@ -272,13 +276,12 @@
                 }
 
                 dataCustomer = {
-                    item: item.item,
+                    item: installation,
                     rek_debit: result.rek_debit,
                     rek_kredit: result.rek_kredit,
                 }
-
             })
-        });
+        }
         //end cari Tagihan perbulan
     </script>
 
