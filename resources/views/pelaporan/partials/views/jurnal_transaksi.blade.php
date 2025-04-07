@@ -70,7 +70,7 @@
             $totalKredit = 0;
             $counter = 1;
         @endphp
-        @foreach ($transactions as $index => $transaction)
+        @foreach ($transactions as $transaction)
             @php
                 $rowClass = $counter % 2 == 0 ? 'row-black' : 'row-white';
             @endphp

@@ -22,6 +22,8 @@ use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+use setasign\Fpdi\Fpdi;
 
 class PelaporanController extends Controller
 {
@@ -412,6 +414,7 @@ class PelaporanController extends Controller
     }
     private function jurnal_transaksi(array $data)
     {
+        $pdf = new Fpdi();
 
         $thn = $data['tahun'];
         $bln = $data['bulan'];
@@ -426,22 +429,46 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        $data['transactions'] = Transaction::where([
+        $transactions = Transaction::where([
             ['tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%'],
             ['business_id', Session::get('business_id')]
         ])->with([
             'acc_debit',
             'acc_kredit',
-        ])->lazy();
+        ])->get()->chunk(500);
 
         $data['title'] = 'Jurnal Transaksi';
+        $path = 'temp/' . str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
+        $fullPath = storage_path('app/public/' . $path);
 
-        ob_start();
-        $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
-        ob_get_clean();
+        if (!file_exists($fullPath)) {
+            mkdir($fullPath, 0777, true);
+        }
 
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        foreach ($transactions as $index => $chunk) {
+            $data['transactions'] = $chunk;
+            $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
+
+            $pdfPath = $fullPath . '/jurnal_transaksi_' . $index . '.pdf';
+            Pdf::loadHTML($view)->save($pdfPath);
+
+            $file = $pdfPath;
+            $pageCount = $pdf->setSourceFile($file);
+            for ($i = 1; $i <= $pageCount; $i++) {
+                $tpl = $pdf->importPage($i);
+                $size = $pdf->getTemplateSize($tpl);
+
+                $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                $pdf->useTemplate($tpl);
+            }
+
+            unlink($file);
+        }
+
+        $pdf->SetTitle($data['title']);
+        return response($pdf->Output('S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Jurnal Transaksi.pdf"');
     }
     private function jurnal_tutup_buku(array $data)
     {
@@ -459,7 +486,6 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        // SELECT * FROM transactions WHERE tgl_transaksi LIKE '2025-01%';
         $data['transactions'] = Transaction::where('tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%')
             ->with([
                 'acc_debit',
@@ -640,6 +666,8 @@ class PelaporanController extends Controller
     }
     private function buku_besar(array $data)
     {
+        $pdf = new Fpdi();
+
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
@@ -652,8 +680,15 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
+
         $data['title'] = 'Buku Besar';
         $data['kode_akun'] = $data['sub_laporan'];
+        $path = 'temp/' . str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
+        $fullPath = storage_path('app/public/' . $path);
+
+        if (!file_exists($fullPath)) {
+            mkdir($fullPath, 0777, true);
+        }
 
         $data['account'] = Account::where([
             ['business_id', Session::get('business_id')],
@@ -672,13 +707,37 @@ class PelaporanController extends Controller
             ['account_id', $data['account']->id]
         ])->first();
 
-        $data['transactions'] = Transaction::where('tgl_transaksi', 'LIKE', $thn . '-' . $bln . '%')->where(function ($query) use ($data) {
+        $transactions = Transaction::where([
+            ['tgl_transaksi', 'LIKE', $thn . '-' . $bln . '%'],
+            ['business_id', Session::get('business_id')]
+        ])->where(function ($query) use ($data) {
             $query->where('rekening_debit', $data['account']->id)->orwhere('rekening_kredit', $data['account']->id);
-        })->get();
+        })->get()->chunk(500);
 
-        $view = view('pelaporan.partials.views.buku_besar', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        foreach ($transactions as $index => $chunk) {
+            $data['transactions'] = $chunk;
+            $view = view('pelaporan.partials.views.buku_besar', $data)->render();
+
+            $pdfPath = $fullPath . '/buku_besar_' . $index . '.pdf';
+            Pdf::loadHTML($view)->save($pdfPath);
+
+            $file = $pdfPath;
+            $pageCount = $pdf->setSourceFile($file);
+            for ($i = 1; $i <= $pageCount; $i++) {
+                $tpl = $pdf->importPage($i);
+                $size = $pdf->getTemplateSize($tpl);
+
+                $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                $pdf->useTemplate($tpl);
+            }
+
+            unlink($file);
+        }
+
+        $pdf->SetTitle($data['title']);
+        return response($pdf->Output('S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Buku Besar.pdf"');
     }
     private function neraca_saldo(array $data)
     {
