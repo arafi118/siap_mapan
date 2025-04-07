@@ -102,7 +102,8 @@
     <script>
         let dataInstallation;
         let dataSearch;
-        let dataPemakaian;
+        let indexInput;
+        let dataPemakaian = [];
 
         var id_user = '{{ auth()->user()->id }}'
         $(document).ready(function() {
@@ -174,7 +175,9 @@
 
         $(document).on('click', '#TbPemakain #DaftarInstalasi tr td', function() {
             var parent = $(this).parent()
+            var allowInput = parent.attr('data-allow-input')
             var index = parent.attr('data-index')
+
             var installation = dataSearch[index]
             $('.namaCustomer').html('<b>' + installation.customer.nama + '</b>')
             $('.customer').val(installation.customer_id)
@@ -191,7 +194,14 @@
             $('.TglAkhirUsage').val(installation.one_usage?.tgl_akhir || 0)
             $('.PemakaianUsage').val(installation.one_usage?.tgl_pemakaian || 0)
 
+            if (allowInput == 'false') {
+                $('#SimpanPemakaian').attr('disabled', true)
+            } else {
+                $('#SimpanPemakaian').attr('disabled', false)
+            }
+
             $('#staticBackdrop').modal('show')
+            indexInput = index
         })
 
         $(document).on('keyup', '#searchInput', function() {
@@ -216,7 +226,7 @@
             table.html('');
 
             data.forEach((item, index) => {
-                var nilai_awal = (item.one_usage) ? item.one_usage.awal : '0';
+                var nilai_awal = (item.one_usage) ? item.one_usage.akhir : '0';
                 var nilai_akhir = (item.one_usage) ? item.one_usage.akhir : '0';
                 var nilai_jumlah = (item.one_usage) ? item.one_usage.jumlah : '0';
 
@@ -251,14 +261,21 @@
                 var tgl_akhir = (item.one_usage) ? formatbulan2(item.one_usage.tgl_akhir, 'month') : '0';
                 var tgl_hariini = formatbulan1($('#tanggal').val(), 'month');
 
+                var allowInput = true;
                 var colorClass = 'text-danger';
+                allowInput = false;
+                hasildata = 0;
+                jumlahN = 0;
+
                 if (tgl_akhir <= tgl_hariini) {
+                    allowInput = true;
                     colorClass = 'text-warning';
                     hasildata = nilai_awal;
                     jumlahN = 0;
                 }
 
-                if (tgl_pemakaian >= tgl_hariini) {
+                if (tgl_pemakaian >= tgl_hariini || jQuery.inArray(item.id.toString(), dataPemakaian) !== -1) {
+                    allowInput = false;
                     colorClass = 'text-success';
                     hasildata = nilai_akhir;
                     jumlahN = nilai_jumlah;
@@ -266,12 +283,12 @@
                 //endset
 
                 table.append(`
-            <tr data-index="${index}" ${tgl_pemakaian}-${tgl_akhir}-${tgl_hariini}>
+            <tr data-index="${index}" data-allow-input="${allowInput}">
                 <td align="left">${item.customer.nama}</td>    
                 <td align="center">${item.kode_instalasi}</td>    
-                <td align="right"><b>${nilai_awal}</b></td> 
-                <td align="right" class="${colorClass}"><b>${hasildata}</b></td> 
-                <td align="right">${jumlahN}</td> 
+                <td align="right" class="awal"><b>${nilai_awal}</b></td> 
+                <td align="right" class="akhir ${colorClass}"><b>${hasildata}</b></td> 
+                <td align="right" class="jumlah">${jumlahN}</td> 
             </tr>
         `);
             });
@@ -316,7 +333,7 @@
             var tgl = $('#tanggal').val();
             var toleransi = $('#tgl_toleransi').val();
 
-            var data = [{
+            var data = {
                 id: id,
                 tgl_pemakaian: tgl,
                 id_cater: id_cater,
@@ -325,27 +342,7 @@
                 akhir: akhir,
                 jumlah: jumlah,
                 toleransi: toleransi
-            }]
-
-            var checklist = $('.checklist')
-            checklist.each(function(index, item) {
-                if ($(item).is(':checked')) {
-                    var id = $(item).val()
-                    var customer = $('#customer_' + id).val()
-                    var awal = $('#awal_' + id).val()
-                    var akhir = $('#akhir_' + id).val()
-                    var jumlah = $('#jumlah_' + id).val()
-
-                    data.push({
-                        id_cater: id_cater,
-                        id: id,
-                        customer: customer,
-                        awal: awal,
-                        akhir: akhir,
-                        jumlah: jumlah
-                    })
-                }
-            })
+            }
 
             var form = $('#FormInputPemakaian')
             $.ajax({
@@ -356,45 +353,27 @@
                     tanggal: $('#tanggal').val(),
                     data: data
                 },
-                // success: function(result) {
-                //     if (result.success) {
-                //         Swal.fire({
-                //             title: 'Berhasil',
-                //             text: result.message,
-                //             icon: 'success',
-                //         }).then((res) => {
-                //             if (res.isConfirmed) {
-                //                 $('#print').html(result.view)
-
-                //                 var prtContent = document.getElementById("print");
-                //                 var WinPrint = window.open('', '',
-                //                     'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0'
-                //                 );
-                //                 WinPrint.document.write(prtContent.innerHTML);
-                //                 WinPrint.document.close();
-                //                 WinPrint.focus();
-                //                 WinPrint.print();
-                //                 WinPrint.close();
-                //             }
-                //         })
-                //     }
-                // }
                 success: function(result) {
                     if (result.success) {
                         toastMixin.fire({
                             title: 'Pemakaian Berhasil di Input'
                         });
 
-                        let dataPemakaian = result.pemakaian;
+                        let pemakaian = result.pemakaian;
+                        dataSearch[indexInput].one_usage = pemakaian;
 
-                        $('#caters').val('0').change()
-                        setTimeout(() => {
-                            $('#caters').val(id_user).change()
-                        }, 500);
+                        var tr = 'tr[data-index="' + indexInput + '"]';
+                        $('#DaftarInstalasi ' + tr).attr('data-allow-input', 'false')
 
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
+                        $('#DaftarInstalasi ' + tr + ' .awal').html(pemakaian.awal)
+                        $('#DaftarInstalasi ' + tr + ' .akhir').html(pemakaian.akhir)
+                        $('#DaftarInstalasi ' + tr + ' .jumlah').html(pemakaian.jumlah)
+
+                        $('#DaftarInstalasi ' + tr + ' .akhir').removeClass('text-warning')
+                        $('#DaftarInstalasi ' + tr + ' .akhir').addClass('text-success')
+
+                        dataPemakaian.push(pemakaian.id_instalasi)
+                        $('#staticBackdrop').modal('hide')
                     }
                 },
             })

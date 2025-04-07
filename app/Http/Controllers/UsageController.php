@@ -51,91 +51,53 @@ class UsageController extends Controller
 
     public function store(Request $request)
     {
-
-        $keuangan = new Keuangan;
-
-        $data_id = [];
-        $data_customer = [];
-        foreach ($request->data as $data) {
-            $data_id[] = $data['id'];
-            $data_customer[] = $data['customer'];
-        }
-
-        $data_installation = [];
-        $installations = Installations::where('business_id', Session::get('business_id'))->whereIn('id', $data_id)->with([
-            'package'
-        ])->get();
-        foreach ($installations as $ins) {
-            $data_installation[$ins->id] = $ins->package->harga;
-        }
-
-        $created_at = date('Y-m-d H:i:s');
+        $data = $request->only('data')['data'];
+        $installation = Installations::where([
+            ['business_id', Session::get('business_id')],
+            ['id', $data['id']]
+        ])->with('package', 'customer')->first();
         $setting = Settings::where('business_id', Session::get('business_id'))->first();
-        $bisnis = Business::where('id', Session::get('business_id'))->first();
-        $logo = $bisnis->logo;
-        if (empty($logo)) {
-            $gambar = '/storage/logo/1.png';
-        } else {
-            $gambar = '/storage/logo/' . $logo;
-        }
 
-        $customers = Customer::where('business_id', Session::get('business_id'))->whereIn('id', $data_customer)->get();
-        $data_customer = [];
-        foreach ($customers as $cs) {
-            $data_customer[$cs->id] = $cs;
-        }
+        $harga = json_decode($installation->package->harga, true);
 
-        $insert = [];
-        foreach ($request->data as $data) {
-            $harga = json_decode($data_installation[$data['id']], true);
+        $result = [];
+        $block = json_decode($setting->block, true);
+        foreach ($block as $index => $item) {
+            preg_match_all('/\d+/', $item['jarak'], $matches);
+            $start = (int)$matches[0][0];
+            $end = (isset($matches[0][1])) ? $matches[0][1] : 200;
 
-            $result = [];
-            $block = json_decode($setting->block, true);
-            foreach ($block as $index => $item) {
-                preg_match_all('/\d+/', $item['jarak'], $matches);
-                $start = (int)$matches[0][0];
-                $end = (isset($matches[0][1])) ? $matches[0][1] : 200;
-
-                for ($i = $start; $i <= $end; $i++) {
-                    $result[$i] = $index;
-                }
+            for ($i = $start; $i <= $end; $i++) {
+                $result[$i] = $index;
             }
-
-            $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
-
-            $tglPakai = Tanggal::tglNasional($data['tgl_pemakaian']);
-            $tglAkhir = date('Y-m', strtotime('+1 month', strtotime($tglPakai))) . '-' . str_pad($data['toleransi'], 2, '0', STR_PAD_LEFT);
-
-            $insert[] = [
-                'business_id' => Session::get('business_id'),
-                'tgl_pemakaian' => Tanggal::tglNasional($data['tgl_pemakaian']),
-                'customer' => $data['customer'],
-                'awal' => $data['awal'],
-                'akhir' => $data['akhir'],
-                'jumlah' => $data['jumlah'],
-                'id_instalasi' => $data['id'],
-                'tgl_akhir' => $tglAkhir,
-                'nominal' => $harga[$index_harga] * $data['jumlah'],
-                'cater' =>  $data['id_cater'],
-                'user_id' => auth()->user()->id,
-                'created_at' => $created_at,
-                'updated_at' => $created_at
-            ];
         }
+
+        $tglPakai = Tanggal::tglNasional($data['tgl_pemakaian']);
+        $tglAkhir = date('Y-m', strtotime('+1 month', strtotime($tglPakai))) . '-' . str_pad($data['toleransi'], 2, '0', STR_PAD_LEFT);
+        $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
+
+        $insert = [
+            'business_id' => Session::get('business_id'),
+            'tgl_pemakaian' => Tanggal::tglNasional($data['tgl_pemakaian']),
+            'customer' => $data['customer'],
+            'awal' => $data['awal'],
+            'akhir' => $data['akhir'],
+            'jumlah' => $data['jumlah'],
+            'id_instalasi' => $data['id'],
+            'tgl_akhir' => $tglAkhir,
+            'nominal' => $harga[$index_harga] * $data['jumlah'],
+            'cater' =>  $data['id_cater'],
+            'user_id' => auth()->user()->id,
+        ];
+
         // Simpan data
-        Usage::insert($insert);
+        $usage = Usage::create($insert);
 
         return response()->json([
             'success' => true,
             'msg' => 'Input Pemakain Berhasil ',
-            'pemakaian' => $insert
+            'pemakaian' => $usage
         ]);
-
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Data berhasil disimpan',
-        //     'view' => view('penggunaan.partials.cetak_tagihan', ['usages' => (object) $insert, 'data_customer' => $data_customer, 'bisnis' => $bisnis, 'keuangan' => $keuangan, 'gambar' => $gambar])->render(),
-        // ]);
     }
 
     /**

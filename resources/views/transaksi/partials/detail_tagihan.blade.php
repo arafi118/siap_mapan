@@ -14,7 +14,6 @@
             <td align="center">Keterangan</td>
             <td align="center" width="140">Kode Kuitansi.</td>
             <td align="center" width="140">Tagihan</td>
-            <td align="center" width="140">Denda</td>
             <td align="center" width="140">Jumlah Bayar</td>
             <td align="center" width="170">Aksi</td>
         </tr>
@@ -25,7 +24,7 @@
         @foreach ($transaksi as $trx)
             @php
 
-                if ($trx->rekening_debit) {
+                if ($trx->rekening_debit == $akun_kas->id) {
                     $ref = $trx->rek_debit->kode_akun;
                     $debit = $trx->total;
                 } else {
@@ -46,8 +45,7 @@
                 <td align="center">{{ Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
                 <td>{{ $trx->keterangan }} ( {{ $trx->installations->id }} )</td>
                 <td align="center">{{ $trx->id }}</td>
-                <td align="right">{{ number_format($trx->Usages->nominal ?? 0, 2) }}</td>
-                <td align="right">{{ number_format($trx->denda ?? 0, 2) }}</td>
+                <td align="right">{{ number_format($trx->total ?? 0, 2) }}</td>
                 <td align="right">{{ number_format($debit, 2) }}</td>
                 <td align="center">
                     <div class="dropdown dropleft">
@@ -79,9 +77,6 @@
             </td>
             <td align="right">
                 <b>{{ number_format($total_tagihan, 2) }}</b>
-            </td>
-            <td align="right">
-                <b>{{ number_format($total_denda, 2) }}</b>
             </td>
             <td align="right">
                 <b>{{ number_format($total_bayar, 2) }}</b>

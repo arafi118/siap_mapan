@@ -30,7 +30,7 @@
             $daftar_harga = json_decode($installations->package->harga, true);
 
             $denda = 0;
-            if (date('Y-m-d') > $usage->tgl_akhir) {
+            if (date('Y-m-d') >= $usage->tgl_akhir) {
                 $denda = $installations->package->denda;
             }
         @endphp
