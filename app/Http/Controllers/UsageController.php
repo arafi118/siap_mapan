@@ -98,12 +98,6 @@ class UsageController extends Controller
             'msg' => 'Input Pemakain Berhasil ',
             'pemakaian' => $usage
         ]);
-
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Data berhasil disimpan',
-        //     'view' => view('penggunaan.partials.cetak_tagihan', ['usages' => (object) $insert, 'data_customer' => $data_customer, 'bisnis' => $bisnis, 'keuangan' => $keuangan, 'gambar' => $gambar])->render(),
-        // ]);
     }
 
     /**
