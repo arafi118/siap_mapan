@@ -69,13 +69,17 @@
             $totalDebit = 0;
             $totalKredit = 0;
             $counter = 1;
+            $numRows = $index * $rows;
         @endphp
         @foreach ($transactions as $transaction)
             @php
                 $rowClass = $counter % 2 == 0 ? 'row-black' : 'row-white';
+                $nomor = $numRows + $counter;
+
+                $counter++;
             @endphp
             <tr class="{{ $rowClass }}">
-                <td>{{ $counter++ }}</td>
+                <td>{{ $nomor }}</td>
                 <td>{{ $transaction->tgl_transaksi }}</td>
                 <td>{{ $transaction->ref_id }}</td>
                 <td>{{ $transaction->kode_rek }}</td>

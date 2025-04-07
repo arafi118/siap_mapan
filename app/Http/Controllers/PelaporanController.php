@@ -429,13 +429,14 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
+        $data['rows'] = 500;
         $transactions = Transaction::where([
             ['tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%'],
-            ['business_id', Session::get('business_id')]
+            ['business_id', '5']
         ])->with([
             'acc_debit',
             'acc_kredit',
-        ])->get()->chunk(500);
+        ])->get()->chunk($data['rows']);
 
         $data['title'] = 'Jurnal Transaksi';
         $path = 'temp/' . str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
@@ -446,6 +447,7 @@ class PelaporanController extends Controller
         }
 
         foreach ($transactions as $index => $chunk) {
+            $data['index'] = $index;
             $data['transactions'] = $chunk;
             $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
 
@@ -575,7 +577,7 @@ class PelaporanController extends Controller
             ['id', $data['cater_id']],
             ['jabatan', '5']
         ])->first();
-        
+
         if (!empty($data['cater_id'])) {
             $data['installations'] = $data['installations']->where('cater_id', $data['cater_id']);
         }
@@ -714,14 +716,16 @@ class PelaporanController extends Controller
             ['account_id', $data['account']->id]
         ])->first();
 
+        $data['rows'] = 500;
         $transactions = Transaction::where([
             ['tgl_transaksi', 'LIKE', $thn . '-' . $bln . '%'],
             ['business_id', Session::get('business_id')]
         ])->where(function ($query) use ($data) {
             $query->where('rekening_debit', $data['account']->id)->orwhere('rekening_kredit', $data['account']->id);
-        })->get()->chunk(500);
+        })->get()->chunk($data['rows']);
 
         foreach ($transactions as $index => $chunk) {
+            $data['index'] = $index;
             $data['transactions'] = $chunk;
             $view = view('pelaporan.partials.views.buku_besar', $data)->render();
 
