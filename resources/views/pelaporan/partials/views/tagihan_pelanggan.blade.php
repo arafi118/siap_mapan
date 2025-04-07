@@ -13,10 +13,13 @@
     <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
         <tr>
             <th colspan="3" align="center">
-                <div style="font-size: 18px; font-weight: bold;">Tagihan Pelanggan</div>
+                <div style="font-size: 18px; font-weight: bold;">Tagihan Pelanggan
+                    {{ $cater->nama }}
+                </div>
                 <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
             </th>
         </tr>
+
         <tr>
             <th colspan="3" height="10"></th>
         </tr>
@@ -31,7 +34,7 @@
             <th style="border: 1px solid black; padding: 5px;" width="8%" colspan="{{ count($bulan_tampil) }}">Tunggakan
             </th>
             <th style="border: 1px solid black; padding: 5px;" width="5%" rowspan="3">Dibayar</th>
-            <th style="border: 1px solid black; padding: 5px;" width="6%" rowspan="3">mrnunggak2</th>
+            <th style="border: 1px solid black; padding: 5px;" width="6%" rowspan="3">Keterangan</th>
         </tr>
         <tr style="background: rgb(230, 230, 230); font-weight: bold;">
             <th class="t l b" width="6%">s/d 3 Bulan Lalu</th>
@@ -87,7 +90,8 @@
                     $tunggakan_tampil = [];
                     foreach ($installation->usage as $usage) {
                         $beban = $installation->abodemen;
-                        $denda = intval($installation->package->denda);
+                        $denda =
+                            $installation->status_tunggakan !== 'lancar' ? intval($installation->package->denda) : 0;
                         $dibayar = $usage->transaction->sum('total');
                         $tagihan = $usage->nominal;
                         $menunggak = $beban + $denda + $tagihan;

@@ -263,6 +263,10 @@
 
                 var allowInput = true;
                 var colorClass = 'text-danger';
+                allowInput = false;
+                hasildata = 0;
+                jumlahN = 0;
+
                 if (tgl_akhir <= tgl_hariini) {
                     allowInput = true;
                     colorClass = 'text-warning';

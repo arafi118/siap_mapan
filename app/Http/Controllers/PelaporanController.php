@@ -568,9 +568,16 @@ class PelaporanController extends Controller
             },
 
         ]);
+        $data['cater_id'] = $data['sub_laporan']; // Ambil ID cater dari sub_laporan atau request
 
-        if (!empty($data['cater'])) {
-            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
+        $data['cater'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['id', $data['cater_id']],
+            ['jabatan', '5']
+        ])->first();
+        
+        if (!empty($data['cater_id'])) {
+            $data['installations'] = $data['installations']->where('cater_id', $data['cater_id']);
         }
         $data['installations'] = $data['installations']->get();
 
