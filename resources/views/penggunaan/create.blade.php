@@ -262,7 +262,6 @@
                 var tgl_hariini = formatbulan1($('#tanggal').val(), 'month');
 
                 var allowInput = true;
-
                 var colorClass = 'text-danger';
                 allowInput = false;
                 hasildata = 0;
