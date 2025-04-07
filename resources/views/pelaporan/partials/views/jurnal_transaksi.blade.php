@@ -1,3 +1,7 @@
+@php
+    use App\Utils\Tanggal;
+@endphp
+
 <title>{{ $title }}</title>
 <style>
     * {
@@ -79,18 +83,27 @@
                 $counter++;
             @endphp
             <tr class="{{ $rowClass }}">
-                <td>{{ $nomor }}</td>
-                <td>{{ $transaction->tgl_transaksi }}</td>
-                <td>{{ $transaction->ref_id }}</td>
-                <td>{{ $transaction->kode_rek }}</td>
-                <td>{{ $transaction->keterangan }}</td>
-                <td align="right">{{ number_format($transaction->debit, 2, ',', '.') }}</td>
-                <td align="right">{{ number_format($transaction->kredit, 2, ',', '.') }}</td>
-                <td>{{ $transaction->ins }}</td>
+                <td rowspan="2">{{ $nomor }}</td>
+                <td rowspan="2">{{ Tanggal::tglIndo($transaction->tgl_transaksi) }}</td>
+                <td rowspan="2">{{ $transaction->id }}</td>
+
+                <td>{{ $transaction->acc_debit->kode_akun }}</td>
+                <td>{{ $transaction->acc_debit->nama_akun }}</td>
+                <td align="right">{{ number_format($transaction->total, 2, ',', '.') }}</td>
+                <td align="right">{{ number_format(0, 2, ',', '.') }}</td>
+
+                <td rowspan="2">{{ $transaction->ins }}</td>
+            </tr>
+
+            <tr class="{{ $rowClass }}">
+                <td>{{ $transaction->acc_kredit->kode_akun }}</td>
+                <td>{{ $transaction->acc_kredit->nama_akun }}</td>
+                <td align="right">{{ number_format(0, 2, ',', '.') }}</td>
+                <td align="right">{{ number_format($transaction->total, 2, ',', '.') }}</td>
             </tr>
             @php
-                $totalDebit += $transaction->debit;
-                $totalKredit += $transaction->kredit;
+                $totalDebit += $transaction->total;
+                $totalKredit += $transaction->total;
             @endphp
         @endforeach
 

@@ -432,7 +432,7 @@ class PelaporanController extends Controller
         $data['rows'] = 500;
         $transactions = Transaction::where([
             ['tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%'],
-            ['business_id', Session::get('business_id')]
+            ['business_id', '5']
         ])->with([
             'acc_debit',
             'acc_kredit',
