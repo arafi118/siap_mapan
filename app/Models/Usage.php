@@ -25,6 +25,11 @@ class Usage extends Model
     {
         return $this->belongsTo(Customer::class, 'customer', 'id');
     }
+    
+    public function usersCater()
+    {
+        return $this->belongsTo(user::class, 'cater', 'id');
+    }
 
     public function transaction()
     {

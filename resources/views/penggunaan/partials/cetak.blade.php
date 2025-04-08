@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Bukti Tagihan Pemakaian</title>
+    <title>Struk Tagihan Pemakaian Air</title>
     <style>
         body {
             font-size: 10px;
@@ -20,7 +20,7 @@
         }
 
         .container {
-            width: 100%;
+            width: 200%;
             overflow: auto;
             margin: auto;
         }
@@ -29,17 +29,11 @@
             display: inline-block;
             box-sizing: border-box;
             vertical-align: top;
-            width: 46%;
+            width: 50%;
             height: 8cm;
             border: 2px solid #000;
             padding: 10px;
             margin-bottom: 4px;
-        }
-
-        .box-body {
-            padding-top: 0px;
-            padding-left: 20px;
-            padding-right: 20px;
         }
 
         .keterangan {
@@ -57,7 +51,7 @@
         }
 
         .fw-medium {
-            font-weight: 600;
+            font-weight: 100;
         }
 
         .terbilang {
@@ -71,30 +65,6 @@
             -webkit-transform: skew(-20deg);
             transform: skew(-20deg);
             text-align: center;
-        }
-
-        .jajargenjang2 {
-            display: inline-block;
-            background-color: rgb(204, 204, 204);
-            -ms-transform: skew(-20deg);
-            -webkit-transform: skew(-20deg);
-            transform: skew(-20deg);
-            text-align: center;
-            padding: 2px 8px;
-            white-space: nowrap;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        @media print {
-            .jajargenjang {
-                background-color: rgb(204, 204, 204);
-                -ms-transform: skew(-20deg);
-                -webkit-transform: skew(-20deg);
-                transform: skew(-20deg);
-                text-align: center;
-            }
         }
 
         .fs-12 {
@@ -125,104 +95,115 @@
     <div class="container">
         @foreach ($usage as $use)
             <div class="box">
-                <table border="0" width="100%" style="border-bottom: 1px solid #000;">
+                <table border="0" width="100%">
                     <tr>
-                        <td width="40">
+                        <td width="50" align="right">
                             <img src="../storage/app/public/logo/{{ $gambar }}" width="50" height="50">
                         </td>
-                        <td>
-                            <div class="fw-bold">{{ strtoupper($bisnis->nama) }}</div>
-                            <div style="font-size: 8px;">{{ 'SK Kemenkumham RI No. ' . $bisnis->nomor_bh }}</div>
-                            <div style="font-size: 8px;">{{ $bisnis->alamat . ', Telp. ' . $bisnis->telpon }}</div>
+                        <td width="100" align="center">
+                            <div class="fw-bold" style="font-size: 14px;">STRUK TAGIHAN PEMAKAIAN AIR</div>
+                            <div style="font-size: 11px;">BADAN USAHA MILIK DESA (BUMDes)</div>
+                            <div class="fw-bold">UNIT AIR</div>
                         </td>
-                        <td>
-                            <div style="display: flex; align-items: center; font-size: 8px;">
-                                <table>
-                                    <tr>
-                                        <td>Nomor</td>
-                                        <td>:</td>
-                                        <td><?php echo $use->id_instalasi; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tanggal</td>
-                                        <td>:</td>
-                                        <td>{{ Tanggal::tglIndo($use->tgl_akhir) }}</td>
-                                    </tr>
-                                </table>
-                            </div>
+                        <td width="50" align="left">
+                            <img src="../storage/app/public/logo/{{ $gambar }}" width="50" height="50">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="50" align="left">
+                            <div style="font-size: 11px;">BULAN : {{ Tanggal::bulan($use->tgl_pemakaian) }}
+                                {{ Tanggal::tahun($use->tgl_pemakaian) }}</div>
+                        </td>
+                        <td width="100" align="center">
+                            <div style="font-size: 11px;">POS BAYAR : {{ $use->usersCater->nama }}</div>
+                        </td>
+                        <td width="50" align="right">
+                            <div style="font-size: 11px;">NO URUT : {{ $use->installation->id }}</div>
                         </td>
                     </tr>
                 </table>
-
-                <div class="box-body">
-                    <table width="100%">
-                        <tr>
-                            <td width="30%">Nama Pelangan</td>
-                            <td width="2%">:</td>
-                            <td colspan="3" class="keterangan border-b">
-                                {{ $use->customers->nama }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="30%">Tgl Bayar</td>
-                            <td width="2%">:</td>
-                            <td colspan="3" class="keterangan border-b">
-                                {{ Tanggal::tglLatin($use->tgl_akhir) }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="30%">No ref</td>
-                            <td width="2%">:</td>
-                            <td colspan="3" class="keterangan border-b">
-                                {{ md5($use->id_instalasi) }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="30%">T Awal</td>
-                            <td width="2%">:</td>
-                            <td colspan="3" class="keterangan border-b">
-                                {{ $use->awal }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="30%">T Akhir</td>
-                            <td width="2%">:</td>
-                            <td colspan="3" class="keterangan border-b">
-                                {{ $use->akhir }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="30%">Jumlah</td>
-                            <td width="2%">:</td>
-                            <td colspan="3" class="keterangan border-b">
-                                {{ $use->jumlah }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Total Bayar</td>
-                            <td>:</td>
-                            <td colspan="3" class="keterangan fw-medium terbilang jajargenjang">
-                                <h4 {!! strlen($keuangan->terbilang($use->nominal)) > 30 ? 'style="font-size: 8px;"' : '' !!}>
-                                    <span>{{ ucwords($keuangan->terbilang($use->nominal)) }} Rupiah</span>
-                                </h4>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <table width="100%" class="fs-12" style="margin-top: 8px;">
-                        <tr>
-                            <td width="40%" align="left" rowspan="6">
-                                <i>
-                                    <h3 class="flex" style="padding-left: 18px;">
-                                        Terbilang Rp. &nbsp; <div class="jajargenjang2 text-left">
-                                            {{ number_format($use->nominal, 2) }}</div>
-                                    </h3>
-                                </i>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
+                <table border="1" width="100%" style="border-collapse: collapse; border: 1px solid #000;">
+                    <tr>
+                        <td width="20%" align="center">NAMA PELANGGAN</td>
+                        <td width="13%" align="center">NO INDUK</td>
+                        <td width="20%" align="center">ALAMAT</td>
+                        <td width="14%" align="center">AWAL PEMAKAIAN</td>
+                        <td width="14%" align="center">AKHIR PEMAKAIAN</td>
+                        <td width="15%" align="center">JUMLAH PEMAKAIAN</td>
+                    </tr>
+                    <tr>
+                        <td align="center">{{ $use->customers->nama }}</td>
+                        <td align="center">{{ $use->installation->kode_instalasi }}</td>
+                        <td align="center">{{ $use->installation->alamat }}</td>
+                        <td align="center">{{ $use->awal }}</td>
+                        <td align="center">{{ $use->akhir }}</td>
+                        <td align="center">{{ $use->jumlah }}</td>
+                    </tr>
+                </table>
+                <table border="0" width="100%">
+                    <tr>
+                        <td colspan="5" style="font-size: 12px">RINCIAN BIAYA</td>
+                    </tr>
+                    <tr>
+                        <td width="10%" align="left">Pemakaian Air</td>
+                        <td width="2%" align="right">:</td>
+                        <td width="20%" align="left">Rp. {{ number_format($use->nominal, 2) }}</td>
+                        <td width="14%" align="center">&nbsp;</td>
+                        <td width="14%" align="left">
+                            {{ strtoupper($bisnis->nama) }}, {{ Tanggal::tglLatin($use->tgl_pemakaian) }}</td>
+                    </tr>
+                    <tr>
+                        <td width="10%" align="left">Beban Tetap</td>
+                        <td width="2%" align="right">:</td>
+                        <td width="20%" align="left">Rp. {{ number_format($use->installation->abodemen, 2) }}</td>
+                        <td width="14%" align="center">&nbsp;</td>
+                        <td width="14%" align="left">Bendahara</td>
+                    </tr>
+                    <tr>
+                        <td width="10%" align="left">Denda</td>
+                        <td width="2%" align="right">:</td>
+                        <td width="20%" align="left">Rp. 0.00</td>
+                        <td width="14%" align="center">&nbsp;</td>
+                        <td width="14%" align="left">ttd,</td>
+                    </tr>
+                    <tr>
+                        <td width="10%" align="left">Total</td>
+                        <td width="2%" align="right">:</td>
+                        <td width="20%" align="left">Rp.
+                            {{ number_format($use->nominal + $use->installation->abodemen, 2) }}</td>
+                        <td width="14%" align="center">&nbsp;</td>
+                        <td width="14%" align="left"></td>
+                    </tr>
+                    <tr>
+                        <td width="10%" align="left">Terbilang</td>
+                        <td width="2%" align="right">:</td>
+                        <td width="14%" class="keterangan fw-medium terbilang">
+                            <span>{{ ucwords($keuangan->terbilang($use->nominal + $use->installation->abodemen)) }}
+                                Rupiah</span>
+                        </td>
+                        <td width="14%" align="center">&nbsp;</td>
+                        <td width="14%" align="left">{{ strtoupper($jabatan->nama) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" align="center">SELURUH PELANGGAN AIR "{{ $bisnis->nama }}" WAJIB MEMATUHI
+                            SEGALA
+                            KETENTUAN MANAJEMEN
+                            PENGELOLAAN OLEH BUMDes BANGUN KENCANA MULO, SESUAI DENGAN PERATURAN DESA MULO NOMOR 3 TAHUN
+                            2018.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" align="center">KELUHAN PELANGGAN HUBUNGI WA 0882-1673-8479 (ISWANTO)
+                            0878-0484-5880 (NURUL) NB: TERLAMBAT 2 BULAN AKAN DITERBITKAN SURAT PERINGATAN,
+                            TERLAMBAT 3 BULAN
+                            AKAN DITERBITKAN
+                            SURAT PEMUTUSAN SEMENTARA
+                        </td>
+                    </tr>
+                </table>
             </div>
         @endforeach
     </div>
