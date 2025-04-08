@@ -21,9 +21,9 @@ use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use setasign\Fpdi\Fpdi;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 
 class PelaporanController extends Controller
 {
@@ -436,7 +436,12 @@ class PelaporanController extends Controller
         ])->with([
             'acc_debit',
             'acc_kredit',
-        ])->get()->chunk($data['rows']);
+            'transaction' => function ($query) use ($data) {
+                $query->where('tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%');
+            },
+            'transaction.acc_debit',
+            'transaction.acc_kredit',
+        ])->get();
 
         $data['title'] = 'Jurnal Transaksi';
         $path = 'temp/' . str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
@@ -446,31 +451,55 @@ class PelaporanController extends Controller
             mkdir($fullPath, 0777, true);
         }
 
-        foreach ($transactions as $index => $chunk) {
-            $data['index'] = $index;
-            $data['transactions'] = $chunk;
-            $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
-
-            $pdfPath = $fullPath . '/jurnal_transaksi_' . $index . '.pdf';
-            Pdf::loadHTML($view)->save($pdfPath);
-
-            $file = $pdfPath;
-            $pageCount = $pdf->setSourceFile($file);
-            for ($i = 1; $i <= $pageCount; $i++) {
-                $tpl = $pdf->importPage($i);
-                $size = $pdf->getTemplateSize($tpl);
-
-                $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-                $pdf->useTemplate($tpl);
+        $nomor = 1;
+        $data['transaction_id'] = [];
+        $data['transactions'] = [];
+        foreach ($transactions as $trx) {
+            if (in_array($trx->transaction_id, $data['transaction_id'])) {
+                continue;
             }
 
-            unlink($file);
+            $trx_debit = [
+                'id' => $trx->id,
+                'nomor' => $nomor,
+                'tgl_transaksi' => $trx->tgl_transaksi,
+                'kode_akun' => $trx->acc_debit->kode_akun,
+                'nama_akun' => $trx->acc_debit->nama_akun,
+                'jumlah' => $trx->total,
+                'ins' => '',
+                'trx_kredit' => []
+            ];
+
+            $trx_kredit = [];
+            if ($trx->transaction_id != '0') {
+                $trx_debit['jumlah'] = 0;
+                foreach ($trx->transaction as $child) {
+                    $trx_kredit[] = [
+                        'kode_akun' => $child->acc_kredit->kode_akun,
+                        'nama_akun' => $child->acc_kredit->nama_akun,
+                        'jumlah' => $child->total,
+                    ];
+
+                    $trx_debit['jumlah'] += $child->total;
+                }
+            } else {
+                $trx_kredit[] = [
+                    'kode_akun' => $trx->acc_kredit->kode_akun,
+                    'nama_akun' => $trx->acc_kredit->nama_akun,
+                    'jumlah' => $trx->total,
+                ];
+            }
+
+            $trx_debit['trx_kredit'] = $trx_kredit;
+            array_push($data['transactions'], $trx_debit);
+
+            $data['transaction_id'][] = $trx->transaction_id;
+            $nomor++;
         }
 
-        $pdf->SetTitle($data['title']);
-        return response($pdf->Output('S'))
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="Jurnal Transaksi.pdf"');
+        $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
+        $pdf = PDF::loadHTML($view);
+        return $pdf->stream();
     }
     private function jurnal_tutup_buku(array $data)
     {

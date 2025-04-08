@@ -72,38 +72,42 @@
         @php
             $totalDebit = 0;
             $totalKredit = 0;
-            $counter = 1;
-            $numRows = $index * $rows;
         @endphp
         @foreach ($transactions as $transaction)
             @php
-                $rowClass = $counter % 2 == 0 ? 'row-black' : 'row-white';
-                $nomor = $numRows + $counter;
-
-                $counter++;
+                $rowClass = $transaction['nomor'] % 2 == 0 ? 'row-black' : 'row-white';
             @endphp
             <tr class="{{ $rowClass }}">
-                <td rowspan="2">{{ $nomor }}</td>
-                <td rowspan="2">{{ Tanggal::tglIndo($transaction->tgl_transaksi) }}</td>
-                <td rowspan="2">{{ $transaction->id }}</td>
+                <td>{{ $transaction['nomor'] }}</td>
+                <td>{{ Tanggal::tglIndo($transaction['tgl_transaksi']) }}</td>
+                <td>{{ $transaction['id'] }}</td>
 
-                <td>{{ $transaction->acc_debit->kode_akun }}</td>
-                <td>{{ $transaction->acc_debit->nama_akun }}</td>
-                <td align="right">{{ number_format($transaction->total, 2, ',', '.') }}</td>
+                <td>{{ $transaction['kode_akun'] }}</td>
+                <td>{{ $transaction['nama_akun'] }}</td>
+                <td align="right">{{ number_format($transaction['jumlah'], 2, ',', '.') }}</td>
                 <td align="right">{{ number_format(0, 2, ',', '.') }}</td>
 
-                <td rowspan="2">{{ $transaction->ins }}</td>
+                <td>{{ $transaction['ins'] }}</td>
             </tr>
 
-            <tr class="{{ $rowClass }}">
-                <td>{{ $transaction->acc_kredit->kode_akun }}</td>
-                <td>{{ $transaction->acc_kredit->nama_akun }}</td>
-                <td align="right">{{ number_format(0, 2, ',', '.') }}</td>
-                <td align="right">{{ number_format($transaction->total, 2, ',', '.') }}</td>
-            </tr>
+            @foreach ($transaction['trx_kredit'] as $trx_kredit)
+                <tr class="{{ $rowClass }}">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+
+                    <td>{{ $trx_kredit['kode_akun'] }}</td>
+                    <td>{{ $trx_kredit['nama_akun'] }}</td>
+                    <td align="right">{{ number_format(0, 2, ',', '.') }}</td>
+                    <td align="right">{{ number_format($trx_kredit['jumlah'], 2, ',', '.') }}</td>
+
+                    <td>&nbsp;</td>
+                </tr>
+            @endforeach
+
             @php
-                $totalDebit += $transaction->total;
-                $totalKredit += $transaction->total;
+                $totalDebit += $transaction['jumlah'];
+                $totalKredit += $transaction['jumlah'];
             @endphp
         @endforeach
 

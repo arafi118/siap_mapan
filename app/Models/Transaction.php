@@ -77,4 +77,9 @@ class Transaction extends Model
     {
         return $this->hasOne(Settings::class, 'business_id', 'business_id');
     }
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class, 'transaction_id', 'transaction_id');
+    }
 }
