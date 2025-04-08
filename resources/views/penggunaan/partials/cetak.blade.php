@@ -142,6 +142,9 @@
                 </table>
                 <table border="0" width="100%">
                     <tr>
+                        <td colspan="5">&nbsp;</td>
+                    </tr>
+                    <tr>
                         <td colspan="5" style="font-size: 12px">RINCIAN BIAYA</td>
                     </tr>
                     <tr>
