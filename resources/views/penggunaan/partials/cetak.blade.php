@@ -98,7 +98,11 @@
                 <table border="0" width="100%">
                     <tr>
                         <td width="50" align="right">
-                            <img src="../storage/app/public/logo/{{ $gambar }}" width="50" height="50">
+                            {{-- <img src="../storage/app/public/logo/{{ $gambar }}" width="50" height="50"> --}}
+                            <img src="assets/img/cetak1.png"
+                                style="max-height: 50px; margin-right: 15px; margin-left: 10px;"
+                                class="img-fluid  d-none d-lg-block">
+
                         </td>
                         <td width="100" align="center">
                             <div class="fw-bold" style="font-size: 14px;">STRUK TAGIHAN PEMAKAIAN AIR</div>
@@ -106,7 +110,10 @@
                             <div class="fw-bold">UNIT AIR</div>
                         </td>
                         <td width="50" align="left">
-                            <img src="../storage/app/public/logo/{{ $gambar }}" width="50" height="50">
+                            {{-- <img src="../storage/app/public/logo/{{ $gambar }}" width="50" height="50"> --}}
+                            <img src="assets/img/cetak2.png" style="max-height: 50px;"
+                                class="mb-3 img-fluid  d-none d-lg-block">
+
                         </td>
                     </tr>
                     <tr>
@@ -140,7 +147,7 @@
                         <td align="center">{{ $use->jumlah }}</td>
                     </tr>
                 </table>
-                <table border="0" width="100%">
+                <table border="0" width="100%" style="font-size: 11px;">
                     <tr>
                         <td colspan="5">&nbsp;</td>
                     </tr>
@@ -153,7 +160,7 @@
                         <td width="20%" align="left">Rp. {{ number_format($use->nominal, 2) }}</td>
                         <td width="14%" align="center">&nbsp;</td>
                         <td width="14%" align="left">
-                            {{ strtoupper($bisnis->nama) }}, {{ Tanggal::tglLatin($use->tgl_pemakaian) }}</td>
+                            {{ strtoupper($bisnis->desa) }}, {{ Tanggal::tglLatin($use->tgl_pemakaian) }}</td>
                     </tr>
                     <tr>
                         <td width="10%" align="left">Beban Tetap</td>
@@ -191,7 +198,8 @@
                         <td colspan="5">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td colspan="5" align="center">SELURUH PELANGGAN AIR "{{ $bisnis->nama }}" WAJIB MEMATUHI
+                        <td colspan="5" align="center" style="font-size: 10px;">SELURUH PELANGGAN AIR
+                            "{{ $bisnis->nama }}" WAJIB MEMATUHI
                             SEGALA
                             KETENTUAN MANAJEMEN
                             PENGELOLAAN OLEH BUMDes BANGUN KENCANA MULO, SESUAI DENGAN PERATURAN DESA MULO NOMOR 3 TAHUN
@@ -199,7 +207,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5" align="center">KELUHAN PELANGGAN HUBUNGI WA 0882-1673-8479 (ISWANTO)
+                        <td colspan="5" align="center" style="font-size: 10px;">KELUHAN PELANGGAN HUBUNGI WA
+                            0882-1673-8479 (ISWANTO)
                             0878-0484-5880 (NURUL) NB: TERLAMBAT 2 BULAN AKAN DITERBITKAN SURAT PERINGATAN,
                             TERLAMBAT 3 BULAN
                             AKAN DITERBITKAN
