@@ -11,84 +11,42 @@
 
 @endphp
 
-<style>
-    * {
-        font-family: 'Arial', sans-serif;
-    }
+@include('pelaporan.layouts.style')
+<title> {{ $title }}</title>
 
-    table {
-        font-size: 12px;
-
-    }
-
-    .bg-red {
-        background-color: rgb(255, 255, 255);
-    }
-
-    .bg-white {
-        background-color: rgb(235, 234, 234);
-    }
-
-    .bg-r {
-        background-color: rgb(255, 255, 255);
-    }
-
-    .bg-f {
-        background-color: rgb(235, 234, 234);
-    }
-
-    .bg-k {
-        background-color: rgb(255, 255, 255);
-    }
-
-    .bg-p {
-        background-color: rgb(235, 234, 234);
-    }
-
-    .bg-l {
-        background-color: rgb(255, 255, 255);
-    }
-
-    .bg-u {
-        background-color: rgb(235, 234, 234);
-    }
-</style>
-<title>
-    {{ $title }}
-</title>
-@extends('pelaporan.layouts.base')
-
-@section('content')
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
-        <tr>
-            <td colspan="4" align="center">
-                <div style="font-size: 18px;">
-                    <b>LAPORAN LABA RUGI</b>
-                </div>
-                <div style="font-size: 16px;">
-                    <b>{{ strtoupper($sub_judul) }}</b>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4" height="5"></td>
-        </tr>
-    </table>
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+    <tr>
+        <td colspan="4" align="center">
+            <div style="font-size: 18px;">
+                <b>LAPORAN LABA RUGI</b>
+            </div>
+            <div style="font-size: 16px;">
+                <b>{{ strtoupper($sub_judul) }}</b>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" height="5"></td>
+    </tr>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+    <thead>
         <tr style="background: rgb(235, 234, 234);">
             <th align="center" width="55%">Rekening</th>
             <th align="center" width="15%">s.d. Bulan Lalu</th>
             <th align="center" width="15%">Bulan Ini</th>
             <th align="center" width="15%">s.d. Bulan Ini</th>
         </tr>
+    </thead>
 
-        <!-- Pendapatan -->
+    <tbody>
         <tr style="background: rgb(200, 200, 200); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="14">4. Pendapatan</td>
         </tr>
         <tr style="background: rgb(150, 150, 150); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="14">4.1.00.00. Pendapatan Usaha</td>
         </tr>
+
         @php
             $total_sd_bulan_lalu = 0;
             $total_bulan_ini = 0;
@@ -100,12 +58,12 @@
             @endphp
             <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-red' : 'bg-white' }}">
                 <td>{{ $p->kode_akun }}. {{ $p->nama_akun }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
+                </td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
             </tr>
             @php
-                // Menambahkan saldo ke total
                 $total_sd_bulan_lalu += $saldo['saldo_sd_bulan_lalu'];
                 $total_bulan_ini += $saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'];
                 $total_sd_bulan_ini += $saldo['saldo_sd_bulan_ini'];
@@ -116,20 +74,20 @@
             @endphp
         @endforeach
 
-        <!-- Jumlah Pendapatan -->
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
             <td align="left">Jumlah Pendapatan:</td>
-            <td align="center">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
-            <td align="center">{{ number_format($total_bulan_ini, 2) }}</td>
-            <td align="center">{{ number_format($total_sd_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
+            <td align="right">{{ number_format($total_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_ini, 2) }}</td>
         </tr>
-        <!-- Beban -->
+
         <tr style="background: rgb(200, 200, 200); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="16">5. Beban</td>
         </tr>
         <tr style="background: rgb(150, 150, 150); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="14">5.1.00.00. Beban Usaha</td>
         </tr>
+
         @php
             $total_sd_bulan_lalu = 0;
             $total_bulan_ini = 0;
@@ -141,13 +99,13 @@
             @endphp
             <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-r' : 'bg-f' }}">
                 <td>{{ $b->kode_akun }}. {{ $b->nama_akun }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
+                <td align="right">
+                    {{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
                 </td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
             </tr>
             @php
-                // Menambahkan saldo ke total
                 $total_sd_bulan_lalu += $saldo['saldo_sd_bulan_lalu'];
                 $total_bulan_ini += $saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'];
                 $total_sd_bulan_ini += $saldo['saldo_sd_bulan_ini'];
@@ -157,16 +115,18 @@
                 $saldo_sd_bulan_ini1 -= $saldo['saldo_sd_bulan_ini'];
             @endphp
         @endforeach
+
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
             <td align="left">Jumlah 5.1.00.00. Beban Usaha</td>
-            <td align="center">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
-            <td align="center">{{ number_format($total_bulan_ini, 2) }}</td>
-            <td align="center">{{ number_format($total_sd_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
+            <td align="right">{{ number_format($total_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_ini, 2) }}</td>
         </tr>
         <tr style="background: rgb(150, 150, 150); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="16">5.2.00.00. Beban Pemasaran
             </td>
         </tr>
+
         @php
             $total_sd_bulan_lalu = 0;
             $total_bulan_ini = 0;
@@ -178,10 +138,11 @@
             @endphp
             <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-k' : 'bg-p' }}">
                 <td>{{ $bp->kode_akun }}. {{ $bp->nama_akun }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
+                <td align="right">
+                    {{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
                 </td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
             </tr>
             @php
                 $total_sd_bulan_lalu += $saldo['saldo_sd_bulan_lalu'];
@@ -193,23 +154,24 @@
                 $saldo_sd_bulan_ini1 -= $saldo['saldo_sd_bulan_ini'];
             @endphp
         @endforeach
+
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
             <td align="left">Jumlah 5.2.00.00. Beban Pemasaran</td>
-            <td align="center">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
-            <td align="center">{{ number_format($total_bulan_ini, 2) }}</td>
-            <td align="center">{{ number_format($total_sd_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
+            <td align="right">{{ number_format($total_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_ini, 2) }}</td>
         </tr>
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
             <td align="left">A. Laba Rugi OPERASIONAL (Kode Akun 4.1 - 5.1 - 5.2) </td>
-            <td align="center">{{ number_format($saldo_bln_lalu1, 2) }}</td>
-            <td align="center">{{ number_format($saldo_sd_bulan_ini1 - $saldo_bln_lalu1, 2) }}</td>
-            <td align="center">{{ number_format($saldo_sd_bulan_ini1, 2) }}</td>
+            <td align="right">{{ number_format($saldo_bln_lalu1, 2) }}</td>
+            <td align="right">{{ number_format($saldo_sd_bulan_ini1 - $saldo_bln_lalu1, 2) }}</td>
+            <td align="right">{{ number_format($saldo_sd_bulan_ini1, 2) }}</td>
         </tr>
 
-        <!-- Pen -->
         <tr style="background: rgb(150, 150, 150); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="16">4.2.00.00. Pendapatan Non Usaha</td>
         </tr>
+
         @php
             $total_sd_bulan_lalu = 0;
             $total_bulan_ini = 0;
@@ -221,10 +183,11 @@
             @endphp
             <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-k' : 'bg-p' }}">
                 <td>{{ $pn->kode_akun }}. {{ $pn->nama_akun }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
+                <td align="right">
+                    {{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
                 </td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
             </tr>
             @php
                 $total_sd_bulan_lalu += $saldo['saldo_sd_bulan_lalu'];
@@ -236,16 +199,17 @@
                 $saldo_sd_bulan_ini2 += $saldo['saldo_sd_bulan_ini'];
             @endphp
         @endforeach
-        <!-- Jumlah Total Pendapatan Non Usaha -->
+
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
             <td align="left">Jumlah 4.2.00.00. Pendapatan Non Usaha</td>
-            <td align="center">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
-            <td align="center">{{ number_format($total_bulan_ini, 2) }}</td>
-            <td align="center">{{ number_format($total_sd_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
+            <td align="right">{{ number_format($total_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_ini, 2) }}</td>
         </tr>
         <tr style="background: rgb(150, 150, 150); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="16">4.3.00.00. Pendapatan Luar biasa</td>
         </tr>
+
         @php
             $total_sd_bulan_lalu = 0;
             $total_bulan_ini = 0;
@@ -257,10 +221,11 @@
             @endphp
             <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-k' : 'bg-p' }}">
                 <td>{{ $pendl->kode_akun }}. {{ $pendl->nama_akun }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
+                <td align="right">
+                    {{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
                 </td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
             </tr>
             @php
                 $total_sd_bulan_lalu += $saldo['saldo_sd_bulan_lalu'];
@@ -268,14 +233,14 @@
                 $total_sd_bulan_ini += $saldo['saldo_sd_bulan_ini'];
             @endphp
         @endforeach
-        <!-- Jumlah Total Pendapatan Luar Biasa -->
+
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
             <td align="left">Jumlah 4.3.00.00. Pendapatan Luar Biasa</td>
-            <td align="center">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
-            <td align="center">{{ number_format($total_bulan_ini, 2) }}</td>
-            <td align="center">{{ number_format($total_sd_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
+            <td align="right">{{ number_format($total_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_ini, 2) }}</td>
         </tr>
-        <!-- Beb -->
+
         <tr style="background: rgb(150, 150, 150); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="16">5.3.00.00. Beban Non Usaha</td>
         </tr>
@@ -284,16 +249,18 @@
             $total_bulan_ini = 0;
             $total_sd_bulan_ini = 0;
         @endphp
+
         @foreach ($beb as $bb)
             @php
                 $saldo = $keuangan->komSaldoLB($bb);
             @endphp
             <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-l' : 'bg-u' }}">
                 <td>{{ $bb->kode_akun }}. {{ $bb->nama_akun }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
+                <td align="right">
+                    {{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
                 </td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
             </tr>
             @php
                 $total_sd_bulan_lalu += $saldo['saldo_sd_bulan_lalu'];
@@ -306,50 +273,51 @@
             @endphp
         @endforeach
 
-        <!-- Jumlah Total Beban Non Usaha -->
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
             <td align="left">Jumlah 5.3.00.00. Beban Non Usaha</td>
-            <td align="center">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
-            <td align="center">{{ number_format($total_bulan_ini, 2) }}</td>
-            <td align="center">{{ number_format($total_sd_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_lalu, 2) }}</td>
+            <td align="right">{{ number_format($total_bulan_ini, 2) }}</td>
+            <td align="right">{{ number_format($total_sd_bulan_ini, 2) }}</td>
         </tr>
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
             <td align="left">B. Laba Rugi OPERASIONAL (Kode Akun 4.2 - 5.3) </td>
-            <td align="center">{{ number_format($saldo_bln_lalu2, 2) }}</td>
-            <td align="center">{{ number_format($saldo_sd_bulan_ini2 - $saldo_bln_lalu2, 2) }}</td>
-            <td align="center">{{ number_format($saldo_sd_bulan_ini2, 2) }}</td>
+            <td align="right">{{ number_format($saldo_bln_lalu2, 2) }}</td>
+            <td align="right">{{ number_format($saldo_sd_bulan_ini2 - $saldo_bln_lalu2, 2) }}</td>
+            <td align="right">{{ number_format($saldo_sd_bulan_ini2, 2) }}</td>
         </tr>
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
             <td align="left">C. Laba Rugi Sebelum Taksiran Pajak (A + B) </td>
-            <td align="center">{{ number_format($saldo_bln_lalu1 + $saldo_bln_lalu2, 2) }}</td>
-            <td align="center">
+            <td align="right">{{ number_format($saldo_bln_lalu1 + $saldo_bln_lalu2, 2) }}</td>
+            <td align="right">
                 {{ number_format($saldo_sd_bulan_ini1 - $saldo_bln_lalu1 + ($saldo_sd_bulan_ini2 - $saldo_bln_lalu2), 2) }}
             </td>
-            <td align="center">{{ number_format($saldo_sd_bulan_ini1 + $saldo_sd_bulan_ini2, 2) }}</td>
+            <td align="right">{{ number_format($saldo_sd_bulan_ini1 + $saldo_sd_bulan_ini2, 2) }}</td>
         </tr>
         <tr style="background: rgb(150, 150, 150); font-weight: bold; text-transform: uppercase;">
             <td colspan="4" height="16">5.4 Beban Pajak</td>
         </tr>
+
         @foreach ($ph as $ph)
             @php
                 $saldo = $keuangan->komSaldoLB($ph);
             @endphp
             <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-l' : 'bg-u' }}">
                 <td>{{ $ph->kode_akun }}. {{ $ph->nama_akun }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
+                <td align="right">
+                    {{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
                 </td>
-                <td align="center">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
+                <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'], 2) }}</td>
             </tr>
         @endforeach
+
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
             <td align="left">C. Laba Rugi Setelah Taksiran Pajak (A + B) </td>
-            <td align="center">{{ number_format($saldo_bln_lalu1 + $saldo_bln_lalu2, 2) }}</td>
-            <td align="center">
+            <td align="right">{{ number_format($saldo_bln_lalu1 + $saldo_bln_lalu2, 2) }}</td>
+            <td align="right">
                 {{ number_format($saldo_sd_bulan_ini1 - $saldo_bln_lalu1 + ($saldo_sd_bulan_ini2 - $saldo_bln_lalu2), 2) }}
             </td>
-            <td align="center">{{ number_format($saldo_sd_bulan_ini1 + $saldo_sd_bulan_ini2, 2) }}</td>
+            <td align="right">{{ number_format($saldo_sd_bulan_ini1 + $saldo_sd_bulan_ini2, 2) }}</td>
         </tr>
-
-    </table>
-@endsection
+    </tbody>
+</table>

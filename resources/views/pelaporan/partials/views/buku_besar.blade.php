@@ -1,58 +1,52 @@
-<style>
-    * {
-        font-family: 'Arial', sans-serif;
+@php
+    use App\Utils\Tanggal;
+@endphp
 
-    }
-
-    .bg-red {
-        background-color: rgb(255, 255, 255);
-    }
-
-    .bg-rw {
-        background-color: rgb(209, 209, 209);
-    }
-</style>
+@include('pelaporan.layouts.style')
 <title>{{ $title }}</title>
-@extends('pelaporan.layouts.base')
 
-@section('content')
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
-        <tr>
-            <td colspan="3" align="center">
-                <div style="font-size: 18px;">
-                    <b>BUKU BESAR {{ strtoupper($account->nama_akun) }}</b>
-                </div>
-                <div style="font-size: 16px;">
-                    <b>{{ strtoupper($sub_judul) }}</b>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" height="3"></td>
-        </tr>
-    </table>
-    <div style="width: 100%; text-align: right;">Kode Akun : {{ $kode_akun }}</div>
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+    <tr>
+        <td colspan="3" align="center">
+            <div style="font-size: 18px;">
+                <b>BUKU BESAR {{ strtoupper($account->nama_akun) }}</b>
+            </div>
+            <div style="font-size: 16px;">
+                <b>{{ strtoupper($sub_judul) }}</b>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" height="3"></td>
+    </tr>
+</table>
+
+<div style="width: 100%; text-align: right;">Kode Akun : {{ $kode_akun }}</div>
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+    <thead>
         <tr style="background: rgb(94, 94, 94); font-weight: bold; color: #ffffff;">
-            <td height="20" align="center" width="4%">No</td>
-            <td align="center" width="10%">Tanggal</td>
-            <td align="center" width="8%">Ref ID.</td>
-            <td align="center">Keterangan</td>
-            <td align="center" width="13%">Debit</td>
-            <td align="center" width="13%">Kredit</td>
-            <td align="center" width="13%">Saldo</td>
-            <td align="center" width="5%">Ins</td>
+            <th height="20" align="center" width="4%">No</th>
+            <th align="center" width="10%">Tanggal</th>
+            <th align="center" width="8%">Ref ID.</th>
+            <th align="center">Keterangan</th>
+            <th align="center" width="13%">Debit</th>
+            <th align="center" width="13%">Kredit</th>
+            <th align="center" width="13%">Saldo</th>
+            <th align="center" width="5%">Ins</th>
         </tr>
-        @php
-            $saldo_awal = 0;
-        @endphp
-        @php
-            $saldo_awal = ($saldo_awal_tahun?->kredit ?? 0) - ($saldo_awal_tahun?->debit ?? 0);
-            if ($account->jenis_mutasi != 'kredit') {
-                $saldo_awal = ($saldo_awal_tahun->debit ?? 0) - ($saldo_awal_tahun->kredit ?? 0);
-            }
-        @endphp
+    </thead>
 
+    @php
+        $saldo_awal = 0;
+    @endphp
+    @php
+        $saldo_awal = ($saldo_awal_tahun?->kredit ?? 0) - ($saldo_awal_tahun?->debit ?? 0);
+        if ($account->jenis_mutasi != 'kredit') {
+            $saldo_awal = ($saldo_awal_tahun->debit ?? 0) - ($saldo_awal_tahun->kredit ?? 0);
+        }
+    @endphp
+
+    <tbody>
         <tr style="background: rgb(209, 209, 209);">
             <td></td>
             <td align="center">01/01/{{ $tahun }}</td>
@@ -63,7 +57,6 @@
             <td align="right">{{ number_format($saldo_awal ?? 0, 2) }}</td>
             <td></td>
         </tr>
-
 
         @php
             $kom_trx_bulan_lalu_debit = $saldo_bulan_lalu->debit ?? 0;
@@ -84,7 +77,6 @@
             // Komulatif bulan lalu
             $kom_bulan_lalu = ($saldo_awal ?? 0) + $saldo_bulan_lalu;
         @endphp
-
 
         <tr style="background: rgb(209, 209, 209);">
             <td></td>
@@ -107,8 +99,7 @@
             $total_komulatif_debit = $saldo_awal_tahun->debit ?? 0;
             $total_komulatif_kredit = $saldo_awal_tahun->kredit ?? 0;
 
-            $counter = 1;
-            $numRows = $index * $rows;
+            $nomor = 1;
         @endphp
 
         @if ($transactions && count($transactions) > 0)
@@ -136,17 +127,13 @@
 
                     $total_komulatif_debit = ($saldo_awal_tahun->debit ?? 0) + $total_debit_sampai_dengan;
                     $total_komulatif_kredit = ($saldo_awal_tahun->kredit ?? 0) + $total_kredit_sampai_dengan;
-
-                    $nomor = $numRows + $counter;
-
-                    $counter++;
                 @endphp
 
-                <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-red' : 'bg-rw' }}">
+                <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                     <td align="center">{{ $nomor }}</td>
-                    <td align="center">{{ $transaction->tgl_transaksi ?? '-' }}</td>
-                    <td align="center">{{ $transaction->id ?? '-' }}</td>
-                    <td>{{ $transaction->keterangan ?? '-' }}</td>
+                    <td align="center">{{ Tanggal::tglIndo($transaction->tgl_transaksi) }}</td>
+                    <td align="center">{{ $transaction->id }}</td>
+                    <td>{{ $transaction->keterangan }}</td>
                     <td align="right">{{ number_format($debit, 2) }}</td>
                     <td align="right">{{ number_format($kredit, 2) }}</td>
                     <td align="right">{{ number_format($saldo_akun, 2) }}</td>
@@ -179,5 +166,5 @@
             <td align="right">{{ number_format($total_komulatif_debit, 2) }}</td>
             <td align="right">{{ number_format($total_komulatif_kredit, 2) }}</td>
         </tr>
-    </table>
-@endsection
+    </tbody>
+</table>

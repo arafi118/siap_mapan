@@ -2,63 +2,20 @@
     use App\Utils\Tanggal;
 @endphp
 
+@include('pelaporan.layouts.style')
 <title>{{ $title }}</title>
-<style>
-    * {
-        font-family: 'Arial', sans-serif;
-    }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-    }
+<table>
+    <tr>
+        <td colspan="7" align="center">
+            <div style="font-size: 18px;"><b>JURNAL TRANSAKSI</b></div>
+            <div style="font-size: 16px;"><b>{{ strtoupper($sub_judul) }}</b></div>
+        </td>
+    </tr>
+</table>
 
-    table th,
-    table td {
-        padding: 5px;
-    }
-
-    table th {
-        background-color: #5c5c5c;
-        color: white;
-    }
-
-    .row-white {
-        background-color: #ffffff;
-        color: #000;
-    }
-
-    .row-black {
-        background-color: #e0e0e0;
-        color: #000;
-    }
-
-    /* Hindari penggunaan terlalu banyak border */
-    .borderless td,
-    .borderless th {
-        border: none;
-    }
-
-    /* Tambahkan untuk menghindari error saat banyak data */
-    .page-break {
-        page-break-before: always;
-    }
-</style>
-
-@extends('pelaporan.layouts.base')
-
-@section('content')
-    <table>
-        <tr>
-            <td colspan="7" align="center">
-                <div style="font-size: 18px;"><b>JURNAL TRANSAKSI</b></div>
-                <div style="font-size: 16px;"><b>{{ strtoupper($sub_judul) }}</b></div>
-            </td>
-        </tr>
-    </table>
-
-    <table class="borderless" width="100%">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
         <tr>
             <th width="5%">No</th>
             <th width="10%">Tanggal</th>
@@ -69,6 +26,9 @@
             <th width="15%">Kredit</th>
             <th width="5%">Ins</th>
         </tr>
+    </thead>
+
+    <tbody>
         @php
             $totalDebit = 0;
             $totalKredit = 0;
@@ -117,5 +77,5 @@
             <td align="right"><strong>{{ number_format($totalKredit, 2, ',', '.') }}</strong></td>
             <td></td>
         </tr>
-    </table>
-@endsection
+    </tbody>
+</table>
