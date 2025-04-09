@@ -127,9 +127,9 @@
                         <td width="20%" align="center">NAMA PELANGGAN</td>
                         <td width="13%" align="center">NO INDUK</td>
                         <td width="20%" align="center">ALAMAT</td>
-                        <td width="14%" align="center">AWAL PEMAKAIAN</td>
-                        <td width="14%" align="center">AKHIR PEMAKAIAN</td>
-                        <td width="15%" align="center">JUMLAH PEMAKAIAN</td>
+                        <td width="14%" align="center">METER AWAL</td>
+                        <td width="14%" align="center">METER AKHIR</td>
+                        <td width="15%" align="center">PEMAKAIAN</td>
                     </tr>
                     <tr>
                         <td align="center">{{ $use->customers->nama }}</td>
