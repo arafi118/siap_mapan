@@ -56,7 +56,7 @@
             @php
                 $saldo = $keuangan->komSaldoLB($p);
             @endphp
-            <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-red' : 'bg-white' }}">
+            <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                 <td>{{ $p->kode_akun }}. {{ $p->nama_akun }}</td>
                 <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
                 <td align="right">{{ number_format($saldo['saldo_sd_bulan_ini'] - $saldo['saldo_sd_bulan_lalu'], 2) }}
@@ -97,7 +97,7 @@
             @php
                 $saldo = $keuangan->komSaldoLB($b);
             @endphp
-            <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-r' : 'bg-f' }}">
+            <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                 <td>{{ $b->kode_akun }}. {{ $b->nama_akun }}</td>
                 <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
                 <td align="right">
@@ -136,7 +136,7 @@
             @php
                 $saldo = $keuangan->komSaldoLB($bp);
             @endphp
-            <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-k' : 'bg-p' }}">
+            <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                 <td>{{ $bp->kode_akun }}. {{ $bp->nama_akun }}</td>
                 <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
                 <td align="right">
@@ -181,7 +181,7 @@
             @php
                 $saldo = $keuangan->komSaldoLB($pn);
             @endphp
-            <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-k' : 'bg-p' }}">
+            <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                 <td>{{ $pn->kode_akun }}. {{ $pn->nama_akun }}</td>
                 <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
                 <td align="right">
@@ -219,7 +219,7 @@
             @php
                 $saldo = $keuangan->komSaldoLB($pendl);
             @endphp
-            <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-k' : 'bg-p' }}">
+            <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                 <td>{{ $pendl->kode_akun }}. {{ $pendl->nama_akun }}</td>
                 <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
                 <td align="right">
@@ -254,7 +254,7 @@
             @php
                 $saldo = $keuangan->komSaldoLB($bb);
             @endphp
-            <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-l' : 'bg-u' }}">
+            <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                 <td>{{ $bb->kode_akun }}. {{ $bb->nama_akun }}</td>
                 <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
                 <td align="right">
@@ -301,7 +301,7 @@
             @php
                 $saldo = $keuangan->komSaldoLB($ph);
             @endphp
-            <tr class="{{ $loop->iteration % 2 == 1 ? 'bg-l' : 'bg-u' }}">
+            <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                 <td>{{ $ph->kode_akun }}. {{ $ph->nama_akun }}</td>
                 <td align="right">{{ number_format($saldo['saldo_sd_bulan_lalu'], 2) }}</td>
                 <td align="right">

@@ -22,7 +22,7 @@
 </table>
 
 <div style="width: 100%; text-align: right;">Kode Akun : {{ $kode_akun }}</div>
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
     <thead>
         <tr style="background: rgb(94, 94, 94); font-weight: bold; color: #ffffff;">
             <th height="20" align="center" width="4%">No</th>
@@ -132,7 +132,7 @@
                 <tr class="{{ $loop->iteration % 2 == 1 ? 'row-white' : 'row-black' }}">
                     <td align="center">{{ $nomor }}</td>
                     <td align="center">{{ Tanggal::tglIndo($transaction->tgl_transaksi) }}</td>
-                    <td align="center">{{ $transaction->id }}</td>
+                    <td>{{ $transaction->id }}</td>
                     <td>{{ $transaction->keterangan }}</td>
                     <td align="right">{{ number_format($debit, 2) }}</td>
                     <td align="right">{{ number_format($kredit, 2) }}</td>

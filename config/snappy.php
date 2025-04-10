@@ -37,7 +37,10 @@ return [
         'enabled' => true,
         'binary'  => '"' . env('WKHTMLTOPDF_BINARY', base_path('vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64')) . '"',
         'timeout' => false,
-        'options' => [],
+        'options' => [
+            'dpi' => 300,
+            'zoom' => 1.2,
+        ],
         'env'     => [],
     ],
 
