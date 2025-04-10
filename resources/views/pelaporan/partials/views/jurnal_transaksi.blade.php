@@ -17,14 +17,14 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
-            <th width="5%">No</th>
-            <th width="10%">Tanggal</th>
-            <th width="8%">Ref ID</th>
-            <th width="8%">Kd. Rek</th>
-            <th width="35%">Keterangan</th>
-            <th width="15%">Debit</th>
-            <th width="15%">Kredit</th>
-            <th width="5%">Ins</th>
+            <th align="center" width="4%">No</th>
+            <th align="center" width="10%">Tanggal</th>
+            <th align="center" width="8%">Ref ID.</th>
+            <th align="center" width="10%">Kd. Rek</th>
+            <th align="center" width="33%">Keterangan</th>
+            <th align="center" width="15%">Debit</th>
+            <th align="center" width="15%">Kredit</th>
+            <th align="center" width="5%">Ins</th>
         </tr>
     </thead>
 
@@ -39,10 +39,10 @@
             @endphp
             <tr class="{{ $rowClass }}">
                 <td>{{ $transaction['nomor'] }}</td>
-                <td>{{ Tanggal::tglIndo($transaction['tgl_transaksi']) }}</td>
+                <td align="center">{{ Tanggal::tglIndo($transaction['tgl_transaksi']) }}</td>
                 <td>{{ $transaction['id'] }}</td>
 
-                <td>{{ $transaction['kode_akun'] }}</td>
+                <td align="center">{{ $transaction['kode_akun'] }}</td>
                 <td>{{ $transaction['nama_akun'] }}</td>
                 <td align="right">{{ number_format($transaction['jumlah'], 2, ',', '.') }}</td>
                 <td align="right">{{ number_format(0, 2, ',', '.') }}</td>
@@ -56,7 +56,7 @@
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
 
-                    <td>{{ $trx_kredit['kode_akun'] }}</td>
+                    <td align="center">{{ $trx_kredit['kode_akun'] }}</td>
                     <td>{{ $trx_kredit['nama_akun'] }}</td>
                     <td align="right">{{ number_format(0, 2, ',', '.') }}</td>
                     <td align="right">{{ number_format($trx_kredit['jumlah'], 2, ',', '.') }}</td>

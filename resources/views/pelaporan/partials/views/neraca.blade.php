@@ -18,14 +18,16 @@
 </table>
 
 <table>
-    <tr style="background: #000; color: #fff;">
-        <td width="10%">Kode</td>
-        <td width="70%">Nama Akun</td>
-        <td align="right" width="20%">Saldo</td>
-    </tr>
-    <tr>
-        <td colspan="3" height="3"></td>
-    </tr>
+    <thead>
+        <tr style="background: #000; color: #fff;">
+            <td width="10%">Kode</td>
+            <td width="70%">Nama Akun</td>
+            <td align="right" width="20%">Saldo</td>
+        </tr>
+        <tr>
+            <td colspan="3" height="3"></td>
+        </tr>
+    </thead>
 
     @php
         $jumlah_liabilitas_equitas = 0;
@@ -78,7 +80,7 @@
                         $bg = 'rgba(255, 255, 255)';
                     }
                 @endphp
-                <tr style="{{ $bg }}">
+                <tr style="background-color: {{ $bg }}">
                     <td>{{ $lev3->kode_akun }}</td>
                     <td>{{ $lev3->nama_akun }}</td>
                     <td align="right">

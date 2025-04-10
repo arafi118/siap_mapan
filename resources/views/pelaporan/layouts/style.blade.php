@@ -3,7 +3,6 @@
         font-family: 'Arial', sans-serif;
         box-sizing: border-box;
         margin: 0;
-        padding: 0;
     }
 
     table {
@@ -11,7 +10,7 @@
         word-wrap: break-word;
         border-collapse: collapse;
         width: 100%;
-        font-size: 12px;
+        font-size: 11px;
     }
 
     table th {
