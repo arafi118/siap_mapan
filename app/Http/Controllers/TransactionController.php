@@ -1230,6 +1230,7 @@ class TransactionController extends Controller
             $rek_denda = $kode_denda->id;
         }
 
+        $trx_id = substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
         $insert[] = [
             'business_id' => Session::get('business_id'),
             'rekening_debit' => $kode_kas->id,
@@ -1237,6 +1238,7 @@ class TransactionController extends Controller
             'tgl_transaksi' => $tgl_transaksi,
             'total' => $data['abodemen'],
             'installation_id' => $request->id_instal,
+            'transaction_id' => $trx_id,
             'usage_id' => $request->id_usage,
             'user_id' => auth()->user()->id,
             'relasi' => $usage->customers->nama,
@@ -1251,6 +1253,7 @@ class TransactionController extends Controller
             'tgl_transaksi' => $tgl_transaksi,
             'total' => $data['tagihan'],
             'installation_id' => $request->id_instal,
+            'transaction_id' => $trx_id,
             'usage_id' => $request->id_usage,
             'user_id' => auth()->user()->id,
             'relasi' => $usage->customers->nama,
@@ -1265,6 +1268,7 @@ class TransactionController extends Controller
             'tgl_transaksi' => $tgl_transaksi,
             'total' => $data['denda'],
             'installation_id' => $request->id_instal,
+            'transaction_id' => $trx_id,
             'usage_id' => $request->id_usage,
             'user_id' => auth()->user()->id,
             'relasi' => $usage->customers->nama,
@@ -1306,6 +1310,7 @@ class TransactionController extends Controller
         $trx_settings = Settings::where('business_id', Session::get('business_id'))->first();
         $trx = Transaction::where('id', $id)->with([
             'Installations.customer',
+            'transaction',
             'Usages'
         ])->first();
         $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
