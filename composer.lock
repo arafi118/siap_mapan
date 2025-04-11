@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a65d02c60a9c35119cb246589afc3f85",
+    "content-hash": "5c1eb000e72c1f65beb458e888124cef",
     "packages": [
         {
             "name": "awobaz/compoships",
@@ -4497,6 +4497,49 @@
                 "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v8.8.0"
             },
             "time": "2025-03-23T17:59:05+00:00"
+        },
+        {
+            "name": "silvertipsoftware/wkhtmltoimage-amd64",
+            "version": "0.12.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SilvertipSoftware/wkhtmltoimage-amd64.git",
+                "reference": "c4e33f635207af89a704205b8902fb5715ca88be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SilvertipSoftware/wkhtmltoimage-amd64/zipball/c4e33f635207af89a704205b8902fb5715ca88be",
+                "reference": "c4e33f635207af89a704205b8902fb5715ca88be",
+                "shasum": ""
+            },
+            "bin": [
+                "bin/wkhtmltoimage-amd64"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL Version 3"
+            ],
+            "authors": [
+                {
+                    "name": "Julius Beckmann",
+                    "email": "github@h4cc.de"
+                }
+            ],
+            "description": "Convert html to image using webkit (qtwebkit). Static linked linux binary for amd64 systems.",
+            "homepage": "http://wkhtmltopdf.org/",
+            "keywords": [
+                "binary",
+                "convert",
+                "image",
+                "snapshot",
+                "thumbnail",
+                "wkhtmltoimage"
+            ],
+            "support": {
+                "source": "https://github.com/SilvertipSoftware/wkhtmltoimage-amd64/tree/0.12.4"
+            },
+            "time": "2018-01-15T07:23:40+00:00"
         },
         {
             "name": "silvertipsoftware/wkhtmltopdf-amd64",

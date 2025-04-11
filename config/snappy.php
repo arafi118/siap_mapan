@@ -46,7 +46,7 @@ return [
 
     'image' => [
         'enabled' => true,
-        'binary'  => '"' . env('WKHTMLTOIMAGE_BINARY', base_path('vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltoimage-amd64')) . '"',
+        'binary'  => '"' . env('WKHTMLTOIMAGE_BINARY', base_path('vendor/silvertipsoftware/wkhtmltoimage-amd64/bin/wkhtmltoimage-amd64')) . '"',
         'timeout' => false,
         'options' => [],
         'env'     => [],
