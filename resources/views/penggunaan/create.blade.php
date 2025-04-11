@@ -138,18 +138,7 @@
             html5QrcodeScanner.render((result) => {
                 if (scanningEnabled) {
                     $('tr[data-id=' + result + '] td:first-child').click()
-
-                    if (result.length >= 10) {
-                        Swal.fire('Error',
-                            'Sepertinya kartu angsuran yang anda punya bukan yang terbaru. Silahkan cetak ulang kartu angsuran anda',
-                            'error')
-                        $('#html5-qrcode-button-camera-stop').trigger('click')
-                        $('#stopScan').html('Scan Ulang')
-                    } else {
-                        window.location.href = '/usages/barcode' + result
-                    }
-
-                    scanningEnabled = false
+                    $('#scanQrCode').modal('hide')
                 }
             });
 

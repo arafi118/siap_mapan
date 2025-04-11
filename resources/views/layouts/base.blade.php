@@ -371,14 +371,12 @@
     </script>
     <script>
         //property lainya
-
         function open_window(link) {
             return window.open(link)
         }
 
         $(document).on('click', '.btn-modal-close', function(e) {
             e.preventDefault();
-
             $('.modal').modal('hide');
         });
 
