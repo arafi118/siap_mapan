@@ -18,6 +18,7 @@
         "maatwebsite/excel": "^3.1",
         "michael-schaefer-eu/wkhtmltox": "^0.12.5",
         "phpoffice/phpspreadsheet": "1.29.9",
+        "silvertipsoftware/wkhtmltopdf-amd64": "^0.12.4",
         "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {
