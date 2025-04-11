@@ -78,7 +78,7 @@
             <table>
                 <tr>
                     <td>No Ref</td>
-                    <td class="text-right">{{ md5($trx->id) }}</td>
+                    <td class="text-right">{{ $trx->Installations->id }}</td>
                 </tr>
                 <tr>
                     <td>Nomor</td>

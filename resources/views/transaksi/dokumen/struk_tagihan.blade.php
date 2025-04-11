@@ -1,7 +1,25 @@
 @php
     use App\Utils\Tanggal;
+    $totalAbodemen = 0;
+    $totalTagihan = 0;
+    $totalDenda = 0;
 @endphp
-
+@foreach ($trx->transaction as $transaksi)
+    @php
+        $keterangan = $transaksi->keterangan;
+        $total = $transaksi->total;
+    @endphp
+    @if (Str::contains($keterangan, 'Abodemen'))
+        @php $totalAbodemen += $total; @endphp
+    @elseif(Str::contains($keterangan, 'Tagihan'))
+        @php $totalTagihan += $total; @endphp
+    @elseif(Str::contains($keterangan, 'Denda'))
+        @php $totalDenda += $total; @endphp
+    @endif
+    @php
+        $total = $totalAbodemen + $totalTagihan + $totalDenda;
+    @endphp
+@endforeach
 <!DOCTYPE html>
 <html lang="en">
 
@@ -78,7 +96,7 @@
             <table>
                 <tr>
                     <td>No Ref</td>
-                    <td class="text-right">{{ md5($trx->id) }}</td>
+                    <td class="text-right">{{ $trx->Usages->id }}</td>
                 </tr>
                 <tr>
                     <td>Nomor</td>
@@ -124,19 +142,19 @@
                     </tr>
                     <tr>
                         <td>Tagihan</td>
-                        <td class="text-right">Rp {{ number_format($trx->Usages->nominal, 2, ',', '.') }}</td>
+                        <td class="text-right">Rp {{ number_format($totalTagihan, 2, ',', '.') }}</td>
                     </tr>
                     <tr>
                         <td>Abodemen</td>
-                        <td class="text-right">Rp {{ number_format($trx_settings->abodemen, 2, ',', '.') }}</td>
+                        <td class="text-right">Rp {{ number_format($totalAbodemen, 2, ',', '.') }}</td>
                     </tr>
                     <tr>
                         <td>Denda</td>
-                        <td class="text-right">Rp {{ number_format($trx->denda, 2, ',', '.') }}</td>
+                        <td class="text-right">Rp {{ number_format($totalDenda, 2, ',', '.') }}</td>
                     </tr>
                     <tr>
                         <td><b>Total Bayar</b></td>
-                        <td class="text-right"><b>Rp {{ number_format($trx->total, 2, ',', '.') }}</b></td>
+                        <td class="text-right"><b>Rp {{ number_format($total, 2, ',', '.') }}</b></td>
                     </tr>
                     <tr>
                         <td colspan="2">&nbsp;</td>

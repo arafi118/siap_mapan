@@ -57,6 +57,7 @@ class SystemController extends Controller
                     }
                 }
 
+                $trx_id = substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
                 if ($usage->tgl_akhir <= $date && $jumlah_pembayaran < $usage->nominal) {
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
@@ -66,8 +67,8 @@ class SystemController extends Controller
                         'user_id' => '1',
                         'usage_id' => $usage->id,
                         'installation_id' => $usage->id_instalasi,
+                        'transaction_id' => $trx_id,
                         'total' => $abodemen,
-                        'denda' => '0',
                         'relasi' => $usage->customers->nama,
                         'keterangan' => 'Hutang Abodemen pemakaian atas nama ' . $usage->customers->nama . ' (' . $ins->id . ')',
                         'urutan' => '0',
@@ -82,8 +83,8 @@ class SystemController extends Controller
                         'user_id' => '1',
                         'usage_id' => $usage->id,
                         'installation_id' => $usage->id_instalasi,
+                        'transaction_id' => $trx_id,
                         'total' => $usage->nominal - $jumlah_pembayaran,
-                        'denda' => '0',
                         'relasi' => $usage->customers->nama,
                         'keterangan' => 'Hutang Pemakaian atas nama ' . $usage->customers->nama . ' (' . $ins->id . ')',
                         'urutan' => '0',
@@ -98,8 +99,8 @@ class SystemController extends Controller
                         'user_id' => '1',
                         'usage_id' => $usage->id,
                         'installation_id' => $usage->id_instalasi,
+                        'transaction_id' => $trx_id,
                         'total' => $denda,
-                        'denda' => '0',
                         'relasi' => $usage->customers->nama,
                         'keterangan' => 'Hutang Denda pemakaian atas nama ' . $usage->customers->nama . ' (' . $ins->id . ')',
                         'urutan' => '0',

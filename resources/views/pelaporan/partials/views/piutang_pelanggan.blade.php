@@ -1,50 +1,49 @@
 @php
     use App\Utils\Tanggal;
 @endphp
-<style>
-    * {
-        font-family: 'Arial', sans-serif;
-    }
-</style>
+
+@include('pelaporan.layouts.style')
 <title>{{ $title }}</title>
-@extends('pelaporan.layouts.base')
 
-@section('content')
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
-        <tr>
-            <th colspan="3" align="center">
-                <div style="font-size: 18px; font-weight: bold;">Piutang Pelanggan</div>
-                <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
-            </th>
-        </tr>
-        <tr>
-            <th colspan="3" height="10"></th>
-        </tr>
-    </table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+    <tr>
+        <td colspan="3" align="center">
+            <div style="font-size: 18px; font-weight: bold;">Piutang Pelanggan</div>
+            <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" height="10"></td>
+    </tr>
+</table>
 
-    <table border="0" width="100%" cellspacing="0" cellpadding="0"
-        style="font-size: 11px; border-collapse: collapse; table-layout: fixed;">
+<table border="0" width="100%">
+    <thead>
         <tr style="background-color: rgb(230, 230, 230); font-weight: bold;">
-            <th style="border: 1px solid black; padding: 5px;" width="3%" rowspan="3">No</th>
-            <th style="border: 1px solid black; padding: 5px;" width="10%" rowspan="3">Nama</th>
-            <th style="border: 1px solid black; padding: 5px;" width="10%" rowspan="3">No. Induk</th>
-            <th style="border: 1px solid black; padding: 5px;" width="8%" colspan="{{ count($bulan_tampil) }}">Tunggakan
+            <th class="t l b" width="3%" rowspan="3">No</th>
+            <th class="t l b" width="10%" rowspan="3">Nama</th>
+            <th class="t l b" width="10%" rowspan="3">No. Induk</th>
+            <th class="t l b " width="8%" colspan="{{ count($bulan_tampil) }}">
+                Tunggakan
             </th>
-            <th style="border: 1px solid black; padding: 5px;" width="8%" rowspan="3">Dibayar</th>
-            <th style="border: 1px solid black; padding: 5px;" width="8%" rowspan="3">Kategori</th>
+            <th class="t l b" width="8%" rowspan="3">Dibayar</th>
+            <th class="t l b r" width="8%" rowspan="3">Kategori</th>
         </tr>
         <tr style="background: rgb(230, 230, 230); font-weight: bold;">
-            <th class="t l b" width="6%">s/d 3 Bulan Lalu</th>
-            <th class="t l b" width="6%">Bulan Lalu</th>
-            <th class="t l b" width="6%"style="border: 1px solid black; padding: 5px;">Bulan Ini</th>
+            <th class="t l b" class="t l b" width="6%">s/d 3 Bulan Lalu</th>
+            <th class="t l b" class="t l b" width="6%">Bulan Lalu</th>
+            <th class="t l b" class="t l b" width="6%">Bulan Ini</th>
         </tr>
         <tr style="background: rgb(230, 230, 230); font-weight: bold;">
             @foreach ($bulan_tampil as $bt)
-                <th class="t l b" width="6%">
+                <th class="t l b" class="t l b" width="6%">
                     {{ Tanggal::namaBulan($bt . '-01') }}
                 </th>
             @endforeach
         </tr>
+    </thead>
+    <tbody>
+
         @php
             use Carbon\Carbon;
             $no = 1;
@@ -60,23 +59,24 @@
         @foreach ($installations as $installation)
             @if (!in_array($installation->village, $data_desa))
                 <tr>
-                    <th colspan="8" style="border: 1px solid black; padding: 5px; font-weight: normal;" align="left">
+                    <td class="t l b r" colspan="8" align="left">
                         Dusun {{ $installation->village->dusun }} Kalurahan {{ $installation->village->nama }}
-                    </th>
+                    </td>
                 </tr>
                 @php
                     $data_desa[] = $installation->village;
                 @endphp
             @endif
             <tr>
-                <th style="border: 1px solid black; padding: 5px;font-weight: normal;" align="center">{{ $no++ }}
-                </th>
-                <th style="border: 1px solid black; padding: 5px;font-weight: normal;" align="left">
+                <td class="t l b" align="center">
+                    {{ $no++ }}
+                </td>
+                <td class="t l b" align="left">
                     {{ $installation->customer->nama }}
-                </th>
-                <th style="border: 1px solid black; padding: 5px;font-weight: normal;" align="center">
+                </td>
+                <td class="t l b" align="center">
                     {{ $installation->kode_instalasi }}
-                </th>
+                </td>
                 @php
                     $nomor = 1;
                     $data_menunggak = [];
@@ -125,34 +125,33 @@
                             $cek_bulan[$bt] = $bt;
                         }
                     @endphp
-                    <th style="border: 1px solid black; padding: 5px; font-weight: normal" align="right">
+                    <td class="t l b" align="right">
                         {{ number_format($tunggakan, 0, ',', '.') . ',-' }}
-                    </th>
+                    </td>
                 @endforeach
 
-                <th style="border: 1px solid black; padding: 5px; font-weight: normal;" align="right">
+                <td class="t l b" align="right">
                     {{ number_format($dibayar, 0, ',', '.') . ',-' }}
-                </th>
-                <th style="border: 1px solid black; padding: 5px; font-weight: normal;" align="center">
+                </td>
+                <td class="t l b r" align="center">
                     {{ $installation->status_tunggakan }}
-                </th>
+                </td>
             </tr>
         @endforeach
 
         <tr style="font-weight: bold;">
-            <th style="border: 1px solid black; padding: 5px;" colspan="3" align="left">Jumlah</th>
+            <td class="t l b" colspan="3" align="left">Jumlah</td>
             @foreach ($bulan_tampil as $bt)
                 @php
                     $bulan = Carbon::parse($bt)->format('Y-m');
                 @endphp
-                <th style="border: 1px solid black; padding: 5px;" align="right">
+                <td class="t l b" align="right">
                     {{ isset($totalMenunggakPerBulan[$bulan]) ? number_format($totalMenunggakPerBulan[$bulan], 0, ',', '.') . ',-' : '0,-' }}
-                </th>
+                </td>
             @endforeach
-            <th style="border: 1px solid black; padding: 5px;" align="right">
-            </th>
-            <th style="border: 1px solid black; padding: 5px;" align="right"></th>
-        </tr>
 
-    </table>
-@endsection
+            <td class="t l b" align="right"></td>
+            <td class="t l b r" align="right"></td>
+        </tr>
+    </tbody>
+</table>

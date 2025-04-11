@@ -21,7 +21,8 @@ use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 
 class PelaporanController extends Controller
 {
@@ -220,13 +221,8 @@ class PelaporanController extends Controller
         if ($laporan == 'tutup_buku') {
             $laporan = $request->get('sub_laporan');
         }
-        if ($laporan == 'daftar_pelanggan') {
-            $data['cater'] = $request->get('sub_laporan');
-        }
-        if ($laporan == 'piutang_pelanggan') {
-            $data['cater'] = $request->get('sub_laporan');
-        }
-        if ($laporan == 'tagihan_pelanggan') {
+
+        if ($laporan == 'daftar_pelanggan' || $laporan == 'piutang_pelanggan' || $laporan == 'tagihan_pelanggan') {
             $data['cater'] = $request->get('sub_laporan');
         }
 
@@ -239,7 +235,6 @@ class PelaporanController extends Controller
         $data['alamat'] = $busines->alamat;
         $data['jabatan'] = $direktur->positions;
         $data['direktur'] = $direktur;
-
 
         try {
             return $this->$laporan($data);
@@ -263,120 +258,16 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
+
         $data['title'] = 'Cover';
         $view = view('pelaporan.partials.views.cover', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    }
-    private function calkk(array $data)
-    {
-        $keuangan = new Keuangan;
-        $thn = $data['tahun'];
-        $bln = $data['bulan'];
-        $hari = $data['hari'];
-
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
-        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
-            'akun2',
-            'akun2.akun3',
-            'akun2.akun3.accounts' => function ($query) {
-                $query->where('business_id', Session::get('business_id'));
-            },
-            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
-                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
-                });
-            },
-        ])->orderBy('kode_akun', 'ASC')->get();
-
-        $laba_rugi = Account::where('business_id', Session::get('business_id'))->where('lev1', '>=', '4')->with([
-            'amount' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
-                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
-                });
-            },
-        ])->get();
-
-        $pendapatan = 0;
-        $beban = 0;
-        foreach ($laba_rugi as $lr) {
-            $saldo = $keuangan->komSaldo($lr);
-            if ($lr->lev1 == '4') {
-                $pendapatan += $saldo;
-            }
-
-            if ($lr->lev1 == '5') {
-                $beban += $saldo;
-            }
-        }
-
-        $data['surplus'] = $pendapatan - $beban;
-
-        $data['title'] = 'Calk';
-        $view = view('pelaporan.partials.views.calk', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    }
-    private function calk_tutup_buku(array $data)
-    {
-        $keuangan = new Keuangan;
-        $thn = $data['tahun'];
-        $bln = $data['bulan'];
-        $hari = $data['hari'];
-
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
-        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
-            'akun2',
-            'akun2.akun3',
-            'akun2.akun3.accounts' => function ($query) {
-                $query->where('business_id', Session::get('business_id'));
-            },
-            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
-                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
-                });
-            },
-        ])->orderBy('kode_akun', 'ASC')->get();
-
-        $laba_rugi = Account::where('business_id', Session::get('business_id'))->where('lev1', '>=', '4')->with([
-            'amount' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
-                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
-                });
-            },
-        ])->get();
-
-        $pendapatan = 0;
-        $beban = 0;
-        foreach ($laba_rugi as $lr) {
-            $saldo = $keuangan->komSaldo($lr);
-            if ($lr->lev1 == '4') {
-                $pendapatan += $saldo;
-            }
-
-            if ($lr->lev1 == '5') {
-                $beban += $saldo;
-            }
-        }
-
-        $data['surplus'] = $pendapatan - $beban;
-
-        $data['title'] = 'Calk';
-        $view = view('pelaporan.partials.views.tutup_buku.calk', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'margin-top'    => 20,
+            'margin-bottom' => 20,
+            'margin-left'   => 25,
+            'margin-right'  => 20,
+        ]);
+        return $pdf->inline();
     }
 
     private function surat_pengantar(array $data)
@@ -403,16 +294,25 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::tahun($tgl);
         }
+
         $data['nama_desa'] = $villages->nama;
         $data['alamat_desa'] = $villages->alamat;
+
         $data['title'] = 'Surat Pengantar';
         $view = view('pelaporan.partials.views.surat_pengantar', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'    => 30,
+            'margin-bottom' => 20,
+            'margin-left'   => 25,
+            'margin-right'  => 20,
+        ]);
+        return $pdf->inline();
     }
+
     private function jurnal_transaksi(array $data)
     {
-
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
@@ -426,225 +326,80 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        $data['transactions'] = Transaction::where([
+        $data['rows'] = 500;
+        $transactions = Transaction::where([
             ['tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%'],
             ['business_id', Session::get('business_id')]
         ])->with([
             'acc_debit',
             'acc_kredit',
-        ])->lazy();
-
-        $data['title'] = 'Jurnal Transaksi';
-
-        ob_start();
-        $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
-        ob_get_clean();
-
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    }
-    private function jurnal_tutup_buku(array $data)
-    {
-
-        $thn = $data['tahun'];
-        $bln = $data['bulan'];
-        $hari = $data['hari'];
-
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['judul'] = 'Laporan Keuangan';
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
-
-        // SELECT * FROM transactions WHERE tgl_transaksi LIKE '2025-01%';
-        $data['transactions'] = Transaction::where('tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%')
-            ->with([
-                'acc_debit',
-                'acc_kredit',
-            ])->get();
-
-        $data['title'] = 'Jurnal Tutup Buku';
-        $view = view('pelaporan.partials.views.tutup_buku.jurnal', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    }
-    private function daftar_pelanggan(array $data)
-    {
-        $thn = $data['tahun'];
-        $bln = $data['bulan'];
-        $hari = $data['hari'];
-
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['judul'] = 'Laporan Keuangan';
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-
-        $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-
-        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
-
-        $data['installations'] = Installations::where([
-            ['aktif', '<=', $data['tgl_kondisi']],
-            ['business_id', Session::get('business_id')]
-        ])
-            ->whereNotIn('status', ['B', 'C'])
-            ->with([
-                'customer',
-                'usage' => function ($query) use ($data) {
-                    $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
-                },
-            ]);
-
-        if (!empty($data['cater'])) {
-            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
-        }
-
-        $data['installations'] = $data['installations']->get();
-
-        $data['title'] = 'Daftar Pelanggan';
-        $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-
-        return $pdf->stream();
-    }
-
-
-    private function tagihan_pelanggan(array $data)
-    {
-
-        $thn = $data['tahun'];
-        $bln = $data['bulan'];
-        $hari = $data['hari'];
-
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['judul'] = 'Laporan Keuangan';
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
-        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
-            'customer',
-            'village',
-            'settings',
-            'usage' => function ($query) use ($data) {
-                $tgl_awal = date('Y-m', strtotime('-3 month', strtotime($data['tgl_kondisi']))) . '-01';
-                $query->whereBetween('tgl_akhir', [$tgl_awal, $data['tgl_kondisi']]);
+            'transaction' => function ($query) use ($data) {
+                $query->where('tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%');
             },
-            'usage.transaction' => function ($query) use ($data) {
-                $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
-            },
-
-        ]);
-        $data['cater_id'] = $data['sub_laporan']; // Ambil ID cater dari sub_laporan atau request
-
-        $data['cater'] = User::where([
-            ['business_id', Session::get('business_id')],
-            ['id', $data['cater_id']],
-            ['jabatan', '5']
-        ])->first();
-        
-        if (!empty($data['cater_id'])) {
-            $data['installations'] = $data['installations']->where('cater_id', $data['cater_id']);
-        }
-        $data['installations'] = $data['installations']->get();
-
-        $bulan_tampil = [];
-        $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
-
-        for ($i = 0; $i < 3; $i++) {
-            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m');
-        }
-
-        $data['bulan_tampil'] = array_reverse($bulan_tampil);
-
-        $data['title'] = 'Daftar Tagihan Pelanggan';
-        $view = view('pelaporan.partials.views.tagihan_pelanggan', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    }
-    private function piutang_pelanggan(array $data)
-    {
-
-        $thn = $data['tahun'];
-        $bln = $data['bulan'];
-        $hari = $data['hari'];
-
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['judul'] = 'Laporan Keuangan';
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
-
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
-        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->where('status_tunggakan', '!=', 'lancar')->with([
-            'customer',
-            'village',
-            'package',
-            'usage' => function ($query) use ($data) {
-                $query->where('tgl_akhir', '<=', $data['tgl_kondisi'])->where('status', 'UNPAID')->orderBy('tgl_akhir')->orderBy('id');
-            },
-            'usage.transaction' => function ($query) use ($data) {
-                $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
-            },
-        ]);
-
-        if (!empty($data['cater'])) {
-            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
-        }
-
-        $data['installations'] = $data['installations']->get();
-
-        $bulan_tampil = [];
-        $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
-
-        for ($i = 0; $i < 3; $i++) {
-            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m'); // Format YYYY-MM untuk handle perubahan tahun
-        }
-
-        $data['bulan_tampil'] = array_reverse($bulan_tampil); // Urutkan agar tampil dari yang paling lama ke terbaru
-
-
-        $data['title'] = 'Daftar Piutang Pelanggan';
-        $view = view('pelaporan.partials.views.piutang_pelanggan', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    }
-    private function alokasi_laba(array $data)
-    {
-
-        $thn = $data['tahun'];
-        $bln = $data['bulan'];
-        $hari = $data['hari'];
-
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['judul'] = 'Laporan Keuangan';
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
-        $data['accounts'] = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'like', '2.1.04%')->with([
-            'amount' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun']);
-            }
+            'transaction.acc_debit',
+            'transaction.acc_kredit',
         ])->get();
 
-        $data['title'] = 'Alokasi Laba';
-        $view = view('pelaporan.partials.views.tutup_buku.alokasi_laba', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        $nomor = 1;
+        $data['transaction_id'] = [];
+        $data['transactions'] = [];
+        foreach ($transactions as $trx) {
+            if (in_array($trx->transaction_id, $data['transaction_id'])) {
+                continue;
+            }
+
+            $trx_debit = [
+                'id' => $trx->id,
+                'nomor' => $nomor,
+                'tgl_transaksi' => $trx->tgl_transaksi,
+                'kode_akun' => $trx->acc_debit->kode_akun,
+                'nama_akun' => $trx->acc_debit->nama_akun,
+                'jumlah' => $trx->total,
+                'ins' => '',
+                'trx_kredit' => []
+            ];
+
+            $trx_kredit = [];
+            if ($trx->transaction_id != '0') {
+                $trx_debit['jumlah'] = 0;
+                foreach ($trx->transaction as $child) {
+                    $trx_kredit[] = [
+                        'kode_akun' => $child->acc_kredit->kode_akun,
+                        'nama_akun' => $child->acc_kredit->nama_akun,
+                        'jumlah' => $child->total,
+                    ];
+
+                    $trx_debit['jumlah'] += $child->total;
+                }
+            } else {
+                $trx_kredit[] = [
+                    'kode_akun' => $trx->acc_kredit->kode_akun,
+                    'nama_akun' => $trx->acc_kredit->nama_akun,
+                    'jumlah' => $trx->total,
+                ];
+            }
+
+            $trx_debit['trx_kredit'] = $trx_kredit;
+            array_push($data['transactions'], $trx_debit);
+
+            $data['transaction_id'][] = $trx->transaction_id;
+            $nomor++;
+        }
+
+        $data['title'] = 'Jurnal Transaksi';
+        $view = view('pelaporan.partials.views.jurnal_transaksi', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
     }
+
     private function buku_besar(array $data)
     {
         $thn = $data['tahun'];
@@ -659,9 +414,8 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['title'] = 'Buku Besar';
-        $data['kode_akun'] = $data['sub_laporan'];
 
+        $data['kode_akun'] = $data['sub_laporan'];
         $data['account'] = Account::where([
             ['business_id', Session::get('business_id')],
             ['kode_akun', $data['kode_akun']]
@@ -679,14 +433,27 @@ class PelaporanController extends Controller
             ['account_id', $data['account']->id]
         ])->first();
 
-        $data['transactions'] = Transaction::where('tgl_transaksi', 'LIKE', $thn . '-' . $bln . '%')->where(function ($query) use ($data) {
+        $data['transactions'] = Transaction::where([
+            ['tgl_transaksi', 'LIKE', $thn . '-' . $bln . '%'],
+            ['business_id', Session::get('business_id')]
+        ])->where(function ($query) use ($data) {
             $query->where('rekening_debit', $data['account']->id)->orwhere('rekening_kredit', $data['account']->id);
         })->get();
 
+        $data['title'] = 'Buku Besar';
         $view = view('pelaporan.partials.views.buku_besar', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
     }
+
     private function neraca_saldo(array $data)
     {
         $thn = $data['tahun'];
@@ -702,7 +469,7 @@ class PelaporanController extends Controller
         }
         $tanggal = Tanggal::tglLatin($tgl);
         $data['sub_judul'] = 'PER ' . $tanggal;
-        // SELECT * FROM account WHERE business_id = Session::get('business_id');
+
         $data['accounts'] = Account::where('business_id', Session::get('business_id'))->with([
             'amount' => function ($query) use ($data) {
                 $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
@@ -710,11 +477,21 @@ class PelaporanController extends Controller
                 });
             }
         ])->get();
+
         $data['title'] = 'Neraca Saldo';
         $view = view('pelaporan.partials.views.neraca_saldo', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ])->setOrientation('landscape');
+        return $pdf->inline();
     }
+
     private function neraca(array $data)
     {
         $keuangan = new Keuangan;
@@ -767,46 +544,24 @@ class PelaporanController extends Controller
 
         $data['title'] = 'Neraca';
         $view = view('pelaporan.partials.views.neraca', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
     }
-    private function neraca_tutup_buku(array $data)
-    {
-        $thn = $data['tahun'];
-        $bln = $data['bulan'];
-        $hari = $data['hari'];
 
-        $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
-        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
-            'akun2',
-            'akun2.akun3',
-            'akun2.akun3.accounts',
-            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun']],
-                    ['bulan', '0']
-                ]);
-            },
-        ])->orderBy('kode_akun', 'ASC')->get();
-
-        $data['title'] = 'Neraca Awal Tahun';
-        $view = view('pelaporan.partials.views.tutup_buku.neraca', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    }
     private function laba_rugi(array $data)
     {
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
 
-        // Mendapatkan bulan dan tahun sekarang
         $bulanSekarang = $bln;
 
         $tgl = $thn . '-' . $bln . '-' . $hari;
@@ -822,7 +577,6 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        // Query untuk Pendapatan s.d. Bulan Lalu dan Bulan Ini
         $data['pendapatan'] = Account::where([
             ['kode_akun', 'LIKE', '4.1.%'],
             ['business_id', Session::get('business_id')]
@@ -919,7 +673,6 @@ class PelaporanController extends Controller
         ])->with([
             'amount' => function ($query) use ($thn, $bulanSekarang) {
                 $query->where('tahun', $thn)->where(function ($query) use ($bulanSekarang) {
-                    // Data untuk Bulan Lalu (bulan aktif - 1)
                     $query->where('bulan', '0')->orWhere('bulan', '=', $bulanSekarang);
                 });
             },
@@ -930,157 +683,18 @@ class PelaporanController extends Controller
 
         $data['title'] = 'Laba Rugi';
         $view = view('pelaporan.partials.views.laba_rugi', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
     }
-    private function laba_rugi_tutup_buku(array $data)
-    {
-        $thn = $data['tahun'];
 
-        // Menyiapkan data awal tahun
-        $data['judul'] = 'Laporan Keuangan';
-        $data['tgl'] = 'Awal Tahun ' . $thn;
-
-        // Query Pendapatan awal tahun
-        $dataPendapatan = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '4.1.%')
-            ->with([
-                'amount' => function ($query) use ($data) {
-                    $query->where([
-                        ['tahun', $data['tahun']],
-                        ['bulan', '0']
-                    ]);
-                },
-                'oneAmount' => function ($query) use ($data) {
-                    $query->where([
-                        ['tahun', $data['tahun']],
-                        ['bulan', '0']
-                    ]);
-                }
-            ])->orderBy('kode_akun', 'ASC')->get();
-
-        // Query Beban awal tahun
-        $dataBeban = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '5.1.%')
-            ->orWhere('kode_akun', 'LIKE', '5.2.%')
-            ->where('kode_akun', '!=', '5.2.01.01')
-            ->with([
-                'amount' => function ($query) use ($data) {
-                    $query->where([
-                        ['tahun', $data['tahun']],
-                        ['bulan', '0']
-                    ]);
-                },
-                'oneAmount' => function ($query) use ($data) {
-                    $query->where([
-                        ['tahun', $data['tahun']],
-                        ['bulan', '0']
-                    ]);
-                }
-            ])->orderBy('kode_akun', 'ASC')->get();
-
-        // Query Pen awal tahun
-        $dataPen = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '4.2.%')
-            ->orWhere('kode_akun', 'LIKE', '4.3.%')
-            ->whereNotIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])
-            ->with([
-                'amount' => function ($query) use ($data) {
-                    $query->where([
-                        ['tahun', $data['tahun']],
-                        ['bulan', '0']
-                    ]);
-                },
-                'oneAmount' => function ($query) use ($data) {
-                    $query->where([
-                        ['tahun', $data['tahun']],
-                        ['bulan', '0']
-                    ]);
-                }
-            ])->orderBy('kode_akun', 'ASC')->get();
-
-        // Query Beb awal tahun
-        $dataBeb = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '5.3.%')
-            ->orWhere('kode_akun', 'LIKE', '5.4.%')
-            ->where('kode_akun', '!=', '5.4.01.01')
-            ->with([
-                'amount' => function ($query) use ($data) {
-                    $query->where([
-                        ['tahun', $data['tahun']],
-                        ['bulan', '0']
-                    ]);
-                },
-                'oneAmount' => function ($query) use ($data) {
-                    $query->where([
-                        ['tahun', $data['tahun']],
-                        ['bulan', '0']
-                    ]);
-                }
-            ])->orderBy('kode_akun', 'ASC')->get();
-
-        // Query PPh awal tahun
-        $pph = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '5.4.01.01')->with([
-            'amount' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun']],
-                    ['bulan', '0']
-                ]);
-            },
-            'oneAmount' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun']],
-                    ['bulan', '0']
-                ]);
-            }
-        ])->orderBy('kode_akun', 'ASC')->get();
-
-        // Query Beban Pemasaran awal tahun
-        $bebanPemasaran = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '5.2.01.01')->with([
-            'amount' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun']],
-                    ['bulan', '0']
-                ]);
-            },
-            'oneAmount' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun']],
-                    ['bulan', '0']
-                ]);
-            }
-        ])->orderBy('kode_akun', 'ASC')->get();
-
-        // Query Pendapatan Luar awal tahun
-        $pendluar = Account::where('business_id', Session::get('business_id'))->whereIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])->with([
-            'amount' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun']],
-                    ['bulan', '0']
-                ]);
-            },
-            'oneAmount' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun']],
-                    ['bulan', '0']
-                ]);
-            }
-        ])->orderBy('kode_akun', 'ASC')->get();
-
-        // Menyiapkan data untuk view
-        $data = [
-            'pendapatan' => $dataPendapatan,
-            'beban' => $dataBeban,
-            'pen' => $dataPen,
-            'beb' => $dataBeb,
-            'ph' => $pph,
-            'bp' => $bebanPemasaran,
-            'pendl' => $pendluar
-        ];
-        $data['sub_judul'] = 'Awal Tahun ' . $thn;
-        $data['title'] = 'Laba Rugi Awal Tahun';
-
-        // Menampilkan view dengan data yang sudah dihitung
-        $view = view('pelaporan.partials.views.tutup_buku.laba_rugi', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
-    }
     private function arus_kas(array $data)
     {
         $thn = $data['tahun'];
@@ -1120,9 +734,18 @@ class PelaporanController extends Controller
 
         $data['title'] = 'Arus Kas';
         $view = view('pelaporan.partials.views.arus_kas', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
     }
+
     private function LPM(array $data)
     {
         $thn = $data['tahun'];
@@ -1147,9 +770,257 @@ class PelaporanController extends Controller
 
         $data['title'] = 'Laporan Perubahan Modal';
         $view = view('pelaporan.partials.views.laporan_perubahan_modal', $data)->render();
-        $pdf = PDF::loadHTML($view);
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
     }
+
+    private function calkk(array $data)
+    {
+        $keuangan = new Keuangan;
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
+            'akun2',
+            'akun2.akun3',
+            'akun2.akun3.accounts' => function ($query) {
+                $query->where('business_id', Session::get('business_id'));
+            },
+            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $laba_rugi = Account::where('business_id', Session::get('business_id'))->where('lev1', '>=', '4')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->get();
+
+        $pendapatan = 0;
+        $beban = 0;
+        foreach ($laba_rugi as $lr) {
+            $saldo = $keuangan->komSaldo($lr);
+            if ($lr->lev1 == '4') {
+                $pendapatan += $saldo;
+            }
+
+            if ($lr->lev1 == '5') {
+                $beban += $saldo;
+            }
+        }
+
+        $data['surplus'] = $pendapatan - $beban;
+
+        $data['title'] = 'Calk';
+        $view = view('pelaporan.partials.views.calk', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
+    }
+
+    private function daftar_pelanggan(array $data)
+    {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+
+        $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+
+        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
+
+        $data['installations'] = Installations::where([
+            ['aktif', '<=', $data['tgl_kondisi']],
+            ['business_id', Session::get('business_id')]
+        ])
+            ->whereNotIn('status', ['B', 'C'])
+            ->with([
+                'customer',
+                'usage' => function ($query) use ($data) {
+                    $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
+                },
+            ]);
+
+        if (!empty($data['cater'])) {
+            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
+        }
+
+        $data['installations'] = $data['installations']->get();
+
+        $data['title'] = 'Daftar Pelanggan';
+        $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+            'orientation' => 'landscape',
+        ]);
+        return $pdf->inline();
+    }
+
+    private function tagihan_pelanggan(array $data)
+    {
+
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
+            'customer',
+            'village',
+            'settings',
+            'usage' => function ($query) use ($data) {
+                $tgl_awal = date('Y-m', strtotime('-3 month', strtotime($data['tgl_kondisi']))) . '-01';
+                $query->whereBetween('tgl_akhir', [$tgl_awal, $data['tgl_kondisi']]);
+            },
+            'usage.transaction' => function ($query) use ($data) {
+                $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
+            },
+
+        ]);
+        $data['cater_id'] = $data['sub_laporan']; // Ambil ID cater dari sub_laporan atau request
+
+        $data['cater'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['id', $data['cater_id']],
+            ['jabatan', '5']
+        ])->first();
+
+        if (!empty($data['cater_id'])) {
+            $data['installations'] = $data['installations']->where('cater_id', $data['cater_id']);
+        }
+        $data['installations'] = $data['installations']->get();
+
+        $bulan_tampil = [];
+        $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
+
+        for ($i = 0; $i < 3; $i++) {
+            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m');
+        }
+
+        $data['bulan_tampil'] = array_reverse($bulan_tampil);
+
+        $data['title'] = 'Daftar Tagihan Pelanggan';
+        $view = view('pelaporan.partials.views.tagihan_pelanggan', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+            'orientation' => 'landscape',
+        ]);
+        return $pdf->inline();
+    }
+
+    private function piutang_pelanggan(array $data)
+    {
+
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
+
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->where('status_tunggakan', '!=', 'lancar')->with([
+            'customer',
+            'village',
+            'package',
+            'usage' => function ($query) use ($data) {
+                $query->where('tgl_akhir', '<=', $data['tgl_kondisi'])->where('status', 'UNPAID')->orderBy('tgl_akhir')->orderBy('id');
+            },
+            'usage.transaction' => function ($query) use ($data) {
+                $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
+            },
+        ]);
+
+        if (!empty($data['cater'])) {
+            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
+        }
+
+        $data['installations'] = $data['installations']->get();
+
+        $bulan_tampil = [];
+        $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
+
+        for ($i = 0; $i < 3; $i++) {
+            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m'); // Format YYYY-MM untuk handle perubahan tahun
+        }
+
+        $data['bulan_tampil'] = array_reverse($bulan_tampil); // Urutkan agar tampil dari yang paling lama ke terbaru
+
+
+        $data['title'] = 'Daftar Piutang Pelanggan';
+        $view = view('pelaporan.partials.views.piutang_pelanggan', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+            'orientation' => 'landscape',
+        ]);
+        return $pdf->inline();
+    }
+
     private function ati(array $data)
     {
         $thn = $data['tahun'];
@@ -1175,11 +1046,22 @@ class PelaporanController extends Controller
                 ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC');
             }
         ])->get();
+
         $data['title'] = 'Aset Tetap Dan Inventaris';
         $view = view('pelaporan.partials.views.aset_tetap', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+            'orientation' => 'landscape',
+        ]);
+        return $pdf->inline();
     }
+
     private function atb(array $data)
     {
         $thn = $data['tahun'];
@@ -1207,39 +1089,21 @@ class PelaporanController extends Controller
             }
         ])->get();
 
-        // $data['PendirianOrganisasi'] = Inventory::where([
-        //     ['jenis', '3'],
-        //     ['kategori', '1'],
-        //     ['business_id', Session::get('business_id')],
-        //     ['tgl_beli', '<=', $data['tgl_kondisi']]
-        // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
-
-        // $data['Lisensi'] = Inventory::where([
-        //     ['jenis', '3'],
-        //     ['kategori', '2'],
-        //     ['business_id', Session::get('business_id')],
-        //     ['tgl_beli', '<=', $data['tgl_kondisi']]
-        // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
-
-        // $data['Sewa'] = Inventory::where([
-        //     ['jenis', '3'],
-        //     ['kategori', '3'],
-        //     ['business_id', Session::get('business_id')],
-        //     ['tgl_beli', '<=', $data['tgl_kondisi']]
-        // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
-
-        // $data['Asuransi'] = Inventory::where([
-        //     ['jenis', '3'],
-        //     ['kategori', '4'],
-        //     ['business_id', Session::get('business_id')],
-        //     ['tgl_beli', '<=', $data['tgl_kondisi']]
-        // ])->orderBy('kategori', 'ASC')->orderBy('tgl_beli', 'ASC')->get();
-
         $data['title'] = 'Aset Tak Berwujud';
         $view = view('pelaporan.partials.views.aset_tak_berwujud', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
-        return $pdf->stream();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+            'orientation' => 'landscape',
+        ]);
+        return $pdf->inline();
     }
+
     private function e_budgeting(array $data)
     {
         $keuangan = new Keuangan;
@@ -1395,14 +1259,6 @@ class PelaporanController extends Controller
                 ];
             }
 
-            // if (!in_array($lev3, $akun3)) {
-            //     $akun3[] = $lev3;
-            //     $data_e_budgeting[] = [
-            //         'nama' => $daftar_header[$lev3],
-            //         'is_header' => true
-            //     ];
-            // }
-
             $saldo_komulatif = $keuangan->komSaldo($komulatif);
             $saldo_bulan_1 = $keuangan->komSaldo($bulan1);
             $saldo_bulan_2 = $keuangan->komSaldo($bulan2);
@@ -1426,9 +1282,339 @@ class PelaporanController extends Controller
         $data['title'] = 'E - Budgeting';
 
         $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+            'orientation' => 'landscape',
+        ]);
+        return $pdf->inline();
+    }
 
-        return $pdf->stream();
+    private function alokasi_laba(array $data)
+    {
+
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['accounts'] = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'like', '2.1.04%')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun']);
+            }
+        ])->get();
+
+        $data['title'] = 'Alokasi Laba';
+        $view = view('pelaporan.partials.views.tutup_buku.alokasi_laba', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
+    }
+
+    private function jurnal_tutup_buku(array $data)
+    {
+
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Laporan Keuangan';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+
+        $data['transactions'] = Transaction::where([
+            ['business_id', Session::get('business_id')],
+            ['tgl_transaksi', 'LIKE', $data['tahun'] . '-' . $data['bulan'] . '%']
+        ])
+            ->with([
+                'acc_debit',
+                'acc_kredit',
+            ])->get();
+
+        $data['title'] = 'Jurnal Tutup Buku';
+        $view = view('pelaporan.partials.views.tutup_buku.jurnal', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
+    }
+
+    private function neraca_tutup_buku(array $data)
+    {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
+            'akun2',
+            'akun2.akun3',
+            'akun2.akun3.accounts',
+            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
+                $query->where([
+                    ['tahun', $data['tahun']],
+                    ['bulan', '0']
+                ]);
+            },
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $data['title'] = 'Neraca Awal Tahun';
+        $view = view('pelaporan.partials.views.tutup_buku.neraca', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
+    }
+
+    private function laba_rugi_tutup_buku(array $data)
+    {
+        $thn = $data['tahun'];
+
+        $data['judul'] = 'Laporan Keuangan';
+        $data['tgl'] = 'Awal Tahun ' . $thn;
+
+        $dataPendapatan = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '4.1.%')
+            ->with([
+                'amount' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', '0']
+                    ]);
+                },
+                'oneAmount' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', '0']
+                    ]);
+                }
+            ])->orderBy('kode_akun', 'ASC')->get();
+
+        $dataBeban = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '5.1.%')
+            ->orWhere('kode_akun', 'LIKE', '5.2.%')
+            ->where('kode_akun', '!=', '5.2.01.01')
+            ->with([
+                'amount' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', '0']
+                    ]);
+                },
+                'oneAmount' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', '0']
+                    ]);
+                }
+            ])->orderBy('kode_akun', 'ASC')->get();
+
+        $dataPen = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '4.2.%')
+            ->orWhere('kode_akun', 'LIKE', '4.3.%')
+            ->whereNotIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])
+            ->with([
+                'amount' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', '0']
+                    ]);
+                },
+                'oneAmount' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', '0']
+                    ]);
+                }
+            ])->orderBy('kode_akun', 'ASC')->get();
+
+        $dataBeb = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'LIKE', '5.3.%')
+            ->orWhere('kode_akun', 'LIKE', '5.4.%')
+            ->where('kode_akun', '!=', '5.4.01.01')
+            ->with([
+                'amount' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', '0']
+                    ]);
+                },
+                'oneAmount' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun']],
+                        ['bulan', '0']
+                    ]);
+                }
+            ])->orderBy('kode_akun', 'ASC')->get();
+
+        $pph = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '5.4.01.01')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where([
+                    ['tahun', $data['tahun']],
+                    ['bulan', '0']
+                ]);
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where([
+                    ['tahun', $data['tahun']],
+                    ['bulan', '0']
+                ]);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $bebanPemasaran = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '5.2.01.01')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where([
+                    ['tahun', $data['tahun']],
+                    ['bulan', '0']
+                ]);
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where([
+                    ['tahun', $data['tahun']],
+                    ['bulan', '0']
+                ]);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $pendluar = Account::where('business_id', Session::get('business_id'))->whereIn('kode_akun', ['4.3.01.01', '4.3.01.02', '4.3.01.03'])->with([
+            'amount' => function ($query) use ($data) {
+                $query->where([
+                    ['tahun', $data['tahun']],
+                    ['bulan', '0']
+                ]);
+            },
+            'oneAmount' => function ($query) use ($data) {
+                $query->where([
+                    ['tahun', $data['tahun']],
+                    ['bulan', '0']
+                ]);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $data['pendapatan'] = $dataPendapatan;
+        $data['beban'] = $dataBeban;
+        $data['pen'] = $dataPen;
+        $data['beb'] = $dataBeb;
+        $data['ph'] = $pph;
+        $data['bp'] = $bebanPemasaran;
+        $data['pendl'] = $pendluar;
+
+        $data['title'] = 'Laba Rugi Awal Tahun';
+        $data['sub_judul'] = 'Awal Tahun ' . $thn;
+        $view = view('pelaporan.partials.views.tutup_buku.laba_rugi', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
+    }
+
+    private function calk_tutup_buku(array $data)
+    {
+        $keuangan = new Keuangan;
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
+            'akun2',
+            'akun2.akun3',
+            'akun2.akun3.accounts' => function ($query) {
+                $query->where('business_id', Session::get('business_id'));
+            },
+            'akun2.akun3.accounts.amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $laba_rugi = Account::where('business_id', Session::get('business_id'))->where('lev1', '>=', '4')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0')->orwhere('bulan', $data['bulan']);
+                });
+            },
+        ])->get();
+
+        $pendapatan = 0;
+        $beban = 0;
+        foreach ($laba_rugi as $lr) {
+            $saldo = $keuangan->komSaldo($lr);
+            if ($lr->lev1 == '4') {
+                $pendapatan += $saldo;
+            }
+
+            if ($lr->lev1 == '5') {
+                $beban += $saldo;
+            }
+        }
+
+        $data['surplus'] = $pendapatan - $beban;
+
+        $data['title'] = 'Calk';
+        $view = view('pelaporan.partials.views.tutup_buku.calk', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 20,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'header-spacing' => 2,
+        ]);
+        return $pdf->inline();
     }
 
     public function simpanSaldo($tahun, $bulan = 1)

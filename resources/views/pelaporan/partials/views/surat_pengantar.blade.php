@@ -2,31 +2,10 @@
 <style>
     * {
         font-family: 'Arial', sans-serif;
+        line-height: 1.5;
     }
 </style>
-<table width="100%" align="center" style="border-bottom: 1px double #000; border-width: 4px;">
-    <tr>
-        {{-- <td width="70">
-           <img src="../storage/app/public/logo/{{ $logo }}" height="70"
-                alt="{{ $kec->id }}"> 
-        </td> --}}
-        <td align="center">
-            <div>{{ strtoupper($nama) }}</div>
-            <div>
-                <b>{{ strtoupper($alamat) }}</b>
-            </div>
-            <div style="font-size: 10px; color: grey;">
-                <i>{{ $nomor_usaha }}</i>
-            </div>
-            <div style="font-size: 10px; color: grey;">
-                <i>{{ $info }}</i>
-            </div>
-            <div style="font-size: 10px; color: grey;">
-                <i>{{ $email }}</i>
-            </div>
-        </td>
-    </tr>
-</table>
+
 <table border="0"style="font-size: 12px;">
     <tr>
         <td width="5%">Nomor</td>

@@ -1,19 +1,14 @@
+<title>COVER</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>{{ $title }}</title>
+
 <style>
     * {
-        font-family: 'Arial', sans-serif;
-
-    }
-
-    html {
-        margin: 75.59px;
-        margin-left: 94.48px;
+        font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
-        width: 100%;
-        height: fit-content;
+        padding: 0;
+        margin: 0;
         border: 1px solid #000;
         position: relative;
     }
@@ -30,14 +25,8 @@
         width: 100%;
         border-top: 1px solid #000;
     }
-
-    img {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
 </style>
+
 <body>
 
     <header>
@@ -45,13 +34,17 @@
         <div style="margin: 0px; font-size: 24px;">{{ strtoupper($sub_judul) }}</div>
     </header>
 
-    <main>
-        {{-- <img src="../storage/app/public/logo/{{ $logo }}" width="290" alt="{{ $logo }}"> --}}
-    </main>
+    <table width="100%" style="height: 50em;">
+        <tr>
+            <td align="center" valign="middle">
+                <img src="{{ asset('storage/logo/' . $logo) }}" width="290" alt="Logo">
+            </td>
+        </tr>
+    </table>
 
     <footer>
-        <table width="100%" style="border: 0.1 solid black;">
-            <tr style="border: 0.1 solid black;">
+        <table width="100%">
+            <tr>
                 <td align="center">
                     <div>{{ strtoupper($nama) }}</div>
                     <div>

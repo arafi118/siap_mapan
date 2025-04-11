@@ -151,15 +151,21 @@ class UsageController extends Controller
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
         $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id)->with(
-            'customers'
+            'customers',
+            'installation',
+            'usersCater',
+            'installation.package'
         )->get();
-
+        $data['jabatan'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '3']
+        ])->first();
         $logo = $data['bisnis']->logo;
         $data['gambar'] = $logo;
         $data['keuangan'] = $keuangan;
 
         $view = view('penggunaan.partials.cetak', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('A4', 'landscape');
+        $pdf = PDF::loadHTML($view);
         return $pdf->stream();
     }
 
