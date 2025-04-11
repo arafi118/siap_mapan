@@ -236,13 +236,13 @@
                             <div class="card mb-4">
                                 <div class="card-body">
                                     <!-- Detail Tagihan  -->
-                                    <div class="alert alert-secondary" role="alert">
+                                    <div class="alert alert-success" role="alert">
                                         <div class="row align-items-center">
                                             <div class="col-md-3 text-center">
                                                 {!! $qr !!}
                                             </div>
                                             <div class="col-md-7">
-                                                <h4 class="text-center mb-2"><b>Pelanggan an.
+                                                <h4 class="text-center mb-2"><b>Nama Pelanggan.
                                                         {{ $installations->customer->nama }}</b></h4>
                                                 <hr class="my-2">
                                                 <table>
