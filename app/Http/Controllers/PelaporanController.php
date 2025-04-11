@@ -226,7 +226,7 @@ class PelaporanController extends Controller
             $data['cater'] = $request->get('sub_laporan');
         }
 
-        $data['logo'] = $busines->logo;
+        $data['logo'] = base64_encode(file_get_contents(public_path('storage/logo/' . $busines->logo)));
 
         $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $busines->nomor_bh;
         $data['info'] = $busines->alamat . ', Telp.' . $busines->telpon;

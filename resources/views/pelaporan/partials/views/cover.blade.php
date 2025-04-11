@@ -37,7 +37,7 @@
     <table width="100%" style="height: 50em;">
         <tr>
             <td align="center" valign="middle">
-                <img src="{{ asset('storage/logo/' . $logo) }}" width="290" alt="Logo">
+                <img src="data:image/png;base64,{{ $logo }}" width="290" alt="Logo">
             </td>
         </tr>
     </table>
