@@ -16,6 +16,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "^3.1",
+        "michael-schaefer-eu/wkhtmltox": "^0.12.5",
         "phpoffice/phpspreadsheet": "1.29.9",
         "simplesoftwareio/simple-qrcode": "^4.2"
     },
