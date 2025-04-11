@@ -261,6 +261,7 @@ class PelaporanController extends Controller
             'margin-bottom' => 20,
             'margin-left'   => 25,
             'margin-right'  => 20,
+            'enable-local-file-access' => true,
         ]);
         return $pdf->inline();
     }
@@ -302,6 +303,7 @@ class PelaporanController extends Controller
             'margin-bottom' => 20,
             'margin-left'   => 25,
             'margin-right'  => 20,
+            'enable-local-file-access' => true,
         ]);
         return $pdf->inline();
     }
@@ -390,6 +392,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -444,6 +447,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -482,6 +486,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ])->setOrientation('landscape');
         return $pdf->inline();
@@ -546,6 +551,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -685,6 +691,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -736,6 +743,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -772,6 +780,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -836,6 +845,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -884,6 +894,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
             'orientation' => 'landscape',
         ]);
@@ -950,6 +961,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
             'orientation' => 'landscape',
         ]);
@@ -1010,6 +1022,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
             'orientation' => 'landscape',
         ]);
@@ -1051,6 +1064,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
             'orientation' => 'landscape',
         ]);
@@ -1093,6 +1107,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
             'orientation' => 'landscape',
         ]);
@@ -1284,6 +1299,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
             'orientation' => 'landscape',
         ]);
@@ -1320,6 +1336,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -1359,6 +1376,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -1398,6 +1416,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -1543,6 +1562,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
@@ -1607,6 +1627,7 @@ class PelaporanController extends Controller
             'margin-bottom'  => 20,
             'margin-left'    => 25,
             'margin-right'   => 20,
+            'enable-local-file-access' => true,
             'header-spacing' => 2,
         ]);
         return $pdf->inline();
