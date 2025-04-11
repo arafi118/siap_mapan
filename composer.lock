@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c1eb000e72c1f65beb458e888124cef",
+    "content-hash": "cea878d122068a594cd0fe3f690db73b",
     "packages": [
         {
             "name": "awobaz/compoships",
@@ -2986,69 +2986,6 @@
             "time": "2024-03-31T07:05:07+00:00"
         },
         {
-            "name": "michael-schaefer-eu/wkhtmltox",
-            "version": "0.12.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/michael-schaefer-eu/wkhtmltox.git",
-                "reference": "5248d03a12ca97965d2cfb5e6e0a22817fcd5744"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/michael-schaefer-eu/wkhtmltox/zipball/5248d03a12ca97965d2cfb5e6e0a22817fcd5744",
-                "reference": "5248d03a12ca97965d2cfb5e6e0a22817fcd5744",
-                "shasum": ""
-            },
-            "replace": {
-                "h4cc/wkhtmltoimage-amd64": "0.12.4",
-                "h4cc/wkhtmltoimage-i386": "0.12.4",
-                "h4cc/wkhtmltopdf-amd64": "0.12.4",
-                "h4cc/wkhtmltopdf-i386": "0.12.4"
-            },
-            "bin": [
-                "bin/wkhtmltoimage-bionic-amd64",
-                "bin/wkhtmltopdf-bionic-amd64",
-                "bin/wkhtmltoimage-bionic-i386",
-                "bin/wkhtmltopdf-bionic-i386"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Wkhtmltox\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Schaefer",
-                    "email": "mail@michael-schaefer.eu",
-                    "role": "Composer Package Developer"
-                }
-            ],
-            "description": "wkhtmltopdf and wkhtmltoimage linux binaries - Convert HTML to PDF or IMAGE using Webkit (QtWebKit)",
-            "homepage": "http://wkhtmltopdf.org/",
-            "keywords": [
-                "binary",
-                "convert",
-                "htmltoimage",
-                "htmltopdf",
-                "htmltox",
-                "jpg",
-                "pdf",
-                "png",
-                "snapshot",
-                "thumbnail"
-            ],
-            "support": {
-                "issues": "https://github.com/michael-schaefer-eu/wkhtmltox/issues",
-                "source": "https://github.com/michael-schaefer-eu/wkhtmltox/tree/0.12.5"
-            },
-            "time": "2020-01-13T11:03:40+00:00"
-        },
-        {
             "name": "monolog/monolog",
             "version": "3.9.0",
             "source": {
@@ -4500,17 +4437,20 @@
         },
         {
             "name": "silvertipsoftware/wkhtmltoimage-amd64",
-            "version": "0.12.4",
+            "version": "0.12.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SilvertipSoftware/wkhtmltoimage-amd64.git",
-                "reference": "c4e33f635207af89a704205b8902fb5715ca88be"
+                "reference": "cc62a944175b07084dc64762bc302ced832c6946"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SilvertipSoftware/wkhtmltoimage-amd64/zipball/c4e33f635207af89a704205b8902fb5715ca88be",
-                "reference": "c4e33f635207af89a704205b8902fb5715ca88be",
+                "url": "https://api.github.com/repos/SilvertipSoftware/wkhtmltoimage-amd64/zipball/cc62a944175b07084dc64762bc302ced832c6946",
+                "reference": "cc62a944175b07084dc64762bc302ced832c6946",
                 "shasum": ""
+            },
+            "replace": {
+                "h4cc/wkhtmltoimage-amd64": "0.12.4"
             },
             "bin": [
                 "bin/wkhtmltoimage-amd64"
@@ -4518,12 +4458,12 @@
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL Version 3"
+                "LGPL-3.0-only"
             ],
             "authors": [
                 {
-                    "name": "Julius Beckmann",
-                    "email": "github@h4cc.de"
+                    "name": "Andre Sonnichsen",
+                    "email": "andre@silvertipsoftware.com"
                 }
             ],
             "description": "Convert html to image using webkit (qtwebkit). Static linked linux binary for amd64 systems.",
@@ -4537,23 +4477,26 @@
                 "wkhtmltoimage"
             ],
             "support": {
-                "source": "https://github.com/SilvertipSoftware/wkhtmltoimage-amd64/tree/0.12.4"
+                "source": "https://github.com/SilvertipSoftware/wkhtmltoimage-amd64/tree/0.12.5"
             },
-            "time": "2018-01-15T07:23:40+00:00"
+            "time": "2019-10-24T16:51:41+00:00"
         },
         {
             "name": "silvertipsoftware/wkhtmltopdf-amd64",
-            "version": "0.12.4",
+            "version": "0.12.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SilvertipSoftware/wkhtmltopdf-amd64.git",
-                "reference": "4e2ab2d032a5d7fbe2a741de8b10b8989523c95b"
+                "reference": "ba598ab5fb205a44b26061b04fdd46dc5d162303"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SilvertipSoftware/wkhtmltopdf-amd64/zipball/4e2ab2d032a5d7fbe2a741de8b10b8989523c95b",
-                "reference": "4e2ab2d032a5d7fbe2a741de8b10b8989523c95b",
+                "url": "https://api.github.com/repos/SilvertipSoftware/wkhtmltopdf-amd64/zipball/ba598ab5fb205a44b26061b04fdd46dc5d162303",
+                "reference": "ba598ab5fb205a44b26061b04fdd46dc5d162303",
                 "shasum": ""
+            },
+            "replace": {
+                "h4cc/wkhtmltopdf-amd64": "0.12.4"
             },
             "bin": [
                 "bin/wkhtmltopdf-amd64"
@@ -4561,17 +4504,17 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "h4cc\\WKHTMLToPDF\\": ""
+                    "silvertipsoftware\\WKHTMLToPDF\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL Version 3"
+                "LGPL-3.0-only"
             ],
             "authors": [
                 {
-                    "name": "Julius Beckmann",
-                    "email": "github@h4cc.de"
+                    "name": "Andre Sonnichsen",
+                    "email": "andre@silvertipsoftware.com"
                 }
             ],
             "description": "Convert html to pdf using webkit (qtwebkit). Static linked linux binary for amd64 systems.",
@@ -4585,9 +4528,9 @@
                 "wkhtmltopdf"
             ],
             "support": {
-                "source": "https://github.com/SilvertipSoftware/wkhtmltopdf-amd64/tree/0.12.4"
+                "source": "https://github.com/SilvertipSoftware/wkhtmltopdf-amd64/tree/master"
             },
-            "time": "2018-01-15T06:57:33+00:00"
+            "time": "2019-10-24T16:12:45+00:00"
         },
         {
             "name": "simplesoftwareio/simple-qrcode",
