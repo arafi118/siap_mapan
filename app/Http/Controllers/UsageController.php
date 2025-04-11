@@ -48,7 +48,11 @@ class UsageController extends Controller
         $title = 'Register Pemakaian';
         return view('penggunaan.create')->with(compact('customer', 'settings', 'pilih_customer', 'caters', 'title', 'usages'));
     }
-
+    public function barcode(Usage $usage)
+    {
+        $title = '';
+        return view('penggunaan.barcode')->with(compact('title'));
+    }
     public function store(Request $request)
     {
         $data = $request->only('data')['data'];
