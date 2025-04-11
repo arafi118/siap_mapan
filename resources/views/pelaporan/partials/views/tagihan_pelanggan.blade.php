@@ -89,7 +89,7 @@
                     foreach ($installation->usage as $usage) {
                         $beban = $installation->abodemen;
                         $denda =
-                            $installation->status_tunggakan !== 'lancar' ? intval($installation->package->denda) : 0;
+                            $installation->status_tunggakan != 'lancar' ? intval($installation->package->denda) : 0;
                         $dibayar = $usage->transaction->sum('total');
                         $tagihan = $usage->nominal;
                         $menunggak = $beban + $denda + $tagihan;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CustomImport;
 use App\Imports\FileImport;
 use App\Models\Account;
 use App\Models\Business;
@@ -718,8 +719,77 @@ class AuthController extends Controller
         ]);
     }
 
+    public function custom(Business $business)
+    {
+        $excel = (new CustomImport())->toArray('migrasi/DataTunggakanMulo.xlsx');
+
+        $pemakaian = [];
+        $bulanPemakaian = [];
+        $dataTunggakan = $excel[0];
+        foreach ($dataTunggakan as $index => $row) {
+            if ($index == 0) {
+                foreach ($row as $key => $value) {
+                    if ($key >= 5) {
+                        $bulanMenunggak = explode(' ', $value);
+
+                        $bulan = str_pad($this->bulan($bulanMenunggak[0]), 2, '0', STR_PAD_LEFT);
+                        $bulanPemakaian[$key] = $bulanMenunggak[1] . '-' . $bulan . '-01';
+                    }
+                }
+            } else {
+                $kode = explode('.', $row[4]);
+                $kode_instalasi = [];
+                foreach ($kode as $key => $val) {
+                    if (is_numeric($val)) {
+                        $kode_instalasi[] = $val;
+                    }
+                }
+
+                $data = [];
+                foreach ($row as $key => $value) {
+                    if ($key >= 5) {
+                        $data[$bulanPemakaian[$key]] = $value ?: 0;
+                    }
+                }
+
+                $pemakaian['kode_instalasi'][] = implode('.', $kode_instalasi);
+                $pemakaian['data'][] = [
+                    'kode_instalasi' => implode('.', $kode_instalasi),
+                    'bulan' => $data,
+                ];
+            }
+        }
+
+        $paket = Package::where('business_id', $business->id)->get()->pluck('harga', 'id')->toArray();
+        $instalasi = Installations::where('business_id', $business->id)->whereIn('kode_instalasi', $pemakaian['kode_instalasi'])->get();
+
+        $id_instalasi = $instalasi->pluck('id', 'kode_instalasi')->toArray();
+        $paket_instalasi = $instalasi->pluck('package_id', 'kode_instalasi')->toArray();
+
+        foreach ($pemakaian['data'] as $data) {
+            $kode_instalasi = $data['kode_instalasi'];
+
+            $id = $id_instalasi[$kode_instalasi];
+            $paket_id = $paket_instalasi[$kode_instalasi];
+            $harga = json_decode($paket[$paket_id], true);
+
+            foreach ($data['bulan'] as $tanggal => $jumlah) {
+                // 
+            }
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/auth')->with('success', 'Logout Berhasil');
+    }
+
     private function bulan($nama_bulan)
     {
+        $nama_bulan = strtoupper($nama_bulan);
         switch ($nama_bulan) {
             case 'JANUARI':
                 return 1;
@@ -773,13 +843,5 @@ class AuthController extends Controller
                 1;
                 break;
         }
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/auth')->with('success', 'Logout Berhasil');
     }
 }
