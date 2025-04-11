@@ -236,25 +236,47 @@
                             <div class="card mb-4">
                                 <div class="card-body">
                                     <!-- Detail Tagihan  -->
-                                    <div class="alert alert-success d-flex align-items-center" role="alert">
-                                        <!-- Gambar -->
-                                        <img src="../../assets/img/user.png"
-                                            style="max-height: 150px; margin-right: 20px;" class="img-fluid">
-                                        <div>
-                                            <h4 class="alert-heading"><b>Customer an.
-                                                    {{ $installations->customer->nama }}</b></h4>
-                                            <hr>
-                                            <p class="mb-0">
-                                                Pembayaran Tagihan Bulanan {{ Tanggal::tglLatin($usage->tgl_akhir) }}
-                                            </p>
+                                    <div class="alert alert-secondary" role="alert">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-3 text-center">
+                                                {!! $qr !!}
+                                            </div>
+                                            <div class="col-md-7">
+                                                <h4 class="text-center mb-2"><b>Pelanggan an.
+                                                        {{ $installations->customer->nama }}</b></h4>
+                                                <hr class="my-2">
+                                                <table>
+                                                    <tr>
+                                                        <td style="width: 30%;">NIK</td>
+                                                        <td style="width: 5%;">:</td>
+                                                        <td>{{ $installations->customer->nik }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Alamat</td>
+                                                        <td>:</td>
+                                                        <td>{{ $installations->customer->alamat }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Nomor Induk</td>
+                                                        <td>:</td>
+                                                        <td>{{ $installations->kode_instalasi }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tagihan Bulan</td>
+                                                        <td>:</td>
+                                                        <td>{{ Tanggal::tglLatin($usage->tgl_akhir) }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
+
                                     <!-- Form Detail Tagihan  -->
                                     <div class="mt-4">
                                         <table class="table table-bordered table-striped">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th colspan="4">Info Tagihan</th>
+                                                    <th colspan="4">&nbsp;</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -281,7 +303,8 @@
                                                 <tr>
                                                     <td
                                                         style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                                        <span style="float: left;">Paket</span>
+                                                        <span style="float: left;"> Paket/Kategori Pelanggan
+                                                        </span>
                                                         <span class="badge badge-success"
                                                             style="float: right; width: 40%; padding: 5px; text-align: center;">
                                                             {{ $installations->package->kelas }}
@@ -298,10 +321,16 @@
                                                     </td>
                                                 </tr>
                                                 @for ($i = 0; $i < $jumlah_blok; $i++)
-                                                    <tr {{ 12 / $jumlah_blok }}>
+                                                    <tr>
                                                         <td
                                                             style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                                            <span style="float: left;">Jarak</span>
+                                                            <span style="float: left;">
+                                                                @if ($i == $jumlah_blok - 1)
+                                                                    Harga Perkubik Lebih dari
+                                                                @else
+                                                                    Harga Perkubik
+                                                                @endif
+                                                            </span>
                                                             <span class="badge badge-success"
                                                                 style="float: right; width: 40%; padding: 5px; text-align: center;">
                                                                 {{ $blok[$i]['jarak'] }}
@@ -318,6 +347,7 @@
                                                         </td>
                                                     </tr>
                                                 @endfor
+
                                             </tbody>
                                         </table>
                                     </div>

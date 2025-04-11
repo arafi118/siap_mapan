@@ -180,9 +180,11 @@ class InstallationsController extends Controller
             ['business_id', Session::get('business_id')]
         ])->first();
 
+        $qr = QrCode::generate($installations->id);
+
         return response()->json([
             'success' => true,
-            'view' => view('transaksi.partials.usage')->with(compact('installations',  'usages', 'trx_settings', 'package'))->render(),
+            'view' => view('transaksi.partials.usage')->with(compact('qr', 'installations',  'usages', 'trx_settings', 'package'))->render(),
             'rek_debit' => $tagihan1,
             'rek_kredit' => $tagihan2,
         ]);
@@ -200,7 +202,7 @@ class InstallationsController extends Controller
 
             return response()->json([
                 'success' => false,
-                'view' => view('transaksi.partials.installations')->with(compact('installations', 'usages', 'trx_settings', 'package'))->render(),
+                'view' => view('transaksi.partials.installations')->with(compact('qr', 'installations', 'usages', 'trx_settings', 'package'))->render(),
                 'rek_debit' => $pasang1,
                 'rek_kredit' => $pasang2,
             ]);
@@ -493,7 +495,7 @@ class InstallationsController extends Controller
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
-        return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx','qr'));
+        return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx', 'qr'));
     }
 
     /**
@@ -526,7 +528,7 @@ class InstallationsController extends Controller
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
 
-        return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx','qr'));
+        return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx', 'qr'));
     }
     /**
      * Menampilkan Detail dengan status I.
@@ -559,7 +561,7 @@ class InstallationsController extends Controller
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
 
-        return view('perguliran.partials.pasang')->with(compact('installation', 'tampil_settings', 'trx','qr'));
+        return view('perguliran.partials.pasang')->with(compact('installation', 'tampil_settings', 'trx', 'qr'));
     }
 
 
@@ -587,7 +589,7 @@ class InstallationsController extends Controller
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
 
-        return view('perguliran.partials.aktif')->with(compact('installation', 'tampil_settings', 'trx','qr'));
+        return view('perguliran.partials.aktif')->with(compact('installation', 'tampil_settings', 'trx', 'qr'));
     }
 
     /**
@@ -618,7 +620,7 @@ class InstallationsController extends Controller
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
 
-        return view('perguliran.partials.blokir')->with(compact('installation', 'tampil_settings', 'trx','qr'));
+        return view('perguliran.partials.blokir')->with(compact('installation', 'tampil_settings', 'trx', 'qr'));
     }
 
     /**
@@ -651,15 +653,14 @@ class InstallationsController extends Controller
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
-        return view('perguliran.partials.copot')->with(compact('installation', 'tampil_settings', 'trx','qr'));
+        return view('perguliran.partials.copot')->with(compact('installation', 'tampil_settings', 'trx', 'qr'));
     }
 
     public function cetak_pemakaian(Installations $installation)
     {
         $qr = QrCode::size(60)->generate((string) $installation->id);
 
-        return view('perguliran.partials.cetak')->with(compact('installation','qr'));
-
+        return view('perguliran.partials.cetak')->with(compact('installation', 'qr'));
     }
 
 

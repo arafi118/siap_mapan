@@ -115,7 +115,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     // Usages || Penggunaan
     Route::get('/usages/cari_anggota', [UsageController::class, 'carianggota']);
     Route::get('/usages/detail_tagihan/', [UsageController::class, 'detailTagihan']);
-    Route::get('/usages/barcode/', [UsageController::class, 'barcode']);
+    Route::get('/usages/barcode/{id}', [UsageController::class, 'barcode']);
     Route::post('/usages/cetak', [UsageController::class, 'cetak']);
     Route::resource('/usages', UsageController::class);
 
