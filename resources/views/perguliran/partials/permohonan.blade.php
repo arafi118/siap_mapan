@@ -137,8 +137,7 @@
                         </div>
 
                         <div class="col-12 d-flex justify-content-end align-items-center gap-2">
-                            <a class="btn btn-danger btn-icon-split" target="_blank"
-                                href="/installations/cetak/{{ $installation->id }}">
+                            <button id="cetakBrcode" class="btn btn-danger btn-icon-split" target="_blank">
                                 <span class="icon text-white-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
@@ -149,9 +148,10 @@
                                     </svg>
                                 </span>
                                 <span class="text">Cetak</span>
-                            </a>
+                            </button>
 
-                            <button id="kembali" class="btn btn-light btn-icon-split">
+                            <button id="kembali" class="btn btn-light btn-icon-split"
+                                style="float: right; margin-left: 10px;">
                                 <span class="icon text-white-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
@@ -196,6 +196,12 @@
 @endsection
 @section('script')
     <script>
+        $(document).on('click', '#cetakBrcode', function(e) {
+            e.preventDefault();
+            window.open('/installations/cetak/{{ $installation->id }}', '_blank');
+        });
+
+
         $(document).on('click', '#kembali', function(e) {
             e.preventDefault();
             window.location.href = '/installations?status=R';

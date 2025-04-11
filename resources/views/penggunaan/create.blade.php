@@ -52,10 +52,10 @@
                                             </div>
                                             <div class="col-md-2 mb-2 text-end">
                                                 @if (auth()->user()->jabatan == 5)
-                                                    <a href="/usages/barcode/" class="btn btn-success" id="btnScanKartu"
+                                                    <button type="button" class="btn btn-success" id="btnScanKartu"
                                                         style="background-color: #2d5de0;">
                                                         <span class="text">Scan Barcode</span>
-                                                    </a>
+                                                    </button>
                                                 @endif
                                             </div>
                                             <div class="col-md-3 mb-2">
@@ -105,6 +105,7 @@
 
     <div style="display: none;" id="print"></div>
     @include('penggunaan.partials.pemakaian')
+    @include('penggunaan.barcode')
 @endsection
 
 @section('script')
@@ -123,7 +124,6 @@
 
         $(document).ready(function() {
             scanningEnabled = true
-            $('#scanQrCode').modal('show')
 
             html5QrcodeScanner = new Html5QrcodeScanner(
                 "reader", {
