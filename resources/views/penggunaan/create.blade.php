@@ -51,13 +51,12 @@
                                                 <h5 class="mb-0">Daftar Pemakaian</h5>
                                             </div>
                                             <div class="col-md-2 mb-2 text-end">
-                                                {{-- @if (auth()->user()->jabatan == 5)
-
-                                                    <a href="#" class="btn btn-success" id="btnScanKartu"
+                                                @if (auth()->user()->jabatan == 5)
+                                                    <a href="/usages/barcode/" class="btn btn-success" id="btnScanKartu"
                                                         style="background-color: #2d5de0;">
                                                         <span class="text">Scan Barcode</span>
                                                     </a>
-                                                @endif --}}
+                                                @endif
                                             </div>
                                             <div class="col-md-3 mb-2">
                                                 <div class="input-group">
