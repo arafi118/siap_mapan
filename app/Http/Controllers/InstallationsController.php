@@ -18,7 +18,7 @@ use App\Utils\Tanggal;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class InstallationsController extends Controller
 {
@@ -469,7 +469,7 @@ class InstallationsController extends Controller
     /**
      * Menampilkan Detail dengan status 0.
      */
-    private function detail0($installation)
+    private function detail0(Request $request, $installation)
     {
         $business_id = Session::get('business_id');
         $settings = Settings::where('business_id', $business_id)->first();
@@ -492,8 +492,8 @@ class InstallationsController extends Controller
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
-
-        return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx'));
+        $qr = QrCode::generate($installation->id);
+        return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx','qr'));
     }
 
     /**
@@ -524,11 +524,10 @@ class InstallationsController extends Controller
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
+        $qr = QrCode::generate($installation->id);
 
-        return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx'));
+        return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx','qr'));
     }
-
-
     /**
      * Menampilkan Detail dengan status I.
      */
@@ -558,23 +557,20 @@ class InstallationsController extends Controller
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
+        $qr = QrCode::generate($installation->id);
 
-        return view('perguliran.partials.pasang')->with(compact('installation', 'tampil_settings', 'trx'));
+        return view('perguliran.partials.pasang')->with(compact('installation', 'tampil_settings', 'trx','qr'));
     }
 
 
     /**
      * Menampilkan Detail dengan status A.
      */
-    private function detailA($installation)
+    private function detailA(Installations $installation)
     {
         $business_id = Session::get('business_id');
         $tampil_settings = Settings::where('business_id', $business_id)->first();
-        $installation = $installation->with([
-            'customer',
-            'package',
-            'village'
-        ])->where('id', $installation->id)->first();
+
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
             ['business_id', $business_id]
@@ -589,8 +585,9 @@ class InstallationsController extends Controller
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
+        $qr = QrCode::generate($installation->id);
 
-        return view('perguliran.partials.aktif')->with(compact('installation', 'tampil_settings', 'trx'));
+        return view('perguliran.partials.aktif')->with(compact('installation', 'tampil_settings', 'trx','qr'));
     }
 
     /**
@@ -619,8 +616,9 @@ class InstallationsController extends Controller
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
+        $qr = QrCode::generate($installation->id);
 
-        return view('perguliran.partials.blokir')->with(compact('installation', 'tampil_settings', 'trx'));
+        return view('perguliran.partials.blokir')->with(compact('installation', 'tampil_settings', 'trx','qr'));
     }
 
     /**
@@ -652,9 +650,18 @@ class InstallationsController extends Controller
             ['rekening_debit', $rekening_debit->id],
             ['rekening_kredit', $rekening_kredit->id]
         ])->sum('total');
-
-        return view('perguliran.partials.copot')->with(compact('installation', 'tampil_settings', 'trx'));
+        $qr = QrCode::generate($installation->id);
+        return view('perguliran.partials.copot')->with(compact('installation', 'tampil_settings', 'trx','qr'));
     }
+
+    public function cetak_pemakaian(Installations $installation)
+    {
+        $qr = QrCode::size(60)->generate((string) $installation->id);
+
+        return view('perguliran.partials.cetak')->with(compact('installation','qr'));
+
+    }
+
 
     /**
      * Show the form for editing the specified resource.

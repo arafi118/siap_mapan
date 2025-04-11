@@ -46,9 +46,18 @@
                             <div class="col-lg-12">
                                 <div class="card mb-4">
                                     <div class="card-header">
-                                        <div class="row">
-                                            <div class="col-md-5 mb-2">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4 mb-2">
                                                 <h5 class="mb-0">Daftar Pemakaian</h5>
+                                            </div>
+                                            <div class="col-md-2 mb-2 text-end">
+                                                {{-- @if (auth()->user()->jabatan == 5)
+
+                                                    <a href="#" class="btn btn-success" id="btnScanKartu"
+                                                        style="background-color: #2d5de0;">
+                                                        <span class="text">Scan Barcode</span>
+                                                    </a>
+                                                @endif --}}
                                             </div>
                                             <div class="col-md-3 mb-2">
                                                 <div class="input-group">
@@ -56,13 +65,14 @@
                                                         value="{{ date('d/m/Y') }}">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-3 mb-2">
                                                 <div class="input-group">
                                                     <input type="text" id="searchInput" class="form-control"
                                                         placeholder="Search ...">
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                     <div class="table-responsive p-3">
                                         <table class="table align-items-center table-flush table-center table-hover"
@@ -109,14 +119,89 @@
         $(document).ready(function() {
             $('#caters').val(id_user).change()
         })
+        var startScan, scanningEnabled = true;
+        var html5QrcodeScanner;
 
+        $(document).ready(function() {
+            scanningEnabled = true
+            $('#scanQrCode').modal('show')
+
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader", {
+                    fps: 10,
+                    qrbox: {
+                        width: 250,
+                        height: 250
+                    }
+                },
+                false);
+
+            html5QrcodeScanner.render((result) => {
+                if (scanningEnabled) {
+                    $('tr[data-id=' + result + '] td:first-child').click()
+
+                    if (result.length >= 10) {
+                        Swal.fire('Error',
+                            'Sepertinya kartu angsuran yang anda punya bukan yang terbaru. Silahkan cetak ulang kartu angsuran anda',
+                            'error')
+                        $('#html5-qrcode-button-camera-stop').trigger('click')
+                        $('#stopScan').html('Scan Ulang')
+                    } else {
+                        window.location.href = '/usages/barcode' + result
+                    }
+
+                    scanningEnabled = false
+                }
+            });
+
+            $('#html5-qrcode-button-camera-start').hide()
+            $('#html5-qrcode-button-camera-stop').hide()
+            $('#html5-qrcode-anchor-scan-type-change').hide()
+
+            $('#html5-qrcode-button-camera-start').trigger('click')
+
+            startScan = true
+            $('#stopScan').html('Stop')
+        })
+
+        $(document).on('click', '#stopScan', function(e) {
+            e.preventDefault()
+
+            if (startScan) {
+                $(this).html('Scan Ulang')
+                $('#html5-qrcode-button-camera-stop').trigger('click')
+            } else {
+                scanningEnabled = true;
+                $(this).html('Stop')
+                $('#html5-qrcode-button-camera-start').trigger('click')
+            }
+
+            startScan = !startScan
+        })
+
+        $(document).on('click', '#scanQrCodeClose', function(e) {
+            $('#scanQrCode').modal('hide')
+            $('#html5-qrcode-button-camera-stop').trigger('click')
+            $('#stopScan').html('Stop')
+        })
+
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`Code matched = ${decodedText}`, decodedResult);
+        }
+
+        function onScanFailure(error) {
+            console.warn(`Code scan error = ${error}`);
+        }
 
         $(document).ready(function() {
             $('.select2').select2({
                 theme: 'bootstrap4',
             });
         });
-
+        $('#btnScanKartu').on('click', function(e) {
+            e.preventDefault();
+            $('#scanQrCode').modal('show');
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const alert = document.getElementById('success-alert');
             if (alert) {
@@ -283,7 +368,7 @@
                 //endset
 
                 table.append(`
-            <tr data-index="${index}" data-allow-input="${allowInput}">
+            <tr data-index="${index}" data-allow-input="${allowInput}" data-id="${item.id}">
                 <td align="left">${item.customer.nama}</td>    
                 <td align="center">${item.kode_instalasi}</td>    
                 <td align="right" class="awal"><b>${nilai_awal}</b></td> 

@@ -19,7 +19,7 @@
 
                             <!-- Konten Teks -->
                             <div>
-                                <h4 class="alert-heading"><b>Customer an. {{ $installation->customer->nama }}</b></h4>
+                                <h4 class="alert-heading"><b>Nama Pelanggan. {{ $installation->customer->nama }}</b></h4>
                                 <hr>
                                 <p class="mb-0">
                                     desa.{{ $installation->village->nama }},

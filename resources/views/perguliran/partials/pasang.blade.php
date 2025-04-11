@@ -11,21 +11,26 @@
                     <div class="card-body">
                         <!-- Bagian Informasi Customer -->
                         <div class="alert alert-success d-flex align-items-center" role="alert">
-                            <!-- Gambar -->
-                            <img src="../../assets/img/user.png" style="max-height: 150px; margin-right: 20px;"
-                                class="img-fluid  d-none d-lg-block">
+                            <table style="width: 100%;">
+                                <tr>
+                                    {{-- Kolom kiri: QR Code --}}
+                                    <td style="width: 120px; text-align: left; vertical-align: top;">
+                                        {!! $qr !!}
+                                    </td>
 
-                            <!-- Konten Teks -->
-                            <div>
-                                <h4 class="alert-heading"><b>Customer an. {{ $installation->customer->nama }}</b></h4>
-                                <hr>
-                                <p class="mb-0">
-                                    desa.{{ $installation->village->nama }},
-                                    {{ $installation->alamat }}, [
-                                    koordinate {{ $installation->koordinate }}
-                                    ].
-                                </p>
-                            </div>
+                                    {{-- Kolom kanan: informasi customer --}}
+                                    <td style="vertical-align: top;">
+                                        <h4 class="alert-heading">
+                                            <b>Nama Pelanggan. {{ $installation->customer->nama }}</b>
+                                        </h4>
+                                        <hr>
+                                        <p class="mb-0">
+                                            desa.{{ $installation->village->nama }},
+                                            {{ $installation->alamat }}, [koordinate {{ $installation->koordinate }}].
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
 
                         <!-- Tabel di Bawah Customer -->
