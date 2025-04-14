@@ -497,7 +497,8 @@ class Keuangan
         $bulan = $array_tgl[1];
         $hari = $array_tgl[2];
         $surplus = Account::where([
-            ['lev1', '>=', '4']
+            ['lev1', '>=', '4'],
+            ['business_id', Session::get('business_id')]
         ])->where(function ($query) use ($tgl_kondisi) {
             $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
         })->with([
@@ -506,7 +507,7 @@ class Keuangan
                     $query->where('bulan', '0')->orwhere('bulan', $bulan);
                 })->orderBy('account_id', 'ASC')->get();
             }
-        ]);
+        ])->get();
 
         $pendapatan = 0;
         $biaya = 0;
@@ -517,7 +518,7 @@ class Keuangan
             $saldo_kredit = 0;
 
             $nomor = 0;
-            foreach ($sp->kom_saldo as $kom_saldo) {
+            foreach ($sp->amount as $kom_saldo) {
                 if ($nomor > 2) {
                     continue;
                 }

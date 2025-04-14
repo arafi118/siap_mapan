@@ -31,7 +31,7 @@
                                         $saldo_debit = 0;
                                         $awal_kredit = 0;
                                         $saldo_kredit = 0;
-                                        foreach ($accounts->Amount as $kom_saldo) {
+                                        foreach ($accounts->amount as $kom_saldo) {
                                             if ($kom_saldo->bulan == 0) {
                                                 $awal_debit += floatval($kom_saldo->debit);
                                                 $awal_kredit += floatval($kom_saldo->kredit);

@@ -691,11 +691,16 @@ class InstallationsController extends Controller
             'village'
         ])->where('id', $installation->id)->first();
 
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->get();
+
         $desa = Village::all();
 
         $pilih_desa = 0;
         $title = 'Register Proposal';
-        return view('perguliran.partials.edit_permohonan')->with(compact('settings', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
+        return view('perguliran.partials.edit_permohonan')->with(compact('settings', 'caters', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
     }
 
     /**

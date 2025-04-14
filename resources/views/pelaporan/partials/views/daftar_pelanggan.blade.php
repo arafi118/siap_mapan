@@ -24,7 +24,7 @@
             <th width="10%" class="t l b">Nik</th>
             <th width="22%" class="t l b">Alamat</th>
             <th width="10%" class="t l b">No. Telp</th>
-            <th width="10%" class="t l b">Kode Instalasi</th>
+            <th width="10%" class="t l b">No.Induk</th>
             <th width="8%" class="t l b r">Status</th>
         </tr>
     </thead>
@@ -36,7 +36,8 @@
                 <td align="center" class="t l b">{{ $installation->customer->nik }}</td>
                 <td align="left" class="t l b">{{ $installation->customer->alamat }}</td>
                 <td align="center" class="t l b">{{ $installation->customer->hp }}</td>
-                <td align="center" class="t l b">{{ $installation->kode_instalasi }}</td>
+                <td align="center" class="t l b">{{ $installation->kode_instalasi }}
+                    {{ substr($installation->package->kelas, 0, 1) }}</td>
                 <td align="center" class="t l b r">
                     @if ($installation->status == 'R' || $installation->status == '0')
                         Permohonan

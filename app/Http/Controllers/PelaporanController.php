@@ -874,6 +874,7 @@ class PelaporanController extends Controller
             ->whereNotIn('status', ['B', 'C'])
             ->with([
                 'customer',
+                'package',
                 'usage' => function ($query) use ($data) {
                     $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
                 },
@@ -920,6 +921,7 @@ class PelaporanController extends Controller
         $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
             'customer',
             'village',
+            'package',
             'settings',
             'usage' => function ($query) use ($data) {
                 $tgl_awal = date('Y-m', strtotime('-3 month', strtotime($data['tgl_kondisi']))) . '-01';
@@ -1638,7 +1640,7 @@ class PelaporanController extends Controller
         $bulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
         $date = $tahun . '-' . $bulan . '-01';
         $tgl_kondisi = date('Y-m-t', strtotime($date));
-        $accounts = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '1.1.03.01')->with([
+        $accounts = Account::where('business_id', Session::get('business_id'))->with([
             'trx_debit' => function ($query) use ($date, $tgl_kondisi) {
                 $query->whereBetween('tgl_transaksi', [$date, $tgl_kondisi])->where('business_id', Session::get('business_id'));
             },
