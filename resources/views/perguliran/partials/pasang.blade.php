@@ -138,6 +138,21 @@
                             </div>
                         </div>
                         <div class="col-12 d-flex justify-content-end">
+                            <button type="button" id="cetakBrcode" class="btn btn-danger btn-icon-split" target="_blank">
+                                <span class="icon text-white-50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
+                                        <path
+                                            d="M1.92.5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .76.429L3 14.5l1.32.929a.5.5 0 0 0 .56 0L6.2 14.5l1.32.929a.5.5 0 0 0 .56 0L9.4 14.5l1.32.929a.5.5 0 0 0 .56 0L12.6 14.5l1.32.929a.5.5 0 0 0 .76-.429V1a.5.5 0 0 0-.5-.5H1.92z" />
+                                        <path
+                                            d="M2.5 3.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1h-10a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1h-10a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                                    </svg>
+                                </span>
+                                <span class="text">Cetak</span>
+                            </button>
+                            <tr>
+                                <td>&nbsp;&nbsp;</td>
+                            </tr>
                             <button id="kembali" class="btn btn-light btn-icon-split">
                                 <span class="icon text-white-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
