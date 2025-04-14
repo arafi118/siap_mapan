@@ -14,11 +14,11 @@
                     </div>
                 </td>
                 <td align="center" width="100">Nama</td>
-                <td align="center" width="100">Kode Instalasi</td>
-                <td align="center" width="100">Awal Pemakaian</td>
-                <td align="center" width="100">Akhir Pemkaian</td>
-                <td align="center" width="100">Jumlah Pemakaian</td>
-                <td align="center" width="100">Jumlah Tagihan</td>
+                <td align="center" width="100">No. Induk</td>
+                <td align="center" width="100">Meter Awal</td>
+                <td align="center" width="100">Meter Akhir</td>
+                <td align="center" width="100">Pemakaian</td>
+                <td align="center" width="100">Tagihan</td>
                 <td align="center" width="100">Tanggal Akhir</td>
             </tr>
         </thead>
@@ -32,8 +32,9 @@
                                 id="{{ $use->id }}" name="cetak[]" data-input="checked">
                         </div>
                     </td>
-                    <td align="center">{{ $use->customers->nama }}</td>
-                    <td align="center">{{ $use->installation->kode_instalasi }}</td>
+                    <td align="left">{{ $use->customers->nama }}</td>
+                    <td align="left">{{ $use->installation->kode_instalasi }}
+                        {{ substr($use->installation->package->kelas, 0, 1) }}</td>
                     <td align="right">{{ $use->awal }}</td>
                     <td align="right">{{ $use->akhir }}</td>
                     <td align="right">{{ $use->jumlah }}</td>

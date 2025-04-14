@@ -23,9 +23,10 @@ class UsageController extends Controller
     {
         $usages = Usage::where('business_id', Session::get('business_id'))->with([
             'customers',
-            'installation'
+            'installation',
+            'installation.package'
         ])->orderBy('created_at', 'DESC')->get();
-
+        // dd($usages);
         $title = 'Data Pemakaian';
         return view('penggunaan.index')->with(compact('title', 'usages'));
     }
