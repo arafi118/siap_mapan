@@ -874,6 +874,7 @@ class PelaporanController extends Controller
             ->whereNotIn('status', ['B', 'C'])
             ->with([
                 'customer',
+                'package',
                 'usage' => function ($query) use ($data) {
                     $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
                 },
@@ -920,6 +921,7 @@ class PelaporanController extends Controller
         $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
             'customer',
             'village',
+            'package',
             'settings',
             'usage' => function ($query) use ($data) {
                 $tgl_awal = date('Y-m', strtotime('-3 month', strtotime($data['tgl_kondisi']))) . '-01';
