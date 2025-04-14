@@ -429,7 +429,7 @@ class TransactionController extends Controller
             $tahun_tb = $tahun + 1;
             $kode_rekening = Account::where(function ($query) use ($tgl_kondisi) {
                 $query->whereNull('tgl_nonaktif')->orwhere('tgl_nonaktif', '>', $tgl_kondisi);
-            })->with([
+            })->where('business_id', Session::get('business_id'))->with([
                 'Amount' => function ($query) use ($tahun, $bulan) {
                     $query->where('tahun', $tahun)->where(function ($query) use ($bulan) {
                         $query->where('bulan', '0')->orwhere('bulan', $bulan);
@@ -551,8 +551,10 @@ class TransactionController extends Controller
         $akun1 = AkunLevel1::where('lev1', '<=', '3')->with([
             'akun2',
             'akun2.akun3',
-            'akun2.akun3.accounts',
-            'akun2.akun3.accounts.Amount' => function ($query) use ($tahun, $bulan) {
+            'akun2.akun3.accounts' => function ($query) {
+                $query->where('business_id', Session::get('business_id'));
+            },
+            'akun2.akun3.accounts.amount' => function ($query) use ($tahun, $bulan) {
                 $query->where('tahun', $tahun)->where(function ($query) use ($bulan) {
                     $query->where('bulan', '0')->orwhere('bulan', $bulan);
                 });
