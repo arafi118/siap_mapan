@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document" style="height: 100vh;">
         <div class="modal-content" style="height: 60%;">
             <div class="modal-header">
-                <h5 class="modal-title">Scan QR Code</h5>
+                <div class="modal-title"><b>Scan Kartu Pemakaian</b></div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="scanQrCodeClose">
                     <span aria-hidden="true">&times;</span>
                 </button>

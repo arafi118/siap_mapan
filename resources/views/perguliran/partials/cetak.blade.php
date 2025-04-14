@@ -117,19 +117,26 @@
         <div style="position: relative;">
             <!-- Tabel utama: QR + Data Pelanggan -->
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
-
-                {{-- <tr>
+                <tr>
+                    <td colspan="7" style="border: none;">
+                        <div style="font-size: 18px;">KARTU METER PENGGUNAAN AIR</div>
+                        <div style="font-size: 16px;"><b>UNIT AIR "TIRTO MULO"</b></div>
+                    </td>
+                </tr>
+            </table>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr>
                     <td colspan="3" style="border: none;">
                         <div style="border-top: 1px solid black; margin-bottom: 5px; width: 100%;"></div>
                     </td>
-                </tr> --}}
+                </tr>
                 <tr>
                     <td rowspan="3" style="width: 70px; vertical-align: top; border: none;">
                         <div style="width: 60px;">
                             {!! $qr !!}
                         </div>
                     </td>
-                    <th style="width: 25%; text-align: left; border: none;">NAMA PELANGGAN</th>
+                    <th style="width: 18%; text-align: left; border: none;">NAMA PELANGGAN</th>
                     <th style="border: none;">: ..................................................</th>
                 </tr>
                 <tr>
