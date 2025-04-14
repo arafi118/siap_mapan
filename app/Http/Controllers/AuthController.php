@@ -36,7 +36,7 @@ class AuthController extends Controller
         $url = request()->getHost();
         $business = Business::where('domain', 'LIKE', '%' . $url . '%')->first();
         $domain = json_decode($business->domain, true);
-        if ($domain[0] != $url && $url != 'siap_mapan.test') {
+        if ($domain[0] != $url && !str_contains($url, 'siap_mapan.test')) {
             return redirect('https://' . $domain[0]);
         }
 
@@ -149,7 +149,7 @@ class AuthController extends Controller
         $migrasiPaket = $excel['PAKET'];
         $migrasiInstalasi = $excel['INSTALASI'];
 
-        Session::put('business_id', $business->id);
+        Session::put('business_id_migrasi', $business->id);
         Session::put('migrasi_desa', $migrasiDesa);
         Session::put('migrasi_paket', $migrasiPaket);
         Session::put('migrasi_instalasi', $migrasiInstalasi);
@@ -164,7 +164,7 @@ class AuthController extends Controller
             $header = 1;
             $data_kode = [];
             $data_desa = [];
-            $business_id = Session::get('business_id');
+            $business_id_migrasi = Session::get('business_id_migrasi');
             foreach ($migrasiDesa as $desa) {
                 if ($header == 1 || !$desa[1]) {
                     $header = 0;
@@ -172,9 +172,9 @@ class AuthController extends Controller
                 }
 
                 $kode_desa = str_pad($desa[0], 4, '0', STR_PAD_LEFT);
-                $business_id = str_pad($business_id, 3, '0', STR_PAD_LEFT);
+                $business_id_migrasi = str_pad($business_id_migrasi, 3, '0', STR_PAD_LEFT);
 
-                $kd_desa =  $business_id . '.' . $kode_desa;
+                $kd_desa =  $business_id_migrasi . '.' . $kode_desa;
                 $data_desa[$desa[1]] = [
                     'kode' => $kd_desa,
                     'nama' => ucwords(strtolower($desa[1])),
@@ -207,7 +207,7 @@ class AuthController extends Controller
     {
         $migrasiPaket = Session::get('migrasi_paket');
         if ($migrasiPaket) {
-            $businessSetting = Settings::where('business_id', Session::get('business_id'))->first();
+            $businessSetting = Settings::where('business_id_migrasi', Session::get('business_id_migrasi'))->first();
 
             $header = 1;
             $data_paket = [];
@@ -226,14 +226,14 @@ class AuthController extends Controller
                 $harga = json_encode($harga);
 
                 $data_paket[$paket[1]] = [
-                    'business_id' => Session::get('business_id'),
+                    'business_id_migrasi' => Session::get('business_id_migrasi'),
                     'kelas' => ucwords(strtolower($paket[1])),
                     'harga' => $harga,
                     'denda' => $businessSetting->denda
                 ];
             }
 
-            Package::where('business_id', Session::get('business_id'))->delete();
+            Package::where('business_id_migrasi', Session::get('business_id_migrasi'))->delete();
             Package::insert($data_paket);
 
             return response()->json([
@@ -256,8 +256,8 @@ class AuthController extends Controller
         $migrasiCustomer = Session::get('migrasi_instalasi');
         if ($migrasiCustomer) {
             $data_desa = [];
-            $business_id = str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
-            $desa = Village::where('kode', 'LIKE', $business_id . '%')->get();
+            $business_id_migrasi = str_pad(Session::get('business_id_migrasi'), 3, '0', STR_PAD_LEFT);
+            $desa = Village::where('kode', 'LIKE', $business_id_migrasi . '%')->get();
             foreach ($desa as $d) {
                 $data_desa[$d->nama] = $d->id;
             }
@@ -290,18 +290,18 @@ class AuthController extends Controller
 
                 $id_desa = $data_desa[ucwords(strtolower($customer[3]))];
                 $data_customer[$customer[0]] = [
-                    'business_id' => Session::get('business_id'),
+                    'business_id_migrasi' => Session::get('business_id_migrasi'),
                     'nama' => ucwords(strtolower($customer[4])),
                     'foto' => $customer[0]
                 ];
 
                 $cater = strtolower($customer[5]);
                 if (!array_key_exists($cater, $data_cater)) {
-                    $username = $cater . Session::get('business_id');
+                    $username = $cater . Session::get('business_id_migrasi');
                     $password = Hash::make($username);
 
                     $data_cater[$cater] = [
-                        'business_id' => Session::get('business_id'),
+                        'business_id_migrasi' => Session::get('business_id_migrasi'),
                         'nama' => ucwords(strtolower($cater)),
                         'jabatan' => '5',
                         'username' => $username,
@@ -311,11 +311,11 @@ class AuthController extends Controller
                 }
             }
 
-            Customer::where('business_id', Session::get('business_id'))->delete();
+            Customer::where('business_id_migrasi', Session::get('business_id_migrasi'))->delete();
             Customer::insert($data_customer);
 
             User::where([
-                ['business_id', Session::get('business_id')],
+                ['business_id_migrasi', Session::get('business_id_migrasi')],
                 ['jabatan', '5']
             ])->delete();
             User::insert($data_cater);
@@ -340,8 +340,8 @@ class AuthController extends Controller
         $migrasiInstalasi = Session::get('migrasi_instalasi');
         if ($migrasiInstalasi) {
             $data_desa = [];
-            $business_id = str_pad(Session::get('business_id'), 3, '0', STR_PAD_LEFT);
-            $desa = Village::where('kode', 'LIKE', $business_id . '%')->get();
+            $business_id_migrasi = str_pad(Session::get('business_id_migrasi'), 3, '0', STR_PAD_LEFT);
+            $desa = Village::where('kode', 'LIKE', $business_id_migrasi . '%')->get();
             foreach ($desa as $d) {
                 $data_desa[$d->nama] = [
                     'id' => $d->id,
@@ -349,7 +349,7 @@ class AuthController extends Controller
                 ];
             }
 
-            $customer = Customer::where('business_id', Session::get('business_id'))->get();
+            $customer = Customer::where('business_id_migrasi', Session::get('business_id_migrasi'))->get();
             $data_customer = [];
             foreach ($customer as $cs) {
                 $data_customer[$cs->foto] = $cs->id;
@@ -357,7 +357,7 @@ class AuthController extends Controller
 
             $data_cater = [];
             $cater = User::where([
-                ['business_id', Session::get('business_id')],
+                ['business_id_migrasi', Session::get('business_id_migrasi')],
                 ['jabatan', '5']
             ])->get();
             foreach ($cater as $c) {
@@ -365,7 +365,7 @@ class AuthController extends Controller
             }
 
             $data_paket = [];
-            $paket = Package::where('business_id', Session::get('business_id'))->get();
+            $paket = Package::where('business_id_migrasi', Session::get('business_id_migrasi'))->get();
             foreach ($paket as $p) {
                 $data_paket[$p->kelas] = $p->id;
             }
@@ -419,7 +419,7 @@ class AuthController extends Controller
                 $data_instalasi[$instalasi[0]] = [
                     'kode_instalasi' => $kode_instalasi,
                     'customer_id' => $customer_id,
-                    'business_id' => Session::get('business_id'),
+                    'business_id_migrasi' => Session::get('business_id_migrasi'),
                     'cater_id' => $cater_id,
                     'package_id' => $paket_id,
                     'desa' => $id_desa,
@@ -433,7 +433,7 @@ class AuthController extends Controller
                 ];
             }
 
-            Installations::where('business_id', Session::get('business_id'))->delete();
+            Installations::where('business_id_migrasi', Session::get('business_id_migrasi'))->delete();
             Installations::insert($data_instalasi);
 
             return response()->json([
@@ -455,7 +455,7 @@ class AuthController extends Controller
     {
         $migrasiPemakaian = Session::get('migrasi_instalasi');
         if ($migrasiPemakaian) {
-            $setting = Settings::where('business_id', Session::get('business_id'))->first();
+            $setting = Settings::where('business_id_migrasi', Session::get('business_id_migrasi'))->first();
             $block = json_decode($setting->block, true);
             $data_block = [];
             foreach ($block as $key => $val) {
@@ -476,7 +476,7 @@ class AuthController extends Controller
                 ];
             }
 
-            $instalasi = Installations::where('business_id', Session::get('business_id'))->get();
+            $instalasi = Installations::where('business_id_migrasi', Session::get('business_id_migrasi'))->get();
             $data_instalasi = [];
             foreach ($instalasi as $ins) {
                 $data_instalasi[$ins->kode_instalasi] = [
@@ -487,7 +487,7 @@ class AuthController extends Controller
                 ];
             }
 
-            $paket = Package::where('business_id', Session::get('business_id'))->get();
+            $paket = Package::where('business_id_migrasi', Session::get('business_id_migrasi'))->get();
             $data_paket = [];
             foreach ($paket as $pkt) {
                 $data_paket[$pkt->id] = [
@@ -540,7 +540,7 @@ class AuthController extends Controller
                 $instalasi = $data_instalasi[$kode_instalasi];
 
                 $id_instalasi = $instalasi['id'];
-                $business_id = Session::get('business_id');
+                $business_id_migrasi = Session::get('business_id_migrasi');
                 $customer_id = $instalasi['customer_id'];
                 $cater_id = $instalasi['cater_id'];
                 $paket_id = $instalasi['package_id'];
@@ -567,7 +567,7 @@ class AuthController extends Controller
 
                     $tgl_pemakaian = $thn . '-' . $bln . '-' . $hari;
                     $data_pemakaian[] = [
-                        'business_id' => $business_id,
+                        'business_id_migrasi' => $business_id_migrasi,
                         'id_instalasi' => $id_instalasi,
                         'customer' => $customer_id,
                         'awal' => $awal,
@@ -582,7 +582,7 @@ class AuthController extends Controller
                 }
             }
 
-            Usage::where('business_id', Session::get('business_id'))->delete();
+            Usage::where('business_id_migrasi', Session::get('business_id_migrasi'))->delete();
             collect($data_pemakaian)->chunk(1000)->each(function ($chunk) {
                 DB::table('usages')->insert($chunk->toArray());
             });
@@ -604,12 +604,12 @@ class AuthController extends Controller
 
     public function migrasi_akun()
     {
-        $rekening = Account::where('business_id', '1')->get();
+        $rekening = Account::where('business_id_migrasi', '1')->get();
         $data_rekening = [];
         foreach ($rekening as $rek) {
             $data_rekening[] = [
                 'parent_id' => $rek->parent_id,
-                'business_id' => Session::get('business_id'),
+                'business_id_migrasi' => Session::get('business_id_migrasi'),
                 'lev1' => $rek->lev1,
                 'lev2' => $rek->lev2,
                 'lev3' => $rek->lev3,
@@ -620,7 +620,7 @@ class AuthController extends Controller
             ];
         }
 
-        Account::where('business_id', Session::get('business_id'))->delete();
+        Account::where('business_id_migrasi', Session::get('business_id_migrasi'))->delete();
         Account::insert($data_rekening);
 
         return response()->json([
@@ -635,9 +635,9 @@ class AuthController extends Controller
 
     public function migrasi_transaksi()
     {
-        $businessId = Session::get('business_id');
+        $businessId = Session::get('business_id_migrasi');
 
-        $accounts = Account::where('business_id', $businessId)
+        $accounts = Account::where('business_id_migrasi', $businessId)
             ->whereIn('kode_akun', ['1.1.01.01', '4.1.01.02', '4.1.01.03'])
             ->get()
             ->keyBy('kode_akun');
@@ -648,10 +648,10 @@ class AuthController extends Controller
 
         $data_transaksi = [];
         $created_at = date('Y-m-d H:i:s');
-        $usages = Usage::where('business_id', $businessId)->with('customers', 'installation')->get();
+        $usages = Usage::where('business_id_migrasi', $businessId)->with('customers', 'installation')->get();
         foreach ($usages as $usage) {
             $data_transaksi[] = [
-                'business_id' => $businessId,
+                'business_id_migrasi' => $businessId,
                 'tgl_transaksi' => $usage->tgl_akhir,
                 'rekening_debit' => $kode_kas->id,
                 'rekening_kredit' => $kode_abodemen->id,
@@ -667,7 +667,7 @@ class AuthController extends Controller
             ];
 
             $data_transaksi[] = [
-                'business_id' => $businessId,
+                'business_id_migrasi' => $businessId,
                 'tgl_transaksi' => $usage->tgl_akhir,
                 'rekening_debit' => $kode_kas->id,
                 'rekening_kredit' => $kode_tagihan->id,
@@ -684,7 +684,7 @@ class AuthController extends Controller
         }
 
         DB::statement('SET @DISABLE_TRIGGER = 1');
-        Transaction::where('business_id', $businessId)->delete();
+        Transaction::where('business_id_migrasi', $businessId)->delete();
         collect($data_transaksi)->chunk(1000)->each(function ($chunk) {
             DB::table('transactions')->insert($chunk->toArray());
         });
@@ -705,9 +705,9 @@ class AuthController extends Controller
         User::insert([
             'nama' => 'Direktur',
             'jabatan' => '1',
-            'username' => 'direktur' . Session::get('business_id'),
-            'password' => Hash::make('direktur' . Session::get('business_id')),
-            'business_id' => Session::get('business_id')
+            'username' => 'direktur' . Session::get('business_id_migrasi'),
+            'password' => Hash::make('direktur' . Session::get('business_id_migrasi')),
+            'business_id_migrasi' => Session::get('business_id_migrasi')
         ]);
 
         Session::flush();
@@ -765,8 +765,8 @@ class AuthController extends Controller
             }
         }
 
-        $paket = Package::where('business_id', $business->id)->get()->pluck('harga', 'id')->toArray();
-        $instalasi = Installations::where('business_id', $business->id)->whereIn('kode_instalasi', $pemakaian['kode_instalasi'])->get();
+        $paket = Package::where('business_id_migrasi', $business->id)->get()->pluck('harga', 'id')->toArray();
+        $instalasi = Installations::where('business_id_migrasi', $business->id)->whereIn('kode_instalasi', $pemakaian['kode_instalasi'])->get();
 
         $id_instalasi = $instalasi->pluck('id', 'kode_instalasi')->toArray();
         $paket_instalasi = $instalasi->pluck('package_id', 'kode_instalasi')->toArray();
@@ -802,7 +802,7 @@ class AuthController extends Controller
 
                         $jumlah_pakai = round($jumlah_menunggak / $harga_paket, 2);
                         $usage = [
-                            'business_id' => $business->id,
+                            'business_id_migrasi' => $business->id,
                             'id_instalasi' => $id,
                             'customer' => $customer_id,
                             'awal' => 0,
@@ -822,7 +822,7 @@ class AuthController extends Controller
                             return is_string($value) ? "'" . $value . "'" : $value;
                         }, $values);
 
-                        echo "INSERT INTO usages (business_id, id_instalasi, customer, awal, akhir, jumlah, nominal, tgl_pemakaian, tgl_akhir, cater, status, crated_at, updated_at) VALUES (" . implode(',', $values) . "); <br>";
+                        echo "INSERT INTO usages (business_id_migrasi, id_instalasi, customer, awal, akhir, jumlah, nominal, tgl_pemakaian, tgl_akhir, cater, status, crated_at, updated_at) VALUES (" . implode(',', $values) . "); <br>";
                     }
                 }
             }

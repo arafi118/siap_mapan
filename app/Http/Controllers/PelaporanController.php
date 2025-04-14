@@ -1640,10 +1640,10 @@ class PelaporanController extends Controller
         $tgl_kondisi = date('Y-m-t', strtotime($date));
         $accounts = Account::where('business_id', Session::get('business_id'))->with([
             'trx_debit' => function ($query) use ($date, $tgl_kondisi) {
-                $query->whereBetween('tgl_transaksi', [$date, $tgl_kondisi]);
+                $query->whereBetween('tgl_transaksi', [$date, $tgl_kondisi])->where('business_id', Session::get('business_id'));
             },
             'trx_kredit' => function ($query) use ($date, $tgl_kondisi) {
-                $query->whereBetween('tgl_transaksi', [$date, $tgl_kondisi]);
+                $query->whereBetween('tgl_transaksi', [$date, $tgl_kondisi])->where('business_id', Session::get('business_id'));
             },
             'oneAmount' => function ($query) use ($tahun, $bulan) {
                 $bulan = str_pad(intval($bulan - 1), 2, '0', STR_PAD_LEFT);
@@ -1670,7 +1670,6 @@ class PelaporanController extends Controller
             foreach ($account->trx_kredit as $trx_kredit) {
                 $saldo_kredit += $trx_kredit->total;
             }
-
 
             $amount[] = [
                 'id' => $id,
