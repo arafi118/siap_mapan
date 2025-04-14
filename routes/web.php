@@ -62,6 +62,8 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/migrasi/akun', [AuthController::class, 'migrasi_akun']);
     Route::get('/migrasi/transaksi', [AuthController::class, 'migrasi_transaksi']);
     Route::get('/migrasi/sync', [AuthController::class, 'migrasi_sync']);
+
+    Route::get('/migrasi/custom/{business}', [AuthController::class, 'custom']);
 });
 
 Route::get('/link', function () {

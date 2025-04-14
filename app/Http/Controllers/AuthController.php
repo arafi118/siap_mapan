@@ -721,6 +721,11 @@ class AuthController extends Controller
 
     public function custom(Business $business)
     {
+        $today = date('Y-m-d H:i:s');
+
+        $denda = $business->setting->denda;
+        $tgl_toleransi = $business->setting->tanggal_toleransi;
+
         $excel = (new CustomImport())->toArray('migrasi/DataTunggakanMulo.xlsx');
 
         $pemakaian = [];
@@ -741,7 +746,7 @@ class AuthController extends Controller
                 $kode_instalasi = [];
                 foreach ($kode as $key => $val) {
                     if (is_numeric($val)) {
-                        $kode_instalasi[] = $val;
+                        $kode_instalasi[] = trim($val);
                     }
                 }
 
@@ -765,16 +770,61 @@ class AuthController extends Controller
 
         $id_instalasi = $instalasi->pluck('id', 'kode_instalasi')->toArray();
         $paket_instalasi = $instalasi->pluck('package_id', 'kode_instalasi')->toArray();
+        $abodemen_instalasi = $instalasi->pluck('abodemen', 'kode_instalasi')->toArray();
+        $customer = $instalasi->pluck('customer_id', 'kode_instalasi')->toArray();
 
+        $usages = [];
         foreach ($pemakaian['data'] as $data) {
             $kode_instalasi = $data['kode_instalasi'];
 
-            $id = $id_instalasi[$kode_instalasi];
-            $paket_id = $paket_instalasi[$kode_instalasi];
-            $harga = json_decode($paket[$paket_id], true);
+            if (isset($id_instalasi[$kode_instalasi])) {
+                $id = $id_instalasi[$kode_instalasi];
 
-            foreach ($data['bulan'] as $tanggal => $jumlah) {
-                // 
+                $paket_id = $paket_instalasi[$kode_instalasi];
+                $customer_id = $customer[$kode_instalasi];
+                $abodemen = $abodemen_instalasi[$kode_instalasi];
+                $harga = json_decode($paket[$paket_id], true);
+
+                foreach ($data['bulan'] as $tanggal => $jumlah) {
+                    if ($jumlah > 0) {
+                        $tgl_pemakaian = $tanggal;
+                        $tgl_akhir = date('Y-m', strtotime('+1 month', strtotime($tgl_pemakaian))) . '-' . $tgl_toleransi;
+
+                        $harga_paket = $harga[0];
+                        $jumlah_menunggak = $jumlah - $denda - $abodemen;
+                        if ($jumlah_menunggak < 0) {
+                            $jumlah_menunggak = 0;
+                        }
+
+                        if ($jumlah_menunggak / $harga_paket > 10) {
+                            $harga_paket = $harga[1];
+                        }
+
+                        $jumlah_pakai = round($jumlah_menunggak / $harga_paket, 2);
+                        $usage = [
+                            'business_id' => $business->id,
+                            'id_instalasi' => $id,
+                            'customer' => $customer_id,
+                            'awal' => 0,
+                            'akhir' => 0,
+                            'jumlah' => $jumlah_pakai,
+                            'nominal' => $jumlah_menunggak,
+                            'tgl_pemakaian' => $tgl_pemakaian,
+                            'tgl_akhir' => $tgl_akhir,
+                            'cater' => 1,
+                            'status' => 'UNPAID',
+                            'created_at' => $today,
+                            'updated_at' => $today
+                        ];
+
+                        $values = array_values($usage);
+                        $values = array_map(function ($value) {
+                            return is_string($value) ? "'" . $value . "'" : $value;
+                        }, $values);
+
+                        echo "INSERT INTO usages (business_id, id_instalasi, customer, awal, akhir, jumlah, nominal, tgl_pemakaian, tgl_akhir, cater, status, crated_at, updated_at) VALUES (" . implode(',', $values) . "); <br>";
+                    }
+                }
             }
         }
     }
