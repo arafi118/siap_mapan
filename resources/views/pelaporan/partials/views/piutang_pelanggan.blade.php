@@ -75,7 +75,7 @@
                     {{ $installation->customer->nama }}
                 </td>
                 <td class="t l b" align="center">
-                    {{ $installation->kode_instalasi }}
+                    {{ $installation->kode_instalasi }} {{ substr($installation->package->kelas, 0, 1) }}
                 </td>
                 @php
                     $nomor = 1;

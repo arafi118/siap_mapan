@@ -37,16 +37,16 @@
                     <table class="table align-items-center table-flush" id="TbPemakain">
                         <thead class="thead-light" align="center">
                             <tr>
-                                <th>NAMA</th>
-                                <th>KODE INSTALASI</th>
-                                <th>AWAL PEMAKAIAN</th>
-                                <th>AKHIR PEMAKAIAN</th>
-                                <th>JUMLAH PEMAKAIAN</th>
-                                <th>JUMLAH TAGIHAN </th>
-                                <th>TANGGAL AKHIR</th>
+                                <th>Nama</th>
+                                <th>No.Induk</th>
+                                <th>Meter Awal</th>
+                                <th>Meter Akhir</th>
+                                <th>Pemakaian</th>
+                                <th>Tagihan </th>
+                                <th>Tanggal Akhir</th>
                                 <th>Status</th>
                                 @if (auth()->user()->jabatan == 1)
-                                    <th style="text-align: center;">AKSI</th>
+                                    <th style="text-align: center;" width="10%">Aksi</th>
                                 @endif
                             </tr>
                         </thead>
@@ -54,7 +54,8 @@
                             @foreach ($usages as $usage)
                                 <tr>
                                     <td>{{ $usage->customers ? $usage->customers->nama : '' }}</td>
-                                    <td>{{ $usage->installation ? $usage->installation->kode_instalasi : '' }}</td>
+                                    <td>{{ $usage->installation ? $usage->installation->kode_instalasi : '' }}
+                                        {{ substr($usage->installation->package->kelas, 0, 1) }}</td>
                                     <td>{{ $usage->awal }}</td>
                                     <td>{{ $usage->akhir }}</td>
                                     <td>{{ $usage->jumlah }}</td>

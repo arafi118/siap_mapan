@@ -80,10 +80,10 @@
                                             <thead class="thead-light" align="center">
                                                 <tr>
                                                     <th>NAMA</th>
-                                                    <th>KODE INSTALASI</th>
-                                                    <th>AWAL PERMAKAIAN</th>
-                                                    <th>AKHIR PERMAKAIAN</th>
-                                                    <th>JUMLAH</th>
+                                                    <th>NO.INDUK</th>
+                                                    <th>METER AWAL</th>
+                                                    <th>METER AKHIR</th>
+                                                    <th>PEMAKAIAN</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="DaftarInstalasi">
@@ -260,7 +260,8 @@
             $('.TlpCustomer').html(installation.customer.hp)
             $('.AlamatCustomer').html(installation.customer.alamat)
             $('.pekerjaan').html(installation.customer.pekerjaan)
-            $('.KdInstallasi').html(installation.kode_instalasi)
+            $('.KdInstallasi').html(installation.kode_instalasi + ' ' + installation.package.kelas.charAt(0)
+                .toUpperCase())
             $('.CaterInstallasi').html(installation.users.nama)
             $('.PackageInstallasi').html(installation.package.kelas)
             $('.AlamatInstallasi').html(installation.alamat)
@@ -355,11 +356,10 @@
                     jumlahN = nilai_jumlah;
                 }
                 //endset
-
                 table.append(`
             <tr data-index="${index}" data-allow-input="${allowInput}" data-id="${item.id}">
                 <td align="left">${item.customer.nama}</td>    
-                <td align="center">${item.kode_instalasi}</td>    
+              <td align="center">${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>   
                 <td align="right" class="awal"><b>${nilai_awal}</b></td> 
                 <td align="right" class="akhir ${colorClass}"><b>${hasildata}</b></td> 
                 <td align="right" class="jumlah">${jumlahN}</td> 
