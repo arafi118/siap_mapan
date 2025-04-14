@@ -121,13 +121,14 @@
                     <td colspan="7" style="border: none;">
                         <div style="font-size: 18px;">KARTU METER PENGGUNAAN AIR</div>
                         <div style="font-size: 16px;"><b>UNIT AIR "TIRTO MULO"</b></div>
+
                     </td>
                 </tr>
             </table>
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <tr>
                     <td colspan="3" style="border: none;">
-                        <div style="border-top: 1px solid black; margin-bottom: 5px; width: 100%;"></div>
+                        <div style="border-top: 3px solid rgb(88, 86, 86); margin-bottom: 5px; width: 100%;"></div>
                     </td>
                 </tr>
                 <tr>
@@ -148,7 +149,6 @@
                     <th style="border: none;">: ..................................................</th>
                 </tr>
             </table>
-
         </div>
         <div class="content">
             <table>
