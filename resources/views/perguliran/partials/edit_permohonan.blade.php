@@ -52,10 +52,11 @@
                             </tr>
                             <tr>
                                 <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
-                                    <span style="float: left;">kode instalasi</span>
+                                    <span style="float: left;">No. Induk</span>
                                     <span class="badge badge-success"
                                         style="float: right; width: 30%; padding: 5px; text-align: center;">
                                         {{ $installations->kode_instalasi }}
+                                        {{ substr($installations->package->kelas, 0, 1) }}
                                     </span>
                                 </td>
                                 <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">

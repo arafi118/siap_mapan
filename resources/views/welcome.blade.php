@@ -180,7 +180,7 @@
                                         <table class="table table-flush">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th>Kode Instalasi</th>
+                                                    <th>No.Induk</th>
                                                     <th>Customer</th>
                                                     <th>Alamat</th>
                                                     <th>Paket</th>
@@ -198,7 +198,7 @@
                                         <table class="table table-flush">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th>Kode Instalasi</th>
+                                                    <th>No.Induk</th>
                                                     <th>Customer</th>
                                                     <th>Alamat</th>
                                                     <th>Paket</th>
@@ -216,7 +216,7 @@
                                         <table class="table table-flush">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th>Kode Instalasi</th>
+                                                    <th>No.Induk</th>
                                                     <th>Customer</th>
                                                     <th>Alamat</th>
                                                     <th>Paket</th>
@@ -254,7 +254,7 @@
                             <table class="table table-flush">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Kode Instalasi</th>
+                                        <th>No.Induk</th>
                                         <th>Customer</th>
                                         <th>Paket</th>
                                         <th>Pemakaian</th>
@@ -288,7 +288,7 @@
                             <table class="table table-flush">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Kode Instalasi</th>
+                                        <th>No.Induk</th>
                                         <th>Customer</th>
                                         <th>Tgl Tagihan</th>
                                         <th>Jumlah</th>
@@ -419,7 +419,7 @@
             Permohonan.forEach((item, index) => {
                 $('#TablePermohonan').append(`
                     <tr>
-                        <td>${item.kode_instalasi}</td>
+                        <td>${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>
                         <td>${item.customer.nama}</td>
                         <td>${item.customer.alamat}</td>
                         <td>${item.package.kelas}</td>
@@ -432,7 +432,7 @@
             Pasang.forEach((item, index) => {
                 $('#TablePasang').append(`
                     <tr>
-                        <td>${item.kode_instalasi}</td>
+                        <td>${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>
                         <td>${item.customer.nama}</td>
                         <td>${item.customer.alamat}</td>
                         <td>${item.package.kelas}</td>
@@ -445,7 +445,7 @@
             Aktif.forEach((item, index) => {
                 $('#TableAktif').append(`
                     <tr>
-                        <td>${item.kode_instalasi}</td>
+                        <td>${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>
                         <td>${item.customer.nama}</td>
                         <td>${item.customer.alamat}</td>
                         <td>${item.package.kelas}</td>
@@ -471,7 +471,7 @@
                 } else {
                     $('#TablePemakaian').append(`
                         <tr>
-                            <td>${item.kode_instalasi}</td>
+                            <td>${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>
                             <td>${item.customer.nama}</td>
                             <td>${item.package.kelas}</td>
                             <td>${item.one_usage.akhir}</td>
