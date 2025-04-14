@@ -13,7 +13,8 @@
         body {
             font-size: 12px;
             font-family: Arial, sans-serif;
-            width: 8cm;
+            width: 10cm;
+            height: 15cm;
             margin: 1px auto;
             padding: 1px;
             text-align: center;
