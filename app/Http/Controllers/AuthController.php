@@ -36,7 +36,7 @@ class AuthController extends Controller
         $url = request()->getHost();
         $business = Business::where('domain', 'LIKE', '%' . $url . '%')->first();
         $domain = json_decode($business->domain, true);
-        if ($domain[0] != $url && $url != 'siap_mapan.test') {
+        if ($domain[0] != $url && !str_contains($url, 'siap_mapan.test')) {
             return redirect('https://' . $domain[0]);
         }
 
