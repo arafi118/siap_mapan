@@ -120,6 +120,7 @@
                 <table style="width: 100%;">
                     <tr>
                         <td width="20%" align="right" style="border: none;">
+                            {{-- <img src="../storage/app/public/logo/{{ $gambar }}" width="50" height="50"> --}}
                             <img src="../../assets/img/cetak1.png"
                                 style="max-height: 50px; margin-right: 15px; margin-left: 10px;"
                                 class="img-fluid  d-none d-lg-block">
@@ -128,8 +129,8 @@
                         <td width="60%" align="center" style="height: 50px; border: none;">
                             <!-- Placeholder kosong agar posisi tetap -->
                         </td>
-
                         <td width="20%" align="left" style="border: none;">
+                            {{-- <img src="../storage/app/public/logo/{{ $gambar }}" width="50" height="50"> --}}
                             <img src="../../assets/img/cetak2.png" style="max-height: 50px; margin-left: 10px;"
                                 class="img-fluid d-none d-lg-block">
                         </td>
