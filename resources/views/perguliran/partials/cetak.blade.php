@@ -24,7 +24,7 @@
         .container {
             width: 200%;
             padding: 10px;
-            border: 2px solid rgb(154, 154, 154);
+            border: 2px solid rgb(0, 0, 0);
             position: relative;
             left: 50%;
             transform: translateX(-50%);
@@ -116,15 +116,38 @@
 
         <div style="position: relative;">
             <!-- Tabel utama: QR + Data Pelanggan -->
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <tr>
-                    <td colspan="7" style="border: none;">
-                        <div style="font-size: 18px;">KARTU METER PENGGUNAAN AIR</div>
-                        <div style="font-size: 16px;"><b>UNIT AIR "TIRTO MULO"</b></div>
+            <div style="position: relative; text-align: center;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td width="20%" align="right" style="border: none;">
+                            <img src="../../assets/img/cetak1.png"
+                                style="max-height: 50px; margin-right: 15px; margin-left: 10px;"
+                                class="img-fluid  d-none d-lg-block">
+                        </td>
 
-                    </td>
-                </tr>
-            </table>
+                        <td width="60%" align="center" style="height: 50px; border: none;">
+                            <!-- Placeholder kosong agar posisi tetap -->
+                        </td>
+
+                        <td width="20%" align="left" style="border: none;">
+                            <img src="../../assets/img/cetak2.png" style="max-height: 50px; margin-left: 10px;"
+                                class="img-fluid d-none d-lg-block">
+                        </td>
+                    </tr>
+                </table>
+
+
+                <!-- Judul Tengah -->
+                <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%);">
+                    <div style="font-size: 16px;">KARTU METER PENGGUNAAN AIR</div>
+                    <div style="font-size: 13px;"><b>UNIT AIR "TIRTO MULO"</b></div>
+                    <div style="font-size: 12px;">(BUMDes) BANGUN KENCANA KALURAHAN MULO</div>
+                    {{-- <div style="font-size: 13px;"><b>UNIT AIR</b></div> --}}
+
+
+                </div>
+            </div>
+
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <tr>
                     <td colspan="3" style="border: none;">
