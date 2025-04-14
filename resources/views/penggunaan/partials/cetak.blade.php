@@ -140,7 +140,8 @@
                     </tr>
                     <tr>
                         <td align="center">{{ $use->customers->nama }}</td>
-                        <td align="center">{{ $use->installation->kode_instalasi }}</td>
+                        <td align="center">{{ $use->installation->kode_instalasi }}
+                            {{ substr($use->installation->package->kelas, 0, 1) }}</td>
                         <td align="center">{{ $use->installation->alamat }}</td>
                         <td align="center">{{ $use->awal }}</td>
                         <td align="center">{{ $use->akhir }}</td>

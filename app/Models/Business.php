@@ -19,4 +19,9 @@ class Business extends Model
     {
         return $this->hasMany(Amount::class);
     }
+
+    public function setting()
+    {
+        return $this->hasOne(Settings::class);
+    }
 }

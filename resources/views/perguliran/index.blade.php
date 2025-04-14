@@ -92,7 +92,7 @@
                                 <table class="table align-items-center table-flush table-hover" id="TbPermohonan">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>kode instalasi</th>
+                                            <th>No.Induk</th>
                                             <th>Customer</th>
                                             <th>alamat</th>
                                             <th>Paket</th>
@@ -104,7 +104,8 @@
                                     <tbody>
                                         @foreach ($status_R as $status_R)
                                             <tr>
-                                                <td>{{ $status_R->kode_instalasi }}</td>
+                                                <td>{{ $status_R->kode_instalasi }}
+                                                    {{ substr($status_R->package->kelas, 0, 1) }}</td>
                                                 <td>{{ $status_R->customer ? $status_R->customer->nama : '' }}</td>
                                                 <td>{{ $status_R->village ? $status_R->village->nama : '' }}</td>
                                                 <td>{{ $status_R->package ? $status_R->package->kelas : '' }}</td>
@@ -151,7 +152,7 @@
                                 <table class="table align-items-center table-flush table-hover" id="TbPasang">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>kode instalasi</th>
+                                            <th>No.Induk</th>
                                             <th>Customer</th>
                                             <th>alamat</th>
                                             <th>Paket</th>
@@ -163,7 +164,8 @@
                                     <tbody>
                                         @foreach ($status_I as $status_I)
                                             <tr>
-                                                <td>{{ $status_I->kode_instalasi }}</td>
+                                                <td>{{ $status_I->kode_instalasi }}
+                                                    {{ substr($status_I->package->kelas, 0, 1) }}</td>
                                                 <td>{{ $status_I->customer ? $status_I->customer->nama : '' }}</td>
                                                 <td>{{ $status_I->village ? $status_I->village->nama : '' }}</td>
                                                 <td>{{ $status_I->package ? $status_I->package->kelas : '' }}</td>
@@ -198,7 +200,7 @@
                                 <table class="table align-items-center table-flush table-hover" id="TbAktif">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>kode instalasi</th>
+                                            <th>No.Induk</th>
                                             <th>Customer</th>
                                             <th>alamat</th>
                                             <th>Paket</th>
@@ -210,7 +212,8 @@
                                     <tbody>
                                         @foreach ($status_A as $status_A)
                                             <tr>
-                                                <td>{{ $status_A->kode_instalasi }}</td>
+                                                <td>{{ $status_A->kode_instalasi }}
+                                                    {{ substr($status_A->package->kelas, 0, 1) }}</td>
                                                 <td>{{ $status_A->customer ? $status_A->customer->nama : '' }}</td>
                                                 <td>{{ $status_A->village ? $status_A->village->nama : '' }}</td>
                                                 <td>{{ $status_A->package ? $status_A->package->kelas : '' }}</td>
@@ -244,7 +247,7 @@
                                 <table class="table align-items-center table-flush table-hover" id="TbBlokir">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>kode instalasi</th>
+                                            <th>No.Induk</th>
                                             <th>Customer</th>
                                             <th>alamat</th>
                                             <th>Paket</th>
@@ -256,7 +259,8 @@
                                     <tbody>
                                         @foreach ($status_B as $status_B)
                                             <tr>
-                                                <td>{{ $status_B->kode_instalasi }}</td>
+                                                <td>{{ $status_B->kode_instalasi }}
+                                                    {{ substr($status_B->package->kelas, 0, 1) }}</td>
                                                 <td>{{ $status_B->customer ? $status_B->customer->nama : '' }}</td>
                                                 <td>{{ $status_B->village ? $status_B->village->nama : '' }}</td>
                                                 <td>{{ $status_B->package ? $status_B->package->kelas : '' }}</td>
@@ -289,7 +293,7 @@
                                 <table class="table align-items-center table-flush table-hover" id="TbCabut">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>kode instalasi</th>
+                                            <th>No.Induk</th>
                                             <th>Customer</th>
                                             <th>alamat</th>
                                             <th>Paket</th>
@@ -301,7 +305,8 @@
                                     <tbody>
                                         @foreach ($status_C as $status_C)
                                             <tr>
-                                                <td>{{ $status_C->kode_instalasi }}</td>
+                                                <td>{{ $status_C->kode_instalasi }}
+                                                    {{ substr($status_C->package->kelas, 0, 1) }}</td>
                                                 <td>{{ $status_C->customer ? $status_C->customer->nama : '' }}</td>
                                                 <td>{{ $status_C->village ? $status_C->village->nama : '' }}</td>
                                                 <td>{{ $status_C->package ? $status_C->package->kelas : '' }}</td>

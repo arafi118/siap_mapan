@@ -44,7 +44,7 @@
                         <div class="col-md-6">
                             <table class="table table-sm table-borderless mb-0">
                                 <tr>
-                                    <td width="40%">Kode Instalasi</td>
+                                    <td width="40%">No. Induk</td>
                                     <td width="2%">:</td>
                                     <td width="50%" class="KdInstallasi"></td>
                                 </tr>
@@ -67,12 +67,12 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-1">
-                                <label for="awal">Awal Pemakaian</label>
+                                <label for="awal">Meter Awal</label>
                                 <input type="text" class="form-control AkhirUsage input-nilai-awal" name="awal_"
                                     id="awal_" placeholder="Awal Pemakaian" readonly>
                             </div>
                             <div class="form-group">
-                                <label for="akhir">Akhir Pemakaian</label>
+                                <label for="akhir">Meter Akhir</label>
                                 <input type="text" class="form-control AkhirUsage input-nilai-akhir" name="akhir_"
                                     id="akhir_" placeholder="Akhir Pemakaian">
                             </div>
