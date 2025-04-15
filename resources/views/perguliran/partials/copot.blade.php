@@ -108,7 +108,7 @@
                     <div class="card-body">
                         <div class="col-12 d-flex justify-content-end">
                             <button id="kembali" class="btn btn-light btn-icon-split">
-                                <span class="icon text-white-50">
+                                <span class="icon text-white-50 d-none d-lg-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
                                         <path

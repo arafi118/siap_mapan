@@ -124,7 +124,7 @@
                         </div>
                         <div class="col-12 d-flex justify-content-end">
                             <button class="btn btn-secondary btn-icon-split" id="SimpanPenduduk" type="submit">
-                                <span class="icon text-white-50">
+                                <span class="icon text-white-50 d-none d-lg-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
                                         <path
