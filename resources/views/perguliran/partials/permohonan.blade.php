@@ -139,7 +139,7 @@
 
                         <div class="col-12 d-flex justify-content-end align-items-center gap-2">
                             <button id="cetakBrcode" class="btn btn-danger btn-icon-split" target="_blank">
-                                <span class="icon text-white-50">
+                                <span class="icon text-white-50 d-none d-lg-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
                                         <path
@@ -153,7 +153,7 @@
 
                             <button id="kembali" class="btn btn-light btn-icon-split"
                                 style="float: right; margin-left: 10px;">
-                                <span class="icon text-white-50">
+                                <span class="icon text-white-50 d-none d-lg-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
                                         <path
@@ -165,7 +165,7 @@
                             @if ($status === 1)
                                 <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_R"
                                     style="float: right; margin-left: 10px;"<?= $disabled ?>>
-                                    <span class="icon text-white-50">
+                                    <span class="icon text-white-50 d-none d-lg-block">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
                                             <path
@@ -177,7 +177,7 @@
                             @elseif ($status === 2)
                                 <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_R"
                                     style="float: right; margin-left: 10px;">
-                                    <span class="icon text-white-50">
+                                    <span class="icon text-white-50 d-none d-lg-block">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
                                             <path
