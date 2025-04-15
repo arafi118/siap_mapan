@@ -22,7 +22,7 @@
         }
 
         .container {
-            width: 200%;
+            width: 130%;
             padding: 10px;
             border: 2px solid rgb(0, 0, 0);
             position: relative;
@@ -103,6 +103,11 @@
         tbody tr:last-child td:first-child {
             border-bottom-left-radius: 10px;
         }
+
+        .content tbody td:nth-child(2) {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
     </style>
 
 </head>
@@ -139,16 +144,13 @@
 
 
                 <!-- Judul Tengah -->
-                <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%);">
-                    <div style="font-size: 16px;">KARTU METER PENGGUNAAN AIR</div>
-                    <div style="font-size: 13px;"><b>UNIT AIR "TIRTO MULO"</b></div>
-                    <div style="font-size: 12px;">(BUMDes) BANGUN KENCANA KALURAHAN MULO</div>
-                    {{-- <div style="font-size: 13px;"><b>UNIT AIR</b></div> --}}
-
-
+                <div
+                    style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); text-align: center; max-width: 100%;">
+                    <div style="font-size: 13px;">KARTU METER PENGGUNAAN AIR</div>
+                    <div style="font-size: 16px;"><b>UNIT AIR "TIRTO MULO"</b></div>
+                    <div style="font-size: 13px; word-wrap: break-word;">(BUMDes) BANGUN KENCANA KALURAHAN MULO</div>
                 </div>
             </div>
-
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <tr>
                     <td colspan="3" style="border: none;">
@@ -161,7 +163,7 @@
                             {!! $qr !!}
                         </div>
                     </td>
-                    <th style="width: 18%; text-align: left; border: none;">NAMA PELANGGAN</th>
+                    <th style="width: 30%; text-align: left; border: none;">NAMA PELANGGAN</th>
                     <th style="border: none;">: ..................................................</th>
                 </tr>
                 <tr>
@@ -178,11 +180,19 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="text-align: center;">NO</th>
-                        <th style="text-align: center;">BULAN</th>
-                        <th style="text-align: center;">ANGKA METER</th>
-                        <th style="text-align: center;">TTD CATER</th>
-                        <th style="text-align: center;">KETERENGAN</th>
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="text-align: center;">NO</th>
+                                <th rowspan="2" style="text-align: center;">BULAN</th>
+                                <th rowspan="2" style="text-align: center;">ANGKA METER</th>
+                                <th rowspan="2" style="text-align: center;">TTD CATER</th>
+                                <th rowspan="2" style="text-align: center;">KETERANGAN</th>
+                            </tr>
+                            <tr>
+                                <!-- baris kosong karena semua kolom di atas sudah digabung 2 baris -->
+                            </tr>
+                        </thead>
+
 
 
                     </tr>

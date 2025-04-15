@@ -666,7 +666,7 @@ class InstallationsController extends Controller
     
         $data['gambar'] = $logo;
         $data['keuangan'] = $keuangan;
-        $data['qr'] = QrCode::size(60)->generate((string) $installation->id);
+        $data['qr'] = QrCode::size(70)->generate((string) $installation->id);
         $data['installation'] = $installation;
         $data['bisnis'] = $bisnis;
     
