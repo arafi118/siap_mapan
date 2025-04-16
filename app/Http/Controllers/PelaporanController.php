@@ -15,6 +15,7 @@ use App\Models\Inventory;
 use App\Models\JenisLaporan;
 use App\Models\JenisLaporanPinjaman;
 use App\Models\MasterArusKas;
+use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Utils\Keuangan;
@@ -904,7 +905,6 @@ class PelaporanController extends Controller
 
     private function tagihan_pelanggan(array $data)
     {
-
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
@@ -918,41 +918,38 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->with([
-            'customer',
-            'village',
-            'package',
-            'settings',
-            'usage' => function ($query) use ($data) {
-                $tgl_awal = date('Y-m', strtotime('-3 month', strtotime($data['tgl_kondisi']))) . '-01';
-                $query->whereBetween('tgl_akhir', [$tgl_awal, $data['tgl_kondisi']]);
-            },
-            'usage.transaction' => function ($query) use ($data) {
-                $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
-            },
 
-        ]);
-        $data['cater_id'] = $data['sub_laporan']; // Ambil ID cater dari sub_laporan atau request
+        $akun_piutang = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '1.1.03.01')->first();
 
-        $data['cater'] = User::where([
+        $data['cater_id'] = $data['sub_laporan'];
+        $caters = User::where([
             ['business_id', Session::get('business_id')],
-            ['id', $data['cater_id']],
             ['jabatan', '5']
-        ])->first();
+        ])->with([
+            'installations' => function ($query) use ($data) {
+                $query->where('aktif', '<=', $data['tgl_kondisi'])->orderBy('desa');
+            },
+            'installations.customer',
+            'installations.village',
+            'installations.package',
+            'installations.settings',
+            'installations.usage' => function ($query) use ($data) {
+                $query->where(function ($query) use ($data) {
+                    $query->where('tgl_akhir', '<=', $data['tgl_kondisi'])->where('status', 'UNPAID');
+                })->orderBy('tgl_akhir')->orderBy('id');
+            },
+            'installations.usage.transaction' => function ($query) use ($data, $akun_piutang) {
+                $query->where([
+                    ['tgl_transaksi', '<=', $data['tgl_kondisi']],
+                    ['rekening_debit', '!=', $akun_piutang->id]
+                ]);
+            },
+        ]);
 
         if (!empty($data['cater_id'])) {
-            $data['installations'] = $data['installations']->where('cater_id', $data['cater_id']);
+            $caters->where('id', $data['cater_id']);
         }
-        $data['installations'] = $data['installations']->get();
-
-        $bulan_tampil = [];
-        $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
-
-        for ($i = 0; $i < 3; $i++) {
-            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m');
-        }
-
-        $data['bulan_tampil'] = array_reverse($bulan_tampil);
+        $data['caters'] = $caters->get();
 
         $data['title'] = 'Daftar Tagihan Pelanggan';
         $view = view('pelaporan.partials.views.tagihan_pelanggan', $data)->render();
