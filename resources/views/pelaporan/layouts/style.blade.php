@@ -9,6 +9,7 @@
         table-layout: fixed;
         word-wrap: break-word;
         border-collapse: collapse;
+        page-break-inside: avoid;
         width: 100%;
         font-size: 11px;
     }
@@ -20,6 +21,7 @@
 
     tr {
         page-break-inside: avoid;
+        page-break-after: auto;
     }
 
     tr.bold td {

@@ -31,15 +31,13 @@
         </tr>
     </table>
 
-    <table border="0" width="100%">
+    <table border="1" width="100%">
         <thead>
             <tr style="background-color: rgb(230, 230, 230); font-weight: bold;">
                 <th width="4%" class="t l b" rowspan="2">No</th>
                 <th width="21%" class="t l b" rowspan="2">Nama</th>
                 <th width="15%" class="t l b" rowspan="2">No. Induk</th>
-                <th width="30%" class="t l b" colspan="3">
-                    Tunggakan
-                </th>
+                <th width="30%" class="t l b" colspan="3">Tunggakan</th>
                 <th width="10%" class="t l b" rowspan="2">Jumlah Tunggakan</th>
                 <th width="10%" class="t l b" rowspan="2">Dibayar</th>
                 <th width="10%" class="t l b r" rowspan="2">Kategori</th>
@@ -57,12 +55,6 @@
                 $section = '';
             @endphp
             @foreach ($filterInstalasi as $ins)
-                @php
-                    if (count($ins->usage) <= 0) {
-                        continue;
-                    }
-                @endphp
-
                 @if (!in_array($ins->desa, $data_desa))
                     @if ($section != $ins->desa && count($data_desa) > 0)
                         <tr class="bold">
