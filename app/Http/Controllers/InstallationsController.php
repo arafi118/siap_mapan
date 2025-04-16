@@ -662,11 +662,18 @@ class InstallationsController extends Controller
     {
         $keuangan = new Keuangan;
         $bisnis = Business::where('id', Session::get('business_id'))->first();
-        $logo = $bisnis->logo; 
+        $installation = $installation->with([
+            'customer',
+            'package',
+            'village'
+        ])->where('id', $installation->id)->first();
+        // $logo = $bisnis->logo; 
     
-        $data['gambar'] = $logo;
+        // $data['gambar'] = $logo;
+        
+        $data['gambar'] = $bisnis->logo;
         $data['keuangan'] = $keuangan;
-        $data['qr'] = QrCode::size(70)->generate((string) $installation->id);
+        $data['qr'] = QrCode::size(50)->generate((string) $installation->id);
         $data['installation'] = $installation;
         $data['bisnis'] = $bisnis;
     

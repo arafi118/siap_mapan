@@ -11,6 +11,7 @@ use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Database\Eloquent\Builder;
 
 class DashboardController extends Controller
 {
@@ -30,6 +31,14 @@ class DashboardController extends Controller
             ['status', 'UNPAID'],
             ['tgl_akhir', '<', date('Y-m-d')]
         ])->count();
+
+        $Tunggakan = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')
+        ->whereHas('usage', function(Builder  $query){
+                    $query->where([
+                        ['status','UNPAID'],
+                        ['tgl_akhir', '<=', date('Y-m-d')]
+                    ]);
+                }, '>=','3')->count();
 
         $UsageCount = 0;
         foreach ($Usages as $usage) {
@@ -58,7 +67,7 @@ class DashboardController extends Controller
         $title = 'Dashboard';
         $api = env('APP_API', 'http://localhost:8080');
         $business = Business::where('id', Session::get('business_id'))->first();
-        return view('welcome')->with(compact('Installation', 'UsageCount', 'Tagihan', 'title', 'charts', 'pendapatan', 'beban', 'surplus', 'pros_pendapatan', 'pros_beban', 'pros_surplus', 'business', 'api'));
+        return view('welcome')->with(compact('Installation', 'Tunggakan', 'UsageCount', 'Tagihan', 'title', 'charts', 'pendapatan', 'beban', 'surplus', 'pros_pendapatan', 'pros_beban', 'pros_surplus', 'business', 'api'));
     }
 
     public function installations()
@@ -98,6 +107,24 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function tunggakan()
+    {
+        $tunggakan = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')
+            ->with([
+                'customer',
+                'package',
+            ])->whereHas('usage', function(Builder  $query){
+                    $query->where([
+                        ['status','UNPAID'],
+                        ['tgl_akhir', '<=', date('Y-m-d')]
+                    ]);
+                }, '>=','3')->get();
+
+        return response()->json([
+            'tunggakan' => $tunggakan
+        ]);
+    }
+
     public function tagihan()
     {
         $tgl_akhir = request()->get('tgl_akhir') ?: date('Y-m-d');
@@ -129,6 +156,28 @@ class DashboardController extends Controller
             'setting' => $setting,
             'block' => $result
         ]);
+    }
+
+    public function Cetaktunggakan($id)
+    {
+        $keuangan = new Keuangan;
+        $tunggakan = Installations::where('business_id', Session::get('business_id'))
+        ->where('status', 'A')
+        ->where('id', $id) 
+        ->with([
+            'customer',
+            'package',
+            'usage' =>function($query){
+                $query->where([
+                    ['status', 'UNPAID'],
+                    ['tgl_akhir','<=', date('Y-m-d')]
+                ]);
+            }
+        ])->get();
+
+        dd($tunggakan);
+
+        return view('partialsDashboard.tunggakan')->with(compact('keuangan', 'tunggakan'));
     }
 
     private function chart()
