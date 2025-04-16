@@ -47,7 +47,8 @@
                                             <span style="float: left;">No. Induk</span>
                                             <span class="badge badge-info"
                                                 style="float: right; width: 30%; padding: 5px; text-align: center;">
-                                                {{ $installation->kode_instalasi }} {{ substr( $installation->package->kelas,0,1) }}
+                                                {{ $installation->kode_instalasi }}
+                                                {{ substr($installation->package->kelas, 0, 1) }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
@@ -139,7 +140,7 @@
                         </div>
                         <div class="col-12 d-flex justify-content-end">
                             <button type="button" id="cetakBrcode" class="btn btn-danger btn-icon-split" target="_blank">
-                                <span class="icon text-white-50">
+                                <span class="icon text-white-50 d-none d-lg-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
                                         <path
@@ -154,7 +155,7 @@
                                 <td>&nbsp;&nbsp;</td>
                             </tr>
                             <button id="kembali" class="btn btn-light btn-icon-split">
-                                <span class="icon text-white-50">
+                                <span class="icon text-white-50 d-none d-lg-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-turn-slight-left-fill" viewBox="0 0 16 16">
                                         <path
@@ -165,7 +166,7 @@
                             </button>
                             <button class="btn btn-secondary btn-icon-split" type="submit" id="Simpan_status_I"
                                 style="float: right; margin-left: 10px;">
-                                <span class="icon text-white-50">
+                                <span class="icon text-white-50 d-none d-lg-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
                                         <path

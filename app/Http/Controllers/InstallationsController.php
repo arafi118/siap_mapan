@@ -8,10 +8,12 @@ use App\Models\Package;
 use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\Account;
+use App\Models\Business;
 use App\Models\Cater;
 use App\Models\Usage;
 use App\Models\User;
 use App\Models\Village;
+use App\Utils\Keuangan;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Utils\Tanggal;
@@ -658,10 +660,19 @@ class InstallationsController extends Controller
 
     public function cetak_pemakaian(Installations $installation)
     {
-        $qr = QrCode::size(60)->generate((string) $installation->id);
-
-        return view('perguliran.partials.cetak')->with(compact('installation', 'qr'));
+        $keuangan = new Keuangan;
+        $bisnis = Business::where('id', Session::get('business_id'))->first();
+        $logo = $bisnis->logo; 
+    
+        $data['gambar'] = $logo;
+        $data['keuangan'] = $keuangan;
+        $data['qr'] = QrCode::size(70)->generate((string) $installation->id);
+        $data['installation'] = $installation;
+        $data['bisnis'] = $bisnis;
+    
+        return view('perguliran.partials.cetak', $data);
     }
+    
 
 
     /**
