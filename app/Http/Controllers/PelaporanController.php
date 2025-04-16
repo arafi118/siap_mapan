@@ -984,33 +984,38 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
-        $data['installations'] = Installations::where('business_id', Session::get('business_id'))->where('aktif', '<=', $data['tgl_kondisi'])->where('status_tunggakan', '!=', 'lancar')->with([
-            'customer',
-            'village',
-            'package',
-            'usage' => function ($query) use ($data) {
-                $query->where('tgl_akhir', '<=', $data['tgl_kondisi'])->where('status', 'UNPAID')->orderBy('tgl_akhir')->orderBy('id');
+
+        $akun_piutang = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '1.1.03.01')->first();
+
+        $data['cater_id'] = $data['sub_laporan'];
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->with([
+            'installations' => function ($query) use ($data) {
+                $query->where('aktif', '<=', $data['tgl_kondisi'])->orderBy('desa');
             },
-            'usage.transaction' => function ($query) use ($data) {
-                $query->where('tgl_transaksi', '<=', $data['tgl_kondisi']);
+            'installations.customer',
+            'installations.village',
+            'installations.package',
+            'installations.settings',
+            'installations.usage' => function ($query) use ($data) {
+                $query->where(function ($query) use ($data) {
+                    $query->where('tgl_akhir', '<=', $data['tgl_kondisi'])->where('status', 'UNPAID');
+                })->orderBy('tgl_akhir')->orderBy('id');
+            },
+            'installations.usage.transaction' => function ($query) use ($data, $akun_piutang) {
+                $query->where([
+                    ['tgl_transaksi', '<=', $data['tgl_kondisi']],
+                    ['rekening_debit', '!=', $akun_piutang->id]
+                ]);
             },
         ]);
 
-        if (!empty($data['cater'])) {
-            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
+        if (!empty($data['cater_id'])) {
+            $caters->where('id', $data['cater_id']);
         }
-
-        $data['installations'] = $data['installations']->get();
-
-        $bulan_tampil = [];
-        $bulan_ini = Carbon::createFromDate($thn, $bln, 1); // Set bulan awal
-
-        for ($i = 0; $i < 3; $i++) {
-            $bulan_tampil[] = $bulan_ini->copy()->subMonths($i)->format('Y-m'); // Format YYYY-MM untuk handle perubahan tahun
-        }
-
-        $data['bulan_tampil'] = array_reverse($bulan_tampil); // Urutkan agar tampil dari yang paling lama ke terbaru
-
+        $data['caters'] = $caters->get();
 
         $data['title'] = 'Daftar Piutang Pelanggan';
         $view = view('pelaporan.partials.views.piutang_pelanggan', $data)->render();

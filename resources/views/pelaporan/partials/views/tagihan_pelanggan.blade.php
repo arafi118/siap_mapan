@@ -39,7 +39,7 @@
                 <th width="21%" class="t l b" rowspan="2">Nama</th>
                 <th width="15%" class="t l b" rowspan="2">No. Induk</th>
                 <th width="10%" class="t l b" rowspan="2">Tgl Aktif</th>
-                <th width="30%" class="t l b" colspan="3">Tunggakan</th>
+                <th width="30%" class="t l b" colspan="3">Tagihan</th>
                 <th width="10%" class="t l b" rowspan="2">Dibayar</th>
                 <th width="10%" class="t l b r" rowspan="2">Status</th>
             </tr>
