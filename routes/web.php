@@ -78,6 +78,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/dashboard/installations', [DashboardController::class, 'installations']);
     Route::get('/dashboard/usages', [DashboardController::class, 'usages']);
     Route::get('/dashboard/tagihan', [DashboardController::class, 'tagihan']);
+    Route::get('/dashboard/tunggakan', [DashboardController::class, 'tunggakan']);
+    Route::get('/dashboard/Cetaktunggakan/{id}', [DashboardController::class, 'Cetaktunggakan']);
 
     Route::get('/dataset/{time}', [SystemController::class, 'dataset']);
 

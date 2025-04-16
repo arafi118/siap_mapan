@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row g-3">
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
             <div class="card overflow-hidden">
                 <div class="bg-holder bg-card" style="background-image:url(/assets/img/corner-3.png);"></div>
 
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
             <div class="card overflow-hidden">
                 <div class="bg-holder bg-card" style="background-image:url(/assets/img/corner-2.png);"></div>
 
@@ -41,9 +41,28 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
             <div class="card overflow-hidden">
                 <div class="bg-holder bg-card" style="background-image:url(/assets/img/corner-1.png);"></div>
+
+                <div class="card-body position-relative">
+                    <h6 class="font-weight-bold">
+                        Tunggakan
+                    </h6>
+                    <div class="display-4 fs-5 mb-2 font-weight-normal text-warning" id="TagihanCount">
+                        {{ $Tunggakan }}
+                    </div>
+                    <a class="font-weight-bold text-nowrap fs-10" href="#" id="BtnModalTunggakan">
+                        Lihat Detail
+                        <span class="fas fa-angle-right mr-1"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
+            <div class="card overflow-hidden">
+                <div class="bg-holder bg-card" style="background-image:url(/assets/img/corner-4.png);"></div>
 
                 <div class="card-body position-relative">
                     <h6 class="font-weight-bold">
@@ -272,6 +291,41 @@
         </div>
     </div>
 
+    <div class="modal fade" id="ModalTunggakan" tabindex="-1" role="dialog" aria-labelledby="ModalPemakaianLabel"
+        aria-modal="false">
+        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalTunggakanLabel">Daftar Tunggakan</h5>
+                    <button type="button" class="close btn-modal-close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-flush">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>No.Induk</th>
+                                        <th>Customer</th>
+                                        <th>Alamat</th>
+                                        <th>Paket</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TableTunggakan"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary btn-modal-close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="ModalTagihan" tabindex="-1" role="dialog" aria-labelledby="ModalTagihanLabel"
         aria-modal="false">
         <div class="modal-dialog modal-dialog-scrollable modal-fullscreen" role="document">
@@ -394,6 +448,19 @@
             return result;
         }
 
+        async function dataTunggakan() {
+            var result = await $.ajax({
+                'url': '/dashboard/tunggakan',
+                'type': 'GET',
+                'dataType': 'json',
+                'success': function(result) {
+                    return result
+                }
+            })
+
+            return result;
+        }
+
         async function dataTagihan() {
             var result = await $.ajax({
                 'url': '/dashboard/tagihan',
@@ -491,6 +558,45 @@
             }
 
             $('#ModalPemakaian').modal('toggle');
+        });
+
+        $(document).on('click', '#BtnModalTunggakan', async function(e) {
+            e.preventDefault();
+            var result = await dataTunggakan();
+            var tunggakan = result.tunggakan;
+            console.log(tunggakan);
+
+            var data = 0;
+            var empty = 0;
+            $('#TableTunggakan').html('');
+            tunggakan.forEach((item, index) => {
+                $('#TableTunggakan').append(`
+                            <tr>
+                                <td>${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>
+                                <td>${item.customer.nama} ( ${item.status_tunggakan})</td>
+                                <td>${item.alamat}</td>
+                                <td>${item.package.kelas}</td>
+                                <td>
+                                    <a target="_blank"
+                                    href="/dashboard/Cetaktunggakan/${item.id}"class="btn btn-secondary btn-sm" data-id="">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `)
+
+                data += 1
+            })
+
+            if (data - empty == 0) {
+                $('#TableTunggakan').append(`
+                        <tr>
+                            <td align="center" colspan="4">Tidak ada data pemakaian</td>
+                        </tr>
+                    `)
+            }
+
+            $('#ModalTunggakan').modal('toggle');
         });
 
         $(document).on('click', '#BtnModalTagihan', async function(e) {
