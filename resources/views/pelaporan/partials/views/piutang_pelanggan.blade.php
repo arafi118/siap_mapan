@@ -76,7 +76,7 @@
                             <td class="t l b" align="right">
                                 {{ number_format($jumlah_menunggak_bulan_ini, 2) }}
                             </td>
-                            <td class="t l b">
+                            <td class="t l b" align="right">
                                 {{ number_format($jumlah_tunggakan, 2) }}
                             </td>
                             <td class="t l b" align="right">
@@ -195,7 +195,7 @@
                 <td class="t l b" align="right">
                     {{ number_format($jumlah_menunggak_bulan_ini, 2) }}
                 </td>
-                <td class="t l b">
+                <td class="t l b" align="right">
                     {{ number_format($jumlah_tunggakan, 2) }}
                 </td>
                 <td class="t l b" align="right">
