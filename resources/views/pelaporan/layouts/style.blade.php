@@ -22,6 +22,10 @@
         page-break-inside: avoid;
     }
 
+    tr.bold td {
+        font-weight: bold;
+    }
+
     td,
     th {
         padding: 2px 4px !important;
@@ -42,6 +46,10 @@
 
     .page-break {
         page-break-before: always;
+    }
+
+    .break {
+        page-break-after: always
     }
 
     .t {

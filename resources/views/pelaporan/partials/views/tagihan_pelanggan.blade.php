@@ -5,161 +5,190 @@
 @include('pelaporan.layouts.style')
 <title>{{ $title }}</title>
 
-<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
-    <tr>
-        <td colspan="3" align="center">
-            <div style="font-size: 18px; font-weight: bold;">Tagihan Pelanggan
-                {{ $cater->nama }}
-            </div>
-            <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
-        </td>
-    </tr>
+@foreach ($caters as $cater)
+    @php
+        $filterInstalasi = $cater->installations->filter(fn($ins) => $ins->usage->count() > 0);
+        if ($filterInstalasi->isEmpty()) {
+            continue;
+        }
+    @endphp
 
-    <tr>
-        <td colspan="3" height="10"></td>
-    </tr>
-</table>
+    @if ($loop->iteration > 1)
+        <div class="break"></div>
+    @endif
 
-<table border="0" width="100%">
-    <thead>
-        <tr style="background-color: rgb(230, 230, 230); font-weight: bold;">
-            <th width="3%" class="t l b" rowspan="3">No</th>
-            <th width="10%" class="t l b" rowspan="3">Nama</th>
-            <th width="6%" class="t l b" rowspan="3">No. Induk</th>
-            <th width="8%" class="t l b" colspan="{{ count($bulan_tampil) }}">Tunggakan</th>
-            <th width="5%" class="t l b" rowspan="3">Dibayar</th>
-            <th width="6%" class="t l b r" rowspan="3">Keterangan</th>
+    <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+        <tr>
+            <td colspan="3" align="center">
+                <div style="font-size: 18px; font-weight: bold;">
+                    {{ strtoupper('Tagihan Pelanggan ' . $cater->nama) }}
+                </div>
+                <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
+            </td>
         </tr>
-        <tr style="background: rgb(230, 230, 230); font-weight: bold;">
-            <th class="t l b" width="6%">s/d 3 Bulan Lalu</th>
-            <th class="t l b" width="6%">Bulan Lalu</th>
-            <th class="t l b" width="6%">Bulan Ini</th>
-        </tr>
-        <tr style="background: rgb(230, 230, 230); font-weight: bold;">
-            @foreach ($bulan_tampil as $bt)
-                <th class="t l b" width="6%">
-                    {{ Tanggal::namaBulan($bt . '-01') }}
-                </th>
-            @endforeach
-        </tr>
-    </thead>
 
-    <tbody>
-        @php
-            use Carbon\Carbon;
-            $no = 1;
-            $totalTagihan = 0;
-            $totalTerbayar = 0;
-            $totalMenunggak = 0;
-            $totalDenda = 0;
-            $data_desa = [];
-            $totalMenunggakPerBulan = [];
-            $totalDibayarKeseluruhan = 0; // Tambahkan variabel untuk total dibayar
-            $cek_bulan = [];
-        @endphp
+        <tr>
+            <td colspan="3" height="10"></td>
+        </tr>
+    </table>
 
-        @foreach ($installations as $installation)
-            @if (!in_array($installation->village, $data_desa))
+    <table border="0" width="100%">
+        <thead>
+            <tr style="background-color: rgb(230, 230, 230); font-weight: bold;">
+                <th width="4%" class="t l b" rowspan="2">No</th>
+                <th width="21%" class="t l b" rowspan="2">Nama</th>
+                <th width="15%" class="t l b" rowspan="2">No. Induk</th>
+                <th width="10%" class="t l b" rowspan="2">Tgl Aktif</th>
+                <th width="30%" class="t l b" colspan="3">Tunggakan</th>
+                <th width="10%" class="t l b" rowspan="2">Dibayar</th>
+                <th width="10%" class="t l b r" rowspan="2">Status</th>
+            </tr>
+            <tr>
+                <th width="10%" class="t l b">s/d Bulan Lalu</th>
+                <th width="10%" class="t l b">Bulan Ini</th>
+                <th width="10%" class="t l b r">s/d Bulan Ini</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @php
+                $data_desa = [];
+                $section = '';
+            @endphp
+            @foreach ($filterInstalasi as $ins)
+                @php
+                    if (count($ins->usage) <= 0) {
+                        continue;
+                    }
+                @endphp
+
+                @if (!in_array($ins->desa, $data_desa))
+                    @if ($section != $ins->desa && count($data_desa) > 0)
+                        <tr class="bold">
+                            <td class="t l b" colspan="4" align="right">Jumlah</td>
+                            <td class="t l b" align="right">
+                                {{ number_format($jumlah_menunggak_bulan_lalu, 2) }}
+                            </td>
+                            <td class="t l b" align="right">
+                                {{ number_format($jumlah_menunggak_bulan_ini, 2) }}
+                            </td>
+                            <td class="t l b" align="right">
+                                {{ number_format($jumlah_menunggak_sampai_bulan_ini, 2) }}
+                            </td>
+                            <td class="t l b" align="right">
+                                {{ number_format($jumlah_bayar, 2) }}
+                            </td>
+                            <td class="t l b r"></td>
+                        </tr>
+                    @endif
+
+                    <tr class="bold">
+                        <td class="t l b r" colspan="9" height="25">
+                            Desa {{ $ins->village->nama }} Dusun {{ $ins->village->dusun }}
+                        </td>
+                    </tr>
+
+                    @php
+                        $data_desa[] = $ins->desa;
+                        $section = $ins->desa;
+
+                        $nomor = 1;
+                        $jumlah_menunggak_bulan_lalu = 0;
+                        $jumlah_menunggak_bulan_ini = 0;
+                        $jumlah_menunggak_sampai_bulan_ini = 0;
+                        $jumlah_bayar = 0;
+                    @endphp
+                @endif
+
+                @php
+                    $tgl_toleransi = $ins->settings->tanggal_toleransi;
+
+                    $bayar = 0;
+                    $bulan_lalu = 0;
+                    $bulan_ini = 0;
+                    $sampai_bulan_ini = 0;
+                    $jumlah_menunggak = 0;
+                    foreach ($ins->usage as $usage) {
+                        $bulan_tagihan = date('Y-m', strtotime($usage->tgl_akhir)) . '-01';
+                        $bulan_kondisi = date('Y-m', strtotime($tgl_kondisi)) . '-01';
+                        $toleransi = date('Y-m', strtotime($tgl_kondisi)) . '-' . $tgl_toleransi;
+
+                        $tagihan = $usage->nominal + $ins->abodemen;
+                        if ($usage->tgl_akhir < $toleransi) {
+                            $tagihan += $ins->package->denda;
+                        }
+
+                        if ($bulan_tagihan < $bulan_kondisi) {
+                            $bulan_lalu += $tagihan;
+                        } elseif ($bulan_tagihan == $bulan_kondisi) {
+                            $bulan_ini += $tagihan;
+                        }
+
+                        foreach ($usage->transaction as $trx) {
+                            $bayar += $trx->total;
+                        }
+
+                        $jumlah_menunggak += 1;
+                    }
+
+                    $sampai_bulan_ini = $bulan_lalu + $bulan_ini;
+                    $status = 'Lancar';
+                    if ($jumlah_menunggak > 0) {
+                        $status = 'Menunggak 1';
+                    }
+
+                    if ($jumlah_menunggak > 1) {
+                        $status = 'Menunggak 2';
+                    }
+
+                    if ($jumlah_menunggak > 2) {
+                        $status = 'SPS';
+                    }
+                @endphp
+
                 <tr>
-                    <td class="t l b r" colspan="8" align="left">
-                        Dusun {{ $installation->village->dusun }} Kalurahan {{ $installation->village->nama }}
+                    <td class="t l b" align="center">{{ $nomor++ }}</td>
+                    <td class="t l b">{{ $ins->customer->nama }}</td>
+                    <td class="t l b">{{ $ins->kode_instalasi }}</td>
+                    <td class="t l b" align="center">{{ Tanggal::tglIndo($ins->aktif) }}</td>
+                    <td class="t l b" align="right">
+                        {{ number_format($bulan_lalu, 2) }}
                     </td>
+                    <td class="t l b" align="right">
+                        {{ number_format($bulan_ini, 2) }}
+                    </td>
+                    <td class="t l b" align="right">
+                        {{ number_format($sampai_bulan_ini, 2) }}
+                    </td>
+                    <td class="t l b" align="right">
+                        {{ number_format($bayar, 2) }}
+                    </td>
+                    <td class="t l b r" align="center">{{ $status }}</td>
                 </tr>
 
                 @php
-                    $data_desa[] = $installation->village;
+                    $jumlah_menunggak_bulan_lalu += $bulan_lalu;
+                    $jumlah_menunggak_bulan_ini += $bulan_ini;
+                    $jumlah_menunggak_sampai_bulan_ini += $sampai_bulan_ini;
+                    $jumlah_bayar += $bayar;
                 @endphp
-            @endif
-
-            <tr>
-                <td class="t l b" align="center">
-                    {{ $no++ }}
-                </td>
-                <td class="t l b" align="left">
-                    {{ $installation->customer->nama }}
-                </td>
-                <td class="t l b" align="center">
-                    {{ $installation->kode_instalasi }} {{ substr($installation->package->kelas, 0, 1) }}
-                </td>
-
-                @php
-                    $nomor = 1;
-                    $data_menunggak = [];
-                    $tunggakan_tampil = [];
-                    foreach ($installation->usage as $usage) {
-                        $beban = $installation->abodemen;
-                        $denda =
-                            $installation->status_tunggakan != 'lancar' ? intval($installation->package->denda) : 0;
-                        $dibayar = $usage->transaction->sum('total');
-                        $tagihan = $usage->nominal;
-                        $menunggak = $beban + $denda + $tagihan;
-                        if (date('m', strtotime($usage->tgl_akhir)) < date('m', strtotime($tgl_kondisi))) {
-                            $menunggak = 0;
-                        }
-
-                        $toleransi = $usage->tgl_akhir;
-                        if ($toleransi >= $tgl_kondisi) {
-                            $menunggak = 0;
-                        }
-
-                        if ($nomor > 1) {
-                            $data_menunggak[$nomor] = $menunggak + $data_menunggak[$nomor - 1];
-                        } else {
-                            $data_menunggak[$nomor] = $menunggak;
-                        }
-
-                        $bulan = Carbon::parse($usage->tgl_akhir)->format('Y-m');
-                        if (in_array($bulan, $bulan_tampil)) {
-                            $tunggakan_tampil[$bulan] = $data_menunggak[$nomor];
-                        }
-
-                        $nomor++;
-                    }
-                @endphp
-                @foreach ($bulan_tampil as $bt)
-                    @php
-                        $tunggakan = 0;
-                        $dibayarPerBulan = 0;
-                        $bulan = Carbon::parse($bt)->format('Y-m');
-                        $tunggakan = isset($tunggakan_tampil[$bt]) ? $tunggakan_tampil[$bt] : 0;
-                        $dibayarPerBulan = isset($dibayar_tampil[$bt]) ? $dibayar_tampil[$bt] : 0; // Ambil data dibayar
-
-                        if (in_array($bt, $cek_bulan)) {
-                            $totalMenunggakPerBulan[$bt] += $tunggakan;
-                            $totalDibayarPerBulan[$bt] += $dibayarPerBulan;
-                        } else {
-                            $totalMenunggakPerBulan[$bt] = $tunggakan;
-                            $totalDibayarPerBulan[$bt] = $dibayarPerBulan;
-                            $cek_bulan[$bt] = $bt;
-                        }
-                    @endphp
-                    <td class="t l b" align="right">
-                        {{ number_format($tunggakan, 0, ',', '.') . ',-' }}
-                    </td>
-                @endforeach
-
-                <td class="t l b" align="right">
-                    {{ number_format($dibayar, 0, ',', '.') . ',-' }}
-                </td>
-                <td class="t l b r" align="center">
-                    {{ $installation->status_tunggakan }}
-                </td>
-            </tr>
-        @endforeach
-
-        <tr style="font-weight: bold;">
-            <td class="t l b" colspan="3" align="left">Jumlah</td>
-            @foreach ($bulan_tampil as $bt)
-                @php
-                    $bulan = Carbon::parse($bt)->format('Y-m');
-                @endphp
-                <td class="t l b" align="right">
-                    {{ isset($totalMenunggakPerBulan[$bulan]) ? number_format($totalMenunggakPerBulan[$bulan], 0, ',', '.') . ',-' : '0,-' }}
-                </td>
             @endforeach
-
-            <td class="t l b" align="right"></td>
-            <td class="t l b r" align="right"></td>
-        </tr>
-    </tbody>
-</table>
+            <tr class="bold">
+                <td class="t l b" colspan="4" align="right">Jumlah</td>
+                <td class="t l b" align="right">
+                    {{ number_format($jumlah_menunggak_bulan_lalu, 2) }}
+                </td>
+                <td class="t l b" align="right">
+                    {{ number_format($jumlah_menunggak_bulan_ini, 2) }}
+                </td>
+                <td class="t l b" align="right">
+                    {{ number_format($jumlah_menunggak_sampai_bulan_ini, 2) }}
+                </td>
+                <td class="t l b" align="right">
+                    {{ number_format($jumlah_bayar, 2) }}
+                </td>
+                <td class="t l b r"></td>
+            </tr>
+        </tbody>
+    </table>
+@endforeach

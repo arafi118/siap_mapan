@@ -15,8 +15,13 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Business::class);
     }
-        public function position()
+    public function position()
     {
-        return $this->belongsTo(Position::class, 'jabatan','id');
+        return $this->belongsTo(Position::class, 'jabatan', 'id');
+    }
+
+    public function installations()
+    {
+        return $this->hasMany(Installations::class, 'cater_id', 'id');
     }
 }
