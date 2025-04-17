@@ -56,7 +56,9 @@ class PackageController extends Controller
     {
         $data = $request->only([
             "kelas",
-            "blok"
+            "blok",
+            "abodemen",
+            "denda"
         ]);
         $rules = [
             'kelas' => 'required'
@@ -77,11 +79,13 @@ class PackageController extends Controller
             $blok[$no] = $data['_blok'];
             $no++;
         }
-
+        //catatan : data yang kesimpen di tb paket coloum abodemen hanya berfungsi untuk menampilkan default saat register instalasi
         $Package = Package::create([
-            'business_id' => Session::get('business_id'),
-            'kelas' => $request->kelas,
-            'harga' => json_encode($blok)
+            'business_id'   => Session::get('business_id'),
+            'kelas'         => $request->kelas,
+            'denda'         => $request->denda,
+            'abodemen'      => $request->abodemen,
+            'harga'         => json_encode($blok)
         ]);
 
         return response()->json([
@@ -165,6 +169,8 @@ class PackageController extends Controller
         $data = $request->only([
             "kelas",
             "blok",
+            "abodemen",
+            "denda"
         ]);
         $rules = [
             'kelas' => 'required'
@@ -187,9 +193,11 @@ class PackageController extends Controller
 
         // Update data 
         $update = Package::where('id', $package->id)->update([
-            'business_id' => Session::get('business_id'),
-            'kelas' => $request->kelas,
-            'harga' => $blok
+            'business_id'   => Session::get('business_id'),
+            'kelas'         => $request->kelas,
+            'abodemen'      => $request->abodemen,
+            'denda'         => $request->denda,
+            'harga'         => $blok
         ]);
         return response()->json([
             'success' => true,
