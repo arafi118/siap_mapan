@@ -131,11 +131,11 @@
                     $tunggakan = $sampai_bulan_lalu + $bulan_lalu + $bulan_ini;
                     $status = 'Lancar';
                     if ($jumlah_menunggak > 0) {
-                        $status = 'Menunggak 1';
+                        $status = 'Menunggak';
                     }
 
                     if ($jumlah_menunggak > 1) {
-                        $status = 'Menunggak 2';
+                        $status = 'SP';
                     }
 
                     if ($jumlah_menunggak > 2) {

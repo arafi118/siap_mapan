@@ -47,10 +47,6 @@ class SystemController extends Controller
                 $update_sps[] = $ins->id;
             }
 
-            if ($ins->id == '7755') {
-                dd($ins->usage);
-            }
-
             $abodemen = $ins->abodemen;
             $denda = $ins->package->denda;
             foreach ($ins->usage as $usage) {
