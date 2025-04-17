@@ -668,18 +668,18 @@ class InstallationsController extends Controller
             'village'
         ])->where('id', $installation->id)->first();
         // $logo = $bisnis->logo; 
-    
+
         // $data['gambar'] = $logo;
-        
+
         $data['gambar'] = $bisnis->logo;
         $data['keuangan'] = $keuangan;
         $data['qr'] = QrCode::size(50)->generate((string) $installation->id);
         $data['installation'] = $installation;
         $data['bisnis'] = $bisnis;
-    
+
         return view('perguliran.partials.cetak', $data);
     }
-    
+
 
 
     /**
@@ -705,9 +705,11 @@ class InstallationsController extends Controller
 
         $desa = Village::all();
 
+        $qr = QrCode::generate($installations->id);
+
         $pilih_desa = 0;
         $title = 'Register Proposal';
-        return view('perguliran.partials.edit_permohonan')->with(compact('settings', 'caters', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
+        return view('perguliran.partials.edit_permohonan')->with(compact('settings', 'qr', 'caters', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
     }
 
     /**

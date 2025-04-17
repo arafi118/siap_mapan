@@ -8,16 +8,27 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <!-- Bagian Informasi Customer -->
-                    <div class="alert alert-info d-flex align-items-center text-black" role="alert">
-                        <!-- Gambar -->
-                        <img src="../../assets/img/user_edit.png" style="max-height: 100px; margin-right: 20px;"
-                            class="img-fluid  d-none d-lg-block">
-                        <div class="w-100">
-                            <h3 class="text-black"><b>Edit Custommer an. {{ $installations->customer->nama }}</b> Loan id
-                                <b>( {{ $installations->id }} )</b>
-                            </h3>
-                            <p class="text-black">Nik<b> . {{ $installations->customer->nik }}</b></p>
-                            <hr>
+
+                    <div class="alert alert-info" role="alert">
+                        <div class="row">
+                            <div class="col-md-2 mb-2">
+                                <div class="col-md-3 text-center">
+                                    <div class="d-inline-block border border-2 rounded bg-light shadow-sm"
+                                        style="width: 120px; height: 120px; padding: 10px; display: flex; align-items: center; justify-content: left;">
+                                        {!! $qr !!}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 mb-2">
+                                <h4 class="alert-heading">
+                                    <b>Nama Pelanggan: {{ $installations->customer->nama }}</b>
+                                </h4>
+                                <hr>
+                                <p class="mb-0">
+                                    Desa {{ $installations->village->nama }},
+                                    {{ $installations->alamat }}, [Koordinate: {{ $installations->koordinate }}].
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <table class="table table-bordered table-striped">

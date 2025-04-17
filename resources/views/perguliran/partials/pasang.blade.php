@@ -10,27 +10,27 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <!-- Bagian Informasi Customer -->
-                        <div class="alert alert-success d-flex align-items-center" role="alert">
-                            <table style="width: 100%;">
-                                <tr>
-                                    {{-- Kolom kiri: QR Code --}}
-                                    <td style="width: 120px; text-align: left; vertical-align: top;">
-                                        {!! $qr !!}
-                                    </td>
-
-                                    {{-- Kolom kanan: informasi customer --}}
-                                    <td style="vertical-align: top;">
-                                        <h4 class="alert-heading">
-                                            <b>Nama Pelanggan. {{ $installation->customer->nama }}</b>
-                                        </h4>
-                                        <hr>
-                                        <p class="mb-0">
-                                            desa.{{ $installation->village->nama }},
-                                            {{ $installation->alamat }}, [koordinate {{ $installation->koordinate }}].
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
+                        <div class="alert alert-success" role="alert">
+                            <div class="row">
+                                <div class="col-md-2 mb-2">
+                                    <div class="col-md-3 text-center">
+                                        <div class="d-inline-block border border-2 rounded bg-light shadow-sm"
+                                            style="width: 120px; height: 120px; padding: 10px; display: flex; align-items: center; justify-content: left;">
+                                            {!! $qr !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10 mb-2">
+                                    <h4 class="alert-heading">
+                                        <b>Nama Pelanggan: {{ $installation->customer->nama }}</b>
+                                    </h4>
+                                    <hr>
+                                    <p class="mb-0">
+                                        Desa {{ $installation->village->nama }},
+                                        {{ $installation->alamat }}, [Koordinate: {{ $installation->koordinate }}].
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Tabel di Bawah Customer -->

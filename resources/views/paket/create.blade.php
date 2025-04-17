@@ -7,6 +7,9 @@
 @section('content')
     <form action="/packages" method="post" id="tambahpaket">
         @csrf
+
+        <input type="hidden" name="abodemen" id="abodemen" value="{{ $tampil_settings->abodemen }}">
+        <input type="hidden" name="denda" id="denda" value="{{ $tampil_settings->denda }}">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">

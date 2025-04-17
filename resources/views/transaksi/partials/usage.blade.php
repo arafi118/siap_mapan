@@ -239,8 +239,12 @@
                                     <div class="alert alert-success" role="alert">
                                         <div class="row align-items-center">
                                             <div class="col-md-3 text-center">
-                                                {!! $qr !!}
+                                                <div
+                                                    class="d-inline-block p-3 border border-2 rounded bg-light shadow-sm">
+                                                    {!! $qr !!}
+                                                </div>
                                             </div>
+
                                             <div class="col-md-7">
                                                 <h4 class="text-center mb-2"><b>Nama Pelanggan.
                                                         {{ $installations->customer->nama }}</b></h4>
