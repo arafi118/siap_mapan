@@ -56,12 +56,6 @@
                 $section = '';
             @endphp
             @foreach ($filterInstalasi as $ins)
-                @php
-                    if (count($ins->usage) <= 0) {
-                        continue;
-                    }
-                @endphp
-
                 @if (!in_array($ins->desa, $data_desa))
                     @if ($section != $ins->desa && count($data_desa) > 0)
                         <tr class="bold">

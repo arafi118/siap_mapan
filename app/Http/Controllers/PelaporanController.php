@@ -866,26 +866,24 @@ class PelaporanController extends Controller
         $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
 
-        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
+        $data['cater_id'] = $data['sub_laporan'];
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->with([
+            'installations' => function ($query) use ($data) {
+                $query->where('pasang', '<=', $data['tgl_kondisi'])->orderBy('desa');
+            },
+            'installations.customer',
+            'installations.village',
+            'installations.package',
+            'installations.settings'
+        ]);
 
-        $data['installations'] = Installations::where([
-            ['aktif', '<=', $data['tgl_kondisi']],
-            ['business_id', Session::get('business_id')]
-        ])
-            ->whereNotIn('status', ['B', 'C'])
-            ->with([
-                'customer',
-                'package',
-                'usage' => function ($query) use ($data) {
-                    $query->where('tgl_akhir', '<=', $data['tgl_kondisi']);
-                },
-            ]);
-
-        if (!empty($data['cater'])) {
-            $data['installations'] = $data['installations']->where('cater_id', $data['cater']);
+        if (!empty($data['cater_id'])) {
+            $caters->where('id', $data['cater_id']);
         }
-
-        $data['installations'] = $data['installations']->get();
+        $data['caters'] = $caters->get();
 
         $data['title'] = 'Daftar Pelanggan';
         $view = view('pelaporan.partials.views.daftar_pelanggan', $data)->render();
@@ -985,7 +983,7 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        $akun_piutang = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '1.1.03.01')->first();
+        $data['akun_piutang'] = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '1.1.03.01')->first();
 
         $data['cater_id'] = $data['sub_laporan'];
         $caters = User::where([
@@ -1004,10 +1002,9 @@ class PelaporanController extends Controller
                     $query->where('tgl_akhir', '<=', $data['tgl_kondisi'])->where('status', 'UNPAID');
                 })->orderBy('tgl_akhir')->orderBy('id');
             },
-            'installations.usage.transaction' => function ($query) use ($data, $akun_piutang) {
+            'installations.usage.transaction' => function ($query) use ($data) {
                 $query->where([
-                    ['tgl_transaksi', '<=', $data['tgl_kondisi']],
-                    ['rekening_debit', '!=', $akun_piutang->id]
+                    ['tgl_transaksi', '<=', $data['tgl_kondisi']]
                 ]);
             },
         ]);

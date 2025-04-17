@@ -1,63 +1,101 @@
+@php
+    use App\Utils\Tanggal;
+@endphp
+
 @include('pelaporan.layouts.style')
 <title>{{ $title }}</title>
 
-<table class="header-table" border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 12px;">
-    <tr>
-        <td colspan="3" align="center">
-            <div style="font-size: 18px; font-weight: bold;">Daftar Pelanggan</div>
-            <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3" height="10"></td>
-    </tr>
-</table>
-@php
-    $no = 1;
-@endphp
+@foreach ($caters as $cater)
+    @php
+        $filterInstalasi = $cater->installations->filter(fn($ins) => $ins->usage->count() > 0);
+        if ($filterInstalasi->isEmpty()) {
+            continue;
+        }
+    @endphp
 
-<table border="0" width="100%">
-    <thead>
-        <tr style="background: rgb(232, 232, 232); font-weight: bold;">
-            <th width="3%" class="t l b">No</th>
-            <th width="13%" class="t l b">Nama</th>
-            <th width="10%" class="t l b">Nik</th>
-            <th width="22%" class="t l b">Alamat</th>
-            <th width="10%" class="t l b">No. Telp</th>
-            <th width="10%" class="t l b">No.Induk</th>
-            <th width="8%" class="t l b r">Status</th>
+    @if ($loop->iteration > 1)
+        <div class="break"></div>
+    @endif
+
+    <table border="0" width="100%">
+        <tr>
+            <td colspan="3" align="center">
+                <div style="font-size: 18px; font-weight: bold;">
+                    {{ strtoupper('Daftar Pelanggan ' . $cater->nama) }}
+                </div>
+                <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
+            </td>
         </tr>
-    </thead>
-    <tbody>
-        @forelse ($installations as $installation)
-            <tr>
-                <td align="center" class="t l b">{{ $no++ }}</td>
-                <td align="left" class="t l b">{{ $installation->customer->nama }}</td>
-                <td align="center" class="t l b">{{ $installation->customer->nik }}</td>
-                <td align="left" class="t l b">{{ $installation->customer->alamat }}</td>
-                <td align="center" class="t l b">{{ $installation->customer->hp }}</td>
-                <td align="center" class="t l b">{{ $installation->kode_instalasi }}
-                    {{ substr($installation->package->kelas, 0, 1) }}</td>
-                <td align="center" class="t l b r">
-                    @if ($installation->status == 'R' || $installation->status == '0')
-                        Permohonan
-                    @elseif ($installation->status == 'I')
-                        Pasang
-                    @elseif ($installation->status == 'A')
-                        Aktif
-                    @elseif ($installation->status == 'B')
-                        Blokir
-                    @elseif ($installation->status == 'C')
-                        Cabut
-                    @endif
-                </td>
+        <tr>
+            <td colspan="3" height="10"></td>
+        </tr>
+    </table>
+
+    <table border="0" width="100%">
+        <thead>
+            <tr style="background: rgb(232, 232, 232); font-weight: bold;">
+                <th class="t l b" width="3%" height="30">No</th>
+                <th class="t l b" width="12%">No.Induk</th>
+                <th class="t l b" width="8%">Tgl Pasang</th>
+                <th class="t l b" width="20%">Nama</th>
+                <th class="t l b" width="14%">Nik</th>
+                <th class="t l b" width="25%">Alamat</th>
+                <th class="t l b" width="10%">No. Telp</th>
+                <th class="t l b r" width="8%">Status</th>
             </tr>
-        @empty
-            <tr>
-                <td colspan="7" align="center" class="t l b r">
-                    Tidak ada data pelanggan.
-                </td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @php
+                $data_desa = [];
+                $section = '';
+            @endphp
+            @forelse ($filterInstalasi as $ins)
+                @if (!in_array($ins->desa, $data_desa))
+                    <tr class="bold">
+                        <td class="t l b r" colspan="8" height="25">
+                            Desa {{ $ins->village->nama }} Dusun {{ $ins->village->dusun }}
+                        </td>
+                    </tr>
+
+                    @php
+                        $data_desa[] = $ins->desa;
+                        $section = $ins->desa;
+
+                        $nomor = 1;
+                    @endphp
+                @endif
+
+                <tr>
+                    <td class="t l b" align="center">{{ $nomor++ }}</td>
+                    <td class="t l b" align="center">
+                        {{ $ins->kode_instalasi }}.{{ substr($ins->package->kelas, 0, 1) }}
+                    </td>
+                    <td class="t l b" align="center">{{ Tanggal::tglIndo($ins->pasang) }}</td>
+                    <td class="t l b">{{ $ins->customer->nama }}</td>
+                    <td class="t l b" align="center">{{ $ins->customer->nik }}</td>
+                    <td class="t l b">{{ $ins->customer->alamat }}</td>
+                    <td class="t l b" align="center">{{ $ins->customer->hp }}</td>
+                    <td class="t l b r" align="center">
+                        @if ($ins->status == 'R' || $ins->status == '0')
+                            Permohonan
+                        @elseif ($ins->status == 'I')
+                            Pasang
+                        @elseif ($ins->status == 'A')
+                            Aktif
+                        @elseif ($ins->status == 'B')
+                            Blokir
+                        @elseif ($ins->status == 'C')
+                            Cabut
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" align="center" class="t l b r">
+                        Tidak ada data pelanggan.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+@endforeach

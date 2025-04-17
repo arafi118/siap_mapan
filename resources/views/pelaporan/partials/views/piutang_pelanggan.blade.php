@@ -106,26 +106,23 @@
                     $bulan_ini = 0;
                     $jumlah_menunggak = 0;
                     foreach ($ins->usage as $usage) {
-                        $bulan_tagihan = date('Y-m', strtotime($usage->tgl_akhir)) . '-01';
-                        $bulan_kondisi_lalu = date('Y-m', strtotime('-1 month', strtotime($tgl_kondisi))) . '-01';
-                        $bulan_kondisi = date('Y-m', strtotime($tgl_kondisi)) . '-01';
-                        $toleransi = date('Y-m', strtotime($tgl_kondisi)) . '-' . $tgl_toleransi;
-
-                        $tagihan = $usage->nominal + $ins->abodemen;
-                        if ($usage->tgl_akhir < $toleransi) {
-                            $tagihan += $ins->package->denda;
-                        }
-
-                        if ($bulan_tagihan < $bulan_kondisi_lalu) {
-                            $sampai_bulan_lalu += $tagihan;
-                        } elseif ($bulan_tagihan < $bulan_kondisi) {
-                            $bulan_lalu += $tagihan;
-                        } else {
-                            $bulan_ini += $tagihan;
-                        }
-
                         foreach ($usage->transaction as $trx) {
-                            $bayar += $trx->total;
+                            $bulan_tagihan = date('Y-m', strtotime($usage->tgl_akhir)) . '-01';
+                            $bulan_kondisi = date('Y-m', strtotime($tgl_kondisi)) . '-01';
+                            $bulan_kondisi_lalu = date('Y-m', strtotime('-1 month', strtotime($bulan_kondisi))) . '-01';
+                            $toleransi = date('Y-m', strtotime($bulan_kondisi)) . '-' . $tgl_toleransi;
+
+                            if ($trx->rekening_debit == $akun_piutang->id) {
+                                if ($bulan_tagihan < $bulan_kondisi_lalu) {
+                                    $sampai_bulan_lalu += $trx->total;
+                                } elseif ($bulan_tagihan < $bulan_kondisi) {
+                                    $bulan_lalu += $trx->total;
+                                } else {
+                                    $bulan_ini += $trx->total;
+                                }
+                            } else {
+                                $bayar += $trx->total;
+                            }
                         }
 
                         $jumlah_menunggak += 1;
