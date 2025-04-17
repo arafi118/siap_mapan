@@ -47,6 +47,10 @@ class SystemController extends Controller
                 $update_sps[] = $ins->id;
             }
 
+            if ($ins->id == '7755') {
+                dd($ins->usage);
+            }
+
             $abodemen = $ins->abodemen;
             $denda = $ins->package->denda;
             foreach ($ins->usage as $usage) {
@@ -57,8 +61,13 @@ class SystemController extends Controller
                     }
                 }
 
+                $nominal = $usage->nominal;
+                if ($usage->nominal <= 0) {
+                    $nominal = 1;
+                }
+
                 $trx_id = substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
-                if ($usage->tgl_akhir <= $date && $jumlah_pembayaran < $usage->nominal) {
+                if ($usage->tgl_akhir <= $date && $jumlah_pembayaran < $nominal) {
                     $trx_tunggakan[] = [
                         'business_id' => $businessId,
                         'tgl_transaksi' => $usage->tgl_akhir,
