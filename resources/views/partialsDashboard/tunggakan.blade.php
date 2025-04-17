@@ -198,38 +198,39 @@
             </table>
         </div>
         <div class="content">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 15px;">
-                <thead>
-                    <tr>
-                        <th style="text-align: center;">NO</th>
-                        <th style="text-align: center;">BULAN/TAHUN</th>
-                        <th style="text-align: center;">NOMINAL</th>
-                        <th style="text-align: center;">KETERANGAN</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php $total = 0; @endphp
-                    @foreach ($tunggakan->usage as $i => $u)
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <table style="width: 90%; border-collapse: collapse; text-align: center; margin-top: 15px;">
+                    <thead>
                         <tr>
-                            <td style="text-align: center;">{{ $i + 1 }}</td>
-                            <td style="text-align: left;">
-                                {{ Tanggal::namaBulan($u->tgl_akhir) }} {{ Tanggal::tahun($u->tgl_akhir) }}
-                            </td>
-                            <td style="text-align: right;">
-                                {{ number_format($u->nominal, 0, ',', '.') }}
-                            </td>
-                            <td style="text-align: center;"></td>
-                            {{-- <td style="text-align: center;">{{ $u->keterangan ?? '-' }}</td> --}}
+                            <th style="text-align: center;">NO</th>
+                            <th style="text-align: center;">BULAN/TAHUN</th>
+                            <th style="text-align: center;">NOMINAL</th>
+                            <th style="text-align: center;">KETERANGAN</th>
                         </tr>
-                        @php $total += $u->nominal; @endphp
-                    @endforeach
-                    <tr>
-                        <td colspan="2"><b>JUMLAH</b></td>
-                        <td style="text-align: right;"><b>{{ number_format($total, 0, ',', '.') }}</b></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @php $total = 0; @endphp
+                        @foreach ($tunggakan->usage as $i => $u)
+                            <tr>
+                                <td style="text-align: center;">{{ $i + 1 }}</td>
+                                <td style="text-align: left;">
+                                    {{ Tanggal::namaBulan($u->tgl_akhir) }} {{ Tanggal::tahun($u->tgl_akhir) }}
+                                </td>
+                                <td style="text-align: right;">
+                                    {{ number_format($u->nominal, 0, ',', '.') }}
+                                </td>
+                                <td style="text-align: center;">{{ $u->keterangan ?? '-' }}</td>
+                            </tr>
+                            @php $total += $u->nominal; @endphp
+                        @endforeach
+                        <tr>
+                            <td colspan="2"><b>JUMLAH</b></td>
+                            <td style="text-align: right;"><b>{{ number_format($total, 0, ',', '.') }}</b></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 15px;">
                 <tr>
