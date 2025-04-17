@@ -24,7 +24,7 @@
         }
 
         .container {
-            width: 151%;
+            width: 200%;
             padding: 10px;
             border: 2px solid rgb(0, 0, 0);
             position: relative;
@@ -212,13 +212,14 @@
                     @foreach ($tunggakan->usage as $i => $u)
                         <tr>
                             <td style="text-align: center;">{{ $i + 1 }}</td>
-                            <td style="text-align: center;">
+                            <td style="text-align: left;">
                                 {{ Tanggal::namaBulan($u->tgl_akhir) }} {{ Tanggal::tahun($u->tgl_akhir) }}
                             </td>
                             <td style="text-align: right;">
                                 {{ number_format($u->nominal, 0, ',', '.') }}
                             </td>
-                            <td style="text-align: center;">{{ $u->keterangan ?? '-' }}</td>
+                            <td style="text-align: center;"></td>
+                            {{-- <td style="text-align: center;">{{ $u->keterangan ?? '-' }}</td> --}}
                         </tr>
                         @php $total += $u->nominal; @endphp
                     @endforeach
@@ -294,19 +295,19 @@
                     <div style="text-align: center; width: 45%;">
                         Direktur Bumdes
                         <br><br><br><br>
-                        {{ $dir->nama }}
+                        {{ $dir->nama ?? '' }}
                     </div>
                     <div style="text-align: center; width: 45%;">
                         Ketua Unit Air
                         <br><br><br><br>
-                        {{ $ket->nama }}
+                        {{ $ket->nama ?? '' }}
                     </div>
                 </div>
             </div>
             </td>
             </tr>
             </tbody>
-            <br><br><br><br>
+            <br><br><br>
         </div>
     </div>
 </body>
