@@ -39,6 +39,70 @@
             border-radius: 0.25rem;
             /* Sesuaikan dengan elemen input */
         }
+
+        .camera-container {
+            position: relative;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .camera-container video {
+            width: 100%;
+            height: 100%;
+            max-height: 200px;
+            display: block;
+            object-fit: cover;
+        }
+
+        .camera-container video.mirror {
+            transform: scaleX(-1);
+        }
+
+        .scan-overlay {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .scan-overlay.top {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+        }
+
+        .scan-overlay.bottom {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+        }
+
+        .scan-overlay.left {
+            top: 40%;
+            left: 0;
+            width: 20%;
+            height: 20%;
+        }
+
+        .scan-overlay.right {
+            top: 40%;
+            right: 0;
+            width: 20%;
+            height: 20%;
+        }
+
+        .scan-area {
+            position: absolute;
+            top: 40%;
+            left: 20%;
+            width: 60%;
+            height: 20%;
+            border: 3px solid #fff;
+            box-sizing: border-box;
+            z-index: 3;
+        }
     </style>
 </head>
 
@@ -95,6 +159,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@v5.0.1/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.3/typeahead.jquery.min.js"

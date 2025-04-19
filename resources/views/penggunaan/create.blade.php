@@ -182,6 +182,73 @@
             console.warn(`Code scan error = ${error}`);
         }
 
+        const video = document.getElementById('video');
+        navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: {
+                        ideal: "environment"
+                    }
+                }
+            })
+            .then(stream => {
+                video.srcObject = stream;
+
+                const track = stream.getVideoTracks()[0];
+                const settings = track.getSettings();
+
+                if (settings.facingMode === "user") {
+                    video.classList.add("mirror");
+                } else {
+                    video.classList.remove("mirror");
+                }
+            });
+
+        $(document).on('click', '#scanMeter', function(e) {
+            const canvas = document.getElementById('tmpImage');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            const context = canvas.getContext('2d');
+            context.filter = "contrast(250%) brightness(125%)";
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const scanX = canvas.width * 0.20;
+            const scanY = canvas.height * 0.40;
+            const scanWidth = canvas.width * 0.60;
+            const scanHeight = canvas.height * 0.20;
+
+            const previewImage = document.getElementById("previewImage");
+            previewImage.width = scanWidth;
+            previewImage.height = scanHeight;
+
+            const previewContex = previewImage.getContext("2d");
+            const imageData = context.getImageData(scanX, scanY, scanWidth, scanHeight);
+            previewContex.putImageData(imageData, 0, 0);
+
+            setTimeout(() => {
+                Tesseract.recognize(
+                    previewImage,
+                    'eng', {
+                        logger: m => console.log(m),
+                        tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
+                        preserve_interword_spaces: 1,
+                        oem: 3,
+                        psm: 4,
+                    }
+                ).then(({
+                    data: {
+                        text
+                    }
+                }) => {
+                    const hasilMatch = text.match(/\d+/);
+                    const angka = hasilMatch ? hasilMatch[0] : "0";
+
+                    console.log(text, angka);
+                    $('.input-nilai-akhir').val(angka);
+                });
+            }, 500);
+        })
+
         $(document).ready(function() {
             $('.select2').select2({
                 theme: 'bootstrap4',
@@ -253,15 +320,20 @@
             var index = parent.attr('data-index')
 
             var installation = dataSearch[index]
-            $('.namaCustomer').html('<b>' + installation.customer.nama + '</b>')
+
+            if (installation.customer.jk == 'P') {
+                $('.avatar-customer').attr('src', '{{ asset('assets/img/woman.png') }}')
+            } else {
+                $('.avatar-customer').attr('src', '{{ asset('assets/img/man.png') }}')
+            }
+
+            var inisialPaket = installation.package.kelas.charAt(0).toUpperCase()
+            $('.namaCustomer').html(installation.customer.nama)
             $('.customer').val(installation.customer_id)
             $('.NikCustomer').html(installation.customer.nik)
             $('.id_instalasi').val(installation.id)
-            $('.TlpCustomer').html(installation.customer.hp)
-            $('.AlamatCustomer').html(installation.customer.alamat)
-            $('.pekerjaan').html(installation.customer.pekerjaan)
-            $('.KdInstallasi').html(installation.kode_instalasi + ' ' + installation.package.kelas.charAt(0)
-                .toUpperCase())
+            $('.AlamatCustomer').html(installation.customer.alamat + '.' + installation.customer.hp)
+            $('.KdInstallasi').html(installation.kode_instalasi + ' ' + inisialPaket)
             $('.CaterInstallasi').html(installation.users.nama)
             $('.PackageInstallasi').html(installation.package.kelas)
             $('.AlamatInstallasi').html(installation.alamat)

@@ -387,3 +387,7 @@ h1,
 table.table-center tbody tr td {
     vertical-align: middle;
 }
+
+.text-dark {
+    color: #3a3b45 !important;
+}

@@ -34,6 +34,10 @@ class AuthController extends Controller
     public function index()
     {
         $url = request()->getHost();
+        if (str_contains($url, 'free.app')) {
+            $url = 'siap_mapan.test';
+        }
+
         $business = Business::where('domain', 'LIKE', '%' . $url . '%')->first();
         $domain = json_decode($business->domain, true);
         if ($domain[0] != $url && !str_contains($url, 'siap_mapan.test')) {
