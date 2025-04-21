@@ -80,12 +80,16 @@
                     <tfoot>
                         <tr>
                             <th colspan="2">Jumlah {{ $lev1->nama_akun }}</th>
-                            <th class="text-end">{{ number_format($total_saldo, 2) }}</th>
+                            <th class="text-end">
+                                <b>Rp. {{ number_format($total_saldo, 2) }}</b>
+                            </th>
                         </tr>
                         @if ($lev1->lev1 == '3')
                             <tr>
                                 <th colspan="2">Jumlah Liabilitas + Ekuitas</th>
-                                <th class="text-end">{{ number_format($liabilitas, 2) }}</th>
+                                <th class="text-end">
+                                    <b>Rp. {{ number_format($liabilitas, 2) }}</b>
+                                </th>
                             </tr>
                         @endif
                     </tfoot>

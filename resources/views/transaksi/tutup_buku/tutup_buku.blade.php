@@ -49,46 +49,6 @@
                             <input type="hidden" name="surplus" id="surplus" value="{{ $surplus }}">
                             <div class="card">
                                 <div class="card-body p-3">
-                                    <div class="table-responsive mb-3">
-                                        <table class="table table-striped midle">
-                                            <thead class="bg-dark text-white">
-                                                {{-- <tr>
-                                                    <th width="50%">
-                                                        <span class="text-sm">Cadangan Resiko</span>
-                                                    </th>
-                                                    <th width="50%">
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="text-sm">Jumlah</span>
-                                                            <span class="text-sm">
-                                                                Rp. <span data-id="total_cadangan_resiko">
-                                                                    {{ number_format($surplus, 2) }}
-                                                                </span>
-                                                            </span>
-                                                        </div>
-                                                    </th>
-                                                </tr> --}}
-                                            </thead>
-                                            {{-- <tbody>
-                                                <input type="hidden" name="total_cadangan_resiko"
-                                                    id="total_cadangan_resiko"
-                                                    class="form-control total form-control-sm text-end" value="0">
-                                                @foreach ($rekening as $cr)
-                                                    <tr>
-                                                        <td>{{ $cr->nama_akun }}</td>
-                                                        <td>
-                                                            <div class="input-group input-group-outline my-0">
-                                                                <input type="text"
-                                                                    name="cadangan_resiko[{{ $cr->kode_akun }}]"
-                                                                    id="{{ $cr->kode_akun }}"
-                                                                    class="form-control nominal cadangan_resiko form-control-sm text-end"
-                                                                    value="0.00">
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody> --}}
-                                        </table>
-                                    </div>
                                     <h4 class="font-weight-normal">
                                         Alokasi Laba
                                     </h4>
@@ -113,21 +73,19 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($sp_bersih as $saldo)
-                                                    @if (substr($saldo->kode_akun, -1) <= 4)
-                                                        <tr>
-                                                            <td>{{ $title_form[substr($saldo->kode_akun, -1)] }}</td>
-                                                            <td>
-                                                                <div class="input-group input-group-outline my-0">
-                                                                    <input type="text"
-                                                                        name="surplus_bersih[{{ substr($saldo->id, -1) }}]"
-                                                                        id="surplus_bersih_{{ substr($saldo->id, -1) }}"
-                                                                        class="form-control nominal surplus_bersih form-control-sm text-end"
-                                                                        value="0.00">
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
+                                                @foreach ($pembagian_surplus as $rek)
+                                                    <tr>
+                                                        <td>{{ $rek->nama_akun }}</td>
+                                                        <td>
+                                                            <div class="input-group input-group-outline my-0">
+                                                                <input type="text"
+                                                                    name="surplus_bersih[{{ $rek->id }}]"
+                                                                    id="surplus_bersih_{{ $rek->id }}"
+                                                                    class="form-control nominal surplus_bersih form-control-sm text-end"
+                                                                    value="0.00">
+                                                            </div>
+                                                        </td>
+                                                    </tr>
                                                 @endforeach
 
                                                 <input type="hidden" class="total" name="total_surplus_bersih"
@@ -178,8 +136,7 @@
                                         <button type="button" id="kembali" class="btn btn-white btn-sm">
                                             Kembali
                                         </button>
-                                        <button type="button" id="btnSimpanLaba"
-                                            class="btn btn-dark btn-sm"style="float: right; margin-left: 10px;">
+                                        <button type="button" id="btnSimpanLaba" class="btn btn-dark btn-sm ml-3">
                                             Simpan Alokasi Laba
                                         </button>
                                     </div>
