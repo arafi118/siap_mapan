@@ -4,7 +4,7 @@
 @endphp
 
 @include('pelaporan.layouts.style')
-<title>{{ $title }}</title>
+<title>{{ $title }} {{ $sub_judul }}</title>
 
 @foreach ($accounts as $acc)
     @if ($loop->iteration > 1)

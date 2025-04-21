@@ -1,5 +1,5 @@
 @include('pelaporan.layouts.style')
-<title>{{ $title }}</title>
+<title>{{ $title }} {{ $sub_judul }}</title>
 
 <table border="0" width="100%">
     <tr>
@@ -17,7 +17,7 @@
     </tr>
 </table>
 
-<table>
+<table border="0">
     <thead>
         <tr style="background: #000; color: #fff;">
             <td width="10%">Kode</td>
@@ -36,14 +36,14 @@
         @php
             $saldo_akun = 0;
         @endphp
-        <tr style="background: rgb(74, 74, 74); color: #fff;">
-            <td style="height: 28px;" class="text-center" colspan="3">
+        <tr class="bold" style="background: rgb(74, 74, 74); color: #fff;">
+            <td style="height: 28px;" colspan="3" align="center">
                 {{ $lev1->kode_akun }}. {{ $lev1->nama_akun }}
             </td>
         </tr>
 
         @foreach ($lev1->akun2 as $lev2)
-            <tr style="background: rgb(167, 167, 167); font-weight: bold;">
+            <tr class="bold" style="background: rgb(167, 167, 167);">
                 <td>{{ $lev2->kode_akun }}</td>
                 <td colspan="2">{{ $lev2->nama_akun }}</td>
             </tr>
@@ -90,23 +90,26 @@
             @endforeach
         @endforeach
 
-        <tr style="background: rgb(167, 167, 167); font-weight: bold;">
-            <td colspan="2">Jumlah {{ $lev1->nama_akun }}</td>
+        <tr class="bold" style="background: rgb(167, 167, 167);">
+            <td style="height: 28px;" colspan="2">Jumlah {{ $lev1->nama_akun }}</td>
             <td align="right">
                 {{ $saldo_akun < 0 ? '(' . number_format(abs($saldo_akun), 2) . ')' : number_format($saldo_akun, 2) }}
             </td>
+        </tr>
+
+        <tr>
+            <td colspan="3" height="3"></td>
         </tr>
     @endforeach
 
     <tr>
         <td colspan="3" style="padding: 0px !important;">
-            <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
-                style="font-size: 12px;">
-                <tr style="background: rgb(167, 167, 167); font-weight: bold;">
-                    <td height="15" width="80%" align="left">
-                        <b>Jumlah Liabilitas + Ekuitas </b>
+            <table border="0">
+                <tr class="bold" style="background: rgb(167, 167, 167);">
+                    <td class="p-0" style="height: 28px;" width="80%" align="left">
+                        Jumlah Liabilitas + Ekuitas
                     </td>
-                    <td align="right" width="20%">
+                    <td class="p-0" align="right" width="20%">
                         {{ $jumlah_liabilitas_equitas < 0 ? '(' . number_format(abs($jumlah_liabilitas_equitas), 2) . ')' : number_format($jumlah_liabilitas_equitas, 2) }}&nbsp;
                     </td>
                 </tr>

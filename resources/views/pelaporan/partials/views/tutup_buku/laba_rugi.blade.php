@@ -9,7 +9,7 @@
 @endphp
 
 @include('pelaporan.layouts.style')
-<title>{{ $title }}</title>
+<title>{{ $title }} {{ $sub_judul }}</title>
 
 <table border="0" width="100%">
     <tr>

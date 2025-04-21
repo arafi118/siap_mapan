@@ -5,7 +5,8 @@
         margin: 0;
     }
 
-    table {
+    table,
+    table td table {
         table-layout: fixed;
         word-wrap: break-word;
         border-collapse: collapse;
@@ -28,8 +29,8 @@
         font-weight: bold;
     }
 
-    td,
-    th {
+    td:not(.p-0),
+    th:not(.p-0) {
         padding: 2px 4px !important;
         margin: 0 !important;
         border-collapse: collapse;

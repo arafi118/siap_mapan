@@ -1,5 +1,5 @@
 @include('pelaporan.layouts.style')
-<title>{{ $title }}</title>
+<title>{{ $title }} {{ $sub_judul }}</title>
 @php
     $nomor = 1;
 @endphp

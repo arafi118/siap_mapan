@@ -1,4 +1,4 @@
-<title>{{ $title }}</title>
+<title>{{ $title }} {{ $sub_judul }}</title>
 <style>
     * {
         font-family: 'Arial', sans-serif;

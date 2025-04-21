@@ -837,7 +837,7 @@ class PelaporanController extends Controller
 
         $data['surplus'] = $pendapatan - $beban;
 
-        $data['title'] = 'Calk';
+        $data['title'] = 'Catatan Atas Laporan Keuangan';
         $view = view('pelaporan.partials.views.calk', $data)->render();
         $pdf = PDF::loadHTML($view)->setOptions([
             'header-html' => view('pelaporan.layouts.header', $data)->render(),
@@ -1385,21 +1385,20 @@ class PelaporanController extends Controller
 
     private function neraca_tutup_buku(array $data)
     {
+        $keuangan = new Keuangan;
         $thn = $data['tahun'];
         $bln = $data['bulan'];
         $hari = $data['hari'];
 
         $tgl = $thn . '-' . $bln . '-' . $hari;
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
-        $data['tgl'] = Tanggal::tahun($tgl);
-        if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
-        }
+        $data['sub_judul'] = 'Awal Tahun ' . Tanggal::tahun($tgl);
+
         $data['akun1'] = AkunLevel1::where('lev1', '<=', '3')->with([
             'akun2',
             'akun2.akun3',
-            'akun2.akun3.accounts',
+            'akun2.akun3.accounts' => function ($query) {
+                $query->where('business_id', Session::get('business_id'));
+            },
             'akun2.akun3.accounts.amount' => function ($query) use ($data) {
                 $query->where([
                     ['tahun', $data['tahun']],
@@ -1407,6 +1406,28 @@ class PelaporanController extends Controller
                 ]);
             },
         ])->orderBy('kode_akun', 'ASC')->get();
+
+        $laba_rugi = Account::where('business_id', Session::get('business_id'))->where('lev1', '>=', '4')->with([
+            'amount' => function ($query) use ($data) {
+                $query->where('tahun', $data['tahun'])->where(function ($query) use ($data) {
+                    $query->where('bulan', '0');
+                });
+            },
+        ])->get();
+
+        $pendapatan = 0;
+        $beban = 0;
+        foreach ($laba_rugi as $lr) {
+            $saldo = $keuangan->komSaldo($lr);
+            if ($lr->lev1 == '4') {
+                $pendapatan += $saldo;
+            }
+
+            if ($lr->lev1 == '5') {
+                $beban += $saldo;
+            }
+        }
+        $data['surplus'] = $pendapatan - $beban;
 
         $data['title'] = 'Neraca Awal Tahun';
         $view = view('pelaporan.partials.views.tutup_buku.neraca', $data)->render();
