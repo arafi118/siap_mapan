@@ -24,7 +24,7 @@
         .container {
             width: 100%;
             padding: 5px;
-            border: 1px solid rgb(0, 0, 0);
+            border: 1px solid rgb(255, 255, 255);
             box-sizing: border-box;
         }
 
@@ -110,7 +110,7 @@
         }
 
         .content tbody tr {
-            height: 6.5mm;
+            height: 7.5mm;
         }
     </style>
 </head>
