@@ -171,7 +171,7 @@
                         });
 
                         formTagihanBulanan(result.installation)
-                        window.open('/transactions/dokumen/struk_tagihan/' + result.transaction_id)
+                        window.open('/transactions/dokumen/struk_tagihan/' + result.transaksi)
                     }
                 },
 

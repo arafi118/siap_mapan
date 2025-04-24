@@ -1245,62 +1245,63 @@ class TransactionController extends Controller
             $rek_denda = $kode_denda->id;
         }
 
+
         $trx_id = substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
-        $insert[] = [
-            'business_id' => Session::get('business_id'),
-            'rekening_debit' => $kode_kas->id,
-            'rekening_kredit' => $rek_abodemen,
-            'tgl_transaksi' => $tgl_transaksi,
-            'total' => $data['abodemen'],
-            'installation_id' => $request->id_instal,
-            'transaction_id' => $trx_id,
-            'usage_id' => $request->id_usage,
-            'user_id' => auth()->user()->id,
-            'relasi' => $usage->customers->nama,
-            'keterangan' => 'Pendapatan Abodemen pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
-            'created_at' => date('Y-m-d H:i:s')
-        ];
 
-        $insert[] = [
-            'business_id' => Session::get('business_id'),
-            'rekening_debit' => $kode_kas->id,
-            'rekening_kredit' => $rek_pemakaian,
-            'tgl_transaksi' => $tgl_transaksi,
-            'total' => $data['tagihan'],
-            'installation_id' => $request->id_instal,
-            'transaction_id' => $trx_id,
-            'usage_id' => $request->id_usage,
-            'user_id' => auth()->user()->id,
-            'relasi' => $usage->customers->nama,
-            'keterangan' => 'Pendapatan Tagihan pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
-            'created_at' => date('Y-m-d H:i:s')
-        ];
-
-        $insert[] = [
-            'business_id' => Session::get('business_id'),
-            'rekening_debit' => $kode_kas->id,
-            'rekening_kredit' => $rek_denda,
-            'tgl_transaksi' => $tgl_transaksi,
-            'total' => $data['denda'],
-            'installation_id' => $request->id_instal,
-            'transaction_id' => $trx_id,
-            'usage_id' => $request->id_usage,
-            'user_id' => auth()->user()->id,
-            'relasi' => $usage->customers->nama,
-            'keterangan' => 'Pendapatan Denda pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
-            'created_at' => date('Y-m-d H:i:s')
-        ];
+        if ($data['abodemen'] != 0) {
+            $insert[] = [
+                'business_id' => Session::get('business_id'),
+                'rekening_debit' => $kode_kas->id,
+                'rekening_kredit' => $rek_abodemen,
+                'tgl_transaksi' => $tgl_transaksi,
+                'total' => $data['abodemen'],
+                'installation_id' => $request->id_instal,
+                'transaction_id' => $trx_id,
+                'usage_id' => $request->id_usage,
+                'user_id' => auth()->user()->id,
+                'relasi' => $usage->customers->nama,
+                'keterangan' => 'Pendapatan Abodemen pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+        }
+        if ($data['tagihan'] != 0) {
+            $insert[] = [
+                'business_id' => Session::get('business_id'),
+                'rekening_debit' => $kode_kas->id,
+                'rekening_kredit' => $rek_pemakaian,
+                'tgl_transaksi' => $tgl_transaksi,
+                'total' => $data['tagihan'],
+                'installation_id' => $request->id_instal,
+                'transaction_id' => $trx_id,
+                'usage_id' => $request->id_usage,
+                'user_id' => auth()->user()->id,
+                'relasi' => $usage->customers->nama,
+                'keterangan' => 'Pendapatan Tagihan pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+        }
+        if ($data['denda'] != 0) {
+            $insert[] = [
+                'business_id' => Session::get('business_id'),
+                'rekening_debit' => $kode_kas->id,
+                'rekening_kredit' => $rek_denda,
+                'tgl_transaksi' => $tgl_transaksi,
+                'total' => $data['denda'],
+                'installation_id' => $request->id_instal,
+                'transaction_id' => $trx_id,
+                'usage_id' => $request->id_usage,
+                'user_id' => auth()->user()->id,
+                'relasi' => $usage->customers->nama,
+                'keterangan' => 'Pendapatan Denda pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+        }
 
         if ($usage->installation->status_tunggakan) {
             // SPS
         }
+
         Transaction::insert($insert);
-        $transaksi = Transaction::where([
-            ['tgl_transaksi', $tgl_transaksi],
-            ['usage_id', $request->id_usage],
-            ['rekening_debit', $kode_kas->id],
-            ['rekening_kredit', $rek_pemakaian,]
-        ])->first();
 
         if ($biaya_instalasi  >= $biaya_tagihan) {
             Usage::where('business_id', Session::get('business_id'))->where('id', $request->id_usage)->update([
@@ -1311,8 +1312,7 @@ class TransactionController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Pembayaran berhasil disimpan',
-            'transaksi' => $transaksi,
-            'transaction_id' => $transaksi->id,
+            'transaksi' => $trx_id,
             'installation' => $usage->installation
         ]);
     }
@@ -1323,9 +1323,8 @@ class TransactionController extends Controller
 
         $bisnis = Business::where('id', Session::get('business_id'))->first();
         $trx_settings = Settings::where('business_id', Session::get('business_id'))->first();
-        $trx = Transaction::where('id', $id)->with([
+        $trx = Transaction::where('transaction_id', $id)->with([
             'Installations.customer',
-            'transaction',
             'Usages'
         ])->first();
         $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
