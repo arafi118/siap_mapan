@@ -311,7 +311,7 @@
                                         <th>Customer</th>
                                         <th>Alamat</th>
                                         <th>Paket</th>
-                                        <th>Aksi</th>
+                                        <th style="text-align: center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="TableTunggakan"></tbody>
@@ -349,7 +349,8 @@
                                         <th>Tagihan</th>
                                     </tr>
                                 </thead>
-                                <tbody id="TableTagihan"></tbody>
+
+
                             </table>
                         </div>
                     </div>
@@ -576,10 +577,14 @@
                                 <td>${item.customer.nama} ( ${item.status_tunggakan})</td>
                                 <td>${item.alamat}</td>
                                 <td>${item.package.kelas}</td>
-                                <td>
+                                <td class="text-center">
                                     <a target="_blank"
                                     href="/dashboard/Cetaktunggakan/${item.id}"class="btn btn-secondary btn-sm" data-id="">
                                         <i class="fas fa-print"></i>
+                                    </a>
+                                    <a target="_blank"
+                                    href="/dashboard/Cetaktunggakan1/${item.id}"class="btn btn-secondary btn-sm" data-id="">
+                                        sps
                                     </a>
                                 </td>
                             </tr>
