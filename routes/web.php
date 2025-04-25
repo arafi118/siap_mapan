@@ -80,6 +80,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/dashboard/tagihan', [DashboardController::class, 'tagihan']);
     Route::get('/dashboard/tunggakan', [DashboardController::class, 'tunggakan']);
     Route::get('/dashboard/Cetaktunggakan/{id}', [DashboardController::class, 'Cetaktunggakan']);
+    Route::get('/dashboard/Cetaktunggakan1/{id}', [DashboardController::class, 'Cetaktunggakan1']);
 
     Route::get('/dataset/{time}', [SystemController::class, 'dataset']);
 
@@ -171,6 +172,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
     Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
     Route::post('/pengaturan/pesan_whatsapp', [SopController::class, 'pesan']);
+    Route::get('/pengaturan/sop/logo', [SopController::class, 'logo']);
     Route::resource('/pengaturan', SopController::class);
 
     // Users || Pengguna
