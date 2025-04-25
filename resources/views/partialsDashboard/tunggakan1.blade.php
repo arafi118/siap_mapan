@@ -147,6 +147,7 @@
                             <img src="../../assets/img/cetak2.png" style="max-height: 60px;"
                                 class="img-fluid d-none d-lg-block">
                         </td>
+
                     </tr>
                 </table>
                 <div
@@ -154,7 +155,7 @@
                     <div style="font-size: 16px;"><b>BADAN USAHA MILIK DESA</b></div>
                     <div style="font-size: 16px;"><b>UNIT AIR {{ strtoupper($bisnis->nama) }}
                         </b></div>
-                    <div style="font-size: 16px;">KALURAHAN MULO KAPENAWON WONOSARI</div>
+                    <div style="font-size: 16px;"><b>KALURAHAN MULO KAPENAWON WONOSARI</b></div>
                     <div style="font-size: 14px; word-wrap: break-word;"><i>Sekretariat: {{ $bisnis->alamat }}</i></div>
                 </div>
             </div>
@@ -173,16 +174,6 @@
                     </td>
                 </tr>
 
-                {{-- <tr>
-                    <td colspan="3" style="border: none; padding: 0;">
-                        <div style="border-top: 3px solid rgb(88, 86, 86); margin-bottom: 1px; width: 100%;"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="border: none; padding: 0;">
-                        <div style="border-top: 1px solid rgb(88, 86, 86); width: 100%;"></div>
-                    </td>
-                </tr> --}}
                 <tr>
                     <td style="width: 15%; text-align: left; border: none;"></td>
                 </tr>
@@ -190,15 +181,19 @@
                     <td
                         style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
                         No.</td>
-                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;">: 002/BUMDES/2025</td>
+                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;">: 05/SP/IV/2024</td>
                 </tr>
-
+                <tr>
+                    <td
+                        style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
+                        Lamp</td>
+                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;">: -</td>
+                </tr>
                 <tr>
                     <td
                         style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
                         Hal</td>
-                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;">: Surat Pemutusan Jaringan
-                        Sementara</td>
+                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;">: Peringatan Keterlambatan</td>
                 </tr>
 
                 <tr>
@@ -206,32 +201,34 @@
                 </tr>
                 <td style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
                 </td>
-                <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>Kepada</b></td>
+                <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>Kepada :</b></td>
                 <tr>
                     <td
                         style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
                     </td>
-                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>Yth.
+                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>Yth, Bpk/Ibu
                             {{ $tunggakan->customer->nama }}</b></td>
                 </tr>
                 <tr>
                     <td
                         style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
                     </td>
-                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>Di tempat</b></td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="border: none; height: 10px;"></td>
-                </tr>
-                <tr>
-                    <td colspan="3"
-                        style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
-                        Bersama surat ini, kami &nbsp; sampaikan bahwa saudara tidak melaksanakan &nbsp; pembayaran
-                        tagihan air sesuai <br> waktu yang telah ditentukan dengan rincian sebagai berikut:
-                    </td>
+                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>RT..Dusun</b></td>
                 </tr>
 
             </table>
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <table style="width: 81%; margin-top: 5px; border-collapse: collapse; border: none;">
+                    <tr>
+                        <td colspan="3" style="text-align: justify; border: none;">
+                            Berdasarkan data administrasi kami, hingga saat surat ini diterbitkan, Saudara belum
+                            memenuhi kewajiban pembayaran langganan air untuk periode sebagai berikut:
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+
         </div>
         <div class="content">
             <div style="width: 100%; display: flex; justify-content: center;">
@@ -241,7 +238,6 @@
                             <th style="text-align: center;">NO</th>
                             <th style="text-align: center;">BULAN/TAHUN</th>
                             <th style="text-align: center;">NOMINAL</th>
-                            <th style="text-align: center;">KETERANGAN</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -255,9 +251,6 @@
                                 <td style="text-align: right;">
                                     {{ number_format($u->nominal, 2, ',', '.') }}&nbsp;
                                 </td>
-                                <td style="text-align: left;">&nbsp;{{ Tanggal::namaBulan($u->tgl_pemakaian) }}
-                                    {{ Tanggal::tahun($u->tgl_pemakaian) }}
-                                </td>
                             </tr>
                             @php $total += $u->nominal; @endphp
                         @endforeach
@@ -265,7 +258,6 @@
                             <td colspan="2"><b>JUMLAH</b></td>
                             <td style="text-align: right;"><b>{{ number_format($total, 2, ',', '.') }}&nbsp;
                                 </b></td>
-                            <td></td>
                         </tr>
                     </tbody>
                 </table>
@@ -278,51 +270,28 @@
 
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
-                            Dengan ini, kami akan melakukan pemutusan sementara terhadap pelanggan PAB Tirto Mulo
-                            sebagai berikut:
+                            Dengan ini kami sampaikan bahwa Saudara mengalami keterlambatan pembayaran
+                            selama ______ bulan.
+                            Sebagai bentuk kebijakan, kami masih memberikan waktu selama 5 (lima) hari, sampai dengan
+                            tanggal ________________ untuk melunasi seluruh tagihan kepada Bendahara.
+
                         </td>
                     </tr>
-
                     <tr>
-                        <td style="border: none;">&nbsp;</td>
-                    </tr>
-
-                    <tr>
-                        <td width="10%" style="text-align: left; padding: 2px 0; border: none;">Nama</td>
-                        <td width="5%" style="text-align: right; padding: 2px 0; border: none;">:</td>
-                        <td style="padding: 2px 0; border: none;">{{ $tunggakan->customer->nama }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; padding: 2px 0; border: none;">Alamat</td>
-                        <td style="text-align: right; padding: 2px 0; border: none;">:</td>
-                        <td style="padding: 2px 0; border: none;">{{ $tunggakan->alamat }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; padding: 2px 0; border: none;">No. SR</td>
-                        <td style="text-align: right; padding: 2px 0; border: none;">:</td>
-                        <td style="padding: 2px 0; border: none;">{{ $tunggakan->kode_instalasi }}</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border: none;">&nbsp;</td>
+                        <td colspan="3" style="padding: 4px 0; border: none;"></td>
                     </tr>
 
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
-                            Penyambungan SR kembali akan dilaksanakan setealah melunasi tunggakan dan membayar
-                            penyambungan kembali sebesar Rp.
-                            {{ number_format($tunggakan->settings->biaya_aktivasi, 2, ',', '.') }},- dengan batas
-                            toleransi 7 hari setelah pemutusan sementara. Apabila setelah 7 hari pelanggan tidak
-                            memenuhi kewajiban maka akan dilaksanakan pemutusan
-                            total sedangkan tunggakan akan tetap sebagai hutang
-                            yang harus dibayar/ dilunasi.
+                            Apabila hingga batas waktu yang telah ditentukan tersebut kewajiban belum diselesaikan, maka
+                            kami akan mengambil tindakan tegas berupa <b><i>Pemutusan Jaringan Air</i></b> tanpa
+                            pemberitahuan lebih
+                            lanjut.
                         </td>
                     </tr>
-
                     <tr>
                         <td style="border: none;">&nbsp;</td>
                     </tr>
-
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
                             Demikian surat ini kami sampaikan. Atas perhatian dan kerjasamanya kami ucapkan terima
@@ -353,7 +322,7 @@
                         <td colspan="3" align="center" style="border: none;">Mengetahui,</td>
                     </tr>
                     <tr>
-                        <td width="33%" align="center" style="border: none;">Direktur Bumdes</td>
+                        <td width="33%" align="center" style="border: none;">Pengawas Bumdes</td>
                         <td width="33%" style="border: none;"></td>
                         <td width="33%" style="text-align: center; border: none;">Ketua Unit Air</td>
                     </tr>

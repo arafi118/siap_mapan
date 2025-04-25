@@ -217,7 +217,63 @@ class DashboardController extends Controller
     
         return view('partialsDashboard.tunggakan', $data);
     }
+    public function Cetaktunggakan1($id)
+    {
+        $keuangan = new Keuangan;
     
+        $thn = request()->input('tahun');
+        $bln = request()->input('bulan');
+        $hari = request()->input('hari');
+    
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+    
+        $data = [
+            'tahun' => $thn,
+            'bulan' => $bln,
+            'hari' => $hari,
+            'judul' => 'Laporan Keuangan',
+            'tgl' => Tanggal::tahun($tgl),
+            'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
+            'cater' => request()->input('cater', null),
+        ];
+    
+        if (request()->input('bulanan')) {
+            $data['bulanan'] = true;
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        
+        $data['dir'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '1']
+        ])->first();
+        
+        $data['ket'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '8']
+        ])->first();
+
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+        $data['tunggakan'] = Installations::where('business_id', Session::get('business_id'))
+            ->where('status', 'A')
+            ->where('id', $id)
+            ->with([
+                'customer',
+                'settings',
+                'package',
+                'usage' => function ($query) {
+                    $query->where([
+                        ['status', 'UNPAID'],
+                        ['tgl_akhir', '<=', date('Y-m-d')]
+                    ]);
+                }
+            ])->first();
+    
+        $data['keuangan'] = $keuangan;
+        $data['title'] = 'Cetak Tunggakan';
+    
+        return view('partialsDashboard.tunggakan1', $data);
+    }
 
     private function chart()
     {
