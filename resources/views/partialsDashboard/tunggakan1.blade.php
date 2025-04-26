@@ -235,9 +235,9 @@
                 <table style="width: 81%; border-collapse: collapse; text-align: center; margin-top: 5px;">
                     <thead>
                         <tr>
-                            <th style="text-align: center;">NO</th>
-                            <th style="text-align: center;">BULAN/TAHUN</th>
-                            <th style="text-align: center;">NOMINAL</th>
+                            <th style="text-align: center; padding-top: 10px; padding-bottom: 10px;">NO</th>
+                            <th style="text-align: center; padding-top: 10px; padding-bottom: 10px;">BULAN/TAHUN</th>
+                            <th style="text-align: center; padding-top: 10px; padding-bottom: 10px;">NOMINAL</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -249,15 +249,16 @@
                                     {{ Tanggal::namaBulan($u->tgl_akhir) }} {{ Tanggal::tahun($u->tgl_akhir) }}
                                 </td>
                                 <td style="text-align: right;">
-                                    {{ number_format($u->nominal, 2, ',', '.') }}&nbsp;
+                                    {{-- {{ number_format($u->nominal, 2, ',', '.') }}&nbsp; --}}
                                 </td>
                             </tr>
                             @php $total += $u->nominal; @endphp
                         @endforeach
                         <tr>
                             <td colspan="2"><b>JUMLAH</b></td>
-                            <td style="text-align: right;"><b>{{ number_format($total, 2, ',', '.') }}&nbsp;
-                                </b></td>
+                            <td style="text-align: right;">
+                                {{-- <b>{{ number_format($total, 2, ',', '.') }}&nbsp;</b> --}}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -267,13 +268,15 @@
                     <tr>
                         <td colspan="3" style="padding: 4px 0; border: none;"></td>
                     </tr>
-
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
                             Dengan ini kami sampaikan bahwa Saudara mengalami keterlambatan pembayaran
-                            selama ______ bulan.
-                            Sebagai bentuk kebijakan, kami masih memberikan waktu selama 5 (lima) hari, sampai dengan
-                            tanggal ________________ untuk melunasi seluruh tagihan kepada Bendahara.
+                            selama
+                            {{ \Carbon\Carbon::parse($u->tgl_awal)->diffInMonths(\Carbon\Carbon::parse($u->tgl_akhir)) + 1 }}
+                            bulan
+                            bulan.
+                            Sebagai bentuk kebijakan, kami masih memberikan waktu selama 5 (lima) hari sejak
+                            diterbitkannya surat ini untuk melunasi seluruh tagihan kepada Bendahara.
 
                         </td>
                     </tr>

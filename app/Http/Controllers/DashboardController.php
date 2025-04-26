@@ -255,19 +255,27 @@ class DashboardController extends Controller
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
         $data['tunggakan'] = Installations::where('business_id', Session::get('business_id'))
-            ->where('status', 'A')
-            ->where('id', $id)
-            ->with([
-                'customer',
-                'settings',
-                'package',
-                'usage' => function ($query) {
-                    $query->where([
-                        ['status', 'UNPAID'],
-                        ['tgl_akhir', '<=', date('Y-m-d')]
-                    ]);
-                }
-            ])->first();
+        ->where('status', 'A')
+        ->where('id', $id)
+        ->whereHas('usage', function ($query) {
+            $query->where([
+                ['status', 'UNPAID'],
+                ['tgl_akhir', '<=', date('Y-m-d')],
+            ]);
+        }, '>=', 3)
+        ->with([
+            'customer',
+            'settings',
+            'package',
+            'usage' => function ($query) {
+                $query->where([
+                    ['status', 'UNPAID'],
+                    ['tgl_akhir', '<=', date('Y-m-d')],
+                ]);
+            }
+        ])
+        ->first();
+    
     
         $data['keuangan'] = $keuangan;
         $data['title'] = 'Cetak Tunggakan';
