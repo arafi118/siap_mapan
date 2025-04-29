@@ -111,22 +111,32 @@ class DashboardController extends Controller
 
     public function tunggakan()
     {
-        $tunggakan = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')
+        $tunggakan = Installations::where('business_id', Session::get('business_id'))
+            ->where('status', 'A')
             ->with([
                 'customer',
                 'package',
-            ])->whereHas('usage', function(Builder  $query){
-                    $query->where([
-                        ['status','UNPAID'],
-                        ['tgl_akhir', '<=', date('Y-m-d')]
-                    ]);
-                }, '>=','3')->get();
-
+                'usage' => function($query) {
+                    $query->where('status', 'UNPAID')
+                          ->whereDate('tgl_akhir', '<=', date('Y-m-d'));
+                }
+            ])
+            ->whereHas('usage', function(Builder $query) {
+                $query->where('status', 'UNPAID')
+                      ->whereDate('tgl_akhir', '<=', date('Y-m-d'));
+            }, '>=', 2)
+            ->get();
+    
+        $tunggakan->each(function ($item) {
+            $item->jumlah_tunggakan = $item->usage->count();
+        });
+    
         return response()->json([
             'tunggakan' => $tunggakan
         ]);
     }
-
+    
+    
     public function tagihan()
     {
         $tgl_akhir = request()->get('tgl_akhir') ?: date('Y-m-d');
@@ -160,7 +170,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function Cetaktunggakan($id)
+    public function sps($id)
     {
         $keuangan = new Keuangan;
     
@@ -213,9 +223,76 @@ class DashboardController extends Controller
             ])->first();
     
         $data['keuangan'] = $keuangan;
-        $data['title'] = 'Cetak Tunggakan';
+        $data['title'] = 'Cetak Tunggakan (SPS)';
     
-        return view('partialsDashboard.tunggakan', $data);
+        return view('partialsDashboard.sps', $data);
+    }
+    public function Cetaktunggakan2($id)
+    {
+        $keuangan = new Keuangan;
+    
+        $thn = request()->input('tahun');
+        $bln = request()->input('bulan');
+        $hari = request()->input('hari');
+    
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+    
+        $data = [
+            'tahun' => $thn,
+            'bulan' => $bln,
+            'hari' => $hari,
+            'judul' => 'Laporan Keuangan',
+            'tgl' => Tanggal::tahun($tgl),
+            'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
+            'cater' => request()->input('cater', null),
+        ];
+    
+        if (request()->input('bulanan')) {
+            $data['bulanan'] = true;
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+        
+        $data['dir'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '1']
+        ])->first();
+        
+        $data['ket'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '8']
+        ])->first();
+
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+        $data['tunggakan'] = Installations::where('business_id', Session::get('business_id'))
+        ->where('status', 'A')
+        ->where('id', $id)
+        ->whereHas('usage', function ($query) {
+            $query->where([
+                ['status', 'UNPAID'],
+                ['tgl_akhir', '<=', date('Y-m-d')],
+            ]);
+        })
+        ->with([
+            'customer',
+            'settings',
+            'package',
+            'usage' => function ($query) {
+                $query->where([
+                    ['status', 'UNPAID'],
+                    ['tgl_akhir', '<=', date('Y-m-d')],
+                ])
+                ->orderBy('tgl_akhir', 'asc') // ambil tgl_akhir paling awal
+                ->limit(2); // hanya 1 data
+            }
+        ])
+        ->first();
+    
+    
+        $data['keuangan'] = $keuangan;
+        $data['title'] = 'Cetak Tunggakan (SP)';
+    
+        return view('partialsDashboard.tunggakan2', $data);
     }
     public function Cetaktunggakan1($id)
     {
@@ -262,7 +339,7 @@ class DashboardController extends Controller
                 ['status', 'UNPAID'],
                 ['tgl_akhir', '<=', date('Y-m-d')],
             ]);
-        }, '>=', 3)
+        })
         ->with([
             'customer',
             'settings',
@@ -271,14 +348,16 @@ class DashboardController extends Controller
                 $query->where([
                     ['status', 'UNPAID'],
                     ['tgl_akhir', '<=', date('Y-m-d')],
-                ]);
+                ])
+                ->orderBy('tgl_akhir', 'asc') // ambil tgl_akhir paling awal
+                ->limit(1); // hanya 1 data
             }
         ])
         ->first();
     
     
         $data['keuangan'] = $keuangan;
-        $data['title'] = 'Cetak Tunggakan';
+        $data['title'] = 'Cetak Tunggakan (ST)';
     
         return view('partialsDashboard.tunggakan1', $data);
     }

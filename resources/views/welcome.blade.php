@@ -311,7 +311,8 @@
                                         <th>Customer</th>
                                         <th>Alamat</th>
                                         <th>Paket</th>
-                                        <th style="text-align: center">Aksi</th>
+                                        <th>Jumlah Tunggakan</th>
+                                        <th style="text-align: center">Cetak</th>
                                     </tr>
                                 </thead>
                                 <tbody id="TableTunggakan"></tbody>
@@ -577,13 +578,18 @@
                                 <td>${item.customer.nama} ( ${item.status_tunggakan})</td>
                                 <td>${item.alamat}</td>
                                 <td>${item.package.kelas}</td>
+                                <td>${item.jumlah_tunggakan} Bulan</td>
                                 <td class="text-center">
                                     <a target="_blank"
-                                    href="/dashboard/Cetaktunggakan/${item.id}"class="btn btn-secondary btn-sm" data-id="">
-                                        <i class="fas fa-print"></i>
-                                    </a>
-                                    <a target="_blank"
                                     href="/dashboard/Cetaktunggakan1/${item.id}"class="btn btn-secondary btn-sm" data-id="">
+                                        st
+                                    </a>
+                                     <a target="_blank"
+                                    href="/dashboard/Cetaktunggakan2/${item.id}"class="btn btn-secondary btn-sm" data-id="">
+                                        sp
+                                    </a>
+                                     <a target="_blank"
+                                    href="/dashboard/sps/${item.id}"class="btn btn-secondary btn-sm" data-id="">
                                         sps
                                     </a>
                                 </td>

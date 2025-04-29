@@ -137,111 +137,114 @@
                 <table style="width: 100%;">
                     <tr>
                         <td width="20%" style="border: none; text-align: right; padding-right: 0;">
-                            <img src="../../assets/img/cetak1.png" style="max-height: 60px;"
+                            <img src="../../assets/img/cetak1.png" style="max-height: 70px;"
                                 class="img-fluid d-none d-lg-block">
                         </td>
                         <td width="60%" align="center" style="height: 50px; border: none;">
                             <!-- Placeholder kosong agar posisi tetap -->
                         </td>
                         <td width="20%" style="border: none; text-align: left; padding-left: 0;">
-                            <img src="../../assets/img/cetak2.png" style="max-height: 60px;"
+                            <img src="../../assets/img/cetak2.png" style="max-height: 70px;"
                                 class="img-fluid d-none d-lg-block">
                         </td>
                     </tr>
                 </table>
                 <div
                     style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); text-align: center; max-width: 100%;">
-                    <div style="font-size: 16px;"><b>BADAN USAHA MILIK DESA</b></div>
-                    <div style="font-size: 16px;"><b>UNIT AIR {{ strtoupper($bisnis->nama) }}
-                        </b></div>
-                    <div style="font-size: 16px;">KALURAHAN MULO KAPENAWON WONOSARI</div>
-                    <div style="font-size: 14px; word-wrap: break-word;"><i>Sekretariat: {{ $bisnis->alamat }}</i></div>
+
+                    <div style="font-size: 14px; margin-bottom: 2px;"><b>BADAN USAHA MILIK DESA</b></div>
+                    <div style="font-size: 18px; margin-bottom: 2px;"><b>PERUSAHAAN AIR BERSIH
+                            {{ strtoupper($bisnis->nama) }}</b></div>
+                    <div style="font-size: 14px; margin-bottom: 5px;">KALURAHAN MULO KAPENAWON WONOSARI</div>
+                    <!-- jarak lebih besar -->
+
+                    <div style="font-size: 11px; word-wrap: break-word;">
+                        <i>Sekretariat: {{ $bisnis->alamat }}</i>
+                    </div>
                 </div>
+
+
+
+
             </div>
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <tr>
-                    <td style="width: 15%; text-align: left; border: none;"></td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="border: none; padding: 0; text-align:center">
-                        <div style="border-top: 3px solid rgb(88, 86, 86); margin: 0 auto 1px auto; width: 83%;"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="border: none; padding: 0; text-align:center">
-                        <div style="border-top: 1px solid rgb(88, 86, 86); margin: 0 auto; width: 83%;"></div>
-                    </td>
-                </tr>
-
-                {{-- <tr>
                     <td colspan="3" style="border: none; padding: 0;">
-                        <div style="border-top: 3px solid rgb(88, 86, 86); margin-bottom: 1px; width: 100%;"></div>
+                        <div style="border-top: 2px solid rgb(70, 70, 70); width: 100%;"></div>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="3" style="border: none; padding: 0;">
-                        <div style="border-top: 1px solid rgb(88, 86, 86); width: 100%;"></div>
-                    </td>
-                </tr> --}}
                 <tr>
                     <td style="width: 15%; text-align: left; border: none;"></td>
                 </tr>
                 <tr>
                     <td
-                        style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
-                        No.</td>
-                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;">: 002/BUMDES/2025</td>
+                        style="text-align: left; border: none; padding-left: 50px; padding-top: 1px; padding-bottom: 1px;">
+                        Nomor
+                    </td>
+                    <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
+                        : ....................
+
+                    </td>
                 </tr>
 
                 <tr>
                     <td
-                        style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
-                        Hal</td>
-                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;">: Surat Pemutusan Jaringan
-                        Sementara</td>
+                        style="text-align: left; border: none; padding-left: 50px; padding-top: 1px; padding-bottom: 1px;">
+                        Perihal
+                    </td>
+                    <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
+                        : <b><u>Surat Peringatan</u></b>
+                    </td>
                 </tr>
-
                 <tr>
-                    <td colspan="2" style="border: none; height: 10px;"></td>
+                    <td colspan="3" style="padding: 7px 0; border: none;"></td>
                 </tr>
                 <td style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
                 </td>
-                <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>Kepada</b></td>
+                <td style="border: none; padding-top: 1px; padding-bottom: 1px;">Kepada Yth.</td>
                 <tr>
                     <td
-                        style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
+                        style="text-align: left; border: none; padding-left: 70px; padding-top: 1px; padding-bottom: 1px;">
                     </td>
-                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>Yth.
-                            {{ $tunggakan->customer->nama }}</b></td>
+                    <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
+                        Bpk/Ibu/Sdr <b>{{ $tunggakan->customer->nama }}</b>
+                    </td>
                 </tr>
                 <tr>
                     <td
-                        style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
+                        style="text-align: left; border: none; padding-left: 70px; padding-top: 1px; padding-bottom: 1px;">
                     </td>
-                    <td style="border: none; padding-top: 2px; padding-bottom: 6px;"><b>Di tempat</b></td>
+                    <td style="border: none; padding-top: 1px; padding-bottom: 1px;">Di tempat</td>
                 </tr>
-                <tr>
-                    <td colspan="2" style="border: none; height: 10px;"></td>
-                </tr>
-                <tr>
-                    <td colspan="3"
-                        style="text-align: left; border: none; padding-left: 70px; padding-top: 2px; padding-bottom: 2px;">
-                        Bersama surat ini, kami &nbsp; sampaikan bahwa saudara tidak melaksanakan &nbsp; pembayaran
-                        tagihan air sesuai <br> waktu yang telah ditentukan dengan rincian sebagai berikut:
-                    </td>
-                </tr>
-
             </table>
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <table style="width: 70%; margin-top: 5px; border-collapse: collapse; border: none;">
+                    <tr>
+                        <td colspan="3" style="text-align: justify; border: none;">
+                            Berdasarkan data administrasi kami, hingga saat surat ini diterbitkan, Pelanggan an
+                            <b> {{ $tunggakan->customer->nama }}</b> dengan <b>Nomer Induk Pelanggan :</b>
+                            <b>{{ $tunggakan->kode_instalasi }}</b> Saudara belum
+                            memenuhi kewajiban pembayaran langganan air untuk periode sebagai berikut :
+                        </td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td colspan="3" style="padding: 4px 0; border: none;"></td>
+                    </tr>
+                    </tr>
+                </table>
+            </div>
         </div>
         <div class="content">
             <div style="width: 100%; display: flex; justify-content: center;">
-                <table style="width: 81%; border-collapse: collapse; text-align: center; margin-top: 5px;">
+                <table style="width: 69%; border-collapse: collapse; text-align: center; margin-top: 5px;">
                     <thead>
                         <tr>
-                            <th style="text-align: center;">NO</th>
-                            <th style="text-align: center;">BULAN/TAHUN</th>
-                            <th style="text-align: center;">NOMINAL</th>
-                            <th style="text-align: center;">KETERANGAN</th>
+                            <th style="text-align: center; padding-top: 10px; padding-bottom: 10px;">NO</th>
+                            <th style="text-align: center; padding-top: 10px; padding-bottom: 10px;">PERIODE TAGIHAN
+                            </th>
+                            <th style="text-align: center; padding-top: 10px; padding-bottom: 10px;">NOMINAL</th>
+                            <th style="text-align: center; padding-top: 10px; padding-bottom: 10px;">PEMAKAIAN</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -268,79 +271,56 @@
                             <td></td>
                         </tr>
                     </tbody>
-                </table>
-            </div>
-            <div style="width: 100%; display: flex; justify-content: center;">
-                <table style="width: 81%; margin-top: 5px; border-collapse: collapse; border: none;">
                     <tr>
                         <td colspan="3" style="padding: 4px 0; border: none;"></td>
                     </tr>
-
-                    <tr>
-                        <td colspan="3" style="text-align: justify; border: none;">
-                            Dengan ini, kami akan melakukan pemutusan sementara terhadap pelanggan PAB Tirto Mulo
-                            sebagai berikut:
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="border: none;">&nbsp;</td>
-                    </tr>
-
-                    <tr>
-                        <td width="10%" style="text-align: left; padding: 2px 0; border: none;">Nama</td>
-                        <td width="5%" style="text-align: right; padding: 2px 0; border: none;">:</td>
-                        <td style="padding: 2px 0; border: none;">{{ $tunggakan->customer->nama }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; padding: 2px 0; border: none;">Alamat</td>
-                        <td style="text-align: right; padding: 2px 0; border: none;">:</td>
-                        <td style="padding: 2px 0; border: none;">{{ $tunggakan->alamat }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; padding: 2px 0; border: none;">No. SR</td>
-                        <td style="text-align: right; padding: 2px 0; border: none;">:</td>
-                        <td style="padding: 2px 0; border: none;">{{ $tunggakan->kode_instalasi }}</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border: none;">&nbsp;</td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="3" style="text-align: justify; border: none;">
-                            Penyambungan SR kembali akan dilaksanakan setealah melunasi tunggakan dan membayar
-                            penyambungan kembali sebesar Rp.
-                            {{ number_format($tunggakan->settings->biaya_aktivasi, 2, ',', '.') }},- dengan batas
-                            toleransi 7 hari setelah pemutusan sementara. Apabila setelah 7 hari pelanggan tidak
-                            memenuhi kewajiban maka akan dilaksanakan pemutusan
-                            total sedangkan tunggakan akan tetap sebagai hutang
-                            yang harus dibayar/ dilunasi.
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="border: none;">&nbsp;</td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="3" style="text-align: justify; border: none;">
-                            Demikian surat ini kami sampaikan. Atas perhatian dan kerjasamanya kami ucapkan terima
-                            kasih.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="text-align: justify; border: none;">
-
-                        </td>
-                    </tr>
                 </table>
             </div>
 
             <div style="width: 100%; display: flex; justify-content: center;">
-                <table style="width: 81%; border-collapse: collapse; margin-top: 5px; border: none;">
+                <table style="width: 70%; margin-top: 5px; border-collapse: collapse; border: none;">
                     <tr>
-                        <td colspan="3" style="text-align: right; border: none;">
+                        <td colspan="3" style="text-align: justify; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: justify; border: none;">
+                            Dengan ini kami sampaikan bahwa Saudara mengalami keterlambatan pembayaran dan jumlah
+                            kewajiban sebagaimana tersebut di atas. Sebagai bentuk kebijakan, kami masih memberikan
+                            waktu selama 5 (lima) hari sejak diterbitkannya surat ini untuk melunasi seluruh tagihan
+                            kepada Bendahara.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3" style="padding: 4px 0; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: justify; border: none;">
+                            Apabila pelanggan mengalami tunggakan sampai dengan 3 bulan pemakaian tidak menyelesaiakan
+                            kewajiban, maka kami akan mengambil tindakan tegas berupa <b><i>Pemutusan Jaringan
+                                    Air</b></i> tanpa pemberitahuan lebih lanjut.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="padding: 4px 0; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: justify; border: none;">
+                            Demikian surat ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima
+                            kasih. </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: justify; border: none;">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <table style="width: 69%; border-collapse: collapse; margin-top: 5px; border: none;">
+                    <tr>
+                        <td width="33%" align="center" style="border: none; text-align: center;"></td>
+                        <td width="33%" style="border: none;"></td>
+                        <td width="33%" style="border: none; text-align: center;">
                             {{ $bisnis->desa }}, {{ Carbon::now()->translatedFormat('d F Y') }}
                         </td>
                     </tr>
@@ -350,31 +330,38 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" align="center" style="border: none;">Mengetahui,</td>
-                    </tr>
-                    <tr>
-                        <td width="33%" align="center" style="border: none;">Direktur Bumdes</td>
+                        <td width="33%" align="center" style="border: none; text-align: center;">
+                            Mengetahui,
+                        </td>
                         <td width="33%" style="border: none;"></td>
-                        <td width="33%" style="text-align: center; border: none;">Ketua Unit Air</td>
-                    </tr>
-                    <tr>
-                        <td style="border: none;"><br><br><br>
-
+                        <td width="33%" style="border: none; text-align: center;">
+                            Ketua
                         </td>
                     </tr>
                     <tr>
-                        <td align="center" style="border: none;">{{ $dir->nama ?? '' }}</td>
+                        <td width="33%" align="center"
+                            style="border: none; text-align: center; vertical-align: middle;">
+                            Direktur Bumdes
+                        </td>
+                        <td width="33%" style="border: none;"></td>
+                        <td width="33%" align="center"
+                            style="border: none; text-align: center; vertical-align: middle;">
+                            Ketua Unit Air
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="border: none; padding: 23px 0;"></td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="border: none;"><b>{{ $dir->nama ?? '' }}</b></td>
                         <td style="border: none;"></td>
-                        <td style="text-align: center; border: none;">{{ $ket->nama ?? '-' }}</td>
+                        <td style="border: none; text-align: center;"><b>{{ $ket->nama ?? '-' }}</b></td>
                     </tr>
                     <tr>
-                        <td style="border: none;">
-                            <br><br><br><br><br>
-                        </td>
+                        <td colspan="3" style="border: none; padding: 20px 0;"></td>
                     </tr>
                 </table>
             </div>
-
         </div>
     </div>
 </body>

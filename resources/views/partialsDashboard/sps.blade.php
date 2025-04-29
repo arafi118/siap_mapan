@@ -162,12 +162,8 @@
                         <i>Sekretariat: {{ $bisnis->alamat }}</i>
                     </div>
                 </div>
-
-
             </div>
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
-
-
                 <tr>
                     <td colspan="3" style="border: none; padding: 0;">
                         <div style="border-top: 2px solid rgb(70, 70, 70); width: 100%;"></div>
@@ -193,7 +189,7 @@
                         Perihal
                     </td>
                     <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
-                        : <b><u>Surat Tagihan</u></b>
+                        : <b><u>Surat Pemutusan Sementara</u></b>
                     </td>
                 </tr>
                 <tr>
@@ -221,9 +217,7 @@
                 <table style="width: 70%; margin-top: 5px; border-collapse: collapse; border: none;">
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
-                            Berdasarkan data administrasi kami, hingga saat surat ini diterbitkan, Pelanggan an
-                            <b> {{ $tunggakan->customer->nama }}</b> dengan <b>Nomer Induk Pelanggan :</b>
-                            <b>{{ $tunggakan->kode_instalasi }}</b> Saudara belum
+                            Berdasarkan data administrasi kami, hingga saat surat ini diterbitkan, Saudara belum
                             memenuhi kewajiban pembayaran langganan air untuk periode sebagai berikut :
                         </td>
                     </tr>
@@ -284,24 +278,51 @@
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
-                            Dengan ini kami sampaikan bahwa Saudara mengalami keterlambatan pembayaran dan jumlah
-                            kewajiban sebagaimana tersebut di atas. Sebagai bentuk kebijakan, kami masih memberikan
-                            waktu selama 5 (lima) hari sejak diterbitkannya surat ini untuk melunasi seluruh tagihan
-                            kepada Bendahara.
+                            Dengan ini, kami akan melakukan pemutusan sementara terhadap pelanggan PAB Tirto Mulo
+                            sebagai berikut:
                         </td>
                     </tr>
                     <tr>
                         <td colspan="3" style="padding: 4px 0; border: none;"></td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="padding: 4px 0; border: none;"></td>
+                        <td width="15%" style="text-align: justify; border: none;">Nama</td>
+                        <td width="2%"
+                            style="text-align: center; vertical-align: top; padding: 2px 4px 2px 0; border: none;"> :
+                        </td>
+                        <td style="text-align: justify; border: none;"><b>{{ $tunggakan->customer->nama }}</b></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: justify; border: none;"> Nomer Induk</td>
+                        <td style="text-align: center; vertical-align: top; padding: 2px 4px 2px 0; border: none;">:
+                        </td>
+                        <td style="text-align: justify; border: none;"><b>{{ $tunggakan->kode_instalasi }}</b></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: justify; border: none;">Alamat</td>
+                        <td style="text-align: center; vertical-align: top; padding: 2px 4px 2px 0; border: none;">:
+                        </td>
+                        <td style="text-align: justify; border: none;"><b>{{ $tunggakan->alamat }}</b></td>
                     </tr>
                     <tr>
                         <td colspan="3" style="padding: 4px 0; border: none;"></td>
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
-                            Demikian surat ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima
+                            Penyambungan kembali akan dilaksanakan setealah pelanggan melunasi tunggakan dan membayar
+                            biaya penyambungan kembali sebesar Rp.
+                            {{ number_format($tunggakan->settings->biaya_aktivasi, 2, ',', '.') }},- dengan batas
+                            toleransi 7 hari setelah pemutusan sementara. Apabila setelah 7 (tujuh) hari pelanggan tidak
+                            memenuhi kewajiban maka akan dilaksanakan pemutusan total sedangkan tunggakan akan tetap
+                            sebagai hutang yang harus dibayar/ dilunasi.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="padding: 4px 0; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: justify; border: none;">
+                            Demikian surat ini kami sampaikan, atas perhatian dan kerjasamanya kami sampaikan terima
                             kasih. </td>
                     </tr>
                     <tr>
