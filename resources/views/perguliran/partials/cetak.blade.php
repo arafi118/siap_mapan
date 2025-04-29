@@ -143,17 +143,17 @@
 
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <tr>
-                    <td colspan="3" style="border: none;">&nbsp;
-                    </td>
-                </tr>
-                <tr>
                     <td colspan="3" style="border: none;">
                         <div style="border-top: 2px solid rgb(88, 86, 86); margin-bottom: 3px; width: 100%;"></div>
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="3" style="border: none;">&nbsp;
+                    </td>
+                </tr>
+                <tr>
                     <td rowspan="3" style="width: 60px; vertical-align: top; border: none;">
-                        <div style="width: 50px;">
+                        <div style="width: 80px;">
                             {!! $qr !!}
                         </div>
                     </td>
@@ -171,8 +171,7 @@
             </table>
         </div>
         <tr>
-            <td colspan="3" style="border: none;">&nbsp;
-            </td>
+            <td colspan="3" style="border: none;">&nbsp;</td>
         </tr>
         <div class="content">
             <table>
@@ -194,7 +193,7 @@
                     @foreach (['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'] as $i => $bulan)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td>{{ $bulan }}</td>
+                            <td>&nbsp;{{ $bulan }}</td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -209,12 +208,12 @@
                 <tr>
                     <td colspan="5" style="border: none; font-size: 11px; padding-top: 3px; padding-bottom: 3px;">
                         <br>
-                        <b>INFORMASI DAN KELUHAN HUBUNGI</b>
+                        INFORMASI DAN KELUHAN HUBUNGI
                     </td>
                 </tr>
                 <tr>
                     <td colspan="5" style="border: none; font-size: 11px; padding-bottom: 8px;">
-                        <b>Heru Endaryanto: 087838758555 / Widiyarto: 087878715088</b>
+                        Heru Endaryanto: 087838758555 / Widiyarto: 087878715088
                     </td>
                 </tr>
 
