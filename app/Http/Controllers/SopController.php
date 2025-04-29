@@ -296,6 +296,13 @@ class SopController extends Controller
         return view('sop.partials.lembaga')->with(compact('title', 'business', 'tampil_settings'));
     }
 
+    public function logo()
+    {
+
+     
+        $title = 'Sop';
+        return view('sop.partials.logo')->with(compact('title'));
+    }
     public function sistem_instal()
     {
         $business_id = Session::get('business_id');

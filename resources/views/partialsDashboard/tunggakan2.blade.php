@@ -321,7 +321,7 @@
                         <td width="33%" align="center" style="border: none; text-align: center;"></td>
                         <td width="33%" style="border: none;"></td>
                         <td width="33%" style="border: none; text-align: center;">
-                            {{ $bisnis->desa }}, {{ Carbon::now()->translatedFormat('d F Y') }}
+                            {{ $bisnis->desa }}, {{ date('d F Y', strtotime(date('Y-m-t'))) }}
                         </td>
                     </tr>
                     <tr>

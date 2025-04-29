@@ -56,6 +56,15 @@
                                     </div>
                                 </a>
                             </li>
+                            <li class="nav-item w-100" style="margin-bottom: 10px;">
+                                <a class="nav-link btn btn-white" data-status="S" data-toggle="tab" data-target="#Logo"
+                                    href="#">
+                                    <div class="left-align d-flex align-items-center">
+                                        <i class="fas fa-image"></i>
+                                        <span class="ml-2"><b>Logo</b></span>
+                                    </div>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -141,7 +150,17 @@
                             </div>
                         </div>
                     </div>
-
+                    <div id="Logo" role="tab" class="tab-pane ">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="table-responsive p-3">
+                                        @include('sop.partials.logo')
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
