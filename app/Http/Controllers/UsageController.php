@@ -134,16 +134,24 @@ class UsageController extends Controller
     public function detailTagihan()
     {
         $keuangan = new Keuangan;
-        $usages = Usage::where('business_id', Session::get('business_id'))->where('status', 'UNPAID')->with([
-            'customers',
-            'installation'
-        ])->get();
-
+    
+        $usages = Usage::where('business_id', Session::get('business_id'))
+        ->where('status', 'UNPAID')
+        ->whereHas('usersCater', function ($q) {
+            $q->where('jabatan', 5);
+        })
+        ->with(['customers', 'installation', 'usersCater']) // panggil relasinya
+        ->get();
+    
+    
         return [
             'label' => '<i class="fas fa-book"></i> ' . 'Detail Pemakaian Dengan Status <b>(UNPAID)</b>',
-            'cetak' => view('penggunaan.partials.DetailTagihan', ['usages' => $usages])->render()
+            'cetak' => view('penggunaan.partials.DetailTagihan', [
+                'usages' => $usages
+            ])->render()
         ];
     }
+    
 
     public function cetak(Request $request)
     {

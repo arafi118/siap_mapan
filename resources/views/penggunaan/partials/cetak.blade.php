@@ -32,8 +32,11 @@
             width: 50%;
             height: 8cm;
             border: 2px solid #000;
-            padding: 10px;
-            margin-bottom: 4px;
+            padding: 5px;
+            margin-top: 10px;
+            /* Tambahkan jarak atas */
+            margin-bottom: 15px;
+            /* Perbesar jarak bawah */
         }
 
         .keterangan {
@@ -86,6 +89,13 @@
 
         .flex {
             display: flex;
+        }
+
+        @media print {
+            .box {
+                margin-top: 12px;
+                margin-bottom: 16px;
+            }
         }
     </style>
 

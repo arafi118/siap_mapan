@@ -82,7 +82,7 @@
                 </tr>
                 <tr>
                     <td>Nomor</td>
-                    <td class="text-right">{{ $trx->id . '/' . $jenis }}</td>
+                    <td class="text-right">{{ $trx->id . ' - Pasang' }}</td>
                 </tr>
                 <tr>
                     <td>Pelanggan</td>
