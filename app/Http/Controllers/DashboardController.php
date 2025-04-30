@@ -113,21 +113,21 @@ class DashboardController extends Controller
     {
         $tunggakan = Installations::where('business_id', Session::get('business_id'))
             ->where('status', 'A')
+            ->whereHas('usage', function (Builder $query) {
+                $query->where('status', 'UNPAID')
+                      ->whereDate('tgl_akhir', '<=', date('Y-m-d'));
+            })
             ->with([
                 'customer',
                 'package',
-                'usage' => function($query) {
+                'usage' => function ($query) {
                     $query->where('status', 'UNPAID')
                           ->whereDate('tgl_akhir', '<=', date('Y-m-d'));
                 }
             ])
-            ->whereHas('usage', function(Builder $query) {
-                $query->where('status', 'UNPAID')
-                      ->whereDate('tgl_akhir', '<=', date('Y-m-d'));
-            }, '>=', 2)
             ->get();
     
-        $tunggakan->each(function ($item) {
+            $tunggakan->each(function ($item) {
             $item->jumlah_tunggakan = $item->usage->count();
         });
     
@@ -135,6 +135,7 @@ class DashboardController extends Controller
             'tunggakan' => $tunggakan
         ]);
     }
+    
     
     
     public function tagihan()
@@ -208,19 +209,23 @@ class DashboardController extends Controller
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
         $data['tunggakan'] = Installations::where('business_id', Session::get('business_id'))
-            ->where('status', 'A')
-            ->where('id', $id)
-            ->with([
-                'customer',
-                'settings',
-                'package',
-                'usage' => function ($query) {
-                    $query->where([
-                        ['status', 'UNPAID'],
-                        ['tgl_akhir', '<=', date('Y-m-d')]
-                    ]);
-                }
-            ])->first();
+        ->where('status', 'A')
+        ->where('id', $id)
+        ->whereHas('usage', function ($query) {
+            $query->where('status', 'UNPAID')
+                  ->whereDate('tgl_akhir', '<=', date('Y-m-d'));
+        }, '>=', 2)
+        ->with([
+            'customer',
+            'settings',
+            'package',
+            'usage' => function ($query) {
+                $query->where('status', 'UNPAID')
+                      ->whereDate('tgl_akhir', '<=', date('Y-m-d'));
+            }
+        ])
+        ->first();
+    
     
         $data['keuangan'] = $keuangan;
         $data['title'] = 'Cetak Tunggakan (SPS)';
@@ -349,8 +354,8 @@ class DashboardController extends Controller
                     ['status', 'UNPAID'],
                     ['tgl_akhir', '<=', date('Y-m-d')],
                 ])
-                ->orderBy('tgl_akhir', 'asc') // ambil tgl_akhir paling awal
-                ->limit(1); // hanya 1 data
+                ->orderBy('tgl_akhir', 'asc') 
+                ->limit(1); 
             }
         ])
         ->first();

@@ -561,7 +561,6 @@
 
             $('#ModalPemakaian').modal('toggle');
         });
-
         $(document).on('click', '#BtnModalTunggakan', async function(e) {
             e.preventDefault();
             var result = await dataTunggakan();
@@ -571,44 +570,132 @@
             var data = 0;
             var empty = 0;
             $('#TableTunggakan').html('');
-            tunggakan.forEach((item, index) => {
-                $('#TableTunggakan').append(`
-                            <tr>
-                                <td>${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>
-                                <td>${item.customer.nama} ( ${item.status_tunggakan})</td>
-                                <td>${item.alamat}</td>
-                                <td>${item.package.kelas}</td>
-                                <td>${item.jumlah_tunggakan} Bulan</td>
-                                <td class="text-center">
-                                    <a target="_blank"
-                                    href="/dashboard/Cetaktunggakan1/${item.id}"class="btn btn-secondary btn-sm" data-id="">
-                                        st
-                                    </a>
-                                     <a target="_blank"
-                                    href="/dashboard/Cetaktunggakan2/${item.id}"class="btn btn-secondary btn-sm" data-id="">
-                                        sp
-                                    </a>
-                                     <a target="_blank"
-                                    href="/dashboard/sps/${item.id}"class="btn btn-secondary btn-sm" data-id="">
-                                        sps
-                                    </a>
-                                </td>
-                            </tr>
-                        `)
 
-                data += 1
-            })
+            tunggakan.forEach((item, index) => {
+                // Tentukan tombol mana yang ditampilkan
+                let stButton = '';
+                let spButton = '';
+                let spsButton = '';
+
+                if (item.jumlah_tunggakan == 1) {
+                    stButton = `
+                        <a target="_blank"
+                            href="/dashboard/Cetaktunggakan1/${item.id}"
+                            class="btn btn-warning btn-sm" data-id="">
+                            st
+                        </a>`;
+                } else if (item.jumlah_tunggakan == 2) {
+                    spButton = `
+                        <a target="_blank"
+                            href="/dashboard/Cetaktunggakan2/${item.id}"
+                            class="btn btn-danger btn-sm" data-id="">
+                            sp
+                        </a>`;
+                } else if (item.jumlah_tunggakan > 2) {
+                    spsButton = `
+                        <a target="_blank"
+                            href="/dashboard/sps/${item.id}"
+                            class="btn btn-primary btn-sm" data-id="">
+                            sps
+                        </a>`;
+                }
+
+                $('#TableTunggakan').append(`
+                    <tr>
+                        <td>${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>
+                        <td>${item.customer.nama} ( ${item.status_tunggakan})</td>
+                        <td>${item.alamat}</td>
+                        <td>${item.package.kelas}</td>
+                        <td>${item.jumlah_tunggakan} Bulan</td>
+                        <td class="text-center">
+                            ${stButton}
+                            ${spButton}
+                            ${spsButton}
+                        </td>
+                    </tr>
+                `);
+
+                data += 1;
+            });
 
             if (data - empty == 0) {
                 $('#TableTunggakan').append(`
-                        <tr>
-                            <td align="center" colspan="4">Tidak ada data pemakaian</td>
-                        </tr>
-                    `)
+                    <tr>
+                        <td align="center" colspan="4">Tidak ada data pemakaian</td>
+                    </tr>
+                `);
             }
 
             $('#ModalTunggakan').modal('toggle');
         });
+
+
+        // $(document).on('click', '#BtnModalTunggakan', async function(e) {
+        //     e.preventDefault();
+        //     var result = await dataTunggakan();
+        //     var tunggakan = result.tunggakan;
+        //     console.log(tunggakan);
+
+        //     var data = 0;
+        //     var empty = 0;
+        //     $('#TableTunggakan').html('');
+
+        //     tunggakan.forEach((item, index) => {
+        //         // Default warna tombol: abu-abu
+        //         let stClass = 'btn-secondary';
+        //         let spClass = 'btn-secondary';
+        //         let spsClass = 'btn-secondary';
+
+        //         // Terapkan logika warna sesuai jumlah tunggakan
+        //         if (item.jumlah_tunggakan == 1) {
+        //             stClass = 'btn-primary'; // ST biru
+        //         } else if (item.jumlah_tunggakan == 2) {
+        //             spClass = 'btn-primary'; // SP biru
+        //         } else if (item.jumlah_tunggakan > 2) {
+        //             spsClass = 'btn-primary'; // SPS biru
+        //         }
+
+        //         $('#TableTunggakan').append(`
+    //             <tr>
+    //                 <td>${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>
+    //                 <td>${item.customer.nama} ( ${item.status_tunggakan})</td>
+    //                 <td>${item.alamat}</td>
+    //                 <td>${item.package.kelas}</td>
+    //                 <td>${item.jumlah_tunggakan} Bulan</td>
+    //                 <td class="text-center">
+    //                     <a target="_blank"
+    //                         href="/dashboard/Cetaktunggakan1/${item.id}"
+    //                         class="btn ${stClass} btn-sm" data-id="">
+    //                         st
+    //                     </a>
+    //                     <a target="_blank"
+    //                         href="/dashboard/Cetaktunggakan2/${item.id}"
+    //                         class="btn ${spClass} btn-sm" data-id="">
+    //                         sp
+    //                     </a>
+    //                     <a target="_blank"
+    //                         href="/dashboard/sps/${item.id}"
+    //                         class="btn ${spsClass} btn-sm" data-id="">
+    //                         sps
+    //                     </a>
+    //                 </td>
+    //             </tr>
+    //         `);
+
+        //         data += 1;
+        //     });
+
+        //     if (data - empty == 0) {
+        //         $('#TableTunggakan').append(`
+    //             <tr>
+    //                 <td align="center" colspan="4">Tidak ada data pemakaian</td>
+    //             </tr>
+    //         `);
+        //     }
+
+        //     $('#ModalTunggakan').modal('toggle');
+        // });
+
 
         $(document).on('click', '#BtnModalTagihan', async function(e) {
             e.preventDefault();
