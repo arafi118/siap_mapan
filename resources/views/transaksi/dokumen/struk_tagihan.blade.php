@@ -108,17 +108,12 @@
                 </tr>
                 </tr>
                 <tr>
-                    <td>Tgl Pemakaian </td>
+                    <td>Bulan Pemakaian </td>
                     <td class="text-right">
                         {{ Tanggal::namaBulan($trx->Usages->tgl_pemakaian) }}
                         {{ date('Y', strtotime($trx->Usages->tgl_pemakaian)) }}
                     </td>
                 </tr>
-                <tr>
-                    <td>Tgl Bayar </td>
-                    <td class="text-right">{{ Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
-                </tr>
-
                 <tr>
                     <td>Paket</td>
                     <td class="text-right">{{ $trx->Installations->package->kelas }}</td>
@@ -128,6 +123,7 @@
                     <td class="text-right">{{ $trx->Installations->kode_instalasi }}</td>
                 </tr>
             </table>
+
             <div class="border">
                 <table>
                     <tr>
@@ -153,6 +149,10 @@
                     <tr>
                         <td><b>Total Bayar</b></td>
                         <td class="text-right"><b>Rp {{ number_format($total, 2, ',', '.') }}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Tanggal Pembayaran </td>
+                        <td class="text-right">{{ Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">&nbsp;</td>
