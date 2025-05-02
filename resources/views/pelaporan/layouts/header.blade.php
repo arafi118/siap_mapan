@@ -45,9 +45,9 @@
                     <img src="data:image/png;base64,{{ $logo }}" height="50" alt="{{ $logo }}">
                 </td>
                 <td>
-                    <div style="font-size: 12px;">{{ strtoupper($nama) }}</div>
+                    <div style="font-size: 12px;"><b>{{ strtoupper($nama) }}</b></div>
                     <div style="font-size: 12px;">
-                        <b>{{ strtoupper($alamat) }}</b>
+                        {{ strtoupper($alamat) }}
                     </div>
                     <div style="font-size: 8px; color: grey;">
                         <i>{{ $nomor_usaha }}</i>
