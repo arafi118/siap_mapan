@@ -55,16 +55,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="50" align="right">
+                        <td width="25" align="left">
                             <div style="font-size: 9px;">Cater : {{ $use->usersCater->nama }}</div>
                         </td>
-                        <td width="100" align="center">
+                        <td width="150" align="left">
                             <div style="font-size: 9px;">
                                 BULAN : {{ Tanggal::namaBulan($use->tgl_pemakaian) }}
                                 {{ Tanggal::tahun($use->tgl_pemakaian) }}
                             </div>
                         </td>
-                        <td width="50" align="lect">
+                        <td width="25" align="right">
                             <div style="font-size: 9px;">NO URUT : {{ $use->installation->id }}</div>
                         </td>
                     </tr>
