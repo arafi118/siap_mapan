@@ -132,12 +132,7 @@
                     </tr>
 
                     <tr>
-                        <td>Pemakaian Mater Air</td>
-                        <td class="text-right">{{ $trx->Usages->awal }} - {{ $trx->Usages->akhir }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>Pemakaian Periode ini</td>
+                        <td>Pemakaian Air (m3)</td>
                         <td class="text-right">{{ $trx->Usages->jumlah }}</td>
                     </tr>
                     <tr>
