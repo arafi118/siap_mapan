@@ -1365,7 +1365,7 @@ class TransactionController extends Controller
         $data['sub_judul'] = 'Tagihan Bulanan';
         $data['transaksi'] = Transaction::where(function ($query) use ($data) {
             $query->where('installation_id', $data['installation_id']);
-        })->with([
+        })->where('rekening_debit', $data['akun_kas']->id)->with([
             'Installations.customer',
             'Usages',
             'rek_debit',
