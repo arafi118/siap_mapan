@@ -1,6 +1,6 @@
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
         <div class="modal-content p-2">
             <div class="modal-body">
                 <div class="row gutters-sm">
