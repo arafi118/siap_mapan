@@ -54,6 +54,9 @@ class UsageController extends Controller
                 ->addColumn('tgl_akhir', function ($usage) {
                     return Tanggal::tglIndo($usage->tgl_akhir);
                 })
+                ->editColumn('nominal', function ($usage) {
+                    return Tanggal::tglIndo($usage->tgl_pemakaian);
+                })
                 ->rawColumns(['aksi'])
                 ->make(true);
         }
@@ -209,7 +212,7 @@ class UsageController extends Controller
         $data['keuangan'] = $keuangan;
 
         $view = view('penggunaan.partials.cetak', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('F4');
+        $pdf = PDF::loadHTML($view)->setPaper('F4', 'potrait');
         return $pdf->stream();
     }
 
