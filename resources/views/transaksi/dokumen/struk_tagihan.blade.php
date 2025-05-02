@@ -11,7 +11,7 @@
     @endphp
     @if (Str::contains($keterangan, 'Abodemen'))
         @php $totalAbodemen += $total; @endphp
-    @elseif(Str::contains($keterangan, 'Tagihan'))
+    @elseif(Str::contains($keterangan, 'Hutang Pemakaian'))
         @php $totalTagihan += $total; @endphp
     @elseif(Str::contains($keterangan, 'Denda'))
         @php $totalDenda += $total; @endphp
