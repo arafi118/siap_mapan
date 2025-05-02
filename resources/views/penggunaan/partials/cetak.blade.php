@@ -141,7 +141,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5" align="center" style="font-size: 8px;">
+                        <td colspan="5" height="8"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" align="center" style="font-size: 6px;">
                             <div>
                                 SELURUH PELANGGAN AIR
                                 "{{ $bisnis->nama }}" WAJIB MEMATUHI
@@ -152,10 +155,6 @@
                             <div>
                                 SESUAI DENGAN PERATURAN DESA MULO NOMOR 3 TAHUN 2018.
                             </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="5" align="center" style="font-size: 8px;">
                             <div>
                                 KELUHAN PELANGGAN HUBUNGI WA
                                 0882-1673-8479 (ISWANTO)
