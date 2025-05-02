@@ -141,21 +141,32 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5" align="center" style="font-size: 8px;">SELURUH PELANGGAN AIR
-                            "{{ $bisnis->nama }}" WAJIB MEMATUHI
-                            SEGALA
-                            KETENTUAN MANAJEMEN
-                            PENGELOLAAN OLEH BUMDes BANGUN KENCANA MULO, SESUAI DENGAN PERATURAN DESA MULO NOMOR 3 TAHUN
-                            2018.
+                        <td colspan="5" align="center" style="font-size: 8px;">
+                            <div>
+                                SELURUH PELANGGAN AIR
+                                "{{ $bisnis->nama }}" WAJIB MEMATUHI
+                                SEGALA
+                                KETENTUAN MANAJEMEN
+                                PENGELOLAAN OLEH BUMDes BANGUN KENCANA MULO,
+                            </div>
+                            <div>
+                                SESUAI DENGAN PERATURAN DESA MULO NOMOR 3 TAHUN 2018.
+                            </div>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5" align="center" style="font-size: 8px;">KELUHAN PELANGGAN HUBUNGI WA
-                            0882-1673-8479 (ISWANTO)
-                            0878-0484-5880 (NURUL) NB: TERLAMBAT 2 BULAN AKAN DITERBITKAN SURAT PERINGATAN,
-                            TERLAMBAT 3 BULAN
-                            AKAN DITERBITKAN
-                            SURAT PEMUTUSAN SEMENTARA
+                        <td colspan="5" align="center" style="font-size: 8px;">
+                            <div>
+                                KELUHAN PELANGGAN HUBUNGI WA
+                                0882-1673-8479 (ISWANTO)
+                                0878-0484-5880 (NURUL)
+                            </div>
+                            <div>
+                                NB: TERLAMBAT 2 BULAN AKAN DITERBITKAN SURAT PERINGATAN,
+                                TERLAMBAT 3 BULAN
+                                AKAN DITERBITKAN
+                                SURAT PEMUTUSAN SEMENTARA
+                            </div>
                         </td>
                     </tr>
                 </table>
