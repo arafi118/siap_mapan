@@ -98,7 +98,7 @@
                         <td width="20%" align="left">Rp. {{ number_format($use->nominal, 2) }}</td>
                         <td width="14%" align="center">&nbsp;</td>
                         <td width="14%" align="left">
-                            {{ strtoupper($bisnis->desa) }}, {{ Tanggal::tglLatin($use->tgl_pemakaian) }}
+                            {{ ucwords($bisnis->desa) }}, {{ Tanggal::tglLatin($use->tgl_pemakaian) }}
                         </td>
                     </tr>
                     <tr>
@@ -131,7 +131,9 @@
                                 Rupiah</span>
                         </td>
                         <td width="14%" align="center">&nbsp;</td>
-                        <td width="14%" align="left">{{ strtoupper($jabatan->nama) }}</td>
+                        <td width="14%" align="left" style="font-weight: bold;">
+                            {{ ucwords($jabatan->nama) }}
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="5" align="center" style="font-size: 8px;">SELURUH PELANGGAN AIR

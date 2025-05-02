@@ -55,7 +55,7 @@ class UsageController extends Controller
                     return Tanggal::tglIndo($usage->tgl_akhir);
                 })
                 ->editColumn('nominal', function ($usage) {
-                    return Tanggal::tglIndo($usage->tgl_pemakaian);
+                    return number_format($usage->nominal, 2);
                 })
                 ->rawColumns(['aksi'])
                 ->make(true);

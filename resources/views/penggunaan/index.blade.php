@@ -30,7 +30,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
-                                    <label for="bulan">Bulan</label>
+                                    <label for="bulan">Bulan Pemakaian</label>
                                     <select id="bulan" name="bulan" class="form-control">
                                         <option value="">-- Pilih Bulan --</option>
                                         @for ($i = 1; $i <= 12; $i++)
@@ -69,23 +69,25 @@
                         </div>
                     </div>
 
-                    <table class="table align-items-center table-flush" id="TbPemakain">
-                        <thead class="thead-light" align="center">
-                            <tr>
-                                <th>Nama</th>
-                                <th>No.Induk</th>
-                                <th>Meter Awal</th>
-                                <th>Meter Akhir</th>
-                                <th>Pemakaian</th>
-                                <th>Tagihan </th>
-                                <th>Tanggal Tagihan</th>
-                                <th>Status</th>
-                                <th style="text-align: center;" width="10%">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush" id="TbPemakain">
+                            <thead class="thead-light" align="center">
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>No.Induk</th>
+                                    <th>Meter Awal</th>
+                                    <th>Meter Akhir</th>
+                                    <th>Pemakaian</th>
+                                    <th>Tagihan </th>
+                                    <th>Tanggal Tagihan</th>
+                                    <th>Status</th>
+                                    <th style="text-align: center;" width="10%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,7 +163,6 @@
                 "url": "/usages?bulan=" + bulan + "&cater=" + cater,
                 "type": "GET"
             },
-            "responsive": true,
             "language": {
                 "emptyTable": "Tidak ada data yang tersedia",
                 "search": "",
