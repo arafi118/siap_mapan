@@ -144,7 +144,7 @@
                         <td colspan="5" height="8"></td>
                     </tr>
                     <tr>
-                        <td colspan="5" align="center" style="font-size: 6px;">
+                        <td colspan="5" align="center" style="font-size: 8px;">
                             <div>
                                 SELURUH PELANGGAN AIR
                                 "{{ $bisnis->nama }}" WAJIB MEMATUHI
