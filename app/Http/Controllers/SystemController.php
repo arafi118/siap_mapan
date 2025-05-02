@@ -48,6 +48,7 @@ class SystemController extends Controller
             'usage.customers'
         ])->get();
 
+        $dataUsage = [];
         $updateSps = [];
         $trxTunggakan = [];
 
@@ -123,6 +124,8 @@ class SystemController extends Controller
                         'urutan' => 0,
                         'created_at' => $createdAt
                     ];
+
+                    $dataUsage[] = $usageId;
                 }
             }
         }
@@ -133,6 +136,9 @@ class SystemController extends Controller
 
         if (!empty($trxTunggakan)) {
             DB::statement('SET @DISABLE_TRIGGER = 1');
+            Transaction::where('usage_id', $dataUsage)
+                ->where('rekening_debit', $kodePiutang->id)
+                ->delete();
             Transaction::insert($trxTunggakan);
             DB::statement('SET @DISABLE_TRIGGER = 0');
         }
