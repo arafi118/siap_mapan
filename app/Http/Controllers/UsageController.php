@@ -134,16 +134,16 @@ class UsageController extends Controller
     public function detailTagihan()
     {
         $keuangan = new Keuangan;
-    
+
         $usages = Usage::where('business_id', Session::get('business_id'))
-        ->where('status', 'UNPAID')
-        ->whereHas('usersCater', function ($q) {
-            $q->where('jabatan', 5);
-        })
-        ->with(['customers', 'installation', 'usersCater']) // panggil relasinya
-        ->get();
-    
-    
+            ->where('status', 'UNPAID')
+            ->whereHas('usersCater', function ($q) {
+                $q->where('jabatan', 5);
+            })
+            ->with(['customers', 'installation', 'usersCater']) // panggil relasinya
+            ->get();
+
+
         return [
             'label' => '<i class="fas fa-book"></i> ' . 'Detail Pemakaian Dengan Status <b>(UNPAID)</b>',
             'cetak' => view('penggunaan.partials.DetailTagihan', [
@@ -151,7 +151,7 @@ class UsageController extends Controller
             ])->render()
         ];
     }
-    
+
 
     public function cetak(Request $request)
     {
@@ -174,7 +174,7 @@ class UsageController extends Controller
         $data['keuangan'] = $keuangan;
 
         $view = view('penggunaan.partials.cetak', $data)->render();
-        $pdf = PDF::loadHTML($view);
+        $pdf = PDF::loadHTML($view)->setPaper('F4');
         return $pdf->stream();
     }
 

@@ -132,7 +132,7 @@
                                 {{ Tanggal::tahun($use->tgl_pemakaian) }}</div>
                         </td>
                         <td width="100" align="center">
-                            <div style="font-size: 11px;">POS BAYAR : {{ $use->usersCater->nama }}</div>
+                            <div style="font-size: 11px;">Cater : {{ $use->usersCater->nama }}</div>
                         </td>
                         <td width="50" align="right">
                             <div style="font-size: 11px;">NO URUT : {{ $use->installation->id }}</div>
