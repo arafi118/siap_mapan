@@ -337,7 +337,42 @@
                         <td width="33%" align="center" style="border: none; text-align: center;"></td>
                         <td width="33%" style="border: none;"></td>
                         <td width="33%" style="border: none; text-align: center;">
-                            {{ $bisnis->desa }}, {{ date('d F Y', strtotime(date('Y-m-t'))) }}
+                            @php
+                                $bulanInggris = [
+                                    'January',
+                                    'February',
+                                    'March',
+                                    'April',
+                                    'May',
+                                    'June',
+                                    'July',
+                                    'August',
+                                    'September',
+                                    'October',
+                                    'November',
+                                    'December',
+                                ];
+                                $bulanIndonesia = [
+                                    'Januari',
+                                    'Februari',
+                                    'Maret',
+                                    'April',
+                                    'Mei',
+                                    'Juni',
+                                    'Juli',
+                                    'Agustus',
+                                    'September',
+                                    'Oktober',
+                                    'November',
+                                    'Desember',
+                                ];
+                                $tanggalIndo = str_replace(
+                                    $bulanInggris,
+                                    $bulanIndonesia,
+                                    date('d F Y', strtotime(date('Y-m-t'))),
+                                );
+                            @endphp
+                            {{ $bisnis->desa }}, {{ $tanggalIndo }}
                         </td>
                     </tr>
                     <tr>
