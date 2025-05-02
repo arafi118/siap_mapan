@@ -15,20 +15,55 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Yajra\DataTables\Facades\DataTables;
 
 class UsageController extends Controller
 {
 
     public function index()
     {
-        $usages = Usage::where('business_id', Session::get('business_id'))->with([
-            'customers',
-            'installation',
-            'installation.package'
-        ])->orderBy('created_at', 'DESC')->get();
-        // dd($usages);
+
+        if (request()->ajax()) {
+            $bulan = request()->get('bulan');
+            $cater = request()->get('cater');
+
+            $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
+            $usages = Usage::where([
+                ['business_id', Session::get('business_id')],
+                ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%']
+            ]);
+
+            if ($cater != '') {
+                $usages->where('cater', $cater);
+            }
+
+            $usages->with([
+                'customers',
+                'installation',
+                'usersCater',
+                'installation.package'
+            ])->orderBy('created_at', 'DESC')->get();
+
+            return DataTables::of($usages)
+                ->addColumn('aksi', function ($usage) {
+                    $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i></a>';
+                    $delete = '<a href="#" data-id="' . $usage->id . '" class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
+
+                    return $edit . $delete;
+                })
+                ->addColumn('tgl_akhir', function ($usage) {
+                    return Tanggal::tglIndo($usage->tgl_akhir);
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+        }
+
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->get();
         $title = 'Data Pemakaian';
-        return view('penggunaan.index')->with(compact('title', 'usages'));
+        return view('penggunaan.index')->with(compact('title', 'caters'));
     }
 
     /**

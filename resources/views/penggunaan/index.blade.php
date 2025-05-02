@@ -1,3 +1,7 @@
+@php
+    use App\Utils\Tanggal;
+@endphp
+
 @extends('layouts.base')
 
 @section('content')
@@ -14,26 +18,57 @@
                 <div class="table-responsive p-3">
                     <div style="card-header">
                         <div class="row">
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-12">
                                 <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
                                 <b>Data Pemakaian</b>
                             </div>
-                            <div class="col-md-3 mb-2" align="right">
+
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <label for="bulan">Bulan</label>
+                                    <select id="bulan" name="bulan" class="form-control">
+                                        <option value="">-- Pilih Bulan --</option>
+                                        @for ($i = 1; $i <= 12; $i++)
+                                            <option {{ date('m') == $i ? 'selected' : '' }}
+                                                value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">
+                                                {{ Tanggal::namaBulan(date('Y') . '-' . str_pad($i, 2, '0', STR_PAD_LEFT) . '-01') }}
+                                            </option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <label for="caters">Cater</label>
+                                    <select class="form-control" id="caters" name="caters">
+                                        <option value="">Semua</option>
+                                        @foreach ($caters as $cater)
+                                            <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
                                 @if (auth()->user()->jabatan == 1)
-                                    <button class="btn btn-danger" type="button" id="DetailCetakBuktiTagihan">
-                                        <i class="fas fa-info-circle">&nbsp;</i> Cetak Tagihan
+                                    <button class="btn btn-danger btn-block" type="button" id="DetailCetakBuktiTagihan">
+                                        <i class="fas fa-info-circle"></i> Cetak Tagihan
                                     </button>
                                 @endif
                             </div>
-                            <div class="col-md-3 mb-2" align="right">
-                                <button class="btn btn-warning" id="Registerpemakaian"
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-warning btn-block" id="Registerpemakaian"
                                     @if (Session::get('jabatan') == 6) disabled @endif>
-                                    <i class="fas fa-plus">&nbsp;</i> Input Data Pemakaian
+                                    <i class="fas fa-plus"></i> Input Data Pemakaian
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div>&nbsp;</div>
+
                     <table class="table align-items-center table-flush" id="TbPemakain">
                         <thead class="thead-light" align="center">
                             <tr>
@@ -43,48 +78,14 @@
                                 <th>Meter Akhir</th>
                                 <th>Pemakaian</th>
                                 <th>Tagihan </th>
-                                <th>Tanggal Akhir</th>
+                                <th>Tanggal Tagihan</th>
                                 <th>Status</th>
-                                @if (auth()->user()->jabatan == 1)
-                                    <th style="text-align: center;" width="10%">Aksi</th>
-                                @endif
+                                <th style="text-align: center;" width="10%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($usages as $usage)
-                                <tr>
-                                    <td>{{ $usage->customers ? $usage->customers->nama : '' }}</td>
-                                    <td>{{ $usage->installation ? $usage->installation->kode_instalasi : '' }}
-                                        {{ substr($usage->installation->package->kelas, 0, 1) }}</td>
-                                    <td>{{ $usage->awal }}</td>
-                                    <td>{{ $usage->akhir }}</td>
-                                    <td>{{ $usage->jumlah }}</td>
-                                    <td>{{ number_format($usage->nominal, 2) }}</td>
-                                    <td>{{ $usage->tgl_akhir }}</td>
-                                    <td>
-                                        @if ($usage->status === 'PAID')
-                                            <span class="badge badge-success">PAID</span>
-                                        @elseif($usage->status === 'UNPAID')
-                                            <span class="badge badge-warning">UNPAID</span>
-                                        @endif
-                                    </td>
-                                    @if (auth()->user()->jabatan == 1)
-                                        <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                            <a href="/usages/{{ $usage->id }}/edit" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </a>
-                                            <a href="#" data-id="{{ $usage->id }}"
-                                                class="btn-sm btn-danger mx-1 Hapus_pemakaian">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
-                                    @endif
-
-                                </tr>
-                            @endforeach
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
@@ -99,7 +100,32 @@
                     </h1>
                 </div>
                 <div class="modal-body">
-                    <div id="LayoutCetakBuktiTagihan"></div>
+                    <form action="/usages/cetak" method="post" id="FormCetakBuktiTagihan" target="_blank">
+                        @csrf
+                        <table id="TbTagihan" class="table table-striped midle">
+                            <thead class="bg-dark text-white">
+                                <tr>
+                                    <td align="center" width="40">
+                                        <div class="form-check text-center ps-0 mb-0">
+                                            <input class="form-check-input" type="checkbox" value="true" id="checked"
+                                                name="checked" checked>
+                                        </div>
+                                    </td>
+                                    <td align="center" width="100">Nama</td>
+                                    <td align="center" width="100">Cater</td>
+                                    <td align="center" width="100">No. Induk</td>
+                                    <td align="center" width="100">Meter Awal</td>
+                                    <td align="center" width="100">Meter Akhir</td>
+                                    <td align="center" width="100">Pemakaian</td>
+                                    <td align="center" width="100">Tagihan</td>
+                                    <td align="center" width="100">Tanggal Akhir Bayar</td>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="BtnCetak" class="btn btn-sm btn-info">
@@ -120,7 +146,7 @@
     <script>
         $(document).on('click', '#kembali', function(e) {
             e.preventDefault();
-            window.location.href = '/usages';
+            $('#CetakBuktiTagihan').modal('hide');
         });
 
         $(document).on(' click', '#Registerpemakaian', function(e) {
@@ -128,21 +154,88 @@
             window.location.href = '/usages/create';
         });
 
-        $(document).ready(function() {
-            $('#TbPemakain').DataTable(); // ID From dataTable 
+        var cater = $('#caters').val()
+        var bulan = $('#bulan').val()
+        var table = $('#TbPemakain').DataTable({
+            "ajax": {
+                "url": "/usages?bulan=" + bulan + "&cater=" + cater,
+                "type": "GET"
+            },
+            "responsive": true,
+            "language": {
+                "emptyTable": "Tidak ada data yang tersedia",
+                "search": "",
+                "searchPlaceholder": "Pencarian...",
+                "paginate": {
+                    "next": "<i class='fas fa-angle-right'></i>",
+                    "previous": "<i class='fas fa-angle-left'></i>"
+                }
+            },
+            "columns": [{
+                    "data": "customers.nama"
+                },
+                {
+                    "data": "installation.kode_instalasi"
+                },
+                {
+                    "data": "awal"
+                },
+                {
+                    "data": "akhir"
+                },
+                {
+                    "data": "jumlah"
+                },
+                {
+                    "data": "nominal"
+                },
+                {
+                    "data": "tgl_akhir"
+                },
+                {
+                    "data": "status"
+                },
+                {
+                    "data": "aksi",
+                }
+            ]
+        });
+
+        $('#caters').on('change', function() {
+            cater = $(this).val()
+            table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+        });
+
+        $('#bulan').on('change', function() {
+            bulan = $(this).val()
+            table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
         });
 
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
-            $.ajax({
-                url: '/usages/detail_tagihan',
-                type: 'get',
-                success: function(result) {
-                    console.log(result);
-                    $('#CetakBuktiTagihan').modal('show');
-                    $('#CetakBuktiTagihanLabel').html(result.label);
-                    $('#LayoutCetakBuktiTagihan').html(result.cetak);
-                }
-            });
+            var data = table.data().toArray()
+            var tbTagihan = $('#TbTagihan');
+
+            data.forEach((item) => {
+                var row = tbTagihan.find('tbody').append(`
+                    <tr>
+                        <td align="center">
+                            <div class="form-check text-center ps-0 mb-0">
+                                <input checked class="form-check-input" type="checkbox" value="${item.id}" id="${item.id}" name="cetak[]" data-input="checked" data-bulan="${item.bulan}">
+                            </div>
+                        </td>
+                        <td align="left">${item.customers.nama}</td>
+                        <td align="left">${item.users_cater.nama}</td>
+                        <td align="left">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
+                        <td align="right">${item.awal}</td>
+                        <td align="right">${item.akhir}</td>
+                        <td align="right">${item.jumlah}</td>
+                        <td align="right">${item.nominal}</td>
+                        <td align="center">${item.tgl_akhir}</td>
+                    </tr>
+                `);
+            })
+
+            $('#CetakBuktiTagihan').modal('show');
         });
 
         $(document).on('click', '#BtnCetak', function(e) {
@@ -232,6 +325,29 @@
                         confirmButtonText: "OK"
                     });
                 }
+            });
+        });
+
+        $(document).ready(function() {
+            // Filter baris berdasarkan bulan akhir
+            $('#filter-bulan').on('change', function() {
+                var selectedMonth = $(this).val();
+                $('[data-input=checked]').each(function() {
+                    var row = $(this).closest('tr');
+                    var bulan = $(this).data('bulan');
+                    if (!selectedMonth || bulan == selectedMonth) {
+                        row.show();
+                    } else {
+                        row.hide();
+                        $(this).prop('checked', false); // Uncheck jika disembunyikan
+                    }
+                });
+            });
+
+            // Centang semua baris yang terlihat saat checkbox utama diklik
+            $('#checked').on('click', function() {
+                var status = $(this).is(':checked');
+                $('[data-input=checked]:visible').prop('checked', status);
             });
         });
     </script>
