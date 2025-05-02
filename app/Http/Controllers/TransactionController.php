@@ -1325,14 +1325,15 @@ class TransactionController extends Controller
         $trx_settings = Settings::where('business_id', Session::get('business_id'))->first();
         $trx = Transaction::where('transaction_id', $id)->with([
             'Installations.customer',
-            'Usages'
+            'Usages',
+            'User'
         ])->first();
-        $user = User::where('business_id', Session::get('business_id'))->where('id', $trx->user_id)->first();
+        $user = $trx->User;
         $kode_akun = Account::where('business_id', Session::get('business_id'))->where('id', $trx)->value('kode_akun');
 
         $jenis = 'Pembayaran Bulanan';
         $dari = ucwords($trx->Installations->customer->nama);
-        $oleh = ucwords(auth()->user()->nama);
+        $oleh = ucwords(($user) ? $user->nama : '');
 
         $logo = $bisnis->logo;
         if (empty($logo)) {
