@@ -30,7 +30,7 @@
             width: 100%;
             border: 1px solid #000;
             padding: 4px;
-            margin-top: 14px;
+            margin-top: 10px;
         }
     </style>
 
@@ -145,11 +145,11 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="border: 1px solid #000; font-size: 7px;">
-                            <div style="padding: 4px">
+                            <div style="padding: 2px">
                                 Pembayaran Via Transfer:
                                 <div style="text-align: center;font-weight: bold;">
                                     <div>BRI No Rekening:</div>
-                                    <div>0153-01-001906-56-9</div>
+                                    <div style="font-size: 9px;">0153-01-001906-56-9</div>
                                     <div>a/n. BUMDES BANGUN KENCANA MULO</div>
                                 </div>
                             </div>
