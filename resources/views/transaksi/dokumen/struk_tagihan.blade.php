@@ -111,13 +111,9 @@
                     <td>Tgl Bayar </td>
                     <td class="text-right">{{ Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
                 </tr>
-                <tr>
-                    <td>Keterangan</td>
-                    <td class="text-right">{{ $trx->keterangan }}</td>
-                </tr>
 
                 <tr>
-                    <td>Package</td>
+                    <td>Paket</td>
                     <td class="text-right">{{ $trx->Installations->package->kelas }}</td>
                 </tr>
                 <tr>
