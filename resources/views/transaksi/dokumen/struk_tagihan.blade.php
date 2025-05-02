@@ -136,7 +136,7 @@
                         <td class="text-right">{{ $trx->Usages->jumlah }}</td>
                     </tr>
                     <tr>
-                        <td>Tagihan</td>
+                        <td>Tagihan Pemakaian Air</td>
                         <td class="text-right">Rp {{ number_format($totalTagihan, 2, ',', '.') }}</td>
                     </tr>
                     <tr>
