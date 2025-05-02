@@ -1328,7 +1328,7 @@ class TransactionController extends Controller
             'Usages',
             'User'
         ])->first();
-        $user = $trx->User;
+        $user = ($trx->User) ? $trx->User : null;
         $kode_akun = Account::where('business_id', Session::get('business_id'))->where('id', $trx)->value('kode_akun');
 
         $jenis = 'Pembayaran Bulanan';
