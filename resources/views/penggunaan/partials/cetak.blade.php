@@ -113,7 +113,12 @@
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">Rp. 0.00</td>
                         <td width="14%" align="center">&nbsp;</td>
-                        <td width="14%" align="left">ttd,</td>
+                        <td rowspan="2" width="14%" align="left">
+                            <div style="position: absolute; height: 24px; transform: translateY(-12px);">
+                                <img src="../storage/app/public/ttd/{{ $jabatan->tanda_tangan }}"
+                                    style="height: 50px;">
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td width="10%" align="left">Total</td>
@@ -121,7 +126,6 @@
                         <td width="20%" align="left">Rp.
                             {{ number_format($use->nominal + $use->installation->abodemen, 2) }}</td>
                         <td width="14%" align="center">&nbsp;</td>
-                        <td width="14%" align="left"></td>
                     </tr>
                     <tr>
                         <td width="10%" align="left">Terbilang</td>
