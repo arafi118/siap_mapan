@@ -56,7 +56,7 @@
                     </tr>
                     <tr>
                         <td width="25" align="left">
-                            <div style="font-size: 9px;">Cater : {{ $use->usersCater->nama }}</div>
+                            <div style="font-size: 9px;">CATER : {{ $use->usersCater->nama }}</div>
                         </td>
                         <td width="150" align="left">
                             <div style="font-size: 9px;">
