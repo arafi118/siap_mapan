@@ -108,6 +108,14 @@
                 </tr>
                 </tr>
                 <tr>
+                    <td>Paket</td>
+                    <td class="text-right">{{ $trx->Installations->package->kelas }}</td>
+                </tr>
+                <tr>
+                    <td>Kode Instalasi</td>
+                    <td class="text-right">{{ $trx->Installations->kode_instalasi }}</td>
+                </tr>
+                <tr>
                     <td>Bulan Pemakaian </td>
                     <td class="text-right">
                         {{ Tanggal::namaBulan($trx->Usages->tgl_pemakaian) }}
@@ -115,12 +123,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Paket</td>
-                    <td class="text-right">{{ $trx->Installations->package->kelas }}</td>
-                </tr>
-                <tr>
-                    <td>Kode Instalasi</td>
-                    <td class="text-right">{{ $trx->Installations->kode_instalasi }}</td>
+                    <td>Pemakaian Air (m3)</td>
+                    <td class="text-right">{{ $trx->Usages->jumlah }}</td>
                 </tr>
             </table>
 
@@ -130,10 +134,6 @@
                         <td colspan="2">&nbsp;</td>
                     </tr>
 
-                    <tr>
-                        <td>Pemakaian Air (m3)</td>
-                        <td class="text-right">{{ $trx->Usages->jumlah }}</td>
-                    </tr>
                     <tr>
                         <td>Tagihan Pemakaian Air</td>
                         <td class="text-right">Rp {{ number_format($totalTagihan, 2, ',', '.') }}</td>
