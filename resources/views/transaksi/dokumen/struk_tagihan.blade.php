@@ -108,6 +108,13 @@
                 </tr>
                 </tr>
                 <tr>
+                    <td>Tgl Pemakaian </td>
+                    <td class="text-right">
+                        {{ Tanggal::namaBulan($trx->Usages->tgl_pemakaian) }}
+                        {{ date('Y', strtotime($trx->Usages->tgl_pemakaian)) }}
+                    </td>
+                </tr>
+                <tr>
                     <td>Tgl Bayar </td>
                     <td class="text-right">{{ Tanggal::tglLatin($trx->tgl_transaksi) }}</td>
                 </tr>
