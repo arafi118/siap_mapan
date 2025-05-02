@@ -1323,7 +1323,7 @@ class TransactionController extends Controller
 
         $bisnis = Business::where('id', Session::get('business_id'))->first();
         $trx_settings = Settings::where('business_id', Session::get('business_id'))->first();
-        $trx = Transaction::where('transaction_id', $id)->with([
+        $trx = Transaction::where('id', $id)->with([
             'Installations.customer',
             'Usages',
             'User'
