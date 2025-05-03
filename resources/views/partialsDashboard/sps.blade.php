@@ -401,12 +401,20 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="border: none; padding: 23px 0;"></td>
+                        <td colspan="3" style="border: none; padding: 0px 0;"></td>
                     </tr>
                     <tr>
-                        <td align="center" style="border: none;"><b>{{ $dir->nama ?? '' }}</b></td>
+                        <td align="center" style="border: none;">
+                            <img src="../../assets/img/ttd2.png" style="max-height: 100px;"
+                                class="mb-3 img-fluid  d-none d-lg-block">
+                            <br><b>{{ $dir->nama ?? '' }}</b>
+                        </td>
                         <td style="border: none;"></td>
-                        <td style="border: none; text-align: center;"><b>{{ $ket->nama ?? '-' }}</b></td>
+                        <td style="border: none; text-align: center;">
+                            <img src="../../assets/img/ttd1.png" style="max-height: 100px;"
+                                class="mb-3 img-fluid  d-none d-lg-block">
+                            <br><b>{{ $ket->nama ?? '-' }}</b>
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="3" style="border: none; padding: 20px 0;"></td>
