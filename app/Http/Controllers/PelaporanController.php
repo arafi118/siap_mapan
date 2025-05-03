@@ -338,6 +338,7 @@ class PelaporanController extends Controller
             'transaction.acc_kredit',
         ])->get();
 
+
         $nomor = 1;
         $data['transaction_id'] = [];
         $data['transactions'] = [];
