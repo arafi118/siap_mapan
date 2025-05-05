@@ -30,7 +30,7 @@
             width: 100%;
             border: 1px solid #000;
             padding: 4px;
-            margin-top: 18px;
+            margin-bottom: .8cm;
         }
 
         .tb-padding tr td {
@@ -74,22 +74,22 @@
                             </div>
                         </td>
                         <td width="20%" align="right">
-                            <img src="assets/img/cetak1.png" style="max-height: 30px;">
+                            <img src="assets/img/cetak1.png" style="max-height: 40px;">
                         </td>
                         <td width="30%" align="center">
                             <div class="fw-bold" style="font-size: 12px;">STRUK TAGIHAN PEMAKAIAN AIR</div>
-                            <div style="font-size: 9px;">BADAN USAHA MILIK DESA (BUMDes)</div>
+                            <div style="font-size: 11px;">BADAN USAHA MILIK DESA (BUMDes)</div>
                             <div class="fw-bold">UNIT AIR</div>
                         </td>
                         <td width="20%" align="left">
-                            <img src="assets/img/cetak2.png" style="max-height: 30px;">
+                            <img src="assets/img/cetak2.png" style="max-height: 40px;">
                         </td>
                         <td width="15%">&nbsp;</td>
                     </tr>
                 </table>
 
                 <table class="tb-padding" border="1" width="100%"
-                    style="border-collapse: collapse; border: 1px solid #000; margin-top: 4px;">
+                    style="border-collapse: collapse; border: 1px solid #000; margin-top: 12px; font-size: 11px;">
                     <tr>
                         <td width="20%" align="center">NAMA PELANGGAN</td>
                         <td width="13%" align="center">NO INDUK</td>
@@ -108,9 +108,10 @@
                         <td align="center">{{ $use->jumlah }}</td>
                     </tr>
                 </table>
-                <table class="tb-padding-sm" border="0" width="100%" style="font-size: 9px;">
+
+                <table class="tb-padding-sm" border="0" width="100%" style="font-size: 11px;">
                     <tr>
-                        <td colspan="5" style="font-size: 12px">RINCIAN BIAYA</td>
+                        <td colspan="5" style="font-size: 12px; margin-top: 12px;">RINCIAN BIAYA</td>
                     </tr>
                     <tr>
                         <td width="10%" align="left">Pemakaian Air</td>
@@ -169,7 +170,7 @@
                                 Pembayaran Via Transfer:
                                 <div style="text-align: center;font-weight: bold;">
                                     <div>BRI No Rekening:</div>
-                                    <div style="font-size: 9px;">0153-01-001906-56-9</div>
+                                    <div style="font-size: 11px;">0153-01-001906-56-9</div>
                                     <div>a/n. BUMDES BANGUN KENCANA MULO</div>
                                 </div>
                             </div>
@@ -180,10 +181,10 @@
                                 "{{ $bisnis->nama }}" WAJIB MEMATUHI
                                 SEGALA
                                 KETENTUAN MANAJEMEN
-                                PENGELOLAAN OLEH BUMDes BANGUN KENCANA MULO,
+                                PENGELOLAAN OLEH
                             </div>
                             <div>
-                                SESUAI DENGAN PERATURAN DESA MULO NOMOR 3 TAHUN 2018.
+                                BUMDes BANGUN KENCANA MULO, SESUAI DENGAN PERATURAN DESA MULO NOMOR 3 TAHUN 2018.
                             </div>
                             <div>
                                 KELUHAN PELANGGAN HUBUNGI WA
