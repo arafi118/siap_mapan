@@ -211,7 +211,7 @@ class UsageController extends Controller
         $data['keuangan'] = $keuangan;
 
         $view = view('penggunaan.partials.cetak', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper([0, 0, 595.276, 935.433], 'potrait');
+        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'potrait');
         return $pdf->stream();
     }
 

@@ -31,13 +31,14 @@
             border: 1px solid #000;
             padding: 4px;
             margin-bottom: .8cm;
+            height: 7cm;
         }
 
         .tb-padding tr td {
             padding: 2px 4px;
         }
 
-        .tb-padding tr td {
+        .tb-padding-sm tr td {
             padding: 1px 2px;
         }
     </style>
@@ -77,9 +78,9 @@
                             <img src="assets/img/cetak1.png" style="max-height: 40px;">
                         </td>
                         <td width="30%" align="center">
-                            <div class="fw-bold" style="font-size: 12px;">STRUK TAGIHAN PEMAKAIAN AIR</div>
-                            <div style="font-size: 11px;">BADAN USAHA MILIK DESA (BUMDes)</div>
-                            <div class="fw-bold">UNIT AIR</div>
+                            <div style="font-size: 12px; font-weight: bold;">STRUK TAGIHAN PEMAKAIAN AIR</div>
+                            <div style="font-size: 12px; font-weight: bold;">BADAN USAHA MILIK DESA (BUMDes)</div>
+                            <div style="font-size: 12px; font-weight: bold;">UNIT AIR</div>
                         </td>
                         <td width="20%" align="left">
                             <img src="assets/img/cetak2.png" style="max-height: 40px;">
@@ -111,10 +112,12 @@
 
                 <table class="tb-padding-sm" border="0" width="100%" style="font-size: 11px;">
                     <tr>
-                        <td colspan="5" style="font-size: 12px; margin-top: 12px;">RINCIAN BIAYA</td>
+                        <td colspan="5" style="font-size: 12px; margin-top: 12px; padding-left: 24px;">
+                            <u>RINCIAN BIAYA</u>
+                        </td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left">Pemakaian Air</td>
+                        <td width="10%" align="left" style="padding-left: 24px;">Pemakaian Air</td>
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">Rp. {{ number_format($use->nominal, 2) }}</td>
                         <td width="16%" align="center">&nbsp;</td>
@@ -124,14 +127,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left">Beban Tetap</td>
+                        <td width="10%" align="left" style="padding-left: 24px;">Beban Tetap</td>
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">Rp. {{ number_format($use->installation->abodemen, 2) }}</td>
                         <td width="16%" align="center">&nbsp;</td>
                         <td width="12%" align="left">Bendahara</td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left">Denda</td>
+                        <td width="10%" align="left" style="padding-left: 24px;">Denda</td>
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">Rp. 0.00</td>
                         <td width="16%" align="center">&nbsp;</td>
@@ -143,18 +146,19 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left">Total</td>
+                        <td width="10%" align="left" style="padding-left: 24px;">Total</td>
                         <td width="2%" align="right">:</td>
-                        <td width="20%" align="left">Rp.
-                            {{ number_format($use->nominal + $use->installation->abodemen, 2) }}</td>
+                        <td width="20%" align="left">
+                            <b>Rp. {{ number_format($use->nominal + $use->installation->abodemen, 2) }}</b>
+                        </td>
                         <td width="16%" align="center">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left">Terbilang</td>
+                        <td width="10%" align="left" style="padding-left: 24px;">Terbilang</td>
                         <td width="2%" align="right">:</td>
                         <td width="12%" class="keterangan terbilang">
-                            <span>{{ ucwords($keuangan->terbilang($use->nominal + $use->installation->abodemen)) }}
-                                Rupiah</span>
+                            <i>{{ ucwords($keuangan->terbilang($use->nominal + $use->installation->abodemen)) }}
+                                Rupiah</i>
                         </td>
                         <td width="16%" align="center">&nbsp;</td>
                         <td width="12%" align="left" style="font-weight: bold;">
