@@ -83,13 +83,13 @@
 <body onload="window.print()">
     <div class="container">
         <div class="header">
-            <div style="font-size: 14px">{{ strtoupper($bisnis->nama) }}</div>
-            <div>{{ 'SK Kemenkumham RI No. ' . $bisnis->nomor_bh }}</div>
+            <div style="font-size: 14px">BUMDES {{ strtoupper($bisnis->nama) }}</div>
+            <div>UNIT AIR</div>
             <div>{{ $bisnis->alamat }}</div>
             <div>Telp: {{ $bisnis->telpon }}</div>
         </div><br>
         <div class="border">
-            STRUK PEMAKAIAN AIR
+            <b>BUKTI PEMBAYARAN</b>
         </div><br>
 
         <div class="content">

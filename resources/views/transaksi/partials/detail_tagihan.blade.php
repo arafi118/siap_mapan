@@ -56,7 +56,7 @@
                         <div class="dropdown-menu" aria-labelledby="{{ $trx->id }}">
                             <a class="dropdown-item" target="_blank"
                                 href="/transactions/dokumen/struk_tagihan/{{ $trx->id }}">
-                                Struk Tagihan
+                                Bukti Pembayaran
                             </a>
                             <a class="dropdown-item" target="_blank"
                                 href="/transactions/dokumen/struk_instalasi/{{ $trx->id }}">
