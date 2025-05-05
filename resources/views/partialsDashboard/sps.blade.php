@@ -155,7 +155,7 @@
                     <div style="font-size: 14px; margin-bottom: 2px;"><b>BADAN USAHA MILIK DESA</b></div>
                     <div style="font-size: 18px; margin-bottom: 2px;"><b>PERUSAHAAN AIR BERSIH
                             {{ strtoupper($bisnis->nama) }}</b></div>
-                    <div style="font-size: 14px; margin-bottom: 5px;">KALURAHAN MULO KAPENAWON WONOSARI</div>
+                    <div style="font-size: 14px; margin-bottom: 5px;">KALURAHAN MULO KAPANEWON WONOSARI</div>
                     <!-- jarak lebih besar -->
 
                     <div style="font-size: 11px; word-wrap: break-word;">
