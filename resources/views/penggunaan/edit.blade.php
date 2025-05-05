@@ -4,7 +4,8 @@
     <form action="/usages/{{ $usage->id }}" method="post" id="PutPemakaian">
         @csrf
         @method('PUT')
-
+        {{-- <input type="text" name="id" value="{{ $usage->installation->id }}">
+        <input type="text" name="tgl_pemakaian" value="{{ $usage->tgl_pemakaian }}"> --}}
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">

@@ -101,10 +101,9 @@ class UsageController extends Controller
         ])->with('package', 'customer')->first();
         $setting = Settings::where('business_id', Session::get('business_id'))->first();
 
-        $harga = json_decode($installation->package->harga, true);
-
         $result = [];
         $block = json_decode($setting->block, true);
+        $harga = json_decode($installation->package->harga, true);
         foreach ($block as $index => $item) {
             preg_match_all('/\d+/', $item['jarak'], $matches);
             $start = (int)$matches[0][0];
@@ -114,10 +113,10 @@ class UsageController extends Controller
                 $result[$i] = $index;
             }
         }
-
+        
         $tglPakai = Tanggal::tglNasional($data['tgl_pemakaian']);
-        $tglAkhir = date('Y-m', strtotime('+1 month', strtotime($tglPakai))) . '-' . str_pad($data['toleransi'], 2, '0', STR_PAD_LEFT);
         $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
+        $tglAkhir = date('Y-m', strtotime('+1 month', strtotime($tglPakai))) . '-' . str_pad($data['toleransi'], 2, '0', STR_PAD_LEFT);
 
         $insert = [
             'business_id' => Session::get('business_id'),
@@ -238,43 +237,63 @@ class UsageController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Usage $usage)
-    {
-        $data = $request->only([
-            "tgl_akhir",
-            "awal",
-            "akhir",
-            "jumlah",
-        ]);
+{
+    $data = $request->only([
+        "tgl_akhir",
+        "awal",
+        "akhir",
+        "jumlah",
+    ]);
 
-        $rules = [
-            'awal'   => 'required',
-            'akhir'   => 'required',
-            'jumlah'   => 'required',
-            'tgl_akhir' => 'required'
-        ];
-        $validate = Validator::make($data, $rules);
-        if ($validate->fails()) {
-            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-        }
-
-        // Mengubah format tanggal dari d/m/Y ke Y-m-d
-        $tgl_akhir = \DateTime::createFromFormat('d/m/Y', $request->tgl_akhir)->format('Y-m-d');
-
-        $usage->update([
-            'tgl_akhir' =>
-            Tanggal::tglNasional($request->tgl_akhir),
-            'awal'      => $request->awal,
-            'akhir'     => $request->akhir,
-            'jumlah'    => $request->jumlah
-        ]);
-
-        return redirect('/usages')->with('berhasil', 'Usage berhasil diperbarui!');
+    $rules = [
+        'awal'      => 'required|numeric',
+        'akhir'     => 'required|numeric',
+        'jumlah'    => 'required|numeric',
+        'tgl_akhir' => 'required|date_format:d/m/Y'
+    ];
+    $validate = Validator::make($data, $rules);
+    if ($validate->fails()) {
+        return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
     }
 
+    $installation = Installations::where([
+        ['business_id', Session::get('business_id')],
+        ['id', $usage->id_instalasi]
+    ])->with('package')->first();
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    $setting = Settings::where('business_id', Session::get('business_id'))->first();
+
+    $harga = json_decode($installation->package->harga, true); 
+    $block = json_decode($setting->block, true); 
+
+    $result = [];
+    foreach ($block as $index => $item) {
+        preg_match_all('/\d+/', $item['jarak'], $matches);
+        $start = (int)$matches[0][0];
+        $end = (isset($matches[0][1])) ? $matches[0][1] : 200;
+
+        for ($i = $start; $i <= $end; $i++) {
+            $result[$i] = $index;
+        }
+    }
+
+    $jumlah = (int) $request->jumlah;
+    $index_harga = isset($result[$jumlah]) ? $result[$jumlah] : array_key_last($harga);
+    $nominal = $harga[$index_harga] * $jumlah;
+    $usage->update([
+        'tgl_akhir' => Tanggal::tglNasional($request->tgl_akhir),
+        'awal'      => $request->awal,
+        'akhir'     => $request->akhir,
+        'jumlah'    => $jumlah,
+        'nominal'   => $nominal
+    ]);
+
+    return redirect('/usages')->with('berhasil', 'Usage berhasil diperbarui!');
+}
+
+    
+
+    
     public function destroy(Usage $usage)
     {
         $usage->delete();

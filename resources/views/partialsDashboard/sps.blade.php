@@ -242,32 +242,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $total = 0; @endphp
+                        @php
+                            $total = 0;
+                        @endphp
                         @foreach ($tunggakan->usage as $i => $u)
+                            @php
+                                $abodemen = $tunggakan->settings->abodemen ?? 0;
+                                $denda = $tunggakan->settings->denda ?? 0;
+                                $nominalTotal = $u->nominal + $abodemen + $denda;
+                                $total += $nominalTotal;
+                            @endphp
                             <tr>
                                 <td style="text-align: center;">{{ $i + 1 }}</td>
                                 <td style="text-align: left;">&nbsp;
                                     {{ Tanggal::namaBulan($u->tgl_akhir) }} {{ Tanggal::tahun($u->tgl_akhir) }}
                                 </td>
                                 <td style="text-align: right;">
-                                    {{ number_format($u->nominal, 2, ',', '.') }}&nbsp;
+                                    {{ number_format($nominalTotal, 2, ',', '.') }}&nbsp;
                                 </td>
                                 <td style="text-align: left;">&nbsp;{{ Tanggal::namaBulan($u->tgl_pemakaian) }}
                                     {{ Tanggal::tahun($u->tgl_pemakaian) }}
                                 </td>
                             </tr>
-                            @php $total += $u->nominal; @endphp
                         @endforeach
+
                         <tr>
                             <td colspan="2"><b>JUMLAH</b></td>
-                            <td style="text-align: right;"><b>{{ number_format($total, 2, ',', '.') }}&nbsp;
-                                </b></td>
+                            <td style="text-align: right;"><b>{{ number_format($total, 2, ',', '.') }}&nbsp;</b></td>
                             <td></td>
                         </tr>
-                    </tbody>
-                    <tr>
-                        <td colspan="3" style="padding: 4px 0; border: none;"></td>
-                    </tr>
                 </table>
             </div>
 
