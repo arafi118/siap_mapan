@@ -223,7 +223,7 @@
                         <td colspan="3" style="text-align: justify; border: none;">
                             Berdasarkan data administrasi kami, hingga saat surat ini diterbitkan, Pelanggan an
                             <b> {{ $tunggakan->customer->nama }}</b> dengan <b>Nomer Induk Pelanggan :</b>
-                            <b>{{ $tunggakan->kode_instalasi }}</b> Saudara belum
+                            <b>{{ $tunggakan->kode_instalasi }}</b> belum
                             memenuhi kewajiban pembayaran langganan air untuk periode sebagai berikut :
                         </td>
                     </tr>
@@ -291,9 +291,8 @@
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
-                            Dengan ini kami sampaikan bahwa Saudara mengalami keterlambatan pembayaran dan jumlah
-                            kewajiban sebagaimana tersebut di atas. Sebagai bentuk kebijakan, kami masih memberikan
-                            waktu selama 5 (lima) hari sejak diterbitkannya surat ini untuk melunasi seluruh tagihan
+                            Daftar diatas adalah tagihan yang harus dilunasi dengan toleransi 5 (lima) hari sejak
+                            diterbitkannya surat ini untuk melunasi seluruh tagihan
                             kepada Bendahara.
                         </td>
                     </tr>

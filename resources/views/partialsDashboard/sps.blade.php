@@ -281,7 +281,7 @@
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
-                            Dengan ini, kami akan melakukan pemutusan sementara terhadap pelanggan PAB Tirto Mulo
+                            Dengan ini, kami akan melakukan pemutusan sementara terhadap pelanggan
                             sebagai berikut:
                         </td>
                     </tr>

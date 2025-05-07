@@ -114,7 +114,7 @@
                     <td align="center">{{ $usage->awal }}</td>
                     <td align="center">{{ $usage->akhir }}</td>
                     <td align="center">
-                        {{ intval($usage->awal) == intval($usage->akhir) ? 0 : $usage->jumlah }}
+                        {{ $usage->jumlah }}
                     </td>
                     <td align="right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                 </tr>
