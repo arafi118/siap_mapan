@@ -22,27 +22,28 @@ class UsageController extends Controller
 
     public function index()
     {
-
         if (request()->ajax()) {
-            $bulan = request()->get('bulan');
-            $cater = request()->get('cater');
-
+            $bulan = request()->get('bulan') ?: date('m');
+            $cater = request()->get('cater') ?: '';
+    
             $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
             $usages = Usage::where([
                 ['business_id', Session::get('business_id')],
                 ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%']
             ]);
-
+    
             if ($cater != '') {
                 $usages->where('cater', $cater);
             }
-
-            $usages->with([
+    
+            $usages = $usages->with([
                 'customers',
                 'installation',
+                'installation.village',
                 'usersCater',
                 'installation.package'
             ])->orderBy('created_at', 'DESC')->get();
+            Session::put('usages', $usages);
 
             return DataTables::of($usages)
                 ->addColumn('aksi', function ($usage) {
@@ -214,7 +215,30 @@ class UsageController extends Controller
         $pdf = PDF::loadHTML($view)->setPaper('Legal', 'potrait');
         return $pdf->stream();
     }
+    public function cetak_tagihan(Request $request)
+    {
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+    
+        $data['jabatan'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '3']
+        ]);
 
+        if ($request->pemakaian_cater != '') {
+            $data['jabatan'] = $data['jabatan']->where('id', $request->pemakaian_cater);
+        }
+
+        $data['jabatan'] = $data['jabatan']->first();
+
+        $data['usages'] = Session::get('usages');
+            // dd($request->all());
+
+        $data['title'] = 'Cetak Daftar Tagihan';
+    
+        $view = view('penggunaan.partials.cetak1', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
+        return $pdf->stream();
+    }
     public function show(Usage $usage)
     {
         //

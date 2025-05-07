@@ -124,6 +124,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/usages/detail_tagihan/', [UsageController::class, 'detailTagihan']);
     Route::get('/usages/barcode/', [UsageController::class, 'barcode']);
     Route::post('/usages/cetak', [UsageController::class, 'cetak']);
+    Route::post('/usages/cetak_tagihan', [UsageController::class, 'cetak_tagihan']);
+
     Route::resource('/usages', UsageController::class);
 
     // Transactions || Transaksi
