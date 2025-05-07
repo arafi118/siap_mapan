@@ -65,14 +65,6 @@
         </tr>
         <tr>
             <td style="text-align: left; border: none; padding-top: 1px; padding-bottom: 1px;">
-                Dusun
-            </td>
-            <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
-                : <b>{{ $dusun ?? '-' }}</b>
-            </td>
-        </tr>
-        <tr>
-            <td style="text-align: left; border: none; padding-top: 1px; padding-bottom: 1px;">
                 Cater
             </td>
             <td style="border: none; padding-top: 1px; padding-bottom: 1px;">

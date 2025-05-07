@@ -230,9 +230,25 @@ class UsageController extends Controller
     }
 
     $data['jabatan'] = $data['jabatan']->first();
-    $data['usages'] = Session::get('usages');
+
+    $usages = Usage::where([
+        ['business_id', Session::get('business_id')],
+        ['tgl_pemakaian', 'LIKE',date('Y') . '-' .  $request->bulan_tagihan . '%']
+    ]);
+
+    if ($request->pemakaian_cater != '') {
+        $usages->where('cater', $request->pemakaian_cater);
+    }
+
+    $data['usages'] = $usages->with([
+        'customers',
+        'installation',
+        'installation.village',
+        'usersCater',
+        'installation.package'
+    ])->orderBy('created_at', 'DESC')->get();
+
     $data['title'] = 'Cetak Daftar Tagihan';
-    $data['dusun'] = optional(optional($data['usages']->first())->installation->village)->dusun ?? '-';
     $data['pemakaian_cater'] = optional($data['jabatan'])->nama ?? '-';
     \Carbon\Carbon::setLocale('id');
     
