@@ -14,7 +14,7 @@
             <td align="center">Keterangan</td>
             <td align="center" width="140">Id Transaksi.</td>
             <td align="center" width="140">Jumlah Bayar</td>
-            <td align="center" width="170">Aksi</td>
+            <td align="center" width="80">Aksi</td>
         </tr>
     </thead>
 
@@ -42,10 +42,10 @@
             <tr>
                 <td align="center">{{ $loop->iteration }}.</td>
                 <td align="center">{{ Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
-                <td>{{ $trx->keterangan }} ( {{ $trx->installations->id }} )</td>
+                <td>{{ $trx->keterangan }} ( {{ $trx->Usages->id }} )</td>
                 <td align="center">{{ $trx->id }}</td>
                 <td align="right">{{ number_format($debit, 2) }}</td>
-                <td align="center">
+                <td align="right">
 
                     <div class="d-flex align-items-center gap-1">
                         <a href="/transactions/dokumen/struk_{{ $trx->usage_id == '0' ? 'instalasi' : 'tagihan' }}/{{ $trx->id }}"
