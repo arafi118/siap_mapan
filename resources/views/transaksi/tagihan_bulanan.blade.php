@@ -1,12 +1,7 @@
 @extends('layouts.base')
-@php
-    $search = 'TagihanBulanan';
-    $label = 'Usages (Kode Installasi / Nama Custommers)';
-@endphp
 
 @section('content')
     <div class="container-fluid" id="container-wrapper">
-
         <style>
             .custom-height {
                 height: 38px;
@@ -17,8 +12,8 @@
         <div class="row align-items-center">
             <div class="col-9">
                 <div class="form-group mb-0">
-                    <input type="text" class="form-control is-valid custom-height" id="{{ $search }}"
-                        placeholder="{{ $label }}">
+                    <input type="text" class="form-control is-valid custom-height" id="TagihanBulanan"
+                        placeholder="Usages (Kode Installasi / Nama Custommers)">
                 </div>
             </div>
 

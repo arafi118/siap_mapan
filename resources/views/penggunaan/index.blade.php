@@ -128,10 +128,21 @@
                             </tbody>
                         </table>
                     </form>
+
+                    <div class="d-none">
+                        <form action="/usages/cetak_tagihan" method="post" id="FormCetakTagihan" target="_blank">
+                            @csrf
+
+                            <div id="form"></div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" id="BtnCetak1" class="btn btn-sm btn-dark">
+                        Cetak Daftar Tagihan
+                    </button>
                     <button type="button" id="BtnCetak" class="btn btn-sm btn-info">
-                        Print
+                        Cetak Struk
                     </button>
                     <button type="button" id="kembali" class="btn btn-danger btn-sm">Tutup</button>
                 </div>
@@ -216,6 +227,7 @@
             var data = table.data().toArray()
             var tbTagihan = $('#TbTagihan');
 
+            tbTagihan.find('tbody').html('')
             data.forEach((item) => {
                 var row = tbTagihan.find('tbody').append(`
                     <tr>
@@ -247,6 +259,23 @@
             } else {
                 Swal.fire('Error', "Tidak ada transaksi yang dipilih.", 'error')
             }
+        })
+        $(document).on('click', '#BtnCetak1', function(e) {
+            e.preventDefault()
+
+            var data = table.data().toArray()
+            var formTagihan = $('#form');
+
+            var bulan = $('#bulan').val()
+            var caters = $('#caters').val()
+
+            formTagihan.find('form').html('')
+            var row = formTagihan.append(`
+                <input type="hidden" name="bulan_tagihan" value="${bulan}">
+                <input type="hidden" name="pemakaian_cater" value="${cater}">
+            `);
+
+            $('#FormCetakTagihan').submit();
         })
     </script>
 

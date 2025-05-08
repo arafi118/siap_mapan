@@ -156,7 +156,7 @@
                     <tr>
                         <td width="10%" align="left" style="padding-left: 24px;">Terbilang</td>
                         <td width="2%" align="right">:</td>
-                        <td width="12%" class="keterangan terbilang">
+                        <td width="35%" class="keterangan terbilang">
                             <i>{{ ucwords($keuangan->terbilang($use->nominal + $use->installation->abodemen)) }}
                                 Rupiah</i>
                         </td>
@@ -166,7 +166,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5" height="8"></td>
+                        <td colspan="5" height="3"></td>
                     </tr>
                     <tr>
                         <td colspan="2" style="border: 1px solid #000; font-size: 7px;">

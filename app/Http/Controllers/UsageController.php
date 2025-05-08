@@ -22,27 +22,28 @@ class UsageController extends Controller
 
     public function index()
     {
-
         if (request()->ajax()) {
-            $bulan = request()->get('bulan');
-            $cater = request()->get('cater');
-
+            $bulan = request()->get('bulan') ?: date('m');
+            $cater = request()->get('cater') ?: '';
+    
             $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
             $usages = Usage::where([
                 ['business_id', Session::get('business_id')],
                 ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%']
             ]);
-
+    
             if ($cater != '') {
                 $usages->where('cater', $cater);
             }
-
-            $usages->with([
+    
+            $usages = $usages->with([
                 'customers',
                 'installation',
+                'installation.village',
                 'usersCater',
                 'installation.package'
             ])->orderBy('created_at', 'DESC')->get();
+            Session::put('usages', $usages);
 
             return DataTables::of($usages)
                 ->addColumn('aksi', function ($usage) {
@@ -216,6 +217,53 @@ class UsageController extends Controller
         $pdf = PDF::loadHTML($view)->setPaper('Legal', 'potrait');
         return $pdf->stream();
     }
+  public function cetak_tagihan(Request $request)
+{
+    $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+
+    // Ambil petugas cater jika dipilih
+    $data['jabatan'] = User::where([
+        ['business_id', Session::get('business_id')],
+        ['jabatan', '5']
+    ]);
+
+    if ($request->pemakaian_cater != '') {
+        $data['jabatan'] = $data['jabatan']->where('id', $request->pemakaian_cater);
+    }
+
+    $data['jabatan'] = $data['jabatan']->first();
+
+    $usages = Usage::where([
+        ['business_id', Session::get('business_id')],
+        ['tgl_pemakaian', 'LIKE',date('Y') . '-' .  $request->bulan_tagihan . '%']
+    ]);
+
+    if ($request->pemakaian_cater != '') {
+        $usages->where('cater', $request->pemakaian_cater);
+    }
+
+    $data['usages'] = $usages->with([
+        'customers',
+        'installation',
+        'installation.village',
+        'usersCater',
+        'installation.package'
+    ])->orderBy('created_at', 'DESC')->get();
+
+    $data['title'] = 'Cetak Daftar Tagihan';
+    $data['pemakaian_cater'] = optional($data['jabatan'])->nama ?? '-';
+    \Carbon\Carbon::setLocale('id');
+    
+
+    $bulan_angka = $request->bulan_tagihan ?? '';
+    $data['bulan'] = $bulan_angka
+        ? \Carbon\Carbon::create()->month($bulan_angka)->translatedFormat('F')  // nama bulan
+        : '-';
+
+    $view = view('penggunaan.partials.cetak1', $data)->render();
+    $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
+    return $pdf->stream();
+}
 
     public function show(Usage $usage)
     {

@@ -223,7 +223,7 @@
                         <td colspan="3" style="text-align: justify; border: none;">
                             Berdasarkan data administrasi kami, hingga saat surat ini diterbitkan, Pelanggan an
                             <b> {{ $tunggakan->customer->nama }}</b> dengan <b>Nomer Induk Pelanggan :</b>
-                            <b>{{ $tunggakan->kode_instalasi }}</b> Saudara belum
+                            <b>{{ $tunggakan->kode_instalasi }}</b> belum
                             memenuhi kewajiban pembayaran langganan air untuk periode sebagai berikut :
                         </td>
                     </tr>
@@ -291,9 +291,8 @@
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align: justify; border: none;">
-                            Dengan ini kami sampaikan bahwa Saudara mengalami keterlambatan pembayaran dan jumlah
-                            kewajiban sebagaimana tersebut di atas. Sebagai bentuk kebijakan, kami masih memberikan
-                            waktu selama 5 (lima) hari sejak diterbitkannya surat ini untuk melunasi seluruh tagihan
+                            Daftar diatas adalah tagihan yang harus dilunasi dengan toleransi 5 (lima) hari sejak
+                            diterbitkannya surat ini untuk melunasi seluruh tagihan
                             kepada Bendahara.
                         </td>
                     </tr>
@@ -371,7 +370,7 @@
                             <br>
                         </td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <td width="33%" align="center" style="border: none; text-align: center;">
                             Mengetahui,
                         </td>
@@ -390,23 +389,25 @@
                             style="border: none; text-align: center; vertical-align: middle;">
                             Ketua Unit Air
                         </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="border: none; padding: 0px 0;"></td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                         <td align="center" style="border: none;">
-                            <img src="../../assets/img/ttd2.png" style="max-height: 100px;"
-                                class="mb-3 img-fluid  d-none d-lg-block">
-                            <br><b>{{ $dir->nama ?? '' }}</b>
+                            <p style="margin-bottom: 0;">Mengetahui,<br>Direktur Bumdes</p>
+                            <img src="../../assets/img/ttd2.png" style="max-height: 100px; margin-top: -27px;"
+                                class="img-fluid d-none d-lg-block">
+                            <p style="margin-top: -5px;"><b>{{ $dir->nama ?? '' }}</b></p>
                         </td>
                         <td style="border: none;"></td>
-                        <td style="border: none; text-align: center;">
-                            <img src="../../assets/img/ttd1.png" style="max-height: 100px;"
-                                class="mb-3 img-fluid  d-none d-lg-block">
-                            <br><b>{{ $ket->nama ?? '-' }}</b>
+                        <td align="left" style="border: none; padding-left: 40px;">
+                            <p style="margin-bottom: 0; text-indent: 15px;">Ketua<br>Ketua Unit Air</p>
+                            <img src="../../assets/img/ttd1.png" style="max-height: 100px; margin-top: -27px;"
+                                class="img-fluid d-none d-lg-block">
+                            <p style="margin-top: -5px;"><b>{{ $ket->nama ?? '-' }}</b></p>
                         </td>
+
                     </tr>
+
+
                     <tr>
                         <td colspan="3" style="border: none; padding: 20px 0;"></td>
                     </tr>
