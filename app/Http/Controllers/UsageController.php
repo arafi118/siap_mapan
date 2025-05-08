@@ -96,6 +96,8 @@ class UsageController extends Controller
     public function store(Request $request)
     {
         $data = $request->only('data')['data'];
+        $data['jumlah'] = $data['jumlah'] ?: 0;
+
         $installation = Installations::where([
             ['business_id', Session::get('business_id')],
             ['id', $data['id']]
