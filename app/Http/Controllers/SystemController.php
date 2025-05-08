@@ -7,6 +7,7 @@ use App\Models\Amount;
 use App\Models\Installations;
 use App\Models\Settings;
 use App\Models\Transaction;
+use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -16,27 +17,25 @@ class SystemController extends Controller
     public function dataset($waktu)
     {
         $businessId = Session::get('business_id');
-        $setting = Settings::where('business_id', $businessId)->first();
 
         $date = date('Y-m-d', $waktu);
         $createdAt = now();
-        $batasToleransi = $setting->tanggal_toleransi ?? '27';
 
         $accounts = Account::where('business_id', $businessId)
             ->whereIn('kode_akun', ['1.1.03.01', '4.1.01.02', '4.1.01.03', '4.1.01.04'])
             ->get()
             ->keyBy('kode_akun');
 
-        $kodePiutang   = $accounts['1.1.03.01'] ?? null;
-        $kodeAbodemen  = $accounts['4.1.01.02'] ?? null;
-        $kodePemakaian = $accounts['4.1.01.03'] ?? null;
-        $kodeDenda     = $accounts['4.1.01.04'] ?? null;
+        $kodePiutang   = $accounts['1.1.03.01'] ?: null;
+        $kodeAbodemen  = $accounts['4.1.01.02'] ?: null;
+        $kodePemakaian = $accounts['4.1.01.03'] ?: null;
+        $kodeDenda     = $accounts['4.1.01.04'] ?: null;
 
         if (!($kodePiutang && $kodeAbodemen && $kodePemakaian && $kodeDenda)) {
-            return; // Prevents errors if accounts not found
+            return;
         }
 
-        $installations = Installations::where('business_id', $businessId)->with([
+        $installations = Installations::where('business_id', $businessId)->where('id', '9343')->with([
             'package',
             'usage' => function ($query) use ($date) {
                 $query->where('status', 'UNPAID')
@@ -67,60 +66,61 @@ class SystemController extends Controller
                     ->where('rekening_kredit', $kodePemakaian->id)
                     ->sum('total');
 
-                $nominal = max($usage->nominal, 1);
+                if ($usage->tgl_akhir <= $date && $jumlahPembayaran <= $usage->nominal) {
+                    $trxId = substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
 
-                if ($usage->tgl_akhir <= $date && $jumlahPembayaran < $nominal) {
-                    $trxId = 'U' . $usage->id . '_' . $createdAt->format('His'); // Deterministic ID
-
-                    $nama = $usage->customers->nama ?? '-';
+                    $nama = $usage->customers->nama ?: '-';
                     $instId = $ins->id;
                     $usageId = $usage->id;
                     $idInstalasi = $usage->id_instalasi;
 
+                    $namaBulan = Tanggal::namaBulan($usage->tgl_pemakaian) . ' ' . Tanggal::tahun($usage->tgl_pemakaian);
                     $trxTunggakan[] = [
                         'business_id' => $businessId,
                         'tgl_transaksi' => $usage->tgl_akhir,
                         'rekening_debit' => $kodePiutang->id,
                         'rekening_kredit' => $kodeAbodemen->id,
-                        'user_id' => 1,
+                        'user_id' => auth()->user()->id,
                         'usage_id' => $usageId,
                         'installation_id' => $idInstalasi,
                         'transaction_id' => $trxId,
                         'total' => $abodemen,
                         'relasi' => $nama,
-                        'keterangan' => "Hutang Abodemen pemakaian atas nama $nama ($instId)",
+                        'keterangan' => "Utang Abodemen " . $namaBulan . " $nama ($instId)",
                         'urutan' => 0,
                         'created_at' => $createdAt
                     ];
 
-                    $trxTunggakan[] = [
-                        'business_id' => $businessId,
-                        'tgl_transaksi' => $usage->tgl_akhir,
-                        'rekening_debit' => $kodePiutang->id,
-                        'rekening_kredit' => $kodePemakaian->id,
-                        'user_id' => 1,
-                        'usage_id' => $usageId,
-                        'installation_id' => $idInstalasi,
-                        'transaction_id' => $trxId,
-                        'total' => $nominal - $jumlahPembayaran,
-                        'relasi' => $nama,
-                        'keterangan' => "Hutang Pemakaian atas nama $nama ($instId)",
-                        'urutan' => 0,
-                        'created_at' => $createdAt
-                    ];
+                    if ($usage->jumlah != 0) {
+                        $trxTunggakan[] = [
+                            'business_id' => $businessId,
+                            'tgl_transaksi' => $usage->tgl_akhir,
+                            'rekening_debit' => $kodePiutang->id,
+                            'rekening_kredit' => $kodePemakaian->id,
+                            'user_id' => auth()->user()->id,
+                            'usage_id' => $usageId,
+                            'installation_id' => $idInstalasi,
+                            'transaction_id' => $trxId,
+                            'total' => $usage->nominal - $jumlahPembayaran,
+                            'relasi' => $nama,
+                            'keterangan' => "Utang Pemakaian Air " . $namaBulan . " $nama ($instId)",
+                            'urutan' => 0,
+                            'created_at' => $createdAt
+                        ];
+                    }
 
                     $trxTunggakan[] = [
                         'business_id' => $businessId,
                         'tgl_transaksi' => $usage->tgl_akhir,
                         'rekening_debit' => $kodePiutang->id,
                         'rekening_kredit' => $kodeDenda->id,
-                        'user_id' => 1,
+                        'user_id' => auth()->user()->id,
                         'usage_id' => $usageId,
                         'installation_id' => $idInstalasi,
                         'transaction_id' => $trxId,
                         'total' => $denda,
                         'relasi' => $nama,
-                        'keterangan' => "Hutang Denda pemakaian atas nama $nama ($instId)",
+                        'keterangan' => "Utang Denda " . $namaBulan . " $nama ($instId)",
                         'urutan' => 0,
                         'created_at' => $createdAt
                     ];
@@ -136,7 +136,7 @@ class SystemController extends Controller
 
         if (!empty($trxTunggakan)) {
             DB::statement('SET @DISABLE_TRIGGER = 1');
-            Transaction::where('usage_id', $dataUsage)
+            Transaction::whereIn('usage_id', $dataUsage)
                 ->where('rekening_debit', $kodePiutang->id)
                 ->delete();
             Transaction::insert($trxTunggakan);
@@ -175,8 +175,8 @@ class SystemController extends Controller
 
         foreach ($accounts as $account) {
             $id = $account->id . $tahun . $bulan;
-            $debit = ($account->oneAmount->debit ?? 0) + $account->trx_debit->sum('total');
-            $kredit = ($account->oneAmount->kredit ?? 0) + $account->trx_kredit->sum('total');
+            $debit = ($account->oneAmount->debit ?: 0) + $account->trx_debit->sum('total');
+            $kredit = ($account->oneAmount->kredit ?: 0) + $account->trx_kredit->sum('total');
 
             $amounts[] = [
                 'id' => $id,
