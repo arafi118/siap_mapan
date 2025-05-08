@@ -120,77 +120,32 @@
         $(document).ready(function() {
             $('#caters').val(id_user).change()
         })
-        var startScan, scanningEnabled = true;
+
+        var startScan = false;
+        var scanningEnabled = true;
         var html5QrcodeScanner;
+        var videoStream = null;
 
-        $(document).ready(function() {
-            scanningEnabled = true
-
-            html5QrcodeScanner = new Html5QrcodeScanner(
-                "reader", {
-                    fps: 10,
-                    qrbox: {
-                        width: 250,
-                        height: 250
-                    }
-                },
-                false);
-
-            html5QrcodeScanner.render((result) => {
-                if (scanningEnabled) {
-                    $('tr[data-id=' + result + '] td:first-child').click()
-                    $('#scanQrCode').modal('hide')
-                }
-            });
-
-            $('#html5-qrcode-button-camera-start').hide()
-            $('#html5-qrcode-button-camera-stop').hide()
-            $('#html5-qrcode-anchor-scan-type-change').hide()
-
-            $('#html5-qrcode-button-camera-start').trigger('click')
-
-            startScan = true
-            $('#stopScan').html('Stop')
-        })
-
-        $(document).on('click', '#stopScan', function(e) {
-            e.preventDefault()
-
-            if (startScan) {
-                $(this).html('Scan Ulang')
-                $('#html5-qrcode-button-camera-stop').trigger('click')
-            } else {
-                scanningEnabled = true;
-                $(this).html('Stop')
-                $('#html5-qrcode-button-camera-start').trigger('click')
+        function stopOCRCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+                document.getElementById('video').srcObject = null;
             }
-
-            startScan = !startScan
-        })
-
-        $(document).on('click', '#scanQrCodeClose', function(e) {
-            $('#scanQrCode').modal('hide')
-            $('#html5-qrcode-button-camera-stop').trigger('click')
-            $('#stopScan').html('Stop')
-        })
-
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Code matched = ${decodedText}`, decodedResult);
         }
 
-        function onScanFailure(error) {
-            console.warn(`Code scan error = ${error}`);
-        }
+        function startOCRCamera() {
+            stopQRScanner();
 
-        const video = document.getElementById('video');
-        navigator.mediaDevices.getUserMedia({
+            const video = document.getElementById('video');
+            navigator.mediaDevices.getUserMedia({
                 video: {
                     facingMode: {
                         ideal: "environment"
                     }
                 }
-            })
-            .then(stream => {
+            }).then(stream => {
+                videoStream = stream;
                 video.srcObject = stream;
 
                 const track = stream.getVideoTracks()[0];
@@ -201,53 +156,124 @@
                 } else {
                     video.classList.remove("mirror");
                 }
+            }).catch(err => {
+                console.error("OCR camera error:", err);
+            });
+        }
+
+        function stopQRScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().then(() => {
+                    html5QrcodeScanner = null;
+                }).catch(err => console.error("QR clear error:", err));
+            }
+        }
+
+        function startQRScanner() {
+            stopOCRCamera();
+
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader", {
+                    fps: 10,
+                    qrbox: {
+                        width: 124,
+                        height: 124
+                    }
+                },
+                false
+            );
+
+            html5QrcodeScanner.render((result) => {
+                if (scanningEnabled) {
+                    $('tr[data-id=' + result + '] td:first-child').click();
+                    $('#scanQrCode').modal('hide');
+                    stopQRScanner();
+                }
             });
 
-        $(document).on('click', '#scanMeter', function(e) {
-            const canvas = document.getElementById('tmpImage');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            $('#html5-qrcode-button-camera-start').hide();
+            $('#html5-qrcode-button-camera-stop').hide();
+            $('#html5-qrcode-anchor-scan-type-change').hide();
 
-            const context = canvas.getContext('2d');
-            context.filter = "contrast(250%) brightness(125%)";
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            startScan = true;
+            $('#stopScan').html('Stop');
+        }
 
-            const scanX = canvas.width * 0.20;
-            const scanY = canvas.height * 0.40;
-            const scanWidth = canvas.width * 0.60;
-            const scanHeight = canvas.height * 0.20;
+        $(document).ready(function() {
+            startQRScanner();
 
-            const previewImage = document.getElementById("previewImage");
-            previewImage.width = scanWidth;
-            previewImage.height = scanHeight;
+            $(document).on('click', '#stopScan', function(e) {
+                e.preventDefault();
 
-            const previewContex = previewImage.getContext("2d");
-            const imageData = context.getImageData(scanX, scanY, scanWidth, scanHeight);
-            previewContex.putImageData(imageData, 0, 0);
+                if (startScan) {
+                    $(this).html('Scan Ulang');
+                    $('#html5-qrcode-button-camera-stop').trigger('click');
+                    scanningEnabled = false;
+                } else {
+                    scanningEnabled = true;
+                    $(this).html('Stop');
+                    $('#html5-qrcode-button-camera-start').trigger('click');
+                }
 
-            setTimeout(() => {
-                Tesseract.recognize(
-                    previewImage,
-                    'eng', {
-                        logger: m => console.log(m),
-                        tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
-                        preserve_interword_spaces: 1,
-                        oem: 3,
-                        psm: 4,
-                    }
-                ).then(({
-                    data: {
-                        text
-                    }
-                }) => {
-                    const hasilMatch = text.match(/\d+/);
-                    const angka = hasilMatch ? hasilMatch[0] : "0";
+                startScan = !startScan;
+            });
 
-                    console.log(text, angka);
-                    $('.input-nilai-akhir').val(angka);
-                });
-            }, 500);
-        })
+            $(document).on('click', '#scanQrCodeClose', function(e) {
+                $('#scanQrCode').modal('hide');
+                $('#html5-qrcode-button-camera-stop').trigger('click');
+                $('#stopScan').html('Stop');
+                stopQRScanner();
+            });
+
+            $(document).on('click', '#scanMeter', function(e) {
+                startOCRCamera();
+
+                const video = document.getElementById('video');
+                const canvas = document.getElementById('tmpImage');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                const context = canvas.getContext('2d');
+                context.filter = "contrast(250%) brightness(125%)";
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const scanX = canvas.width * 0.20;
+                const scanY = canvas.height * 0.40;
+                const scanWidth = canvas.width * 0.60;
+                const scanHeight = canvas.height * 0.20;
+
+                const previewImage = document.getElementById("previewImage");
+                previewImage.width = scanWidth;
+                previewImage.height = scanHeight;
+
+                const previewContex = previewImage.getContext("2d");
+                const imageData = context.getImageData(scanX, scanY, scanWidth, scanHeight);
+                previewContex.putImageData(imageData, 0, 0);
+
+                setTimeout(() => {
+                    Tesseract.recognize(
+                        previewImage,
+                        'eng', {
+                            logger: m => console.log(m),
+                            tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
+                            preserve_interword_spaces: 1,
+                            oem: 3,
+                            psm: 4,
+                        }
+                    ).then(({
+                        data: {
+                            text
+                        }
+                    }) => {
+                        const hasilMatch = text.match(/\d+/);
+                        const angka = hasilMatch ? hasilMatch[0] : "0";
+
+                        console.log(text, angka);
+                        $('.input-nilai-akhir').val(angka);
+                    });
+                }, 500);
+            });
+        });
 
         $(document).ready(function() {
             $('.select2').select2({
@@ -263,8 +289,8 @@
             if (alert) {
                 setTimeout(() => {
                     alert.classList.add(
-                        'd-none'); // Menyembunyikan notifikasi dengan menambahkan class 'd-none'
-                }, 5000); // Notifikasi hilang setelah 5 detik
+                        'd-none');
+                }, 5000);
             }
         });
 

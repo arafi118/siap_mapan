@@ -6,6 +6,7 @@ use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CaterController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\HakAksesController;
 use App\Http\Controllers\InstallationsController;
 use App\Http\Controllers\PackageController;
@@ -71,6 +72,8 @@ Route::get('/link', function () {
     $shortcut = '/home/akubumdes/public_html/pamsides/public/storage';
     symlink($target, $shortcut);
 });
+
+Route::get('/import-excel', [ExcelController::class, 'index']);
 
 Route::middleware(['auth', 'auth.token'])->group(function () {
     // Dashboard
