@@ -141,7 +141,7 @@ class InstallationsController extends Controller
             ['business_id', $business_id]
         ])->first();
 
-        $installations = Installations::where('kode_instalasi', $kode_instalasi)
+        $installations = Installations::where('kode_instalasi', $kode_instalasi)->where('business_id', Session::get('business_id'))
             ->with([
                 'package',
                 'customer',
@@ -167,7 +167,7 @@ class InstallationsController extends Controller
 
         $usages = Usage::where('business_id', Session::get('business_id'))->where([
             ['id_instalasi', $installations->id],
-            ['status', 'NOT LIKE', 'PAID']
+            ['status', '=', 'UNPAID']
         ])->get();
 
         $jumlah_trx = $installations->transaction_sum_total;
