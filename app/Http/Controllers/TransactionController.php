@@ -1323,7 +1323,7 @@ class TransactionController extends Controller
 
         $bisnis = Business::where('id', Session::get('business_id'))->first();
         $trx_settings = Settings::where('business_id', Session::get('business_id'))->first();
-        $trx = Transaction::where('transaction_id', $id)->with([
+        $trx = Transaction::where('id', $id)->with([
             'Installations.customer',
             'Usages',
             'User'
@@ -1372,7 +1372,7 @@ class TransactionController extends Controller
             'rek_kredit'
         ])->orderBy('tgl_transaksi', 'ASC')->orderBy('urutan', 'ASC')->orderBy('id', 'ASC')->get();
         return [
-            'label' => '<i class="fas fa-book"></i> Detail Transaksi ' . $data['sub_judul'],
+            'label' => '<i class="fas fa-book"></i> Riwayat Pembayaran ',
             'view' => view('transaksi.partials.detail_tagihan', $data)->render(),
         ];
     }

@@ -40,7 +40,7 @@
                     data-target="#Body-{{ $usage->id }}" aria-expanded="true"
                     aria-controls="Body-{{ $usage->id }}">
                     Tagihan Bulan
-                    {{ Tanggal::namaBulan($usage->tgl_akhir) }}
+                    {{ Tanggal::namaBulan($usage->tgl_akhir) }} {{ Tanggal::Tahun($usage->tgl_akhir) }}
                 </h5>
             </div>
 

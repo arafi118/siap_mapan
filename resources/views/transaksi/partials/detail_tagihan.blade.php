@@ -12,8 +12,7 @@
             <td height="40" align="center" width="40">No</td>
             <td align="center" width="100">Tanggal</td>
             <td align="center">Keterangan</td>
-            <td align="center" width="140">Kode Kuitansi.</td>
-            <td align="center" width="140">Tagihan</td>
+            <td align="center" width="140">Id Transaksi.</td>
             <td align="center" width="140">Jumlah Bayar</td>
             <td align="center" width="170">Aksi</td>
         </tr>
@@ -45,28 +44,21 @@
                 <td align="center">{{ Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
                 <td>{{ $trx->keterangan }} ( {{ $trx->installations->id }} )</td>
                 <td align="center">{{ $trx->id }}</td>
-                <td align="right">{{ number_format($trx->total ?? 0, 2) }}</td>
                 <td align="right">{{ number_format($debit, 2) }}</td>
                 <td align="center">
-                    <div class="dropdown dropleft">
-                        <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="{{ $trx->id }}"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-info"></i>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="{{ $trx->id }}">
-                            <a class="dropdown-item" target="_blank"
-                                href="/transactions/dokumen/struk_tagihan/{{ $trx->id }}">
-                                Bukti Pembayaran
-                            </a>
-                            <a class="dropdown-item" target="_blank"
-                                href="/transactions/dokumen/struk_instalasi/{{ $trx->id }}">
-                                Struk Pasang Baru
-                            </a>
-                        </div>
-                        <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $trx->id }}">
+
+                    <div class="d-flex align-items-center gap-1">
+                        <a href="/transactions/dokumen/struk_{{ $trx->usage_id == '0' ? 'instalasi' : 'tagihan' }}/{{ $trx->id }}"
+                            target="_blank" class="btn btn-info btn-sm" title="Cetak Bukti Pembayaran">
+                            <i class="fas fa-print"></i>
+                        </a>
+                        <button class="btn btn-danger btn-sm btn-delete mt-0" data-id="{{ $trx->id }}"
+                            title="Hapus">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
+
+
                 </td>
             </tr>
         @endforeach
@@ -75,9 +67,7 @@
             <td colspan="4" align="center">
                 <b>Total Transaksi</b>
             </td>
-            <td align="right">
-                <b>{{ number_format($total_tagihan, 2) }}</b>
-            </td>
+
             <td align="right">
                 <b>{{ number_format($total_bayar, 2) }}</b>
             </td>
