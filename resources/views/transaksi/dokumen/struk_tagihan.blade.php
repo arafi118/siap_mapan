@@ -8,14 +8,34 @@
     @php
         $keterangan = $transaksi->keterangan;
         $total = $transaksi->total;
+
+        if ($transaksi->rekening_kredit == $kode_piutang->id) {
+            if (Str::contains($keterangan, 'Abodemen')) {
+                $totalAbodemen += $total;
+            }
+
+            if (Str::contains($keterangan, 'Tagihan')) {
+                $totalTagihan += $total;
+            }
+
+            if (Str::contains($keterangan, 'Denda')) {
+                $totalDenda += $total;
+            }
+        } else {
+            if ($transaksi->rekening_kredit == $kode_abodemen->id) {
+                $totalAbodemen += $total;
+            }
+
+            if ($transaksi->rekening_kredit == $kode_pemakaian->id) {
+                $totalTagihan += $total;
+            }
+
+            if ($transaksi->rekening_kredit == $kode_denda->id) {
+                $totalDenda += $total;
+            }
+        }
+
     @endphp
-    @if (Str::contains($keterangan, 'Abodemen'))
-        @php $totalAbodemen += $total; @endphp
-    @elseif(Str::contains($keterangan, 'Tagihan'))
-        @php $totalTagihan += $total; @endphp
-    @elseif(Str::contains($keterangan, 'Denda'))
-        @php $totalDenda += $total; @endphp
-    @endif
     @php
         $total = $totalAbodemen + $totalTagihan + $totalDenda;
     @endphp
