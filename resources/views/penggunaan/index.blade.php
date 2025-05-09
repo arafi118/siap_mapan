@@ -120,6 +120,7 @@
                                     <td align="center" width="100">Meter Akhir</td>
                                     <td align="center" width="100">Pemakaian</td>
                                     <td align="center" width="100">Tagihan</td>
+                                    <td align="center" width="100">Status</td>
                                     <td align="center" width="100">Tanggal Akhir Bayar</td>
                                 </tr>
                             </thead>
@@ -243,6 +244,7 @@
                         <td align="right">${item.akhir}</td>
                         <td align="right">${item.jumlah}</td>
                         <td align="right">${item.nominal}</td>
+                        <td align="center">${item.status}</td>
                         <td align="center">${item.tgl_akhir}</td>
                     </tr>
                 `);

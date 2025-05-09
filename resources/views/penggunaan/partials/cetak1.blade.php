@@ -84,6 +84,7 @@
                 <th style="text-align: center;">Awal</th>
                 <th style="text-align: center;">Akhir</th>
                 <th style="text-align: center;">Pemakaian</th>
+                <th style="text-align: center;">Status</th>
                 <th style="text-align: center;">Total</th>
             </tr>
 
@@ -107,6 +108,9 @@
                     <td align="center">{{ $usage->akhir }}</td>
                     <td align="center">
                         {{ $usage->jumlah }}
+                    </td>
+                    <td align="center">
+                        {{ $usage->status }}
                     </td>
                     <td align="right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                 </tr>
