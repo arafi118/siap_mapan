@@ -48,8 +48,8 @@
                 <td align="right">
 
                     <div class="d-flex align-items-center gap-1">
-                        <a href="/transactions/dokumen/struk_{{ $trx->usage_id == '0' ? 'instalasi' : 'tagihan' }}/{{ $trx->id }}"
-                            target="_blank" class="btn btn-info btn-sm" title="Cetak Bukti Pembayaran">
+                        <a href="/transactions/dokumen/struk_{{ $trx->usage_id == '0' ? 'instalasi' : 'tagihan' }}/{{ $trx->transaction_id }}"
+                            target="_blank" class="btn btn-info btn-sm" title="Cetak Struk">
                             <i class="fas fa-print"></i>
                         </a>
                         <button class="btn btn-danger btn-sm btn-delete mt-0" data-id="{{ $trx->id }}"

@@ -1245,7 +1245,6 @@ class TransactionController extends Controller
             $rek_denda = $kode_denda->id;
         }
 
-
         $trx_id = substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
 
         if ($data['abodemen'] != 0) {
@@ -1323,7 +1322,7 @@ class TransactionController extends Controller
 
         $bisnis = Business::where('id', Session::get('business_id'))->first();
         $trx_settings = Settings::where('business_id', Session::get('business_id'))->first();
-        $trx = Transaction::where('id', $id)->with([
+        $trx = Transaction::where('transaction_id', $id)->with([
             'Installations.customer',
             'Usages',
             'transaction',
@@ -1333,9 +1332,9 @@ class TransactionController extends Controller
         $kode_akun = Account::where('business_id', Session::get('business_id'))->where('id', $trx)->value('kode_akun');
 
         $accounts = Account::where('business_id', Session::get('business_id'))
-        ->whereIn('kode_akun', ['1.1.03.01', '4.1.01.02', '4.1.01.03', '4.1.01.04'])
-        ->get()
-        ->keyBy('kode_akun');
+            ->whereIn('kode_akun', ['1.1.03.01', '4.1.01.02', '4.1.01.03', '4.1.01.04'])
+            ->get()
+            ->keyBy('kode_akun');
 
         $kode_piutang = $accounts['1.1.03.01'] ?: null;
         $kode_abodemen = $accounts['4.1.01.02'] ?: null;
@@ -1353,7 +1352,7 @@ class TransactionController extends Controller
             $gambar = '/storage/logo/' . $logo;
         }
 
-        return view('transaksi.dokumen.struk_tagihan')->with(compact('trx', 'trx_settings', 'keuangan', 'dari', 'oleh', 'jenis', 'bisnis', 'gambar','kode_piutang','kode_abodemen','kode_pemakaian','kode_denda'));
+        return view('transaksi.dokumen.struk_tagihan')->with(compact('trx', 'trx_settings', 'keuangan', 'dari', 'oleh', 'jenis', 'bisnis', 'gambar', 'kode_piutang', 'kode_abodemen', 'kode_pemakaian', 'kode_denda'));
     }
 
     /**
@@ -1366,7 +1365,6 @@ class TransactionController extends Controller
         $data['installation_id'] = $request->id;
         $data['rek_debit'] = $request->rek_debit;
         $data['rek_kredit'] = $request->rek_kredit;
-
         $data['akun_kas'] = Account::where([
             ['business_id', Session::get('business_id')],
             ['kode_akun', '1.1.01.01']
