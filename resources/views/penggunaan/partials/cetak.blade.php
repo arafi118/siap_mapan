@@ -64,7 +64,7 @@
                                 BULAN
                             </div>
                         </td>
-                        <td width="9%">
+                        <td width="22%">
                             <div style="font-size: 9px;">
                                 : {{ strtoupper($use->usersCater->nama) }}
                             </div>
@@ -74,7 +74,7 @@
                                 {{ Tanggal::tahun($use->tgl_pemakaian) }}
                             </div>
                         </td>
-                        <td width="20%" align="right">
+                        <td width="5%" align="right">
                             <img src="assets/img/cetak1.png" style="max-height: 40px;">
                         </td>
                         <td width="30%" align="center">
@@ -82,7 +82,7 @@
                             <div style="font-size: 12px; font-weight: bold;">BADAN USAHA MILIK DESA (BUMDes)</div>
                             <div style="font-size: 12px; font-weight: bold;">UNIT AIR</div>
                         </td>
-                        <td width="20%" align="left">
+                        <td width="5%" align="left">
                             <img src="assets/img/cetak2.png" style="max-height: 40px;">
                         </td>
                         <td width="15%">&nbsp;</td>
@@ -94,10 +94,10 @@
                     <tr>
                         <td width="20%" align="center">NAMA PELANGGAN</td>
                         <td width="13%" align="center">NO INDUK</td>
-                        <td width="20%" align="center">ALAMAT</td>
+                        <td width="24%" align="center">ALAMAT</td>
                         <td width="12%" align="center">METER AWAL</td>
                         <td width="12%" align="center">METER AKHIR</td>
-                        <td width="15%" align="center">PEMAKAIAN</td>
+                        <td width="11%" align="center">PEMAKAIAN</td>
                     </tr>
                     <tr>
                         <td align="center">{{ strtoupper($use->customers->nama) }}</td>
@@ -117,28 +117,28 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left" style="padding-left: 24px;">Pemakaian Air</td>
+                        <td width="15%" align="left" style="padding-left: 24px;">Pemakaian Air</td>
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">Rp. {{ number_format($use->nominal, 2) }}</td>
-                        <td width="16%" align="center">&nbsp;</td>
+                        <td width="2%" align="center">&nbsp;</td>
                         <td width="12%" align="left">
                             {{ ucwords($bisnis->desa) }},
                             {{ Tanggal::tglLatin(date('Y-m-t', strtotime($use->tgl_pemakaian))) }}
                         </td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left" style="padding-left: 24px;">Beban Tetap</td>
+                        <td width="15%" align="left" style="padding-left: 24px;">Beban Tetap</td>
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">Rp. {{ number_format($use->installation->abodemen, 2) }}</td>
-                        <td width="16%" align="center">&nbsp;</td>
+                        <td width="2%" align="center">&nbsp;</td>
                         <td width="12%" align="left">Bendahara</td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left" style="padding-left: 24px;">Denda</td>
+                        <td width="15%" align="left" style="padding-left: 24px;">Denda</td>
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">Rp. 0.00</td>
-                        <td width="16%" align="center">&nbsp;</td>
-                        <td rowspan="2" width="12%" align="left">
+                        <td width="2%" align="center">&nbsp;</td>
+                        <td rowspan="2" width="14%" align="left">
                             <div style="position: absolute; height: 24px; transform: translateY(-12px);">
                                 <img src="../storage/app/public/ttd/{{ $jabatan->tanda_tangan }}"
                                     style="height: 50px;">
@@ -146,21 +146,21 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left" style="padding-left: 24px;">Total</td>
+                        <td width="15%" align="left" style="padding-left: 24px;">Total</td>
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">
                             <b>Rp. {{ number_format($use->nominal + $use->installation->abodemen, 2) }}</b>
                         </td>
-                        <td width="16%" align="center">&nbsp;</td>
+                        <td width="2%" align="center">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td width="10%" align="left" style="padding-left: 24px;">Terbilang</td>
+                        <td width="15%" align="left" style="padding-left: 24px;">Terbilang</td>
                         <td width="2%" align="right">:</td>
                         <td width="35%" class="keterangan terbilang">
                             <i>{{ ucwords($keuangan->terbilang($use->nominal + $use->installation->abodemen)) }}
                                 Rupiah</i>
                         </td>
-                        <td width="16%" align="center">&nbsp;</td>
+                        <td width="2%" align="center">&nbsp;</td>
                         <td width="12%" align="left" style="font-weight: bold;">
                             {{ ucwords($jabatan->nama) }}
                         </td>
