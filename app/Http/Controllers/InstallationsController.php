@@ -56,6 +56,13 @@ class InstallationsController extends Controller
         return view('perguliran.index')->with(compact('title', 'installations', 'status_R', 'status_I', 'status_A', 'status_B', 'status_C'));
     }
 
+    public function DaftarInstalasi()
+    {
+
+        $title = 'Data Cabut';
+        return view('perguliran.partials.DaftarInstalasi')->with(compact('title'));
+    }
+
     /**
      * cari custommer trx instalasi.
      */
