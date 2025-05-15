@@ -60,20 +60,14 @@
         <tr>
             <!--<td style="text-align: left; border: none; padding-left: 50px; padding-top: 1px; padding-bottom: 1px;">-->
             <td style="text-align: left; border: none;  padding-top: 1px; padding-bottom: 1px;">
-                Bulan
+                Bulan Pemakaian
             </td>
             <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
-                : <b>{{ $bulan ?? '-' }} {{ Tanggal::Tahun($usage->tgl_akhir) }}</b>
+                : <b>{{ $bulan }}</b>
+
             </td>
         </tr>
-        <tr>
-            <td style="text-align: left; border: none; padding-top: 1px; padding-bottom: 1px;">
-                Dusun
-            </td>
-            <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
-                : <b>{{ $usages->installation->village->dusun ?? '-' }}</b>
-            </td>
-        </tr>
+
         <tr>
             <td style="text-align: left; border: none; padding-top: 1px; padding-bottom: 1px;">
                 Cater
@@ -102,6 +96,10 @@
         </thead>
         <tbody>
             @foreach ($usages as $i => $usage)
+                @php
+                    $abodemen = $usage->installation->abodemen ?? 0;
+                    $total = $usage->nominal + $abodemen;
+                @endphp
                 <tr>
                     <td align="center">{{ $i + 1 }}</td>
                     <td>{{ $usage->customers->nama }}</td>

@@ -224,6 +224,21 @@ class UsageController extends Controller
     }
   public function cetak_tagihan(Request $request)
 {
+     $thn = request()->input('tahun');
+        $bln = request()->input('bulan');
+        $hari = request()->input('hari');
+    
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+    
+        $data = [
+            'tahun' => $thn,
+            'bulan' => $bln,
+            'hari' => $hari,
+            'judul' => 'Laporan Keuangan',
+            'tgl' => Tanggal::tahun($tgl),
+            'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
+            'cater' => request()->input('cater', null),
+        ];
     $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
 
     // Ambil petugas cater jika dipilih
@@ -261,9 +276,10 @@ class UsageController extends Controller
     
 
     $bulan_angka = $request->bulan_tagihan ?? '';
-    $data['bulan'] = $bulan_angka
-        ? \Carbon\Carbon::create()->month($bulan_angka)->translatedFormat('F')  // nama bulan
-        : '-';
+   $data['bulan'] = $bulan_angka
+    ? \Carbon\Carbon::create($thn, $bulan_angka, 1)->translatedFormat('F Y')
+    : '-';
+
 
     $view = view('penggunaan.partials.cetak1', $data)->render();
     $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
