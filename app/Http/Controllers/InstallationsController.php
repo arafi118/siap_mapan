@@ -118,22 +118,28 @@ class InstallationsController extends Controller
     {
         $params = $request->input('query');
 
-        $installations = Installations::select(
-            'installations.*',
-            'customers.nama',
-            'customers.alamat',
-            'customers.nik',
-            'customers.hp'
-        )
-            ->join('customers', 'customers.id', 'installations.customer_id')
-            ->where(function ($query) use ($params) {
-                $query->where('customers.nama', 'LIKE', "%{$params}%")
-                    ->orWhere('customers.nik', 'LIKE', "%{$params}%")
-                    ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
-            })->where(function ($query) {
-                $query->where('installations.business_id', Session::get('business_id'))
-                    ->orWhere('customers.business_id', Session::get('business_id'));
-            })->whereNotIn('installations.status', ['B', 'C'])->get();
+       $installations = Installations::select(
+        'installations.*',
+        'customers.nama',
+        'customers.alamat',
+        'customers.nik',
+        'customers.hp',
+        'packages.inisial as package_inisial' // alias agar jelas di JS
+    )
+        ->join('customers', 'customers.id', '=', 'installations.customer_id')
+        ->leftJoin('packages', 'packages.id', '=', 'installations.package_id') // tambahkan ini
+        ->where(function ($query) use ($params) {
+            $query->where('customers.nama', 'LIKE', "%{$params}%")
+                ->orWhere('customers.nik', 'LIKE', "%{$params}%")
+                ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
+        })
+        ->where(function ($query) {
+            $query->where('installations.business_id', Session::get('business_id'))
+                ->orWhere('customers.business_id', Session::get('business_id'));
+        })
+        ->whereNotIn('installations.status', ['B', 'C'])
+        ->get();
+
 
         return response()->json($installations);
     }

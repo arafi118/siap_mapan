@@ -307,15 +307,17 @@
                     success: function(result) {
                         var states = [];
                         result.map(function(item) {
+                            let inisial = item.package_inisial ? '-' + item
+                                .package_inisial : '';
                             states.push({
                                 kode_instalasi: item.kode_instalasi,
-                                name: item.nama +
-                                    ' - ' + item.kode_instalasi +
-                                    ' [' + item.nik + ']',
+                                name: item.nama + ' - ' + item.kode_instalasi +
+                                    inisial + ' [' + item.nik + ']',
                                 value: item.kode_instalasi,
                                 item: item,
-                            })
+                            });
                         });
+
 
                         process(states);
                     },

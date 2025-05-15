@@ -73,14 +73,15 @@
                         <table class="table align-items-center table-flush" id="TbPemakain">
                             <thead class="thead-light" align="center">
                                 <tr>
-                                    <th>Nama</th>
-                                    <th>No.Induk</th>
-                                    <th>Meter Awal</th>
-                                    <th>Meter Akhir</th>
-                                    <th>Pemakaian</th>
-                                    <th>Tagihan </th>
-                                    <th>Tanggal Tagihan</th>
-                                    <th>Status</th>
+                                    <th width="12%">Nama</th>
+                                    <th width="15%">No. Induk</th>
+                                    <th width="13%">Meter Awal</th>
+                                    <th width="13%">Meter Akhir</th>
+                                    <th width="5%">Pemakaian</th>
+                                    <th width="12%">Tagihan</th>
+                                    <th width="15%">Tanggal Tagihan</th>
+                                    <th width="5%">Status</th>
+
                                     <th style="text-align: center;" width="10%">Aksi</th>
                                 </tr>
                             </thead>
@@ -188,7 +189,7 @@
                     "data": "customers.nama"
                 },
                 {
-                    "data": "installation.kode_instalasi"
+                    "data": "kode_instalasi_dengan_inisial"
                 },
                 {
                     "data": "awal"
