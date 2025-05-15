@@ -114,29 +114,32 @@ class InstallationsController extends Controller
     /**
      * cari custommers trx tagihan bulanan .
      */
-    public function CariTagihanbulanan(Request $request)
-    {
-        $params = $request->input('query');
+  public function CariTagihanbulanan(Request $request)
+{
+    $params = $request->input('query');
 
-        $installations = Installations::select(
-            'installations.*',
-            'customers.nama',
-            'customers.alamat',
-            'customers.nik',
-            'customers.hp'
-        )
-            ->join('customers', 'customers.id', 'installations.customer_id')
-            ->where(function ($query) use ($params) {
-                $query->where('customers.nama', 'LIKE', "%{$params}%")
-                    ->orWhere('customers.nik', 'LIKE', "%{$params}%")
-                    ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
-            })->where(function ($query) {
-                $query->where('installations.business_id', Session::get('business_id'))
-                    ->orWhere('customers.business_id', Session::get('business_id'));
-            })->whereNotIn('installations.status', ['B', 'C'])->get();
+    $installations = Installations::select(
+        'installations.*',
+        'customers.nama',
+        'customers.alamat',
+        'customers.nik',
+        'customers.hp',
+        'packages.inisial as package_inisial' // ambil inisial dari tabel packages
+    )
+        ->join('customers', 'customers.id', 'installations.customer_id')
+        ->leftJoin('packages', 'packages.id', 'installations.package_id') // join ke packages
+        ->where(function ($query) use ($params) {
+            $query->where('customers.nama', 'LIKE', "%{$params}%")
+                ->orWhere('customers.nik', 'LIKE', "%{$params}%")
+                ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
+        })->where(function ($query) {
+            $query->where('installations.business_id', Session::get('business_id'))
+                ->orWhere('customers.business_id', Session::get('business_id'));
+        })->whereNotIn('installations.status', ['B', 'C'])->get();
 
-        return response()->json($installations);
-    }
+    return response()->json($installations);
+}
+
 
     /**
      * cari & menampilkan data custommers trx tagihan bulanan .
@@ -154,12 +157,12 @@ class InstallationsController extends Controller
             ['kode_akun', '4.1.01.03'],
             ['business_id', $business_id]
         ])->first();
-
         $installations = Installations::where('kode_instalasi', $kode_instalasi)->where('business_id', Session::get('business_id'))
             ->with([
                 'package',
                 'customer',
                 'village',
+                'caters',
                 'settings'
             ])
             ->withSum([
