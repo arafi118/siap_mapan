@@ -305,16 +305,17 @@
                     },
                     dataType: 'json',
                     success: function(result) {
-                        var states = [];
-                        result.map(function(item) {
-                            states.push({
+                        var states = result.map(function(item) {
+                            return {
                                 kode_instalasi: item.kode_instalasi,
-                                name: item.nama +
-                                    ' - ' + item.kode_instalasi +
-                                    ' [' + item.nik + ']',
+                                package: item.package_inisial ?? 'Tanpa Paket',
+                                name: item.nama + ' - ' + item.kode_instalasi + (item
+                                        .package_inisial ? '-' + item.package_inisial : ''
+                                        ) + ' [' + item.nik + ']',
                                 value: item.kode_instalasi,
                                 item: item,
-                            })
+                            };
+
                         });
 
                         process(states);

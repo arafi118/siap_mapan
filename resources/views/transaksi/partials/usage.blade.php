@@ -34,7 +34,32 @@
                 $denda = $installations->package->denda;
             }
         @endphp
+
         <div class="card">
+            {{-- <div class="card-header" id="Judul-{{ $usage->id }}">
+                <h5 class="mb-0 alert alert-light bg-white" data-toggle="collapse"
+                    data-target="#Body-{{ $usage->id }}" aria-expanded="true"
+                    aria-controls="Body-{{ $usage->id }}">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Nama:</strong> {{ $installations->customer->nama ?? '-' }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Desa:</strong> {{ $installations->village->name ?? '-' }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>No Induk:</strong> {{ $installations->customer->nik ?? '-' }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Cater:</strong>
+                            {{ $installations->users && $installations->users->jabatan == 5 ? $installations->users->name : '-' }}
+                        </div>
+                    </div>
+
+                </h5>
+
+            </div> --}}
             <div class="card-header" id="Judul-{{ $usage->id }}">
                 <h5 class="mb-0 alert alert-light bg-white" data-toggle="collapse"
                     data-target="#Body-{{ $usage->id }}" aria-expanded="true"
