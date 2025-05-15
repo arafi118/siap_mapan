@@ -1,3 +1,6 @@
+@php
+    use App\Utils\Tanggal;
+@endphp
 <!DOCTYPE html>
 <html>
 
