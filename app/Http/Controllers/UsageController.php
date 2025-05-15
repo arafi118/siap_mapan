@@ -254,7 +254,7 @@ class UsageController extends Controller
         'usersCater',
         'installation.package'
     ])->orderBy('created_at', 'DESC')->get();
-
+    
     $data['title'] = 'Cetak Daftar Tagihan';
     $data['pemakaian_cater'] = optional($data['jabatan'])->nama ?? '-';
     \Carbon\Carbon::setLocale('id');

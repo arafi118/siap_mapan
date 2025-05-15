@@ -166,7 +166,10 @@ class InstallationsController extends Controller
                 'package',
                 'customer',
                 'village',
-                'settings'
+                'settings',
+                'users' => function ($query) {
+                            $query->where('jabatan', '5');
+                        },             
             ])
             ->withSum([
                 'transaction' => function ($query) use ($rekening_debit, $rekening_kredit) {
@@ -179,12 +182,12 @@ class InstallationsController extends Controller
                 },
             ], 'total')
             ->first();
+            
 
 
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
-        $package = Package::where('business_id', Session::get('business_id'))->get();
-
+        $package = Package::where('business_id', Session::get('business_id'))->get();        
         $usages = Usage::where('business_id', Session::get('business_id'))->where([
             ['id_instalasi', $installations->id],
             ['status', '=', 'UNPAID']

@@ -21,6 +21,41 @@
         </div>
     </div>
 @else
+    <div class="alert alert-success" role="alert" style="color: white !important;">
+        <table class="table table-borderless table-sm mb-0 w-100"
+            style="font-size: 0.875rem; table-layout: fixed; color: white !important;">
+            <tr>
+                <td style="width: 110px; text-align: left; padding-left: 4px;">Nama</td>
+                <td style="width: 10px; padding-left: 8px;">:</td>
+                <td style="padding-left: 0;">{{ $installations->customer->nama ?? '-' }}</td>
+
+                <td style="width: 90px; text-align: left; padding-left: 4px;">Desa</td>
+                <td style="width: 10px; padding-left: 8px;">:</td>
+                <td style="padding-left: 0;">{{ $installations->village->nama ?? '-' }}</td>
+
+                <td style="width: 90px; text-align: left; padding-left: 4px;">Dusun</td>
+                <td style="width: 10px; padding-left: 8px;">:</td>
+                <td style="padding-left: 0;">{{ $installations->village->dusun ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding-left: 4px;">No Induk</td>
+                <td style="padding-left: 8px;">:</td>
+                <td style="padding-left: 0;">
+                    {{ $installations->kode_instalasi ?? '-' }}-{{ $installations->package->inisial ?? '-' }}</td>
+
+                <td style="text-align: left; padding-left: 4px;">Cater</td>
+                <td style="padding-left: 8px;">:</td>
+                <td style="padding-left: 0;">{{ $installations->users->nama ?? '-' }}</td>
+
+                <td style="text-align: left; padding-left: 4px;">Rt/Rw</td>
+                <td style="padding-left: 8px;">:</td>
+                <td style="padding-left: 0;">
+                    {{ $installations->rt ?? '-' }}/{{ $installations->rw ?? '-' }}</td>
+            </tr>
+        </table>
+    </div>
+
+
     @foreach ($usages as $usage)
         @php
             $blok = json_decode($trx_settings->block, true);

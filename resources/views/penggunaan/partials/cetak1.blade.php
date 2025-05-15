@@ -60,7 +60,15 @@
                 Bulan
             </td>
             <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
-                : <b>{{ $bulan ?? '-' }}</b>
+                : <b>{{ $bulan ?? '-' }} {{ Tanggal::Tahun($usage->tgl_akhir) }}</b>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; border: none; padding-top: 1px; padding-bottom: 1px;">
+                Dusun
+            </td>
+            <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
+                : <b>{{ $usages->installation->village->dusun ?? '-' }}</b>
             </td>
         </tr>
         <tr>
@@ -91,19 +99,12 @@
         </thead>
         <tbody>
             @foreach ($usages as $i => $usage)
-                @php
-                    preg_match('/Rt-(\d+)/i', $usage->installation->alamat ?? '', $match);
-                    $rt = $match[1] ?? '-';
-                    $abodemen = $usage->installation->abodemen ?? 0;
-                    $total = $usage->nominal + $abodemen;
-
-                @endphp
                 <tr>
                     <td align="center">{{ $i + 1 }}</td>
                     <td>{{ $usage->customers->nama }}</td>
                     <td>{{ $usage->installation->kode_instalasi }}</td>
                     <td>{{ $usage->installation->village->dusun }}</td>
-                    <td align="center">{{ $rt }}</td>
+                    <td align="center">{{ $usage->installation->rt ?? '-' }}</td>
                     <td align="center">{{ $usage->awal }}</td>
                     <td align="center">{{ $usage->akhir }}</td>
                     <td align="center">
