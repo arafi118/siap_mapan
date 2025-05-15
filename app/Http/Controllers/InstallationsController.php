@@ -58,9 +58,16 @@ class InstallationsController extends Controller
 
     public function DaftarInstalasi()
     {
-
-        $title = 'Data Cabut';
-        return view('perguliran.partials.DaftarInstalasi')->with(compact('title'));
+         $installations = Installations::where('business_id', Session::get('business_id'))
+         ->with([
+            'customer.village',
+            'package',
+            'village',
+            'users'
+        ])->get();
+        
+        $title = 'Data Intalasi';
+        return view('perguliran.partials.DaftarInstalasi')->with(compact('title','installations'));
     }
 
     /**
