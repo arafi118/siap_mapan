@@ -33,93 +33,96 @@
         }
     </style>
 </head>
+@php
+    // Kelompokkan usages berdasarkan dusun
+    $usagesByDusun = $usages->groupBy(function ($usage) {
+        return $usage->installation->village->dusun ?? '-';
+    });
+@endphp
 
-<body>
+@foreach ($usagesByDusun as $dusun => $usagesGroup)
 
-    <!-- HEADER - letakkan di luar table -->
-    <div style="text-align: center; max-width: 100%;">
-        <div style="font-size: 14px; margin-bottom: 2px;"><b>DAFTAR TAGIHAN PEMAKAIAN AIR</b></div>
-        <div style="font-size: 18px; margin-bottom: 2px;"><b>"{{ strtoupper($bisnis->nama) }}" BUMDes BANGUN KENCANA</b>
+    <body>
+
+        <!-- HEADER - letakkan di luar table -->
+        <div style="text-align: center; max-width: 100%;">
+            <div style="font-size: 14px; margin-bottom: 2px;"><b>DAFTAR TAGIHAN PEMAKAIAN AIR</b></div>
+            <div style="font-size: 18px; margin-bottom: 2px;"><b>"{{ strtoupper($bisnis->nama) }}" BUMDes BANGUN
+                    KENCANA</b>
+            </div>
+            <div style="font-size: 14px; margin-bottom: 5px;">KALURAHAN MULO KAPANEWON WONOSARI</div>
         </div>
-        <div style="font-size: 14px; margin-bottom: 5px;">KALURAHAN MULO KAPANEWON WONOSARI</div>
-    </div>
-    <!-- GARIS & NOMOR -->
-    <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 10px;">
+        <div style="border-bottom: 2px solid #000; margin: 4px 0;"></div>
 
-        <tr>
-            <td colspan="3" style="border: none; padding: 0;">
-                <div style="border-top: 2px solid rgb(70, 70, 70); width: 100%;"></div>
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 15%; text-align: left; border: none;"></td>
-        </tr>
-        <tr>
-            <td style="width: 15%; text-align: left; border: none;"></td>
-        </tr>
-        <tr>
-            <!--<td style="text-align: left; border: none; padding-left: 50px; padding-top: 1px; padding-bottom: 1px;">-->
-            <td style="text-align: left; border: none;  padding-top: 1px; padding-bottom: 1px;">
-                Bulan Pemakaian
-            </td>
-            <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
-                : <b>{{ $bulan }}</b>
+        @php
+            // Ambil usage terakhir dalam grup berdasarkan tgl_akhir
+            $lastUsageInGroup = $usagesGroup->sortByDesc('tgl_akhir')->first();
+            $tglAkhirFormatted = $lastUsageInGroup
+                ? \Carbon\Carbon::parse($lastUsageInGroup->tgl_akhir)->translatedFormat('F d Y')
+                : '-';
+        @endphp
 
-            </td>
-        </tr>
-
-        <tr>
-            <td style="text-align: left; border: none; padding-top: 1px; padding-bottom: 1px;">
-                Cater
-            </td>
-            <td style="border: none; padding-top: 1px; padding-bottom: 1px;">
-                : <b>{{ $pemakaian_cater ?? '-' }}</b>
-            </td>
-        </tr>
-    </table>
-    <br>
-    <table>
-        <thead>
-            <tr>
-                <th style="text-align: center;">No</th>
-                <th style="text-align: center;">Nama</th>
-                <th style="text-align: center;">No. Induk</th>
-                <th style="text-align: center;">Dusun</th>
-                <th style="text-align: center;">RT</th>
-                <th style="text-align: center;">Awal</th>
-                <th style="text-align: center;">Akhir</th>
-                <th style="text-align: center;">Pemakaian</th>
-                <th style="text-align: center;">Status</th>
-                <th style="text-align: center;">Total</th>
-            </tr>
-
-        </thead>
-        <tbody>
-            @foreach ($usages as $i => $usage)
-                @php
-                    $abodemen = $usage->installation->abodemen ?? 0;
-                    $total = $usage->nominal + $abodemen;
-                @endphp
+        <table style="width: 100%; margin-top: 10px; font-size: 12px; border-collapse: collapse; border: none;">
+            <table style="width: 100%; margin-top: 10px; font-size: 12px; border-collapse: collapse;">
                 <tr>
-                    <td align="center">{{ $i + 1 }}</td>
-                    <td>{{ $usage->customers->nama }}</td>
-                    <td>{{ $usage->installation->kode_instalasi }}</td>
-                    <td>{{ $usage->installation->village->dusun }}</td>
-                    <td align="center">{{ $usage->installation->rt ?? '-' }}</td>
-                    <td align="center">{{ $usage->awal }}</td>
-                    <td align="center">{{ $usage->akhir }}</td>
-                    <td align="center">
-                        {{ $usage->jumlah }}
+                    <td style="width: 15%; border: none; padding: 2px 4px; line-height: 1.1;">Bulan Pemakaian</td>
+                    <td style="width: 1%; border: none; padding: 2px 4px; line-height: 1.1;">:</td>
+                    <td style="width: 40%; border: none; padding: 2px 4px; line-height: 1.1;"><b>{{ $bulan }}</b>
                     </td>
-                    <td align="center">
-                        {{ $usage->status }}
-                    </td>
-                    <td align="right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
 
-</body>
+                    <td style="width: 15%; border: none; padding: 2px 4px; line-height: 1.1;">Tgl Akhir Pemakaian</td>
+                    <td style="width: 1%; border: none; padding: 2px 4px; line-height: 1.1;">:</td>
+                    <td style="width: 15%; border: none; padding: 2px 4px; line-height: 1.1;">
+                        <b>{{ $tglAkhirFormatted }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: none; padding: 2px 4px; line-height: 1.1;">Cater</td>
+                    <td style="border: none; padding: 2px 4px; line-height: 1.1;">:</td>
+                    <td style="border: none; padding: 2px 4px; line-height: 1.1;"><b>{{ $pemakaian_cater ?? '-' }}</b>
+                    </td>
+
+                    <td style="border: none; padding: 2px 4px; line-height: 1.1;">Dusun</td>
+                    <td style="border: none; padding: 2px 4px; line-height: 1.1;">:</td>
+                    <td style="border: none; padding: 2px 4px; line-height: 1.1;"><b>{{ $dusun }}</b></td>
+                </tr>
+            </table>
+        </table><br>
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align: center;">No</th>
+                    <th style="text-align: center;">Nama</th>
+                    <th style="text-align: center;">No. Induk</th>
+                    <th style="text-align: center;">RT</th>
+                    <th style="text-align: center;">Awal</th>
+                    <th style="text-align: center;">Akhir</th>
+                    <th style="text-align: center;">Pemakaian</th>
+                    <th style="text-align: center;">Status</th>
+                    <th style="text-align: center;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($usagesGroup->sortBy([['installation.rt', 'asc'], ['tgl_akhir', 'asc']]) as $i => $usage)
+                    @php
+                        $abodemen = $usage->installation->abodemen ?? 0;
+                        $total = $usage->nominal + $abodemen;
+                    @endphp
+                    <tr>
+                        <td align="center">{{ $i + 1 }}</td>
+                        <td>{{ $usage->customers->nama }}</td>
+                        <td>{{ $usage->installation->kode_instalasi }}</td>
+                        <td align="center">{{ $usage->installation->rt ?? '00' }}</td>
+                        <td align="center">{{ $usage->awal }}</td>
+                        <td align="center">{{ $usage->akhir }}</td>
+                        <td align="center">{{ $usage->jumlah }}</td>
+                        <td align="center">{{ $usage->status }}</td>
+                        <td align="right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </body>
+@endforeach
 
 </html>
