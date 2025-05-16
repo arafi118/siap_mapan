@@ -55,10 +55,9 @@
         <div style="border-bottom: 2px solid #000; margin: 4px 0;"></div>
 
         @php
-            // Ambil usage terakhir dalam grup berdasarkan tgl_akhir
             $lastUsageInGroup = $usagesGroup->sortByDesc('tgl_akhir')->first();
             $tglAkhirFormatted = $lastUsageInGroup
-                ? \Carbon\Carbon::parse($lastUsageInGroup->tgl_akhir)->translatedFormat('F d Y')
+                ? \Carbon\Carbon::parse($lastUsageInGroup->tgl_akhir)->subDay()->translatedFormat('F d Y')
                 : '-';
         @endphp
 
@@ -70,7 +69,7 @@
                     <td style="width: 40%; border: none; padding: 2px 4px; line-height: 1.1;"><b>{{ $bulan }}</b>
                     </td>
 
-                    <td style="width: 15%; border: none; padding: 2px 4px; line-height: 1.1;">Tgl Akhir Pemakaian</td>
+                    <td style="width: 17%; border: none; padding: 2px 4px; line-height: 1.1;">Tgl Akhir Pembayaran</td>
                     <td style="width: 1%; border: none; padding: 2px 4px; line-height: 1.1;">:</td>
                     <td style="width: 15%; border: none; padding: 2px 4px; line-height: 1.1;">
                         <b>{{ $tglAkhirFormatted }}</b>
@@ -82,7 +81,7 @@
                     <td style="border: none; padding: 2px 4px; line-height: 1.1;"><b>{{ $pemakaian_cater ?? '-' }}</b>
                     </td>
 
-                    <td style="border: none; padding: 2px 4px; line-height: 1.1;">Dusun</td>
+                    <td style="border: none; padding: 2px 4px; line-height: 1.1;"> Dusun</td>
                     <td style="border: none; padding: 2px 4px; line-height: 1.1;">:</td>
                     <td style="border: none; padding: 2px 4px; line-height: 1.1;"><b>{{ $dusun }}</b></td>
                 </tr>
