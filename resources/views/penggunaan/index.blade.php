@@ -105,6 +105,29 @@
                 <div class="modal-body">
                     <form action="/usages/cetak" method="post" id="FormCetakBuktiTagihan" target="_blank">
                         @csrf
+
+                        <div class="mb-1 d-flex">
+                            <div style="width: 120px;" class="fw-bold">Cater</div>
+                            <div>: <span id="NamaCater">-</span></div>
+                        </div>
+                        <div class="mb-1 d-flex">
+                            <div style="width: 120px;" class="fw-bold">Tanggal Akhir</div>
+                            <div>: <span id="TanggalCetak">-</span></div>
+                        </div>
+                        {{-- <div class="d-flex justify-content-between mb-1">
+                            <div>
+                                <span class="fw-bold">&nbsp;Cater</span> : <span id="NamaCater">-</span>
+                            </div>
+                            <div>
+                                <span class="fw-bold">Tanggal Akhir</span> : <span id="TanggalCetak">-</span>
+                            </div>
+                        </div> --}}
+
+                        <!-- Hidden input untuk dikirim ke backend -->
+                        <input type="hidden" name="cater" id="InputCater">
+                        <input type="hidden" name="tanggal" id="InputTanggal">
+
+                        <!-- Tabel tagihan -->
                         <table id="TbTagihan" class="table table-striped midle">
                             <thead class="bg-dark text-white">
                                 <tr>
@@ -115,21 +138,22 @@
                                         </div>
                                     </td>
                                     <td align="center" width="100">Nama</td>
-                                    <td align="center" width="100">Cater</td>
+                                    <td align="center" width="100">Desa</td>
+                                    <td align="center" width="100">Dusun</td>
+                                    <td align="center" width="100">Rt</td>
                                     <td align="center" width="100">No. Induk</td>
                                     <td align="center" width="100">Meter Awal</td>
                                     <td align="center" width="100">Meter Akhir</td>
                                     <td align="center" width="100">Pemakaian</td>
                                     <td align="center" width="100">Tagihan</td>
                                     <td align="center" width="100">Status</td>
-                                    <td align="center" width="100">Tanggal Akhir Bayar</td>
                                 </tr>
                             </thead>
-
                             <tbody>
                             </tbody>
                         </table>
                     </form>
+
 
                     <div class="d-none">
                         <form action="/usages/cetak_tagihan" method="post" id="FormCetakTagihan" target="_blank">
@@ -226,12 +250,26 @@
         });
 
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
-            var data = table.data().toArray()
-            var tbTagihan = $('#TbTagihan');
+            var data = table.data().toArray();
+            console.log(data);
 
-            tbTagihan.find('tbody').html('')
+            var tbTagihan = $('#TbTagihan');
+            tbTagihan.find('tbody').html('');
+
+            // Ambil dan tampilkan cater & tanggal dari item pertama
+            if (data.length > 0) {
+                const cater = data[0].users_cater.nama;
+                const tanggal = data[0].tgl_akhir;
+
+                $('#NamaCater').text(cater);
+                $('#TanggalCetak').text(tanggal);
+
+                $('#InputCater').val(cater);
+                $('#InputTanggal').val(tanggal);
+            }
+
             data.forEach((item) => {
-                var row = tbTagihan.find('tbody').append(`
+                tbTagihan.find('tbody').append(`
                     <tr>
                         <td align="center">
                             <div class="form-check text-center ps-0 mb-0">
@@ -239,20 +277,22 @@
                             </div>
                         </td>
                         <td align="left">${item.customers.nama}</td>
-                        <td align="left">${item.users_cater.nama}</td>
+                        <td align="left">${item.installation.village.nama}</td>
+                        <td align="left">${item.installation.village.dusun}</td>
+                        <td align="center">${item.installation.rt}</td>
                         <td align="left">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
                         <td align="right">${item.awal}</td>
                         <td align="right">${item.akhir}</td>
                         <td align="right">${item.jumlah}</td>
                         <td align="right">${item.nominal}</td>
                         <td align="center">${item.status}</td>
-                        <td align="center">${item.tgl_akhir}</td>
                     </tr>
                 `);
-            })
+            });
 
             $('#CetakBuktiTagihan').modal('show');
         });
+
 
         $(document).on('click', '#BtnCetak', function(e) {
             e.preventDefault()
