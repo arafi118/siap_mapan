@@ -18,7 +18,8 @@
                                 <th style="width: 15%;">Kode</th>
                                 <th style="width: 25%;">Nama Pelanggan</th>
                                 <th style="width: 20%;">Desa</th>
-                                <th style="width: 20%;">Rt/Rw</th>
+                                <th style="width: 20%;">Dusun</th>
+                                <th style="width: 20%;">Rt</th>
                                 <th style="width: 35%;">Alamat</th>
                                 <th style="width: 35%;">Status</th>
                                 {{-- <th style="text-align: center;">Aksi</th> --}}
@@ -31,7 +32,8 @@
                                     <td>{{ $ins->kode_instalasi }}-{{ $ins->package->inisial }}</td>
                                     <td>{{ $ins->customer->nama }}</td>
                                     <td>{{ $ins->village->nama ?? '-' }}</td>
-                                    <td>{{ $ins->rt ?? '00' }}/{{ $ins->rw ?? '00' }}</td>
+                                    <td>{{ $ins->village->dusun ?? '-' }}</td>
+                                    <td>{{ $ins->rt ?? '00' }}</td>
                                     <td>{{ $ins->alamat }}</td>
                                     <td>{{ $ins->status }}</td>
                                     {{-- <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
