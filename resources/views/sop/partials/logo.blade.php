@@ -5,7 +5,7 @@
             <a class="d-block blur-shadzow-image">
                 <img src="{{ asset('storage/logo/' . Session::get('logo')) }}" alt="img-blur-shadow"
                     class="img-fluid shadow border-radius-lg mt-3" id="previewLogo"
-                    style="width: 180px; height: auto; margin-left: 20px;">
+                    style="width: 130px; height: auto; margin-left: 20px;">
             </a>
             <div class="colored-shadow"
                 style="background-image: url(&quot;{{ asset('storage/logo/' . Session::get('logo')) }}&quot;);">
