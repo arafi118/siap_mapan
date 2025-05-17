@@ -10,7 +10,7 @@ use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class SopController extends Controller
@@ -296,13 +296,42 @@ class SopController extends Controller
         return view('sop.partials.lembaga')->with(compact('title', 'business', 'tampil_settings'));
     }
 
-    public function logo()
-    {
+public function logo(Request $request, Business $business)
+{
+    $data = $request->only(['logo_busines']);
 
-     
-        $title = 'Sop';
-        return view('sop.partials.logo')->with(compact('title'));
+    $validate = Validator::make($data, [
+        'logo_busines' => 'required|image|mimes:jpg,png,jpeg|max:4096'
+    ]);
+
+    if ($request->file('logo_busines') && $request->file('logo_busines')->isValid()) {
+        $extension = $request->file('logo_busines')->getClientOriginalExtension();
+        $filename = time() . '_' . $business->id . '_' . date('Ymd') . '.' . $extension;
+        $path = $request->file('logo_busines')->storeAs('logo', $filename, 'public');
+
+        // Hapus logo lama jika ada dan bukan default
+        if ($business->logo && $business->logo != 'default.png') {
+            Storage::delete('logo/' . $business->logo);
+        }
+
+        // Update database
+        $business->update([
+            'logo' => str_replace('logo/', '', $path)
+        ]);
+
+        Session::put('logo', str_replace('logo/', '', $path));
+        return response()->json([
+            'success' => true,
+            'msg' => 'Logo berhasil diperbarui.'
+        ]);
     }
+
+        return response()->json([
+            'success' => false,
+            'msg' => 'Logo gagal diperbarui'
+        ]);
+}
+
     public function sistem_instal()
     {
         $business_id = Session::get('business_id');

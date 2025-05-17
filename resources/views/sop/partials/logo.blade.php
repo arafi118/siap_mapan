@@ -1,44 +1,28 @@
-<div class="card-body">
-    <form action="/pengaturan/sop/logo" method="post" id="FromLogo">
-        @csrf
-        <div class="row">
-            <div class="col-md-6">
-                <div class="position-relative mb-3">
-                    <label for="nama">Nama Lembaga</label>
-                    <input type="text" class="form-control" id="nama" name="nama" value="">
-                    <small class="text-danger" id="msg_nama"></small>
-                </div>
+<h7 class="card-title" style="color:rgb(100, 121, 216); font-weight: 800;">&nbsp;&nbsp;UPLOAD LOGO</h7>
+<div class="row">
+    <div class="col-md-8"><br>
+        <div class="card mt-4 border" data-animation="true">
+            <a class="d-block blur-shadzow-image">
+                <img src="{{ asset('storage/logo/' . Session::get('logo')) }}" alt="img-blur-shadow"
+                    class="img-fluid shadow border-radius-lg mt-3" id="previewLogo"
+                    style="width: 180px; height: auto; margin-left: 20px;">
+            </a>
+            <div class="colored-shadow"
+                style="background-image: url(&quot;{{ asset('storage/logo/' . Session::get('logo')) }}&quot;);">
             </div>
-            <div class="col-md-6">
-                <div class="position-relative mb-3">
-                    <label for="alamat">Alamat</label>
-                    <input type="text" class="form-control" id="alamat" name="alamat" value="">
-                    <small class="text-danger" id="msg_alamat"></small>
+            <div class="card-body text-center pb-0">
+                <div class="d-flex mt-n6 justify-content-end">
+                    <button class="btn btn-info border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                        data-bs-original-title="Edit" id="EditLogo">
+                        <i class="fa fa-edit text-lg"></i>&nbsp;Edit Logo
+                    </button>
                 </div>
-            </div>
+            </div><br>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="position-relative mb-3">
-                    <label for="telpon">No Telepon</label>
-                    <input type="text" class="form-control" id="telpon" name="telpon" value="">
-                    <small class="text-danger" id="msg_telpon"></small>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="position-relative mb-3">
-                    <label for="email">E-mail</label>
-                    <input type="text" class="form-control" id="email" name="email" value="">
-                    <small class="text-danger" id="msg_email"></small>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <div class="col-12 d-flex justify-content-end">
-            <button class="btn btn-dark btn-icon-split" type="button" id="SimpanLembaga" class="btn btn-dark"
-                style="float: right; margin-left: 20px;">
-                <span class="text" style="float: right;">Simpan Perubahan</span>
-            </button>
-        </div>
-    </form>
+    </div>
 </div>
+<form action="/pengaturan/logo/{{ $business->id }}" method="post" enctype="multipart/form-data" id="FormLogo">
+    @csrf
+    @method('PUT')
+    <input type="file" name="logo_busines" id="logo_busines" class="d-none">
+</form>

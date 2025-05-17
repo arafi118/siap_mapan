@@ -7,7 +7,7 @@
             <div class="col-lg-3">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Pengaturan !</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">PENGATURAN !</h6>
                     </div>
                     <div class="card-body">
                         <ul class="nav nav-pills">
@@ -212,6 +212,46 @@
 @endsection
 
 @section('script')
+    <script>
+        $(document).on('click', '#EditLogo', function(e) {
+            e.preventDefault()
+
+            $('#logo_busines').trigger('click')
+        })
+        $(document).on('change', '#logo_busines', function (e) {
+        e.preventDefault()
+
+        var logo = $(this).get(0).files[0]
+        if (logo) {
+            var form = $('#FormLogo')
+            var formData = new FormData(document.querySelector('#FormLogo'));
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (result) {
+                    if (result.success) {
+                        var reader = new FileReader();
+
+                        reader.onload = function () {
+                            $("#previewLogo").attr("src", reader.result);
+                            $(".colored-shadow").css('background-image',
+                                "url(" + reader.result + ")")
+                        }
+
+                        reader.readAsDataURL(logo);
+                        Toastr('success', result.msg)
+                    } else {
+                        Toastr('error', result.msg)
+                    }
+                }
+            })
+        }
+    })
+    </script>
     <script>
         //pasang baru
         $("#pasang_baru").maskMoney({
