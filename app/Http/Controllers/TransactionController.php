@@ -1358,33 +1358,55 @@ class TransactionController extends Controller
     /**
      * .cetak detail Transaksi Tagihan Bulanan
      */
-    public function detailTransaksiTagihan(Request $request)
-    {
-        $keuangan = new Keuangan;
+   public function detailTransaksiTagihan(Request $request)
+{
+    $installation_id = $request->id;
+    $rek_debit = $request->rek_debit;
+    $rek_kredit = $request->rek_kredit;
 
-        $data['installation_id'] = $request->id;
-        $data['rek_debit'] = $request->rek_debit;
-        $data['rek_kredit'] = $request->rek_kredit;
-        $data['akun_kas'] = Account::where([
-            ['business_id', Session::get('business_id')],
-            ['kode_akun', '1.1.01.01']
-        ])->first();
+    $akun_kas = Account::where([
+        ['business_id', Session::get('business_id')],
+        ['kode_akun', '1.1.01.01']
+    ])->first();
 
-        $data['judul'] = 'Detail Transaksi';
-        $data['sub_judul'] = 'Tagihan Bulanan';
-        $data['transaksi'] = Transaction::where(function ($query) use ($data) {
-            $query->where('installation_id', $data['installation_id']);
-        })->where('rekening_debit', $data['akun_kas']->id)->with([
-            'Installations.customer',
-            'Usages',
-            'rek_debit',
-            'rek_kredit'
-        ])->orderBy('tgl_transaksi', 'ASC')->orderBy('urutan', 'ASC')->orderBy('id', 'ASC')->get();
-        return [
-            'label' => '<i class="fas fa-book"></i> Riwayat Pembayaran ',
-            'view' => view('transaksi.partials.detail_tagihan', $data)->render(),
-        ];
-    }
+    // Ambil semua tahun unik dari transaksi
+    $tahun_options = Transaction::where('installation_id', $installation_id)
+        ->where('rekening_debit', $akun_kas->id)
+        ->selectRaw('YEAR(tgl_transaksi) as tahun')
+        ->distinct()
+        ->orderBy('tahun', 'desc')
+        ->pluck('tahun')
+        ->toArray();
+
+    // Default tahun adalah tahun berjalan atau request
+    $tahun = $request->tahun ?? date('Y');
+
+    $transaksi = Transaction::where('installation_id', $installation_id)
+        ->where('rekening_debit', $akun_kas->id)
+        ->whereYear('tgl_transaksi', $tahun)
+        ->with(['Installations.customer', 'Usages', 'rek_debit', 'rek_kredit'])
+        ->orderBy('tgl_transaksi', 'ASC')
+        ->orderBy('urutan', 'ASC')
+        ->orderBy('id', 'ASC')
+        ->get();
+
+    $data = [
+        'installation_id' => $installation_id,
+        'rek_debit' => $rek_debit,
+        'rek_kredit' => $rek_kredit,
+        'akun_kas' => $akun_kas,
+        'judul' => 'Detail Transaksi',
+        'sub_judul' => 'Tagihan Bulanan',
+        'tahun' => $tahun,
+        'tahun_options' => $tahun_options,
+        'transaksi' => $transaksi
+    ];
+
+    return [
+        'label' => '<i class="fas fa-book"></i> Riwayat Pembayaran ',
+        'view' => view('transaksi.partials.detail_tagihan', $data)->render(),
+    ];
+}
 
     /**
      * Set saldo.

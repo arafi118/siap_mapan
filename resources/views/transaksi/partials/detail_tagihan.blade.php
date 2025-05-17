@@ -5,18 +5,41 @@
     $total_denda = 0;
     $total_bayar = 0;
 @endphp
+{{-- <div class="row mb-3">
+    <div class="col-md-3">
+        <label for="selectTahun" class="form-label">Pilih Tahun:</label>
+        <select class="form-control form-control-sm" id="selectTahun">
+            @foreach ($tahun_options as $th)
+                <option value="{{ $th }}" {{ $tahun == $th ? 'selected' : '' }}>{{ $th }}</option>
+            @endforeach
+        </select>
+    </div>q
+</div> --}}
+
 
 <table border="0" width="100%" cellspacing="0" cellpadding="0" class="table table-striped midle">
     <thead class="bg-dark text-white">
         <tr>
-            <td height="40" align="center" width="40">No</td>
-            <td align="center" width="100">Tanggal</td>
-            <td align="center">Keterangan</td>
-            <td align="center" width="140">Id Transaksi.</td>
-            <td align="center" width="140">Jumlah Bayar</td>
-            <td align="center" width="80">Aksi</td>
+            <td height="40" align="center" width="40" style="vertical-align: middle;">No</td>
+            <td align="center" width="120" style="vertical-align: middle;">Tanggal</td>
+            <td align="center" width="120" style="vertical-align: middle;">
+                <select class="form-control form-control-sm" id="selectTahun" style="width: 100px;">
+                    @foreach ($tahun_options as $th)
+                        <option value="{{ $th }}" {{ $tahun == $th ? 'selected' : '' }}>
+                            {{ $th }}
+                        </option>
+                    @endforeach
+                </select>
+            </td>
+            <td align="center" style="vertical-align: middle;">Keterangan</td>
+            <td align="center" width="140" style="vertical-align: middle;">Id Transaksi</td>
+            <td align="center" width="140" style="vertical-align: middle;">Jumlah Bayar</td>
+            <td align="center" width="80" style="vertical-align: middle;">Aksi</td>
         </tr>
     </thead>
+
+
+
 
     <tbody>
 
@@ -42,6 +65,7 @@
             <tr>
                 <td align="center">{{ $loop->iteration }}.</td>
                 <td align="center">{{ Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
+                <td></td>
                 <td>{{ $trx->keterangan }} ( {{ $trx->Usages->id }} )</td>
                 <td align="center">{{ $trx->id }}</td>
                 <td align="right">{{ number_format($debit, 2) }}</td>
