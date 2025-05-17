@@ -88,7 +88,7 @@
         @endforeach
 
         <tr>
-            <td colspan="4" align="center">
+            <td colspan="5" align="center">
                 <b>Total Transaksi</b>
             </td>
 
