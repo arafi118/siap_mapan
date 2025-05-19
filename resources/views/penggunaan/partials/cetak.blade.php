@@ -48,10 +48,6 @@
 <body>
     <div class="container">
         @foreach ($usage as $use)
-            @if ($loop->iteration % 5 == 0 && !$loop->first)
-                <div style="page-break-after: always;"></div>
-            @endif
-
             <div class="box">
                 <table border="0" width="100%">
                     <tr>
