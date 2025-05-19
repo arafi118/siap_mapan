@@ -266,7 +266,7 @@
             // Kelompokkan data berdasarkan dusun
             const groupedByDusun = {};
             data.forEach(item => {
-                const dusun = item.installation.village.dusun || 'Lainnya';
+                const dusun = item.installation.village.dusun || '0';
                 if (!groupedByDusun[dusun]) groupedByDusun[dusun] = [];
                 groupedByDusun[dusun].push(item);
             });
@@ -283,7 +283,7 @@
                 // Tambahkan baris judul dusun
                 tbTagihan.find('tbody').append(`
             <tr class="table-secondary fw-bold">
-                <td colspan="11">Dusun: ${dusun}</td>
+                <td colspan="11">Dusun : ${dusun}</td>
             </tr>
         `);
 
