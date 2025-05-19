@@ -72,7 +72,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="table-responsive p-3">
                                         <table class="table align-items-center table-flush table-center table-hover"
