@@ -23,49 +23,51 @@ class UsageController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-        $bulan = request()->get('bulan') ?: date('m');
-        $cater = request()->get('cater') ?: '';
+            $bulan = request()->get('bulan') ?: date('m');
+            $cater = request()->get('cater') ?: '';
 
-        $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
-        $usages = Usage::where([
-            ['business_id', Session::get('business_id')],
-            ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%']
-        ]);
+            $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
+            $usages = Usage::where([
+                ['business_id', Session::get('business_id')],
+                ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%']
+            ]);
 
-        if ($cater != '') {
-            $usages->where('cater', $cater);
+            if ($cater != '') {
+                $usages->where('cater', $cater);
+            }
+
+            $usages = $usages->with([
+                'customers',
+                'installation',
+                'installation.village',
+                'usersCater',
+                'installation.package'
+            ])->orderBy('created_at', 'DESC')->get();
+
+            Session::put('usages', $usages);
+
+            return DataTables::of($usages)
+                ->addColumn('kode_instalasi_dengan_inisial', function ($usage) {
+                    $kode = $usage->installation->kode_instalasi ?? '-';
+                    $inisial = $usage->installation->package->inisial ?? '';
+                    return $kode . ($inisial ? '-' . $inisial : '');
+                })
+                ->addColumn('aksi', function ($usage) {
+                    $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm mb-1 mb-md-0 me-md-1"><i class="fas fa-pencil-alt"></i></a>&nbsp;';
+                    $delete = '<a href="#" data-id="' . $usage->id . '" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
+
+                    return '<div class="d-flex flex-column flex-md-row">' . $edit . $delete . '</div>';
+                })
+
+                ->addColumn('tgl_akhir', function ($usage) {
+                    return Tanggal::tglIndo($usage->tgl_akhir);
+                })
+                ->editColumn('nominal', function ($usage) {
+                    return number_format($usage->nominal, 2);
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
         }
-
-        $usages = $usages->with([
-            'customers',
-            'installation',
-            'installation.village',
-            'usersCater',
-            'installation.package'
-        ])->orderBy('created_at', 'DESC')->get();
-        
-        Session::put('usages', $usages);
-
-        return DataTables::of($usages)
-            ->addColumn('kode_instalasi_dengan_inisial', function ($usage) {
-                $kode = $usage->installation->kode_instalasi ?? '-';
-                $inisial = $usage->installation->package->inisial ?? '';
-                return $kode . ($inisial ? '-' . $inisial : '');
-            })
-            ->addColumn('aksi', function ($usage) {
-                $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i></a>';
-                $delete = '<a href="#" data-id="' . $usage->id . '" class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
-                return $edit . $delete;
-            })
-            ->addColumn('tgl_akhir', function ($usage) {
-                return Tanggal::tglIndo($usage->tgl_akhir);
-            })
-            ->editColumn('nominal', function ($usage) {
-                return number_format($usage->nominal, 2);
-            })
-            ->rawColumns(['aksi'])
-            ->make(true);
-    }
 
         $caters = User::where([
             ['business_id', Session::get('business_id')],
@@ -222,7 +224,7 @@ class UsageController extends Controller
         $pdf = PDF::loadHTML($view)->setPaper('Legal', 'potrait');
         return $pdf->stream();
     }
- public function cetak_tagihan(Request $request)
+    public function cetak_tagihan(Request $request)
     {
         $thn = $request->input('tahun');
         $bln = $request->input('bulan');
@@ -272,9 +274,9 @@ class UsageController extends Controller
         ])->get();
         // Sortir berdasarkan dusun, rt, dan tgl_akhir
         $data['usages'] = $usages->sortBy([
-            fn($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
-            fn($a, $b) => $a->installation->rt <=> $b->installation->rt,
-            fn($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
+            fn ($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
+            fn ($a, $b) => $a->installation->rt <=> $b->installation->rt,
+            fn ($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
         ]);
 
         $data['title'] = 'Cetak Daftar Tagihan';
