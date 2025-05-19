@@ -140,7 +140,7 @@
                                     <td align="center" width="100">Nama</td>
                                     <td align="center" width="100">Desa</td>
                                     <td align="center" width="100">Dusun</td>
-                                    <td align="center" width="100">Rt</td>
+                                    <td align="center" width="100">RT</td>
                                     <td align="center" width="100">No. Induk</td>
                                     <td align="center" width="100">Meter Awal</td>
                                     <td align="center" width="100">Meter Akhir</td>
