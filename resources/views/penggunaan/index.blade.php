@@ -282,38 +282,37 @@
 
                 // Tambahkan baris judul dusun
                 tbTagihan.find('tbody').append(`
-                    <tr class="table-secondary fw-bold">
-                        <td colspan="11">Dusun: ${dusun}</td>
-                    </tr>
-                `);
+            <tr class="table-secondary fw-bold">
+                <td colspan="11">Dusun: ${dusun}</td>
+            </tr>
+        `);
 
                 // Tambahkan data item
                 items.forEach((item) => {
                     tbTagihan.find('tbody').append(`
-                        <tr>
-                            <td align="center">
-                                <div class="form-check text-center ps-0 mb-0">
-                                    <input checked class="form-check-input" type="checkbox" value="${item.id}" id="${item.id}" name="cetak[]" data-input="checked" data-bulan="${item.bulan}">
-                                </div>
-                            </td>
-                            <td align="left">${item.customers.nama}</td>
-                            <td align="left">${item.installation.village.nama}</td>
-                            <td align="left">${item.installation.village.dusun}</td>
-                            <td align="center">${item.installation.rt}</td>
-                            <td align="left">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
-                            <td align="right">${item.awal}</td>
-                            <td align="right">${item.akhir}</td>
-                            <td align="right">${item.jumlah}</td>
-                            <td align="right">${item.nominal}</td>
-                            <td align="center">${item.status}</td>
-                        </tr>
-                    `);
+                <tr>
+                    <td align="center">
+                        <div class="form-check text-center ps-0 mb-0">
+                            <input checked class="form-check-input" type="checkbox" value="${item.id}" id="${item.id}" name="cetak[]" data-input="checked" data-bulan="${item.bulan}">
+                        </div>
+                    </td>
+                    <td align="left">${item.customers.nama}</td>
+                    <td align="left">${item.installation.village.nama}</td>
+                    <td align="left">${item.installation.village.dusun}</td>
+                    <td align="center">${item.installation.rt}</td>
+                    <td align="left">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
+                    <td align="right">${item.awal}</td>
+                    <td align="right">${item.akhir}</td>
+                    <td align="right">${item.jumlah}</td>
+                    <td align="right">${item.nominal}</td>
+                    <td align="center">${item.status}</td>
+                </tr>
+            `);
                 });
             });
 
             $('#CetakBuktiTagihan').modal('show');
         });
-
 
 
 
