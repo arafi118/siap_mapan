@@ -36,19 +36,13 @@ class UsageController extends Controller
             $usages->where('cater', $cater);
         }
 
-       $usages = $usages->with([
+        $usages = $usages->with([
             'customers',
             'installation',
             'installation.village',
             'usersCater',
             'installation.package'
-        ])->get();
-
-        // Urutkan berdasarkan dusun lalu RT
-        $usages = $usages->sortBy([
-            fn($a, $b) => strcmp($a->installation->village->dusun ?? '', $b->installation->village->dusun ?? ''),
-            fn($a, $b) => ((int) $a->installation->rt ?? 0) <=> ((int) $b->installation->rt ?? 0)
-        ])->values(); // reset index agar DataTables tidak bingung
+        ])->orderBy('created_at', 'DESC')->get();
         
         Session::put('usages', $usages);
 

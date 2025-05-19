@@ -268,6 +268,14 @@
                 $('#InputTanggal').val(tanggal);
             }
 
+            // ✅ Urutkan berdasarkan RT
+            data.sort((a, b) => {
+                let rtA = parseInt(a.installation.rt || 0);
+                let rtB = parseInt(b.installation.rt || 0);
+                return rtA - rtB;
+            });
+
+            // Loop data terurut
             data.forEach((item) => {
                 tbTagihan.find('tbody').append(`
                     <tr>
@@ -292,6 +300,7 @@
 
             $('#CetakBuktiTagihan').modal('show');
         });
+
 
 
         $(document).on('click', '#BtnCetak', function(e) {
