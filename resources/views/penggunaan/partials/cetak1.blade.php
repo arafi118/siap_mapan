@@ -110,7 +110,7 @@
                     <tr>
                         <td align="center">{{ $i + 1 }}</td>
                         <td>{{ $usage->customers->nama }}</td>
-                        <td>{{ $usage->installation->kode_instalasi }}-{{ $usage->package->inisial ?? '' }}</td>
+                        <td>{{ $usage->installation->kode_instalasi }}-{{ $usage->installation->package->inisial }}</td>
                         <td align="center">{{ $usage->installation->rt ?? '00' }}</td>
                         <td align="center">{{ $usage->awal }}</td>
                         <td align="center">{{ $usage->akhir }}</td>

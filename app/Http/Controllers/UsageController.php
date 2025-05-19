@@ -265,13 +265,11 @@ class UsageController extends Controller
 
         $usages = $usagesQuery->with([
             'customers',
-            'package',
             'installation',
             'installation.village',
             'usersCater',
             'installation.package'
         ])->get();
-
         // Sortir berdasarkan dusun, rt, dan tgl_akhir
         $data['usages'] = $usages->sortBy([
             fn($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
