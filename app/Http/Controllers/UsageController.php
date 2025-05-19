@@ -265,6 +265,7 @@ class UsageController extends Controller
 
         $usages = $usagesQuery->with([
             'customers',
+            'package',
             'installation',
             'installation.village',
             'usersCater',
