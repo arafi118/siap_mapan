@@ -145,7 +145,7 @@
                                     <td align="center" width="100">Meter Awal</td>
                                     <td align="center" width="100">Meter Akhir</td>
                                     <td align="center" width="100">Pemakaian</td>
-                                    <td align="center" width="100">Tagihan</td>
+                                    <td align="center" width="100">Tagihan Air</td>
                                     <td align="center" width="100">Status</td>
                                 </tr>
                             </thead>
