@@ -348,7 +348,6 @@
                 <td colspan="11">Dusun : ${dusun}</td>
             </tr>
         `);
-
                 // Tambah baris data
                 items.forEach(item => {
                     tbTagihan.find('tbody').append(`
@@ -361,10 +360,10 @@
                     <td align="left">${item.customers.nama}</td>
                     <td align="left">${item.installation.village.nama}</td>
                     <td align="center">${item.installation.rt}</td>
-                    <td align="left">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
-                    <td align="right">${item.awal}</td>
-                    <td align="right">${item.akhir}</td>
-                    <td align="right">${item.jumlah}</td>
+                    <td align="center">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
+                    <td align="center">${item.awal}</td>
+                    <td align="center">${item.akhir}</td>
+                    <td align="center">${item.jumlah}</td>
                     <td align="right">${item.nominal}</td>
                     <td align="center">${item.status}</td>
                 </tr>
