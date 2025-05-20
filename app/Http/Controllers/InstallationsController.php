@@ -577,7 +577,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.03'],
+            ['kode_akun', '4.1.01.01'],
             ['business_id', $business_id]
         ])->first();
 
