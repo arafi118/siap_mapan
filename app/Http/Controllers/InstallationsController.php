@@ -58,16 +58,16 @@ class InstallationsController extends Controller
 
     public function DaftarInstalasi()
     {
-         $installations = Installations::where('business_id', Session::get('business_id'))
-         ->with([
-            'customer.village',
-            'package',
-            'village',
-            'users'
-        ])->get();
-        
+        $installations = Installations::where('business_id', Session::get('business_id'))
+            ->with([
+                'customer.village',
+                'package',
+                'village',
+                'users'
+            ])->get();
+
         $title = 'Data Intalasi';
-        return view('perguliran.partials.DaftarInstalasi')->with(compact('title','installations'));
+        return view('perguliran.partials.DaftarInstalasi')->with(compact('title', 'installations'));
     }
 
     /**
@@ -118,27 +118,27 @@ class InstallationsController extends Controller
     {
         $params = $request->input('query');
 
-       $installations = Installations::select(
-        'installations.*',
-        'customers.nama',
-        'customers.alamat',
-        'customers.nik',
-        'customers.hp',
-        'packages.inisial as package_inisial' // alias agar jelas di JS
-    )
-        ->join('customers', 'customers.id', '=', 'installations.customer_id')
-        ->leftJoin('packages', 'packages.id', '=', 'installations.package_id') // tambahkan ini
-        ->where(function ($query) use ($params) {
-            $query->where('customers.nama', 'LIKE', "%{$params}%")
-                ->orWhere('customers.nik', 'LIKE', "%{$params}%")
-                ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
-        })
-        ->where(function ($query) {
-            $query->where('installations.business_id', Session::get('business_id'))
-                ->orWhere('customers.business_id', Session::get('business_id'));
-        })
-        ->whereNotIn('installations.status', ['B', 'C'])
-        ->get();
+        $installations = Installations::select(
+            'installations.*',
+            'customers.nama',
+            'customers.alamat',
+            'customers.nik',
+            'customers.hp',
+            'packages.inisial as package_inisial' // alias agar jelas di JS
+        )
+            ->join('customers', 'customers.id', '=', 'installations.customer_id')
+            ->leftJoin('packages', 'packages.id', '=', 'installations.package_id') // tambahkan ini
+            ->where(function ($query) use ($params) {
+                $query->where('customers.nama', 'LIKE', "%{$params}%")
+                    ->orWhere('customers.nik', 'LIKE', "%{$params}%")
+                    ->orWhere('installations.kode_instalasi', 'LIKE', "%{$params}%");
+            })
+            ->where(function ($query) {
+                $query->where('installations.business_id', Session::get('business_id'))
+                    ->orWhere('customers.business_id', Session::get('business_id'));
+            })
+            ->whereNotIn('installations.status', ['B', 'C'])
+            ->get();
 
 
         return response()->json($installations);
@@ -168,8 +168,8 @@ class InstallationsController extends Controller
                 'village',
                 'settings',
                 'users' => function ($query) {
-                            $query->where('jabatan', '5');
-                        },             
+                    $query->where('jabatan', '5');
+                },
             ])
             ->withSum([
                 'transaction' => function ($query) use ($rekening_debit, $rekening_kredit) {
@@ -182,12 +182,12 @@ class InstallationsController extends Controller
                 },
             ], 'total')
             ->first();
-            
+
 
 
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
-        $package = Package::where('business_id', Session::get('business_id'))->get();        
+        $package = Package::where('business_id', Session::get('business_id'))->get();
         $usages = Usage::where('business_id', Session::get('business_id'))->where([
             ['id_instalasi', $installations->id],
             ['status', '=', 'UNPAID']
@@ -512,7 +512,7 @@ class InstallationsController extends Controller
             ['business_id', $business_id]
         ])->first();
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.03'],
+            ['kode_akun', '4.1.01.01'],
             ['business_id', $business_id]
         ])->first();
 
@@ -544,7 +544,7 @@ class InstallationsController extends Controller
         ])->first();
 
         $rekening_kredit = Account::where([
-            ['kode_akun', '4.1.01.03'],
+            ['kode_akun', '4.1.01.01'],
             ['business_id', $business_id]
         ])->first();
 
