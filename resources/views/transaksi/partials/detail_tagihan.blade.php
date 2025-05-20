@@ -65,8 +65,7 @@
             <tr>
                 <td align="center">{{ $loop->iteration }}.</td>
                 <td align="center">{{ Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
-                <td></td>
-                <td>{{ $trx->keterangan }} ( {{ $trx->Usages->id }} )</td>
+                <td colspan="2">{{ $trx->keterangan }} ( {{ $trx->Usages->id }} )</td>
                 <td align="center">{{ $trx->id }}</td>
                 <td align="right">{{ number_format($debit, 2) }}</td>
                 <td align="right">
