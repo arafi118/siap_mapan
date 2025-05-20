@@ -105,15 +105,28 @@
                 <div class="modal-body">
                     <form action="/usages/cetak" method="post" id="FormCetakBuktiTagihan" target="_blank">
                         @csrf
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="d-flex mb-1">
+                                    <div class="fw-bold me-2" style="width: 120px;">Cater</div>
+                                    <div>: <span id="NamaCater">Ahmad Soeharto</span></div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="fw-bold me-2" style="width: 120px;">Tanggal Akhir</div>
+                                    <div>: <span id="TanggalCetak">27/02/2025</span></div>
+                                </div>
+                            </div>
 
-                        <div class="mb-1 d-flex">
-                            <div style="width: 120px;" class="fw-bold">Cater</div>
-                            <div>: <span id="NamaCater">-</span></div>
+                            <div style="width: 200px; align-self: flex-end; margin-top: 2px;">
+                                <input type="text" id="SearchTagihan" class="form-control form-control-sm"
+                                    placeholder="Search ...">
+                            </div>
                         </div>
-                        <div class="mb-1 d-flex">
-                            <div style="width: 120px;" class="fw-bold">Tanggal Akhir</div>
-                            <div>: <span id="TanggalCetak">-</span></div>
-                        </div>
+
+
+
+
+
                         {{-- <div class="d-flex justify-content-between mb-1">
                             <div>
                                 <span class="fw-bold">&nbsp;Cater</span> : <span id="NamaCater">-</span>
@@ -129,7 +142,7 @@
 
                         <!-- Tabel tagihan -->
                         <table id="TbTagihan" class="table table-striped midle">
-                            <div class="card-header bg-dark text-white p-2 pe-2 pb-2 pt-2">
+                            {{-- <div class="card-header bg-dark text-white p-2 pe-2 pb-2 pt-2">
                                 <div class="row align-items-center">
                                     <div class="col-md-10 mb-0">
                                         <h6 class="mb-0"><b>Daftar Tagihan Pemakaian</b></h6>
@@ -141,22 +154,21 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <thead class="bg-dark text-white">
                                 <tr>
                                     <td align="center" width="40">
                                         <div class="form-check text-center ps-0 mb-0">
-                                            <input class="form-check-input" type="checkbox" value="true"
-                                                id="checked" name="checked" checked>
+                                            <input class="form-check-input" type="checkbox" value="true" id="checked"
+                                                name="checked" checked>
                                         </div>
                                     </td>
-                                    <td align="center" width="100">Nama</td>
+                                    <td align="center" width="120">Nama</td>
                                     <td align="center" width="100">Desa</td>
-                                    <td align="center" width="100">Dusun</td>
                                     <td align="center" width="100">RT</td>
                                     <td align="center" width="100">No. Induk</td>
-                                    <td align="center" width="100">Meter Awal</td>
-                                    <td align="center" width="100">Meter Akhir</td>
+                                    <td align="center" width="80">Meter Awal</td>
+                                    <td align="center" width="80">Meter Akhir</td>
                                     <td align="center" width="100">Pemakaian</td>
                                     <td align="center" width="100">Tagihan Air</td>
                                     <td align="center" width="100">Status</td>
@@ -333,7 +345,7 @@
                 // Tambah baris judul dusun
                 tbTagihan.find('tbody').append(`
             <tr class="table-secondary fw-bold">
-                <td colspan="11">Dusun: ${dusun}</td>
+                <td colspan="11">Dusun : ${dusun}</td>
             </tr>
         `);
 
@@ -348,7 +360,6 @@
                     </td>
                     <td align="left">${item.customers.nama}</td>
                     <td align="left">${item.installation.village.nama}</td>
-                    <td align="left">${item.installation.village.dusun}</td>
                     <td align="center">${item.installation.rt}</td>
                     <td align="left">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
                     <td align="right">${item.awal}</td>
