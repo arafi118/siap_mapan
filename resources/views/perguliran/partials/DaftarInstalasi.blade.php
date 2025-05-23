@@ -19,7 +19,7 @@
                                 <th style="width: 25%;">Nama Pelanggan</th>
                                 <th style="width: 20%;">Desa</th>
                                 <th style="width: 20%;">Dusun</th>
-                                <th style="width: 20%;">Rt</th>
+                                <th style="width: 20%;">RT</th>
                                 <th style="width: 35%;">Alamat</th>
                                 <th style="width: 35%;">Status</th>
                                 {{-- <th style="text-align: center;">Aksi</th> --}}

@@ -31,7 +31,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
                                     <label for="bulan">Bulan Pemakaian</label>
-                                    <select id="bulan" name="bulan" class="form-control">
+                                    <select id="bulan" name="bulan" class="form-control select2">
                                         <option value="">-- Pilih Bulan --</option>
                                         @for ($i = 1; $i <= 12; $i++)
                                             <option {{ date('m') == $i ? 'selected' : '' }}
@@ -45,7 +45,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
                                     <label for="caters">Cater</label>
-                                    <select class="form-control" id="caters" name="caters">
+                                    <select class="form-control select2" id="caters" name="caters">
                                         <option value="">Semua</option>
                                         @foreach ($caters as $cater)
                                             <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
@@ -105,15 +105,28 @@
                 <div class="modal-body">
                     <form action="/usages/cetak" method="post" id="FormCetakBuktiTagihan" target="_blank">
                         @csrf
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="d-flex mb-1">
+                                    <div class="fw-bold me-2" style="width: 120px;">Cater</div>
+                                    <div>: <span id="NamaCater">Ahmad Soeharto</span></div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="fw-bold me-2" style="width: 120px;">Tanggal Akhir</div>
+                                    <div>: <span id="TanggalCetak">27/02/2025</span></div>
+                                </div>
+                            </div>
 
-                        <div class="mb-1 d-flex">
-                            <div style="width: 120px;" class="fw-bold">Cater</div>
-                            <div>: <span id="NamaCater">-</span></div>
+                            <div style="width: 200px; align-self: flex-end; margin-top: 2px;">
+                                <input type="text" id="SearchTagihan" class="form-control form-control-sm"
+                                    placeholder="Search ...">
+                            </div>
                         </div>
-                        <div class="mb-1 d-flex">
-                            <div style="width: 120px;" class="fw-bold">Tanggal Akhir</div>
-                            <div>: <span id="TanggalCetak">-</span></div>
-                        </div>
+
+
+
+
+
                         {{-- <div class="d-flex justify-content-between mb-1">
                             <div>
                                 <span class="fw-bold">&nbsp;Cater</span> : <span id="NamaCater">-</span>
@@ -129,6 +142,19 @@
 
                         <!-- Tabel tagihan -->
                         <table id="TbTagihan" class="table table-striped midle">
+                            {{-- <div class="card-header bg-dark text-white p-2 pe-2 pb-2 pt-2">
+                                <div class="row align-items-center">
+                                    <div class="col-md-10 mb-0">
+                                        <h6 class="mb-0"><b>Daftar Tagihan Pemakaian</b></h6>
+                                    </div>
+                                    <div class="col-md-2 mb-0">
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" id="SearchTagihan" class="form-control form-control-sm"
+                                                placeholder="Search ...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
                             <thead class="bg-dark text-white">
                                 <tr>
                                     <td align="center" width="40">
@@ -137,15 +163,14 @@
                                                 name="checked" checked>
                                         </div>
                                     </td>
-                                    <td align="center" width="100">Nama</td>
+                                    <td align="center" width="120">Nama</td>
                                     <td align="center" width="100">Desa</td>
-                                    <td align="center" width="100">Dusun</td>
-                                    <td align="center" width="100">Rt</td>
+                                    <td align="center" width="100">RT</td>
                                     <td align="center" width="100">No. Induk</td>
-                                    <td align="center" width="100">Meter Awal</td>
-                                    <td align="center" width="100">Meter Akhir</td>
+                                    <td align="center" width="80">Meter Awal</td>
+                                    <td align="center" width="80">Meter Akhir</td>
                                     <td align="center" width="100">Pemakaian</td>
-                                    <td align="center" width="100">Tagihan</td>
+                                    <td align="center" width="100">Tagihan Air</td>
                                     <td align="center" width="100">Status</td>
                                 </tr>
                             </thead>
@@ -183,6 +208,14 @@
 @endsection
 @section('script')
     <script>
+        let dataSearch;
+
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4',
+            });
+        });
+
         $(document).on('click', '#kembali', function(e) {
             e.preventDefault();
             $('#CetakBuktiTagihan').modal('hide');
@@ -196,11 +229,14 @@
         var cater = $('#caters').val()
         var bulan = $('#bulan').val()
         var table = $('#TbPemakain').DataTable({
+            "processing": true,
+            "serverSide": true,
             "ajax": {
                 "url": "/usages?bulan=" + bulan + "&cater=" + cater,
                 "type": "GET"
             },
             "language": {
+                "processing": `<i class="fas fa-spinner fa-spin"></i> mohon tunggu....`,
                 "emptyTable": "Tidak ada data yang tersedia",
                 "search": "",
                 "searchPlaceholder": "Pencarian...",
@@ -249,49 +285,92 @@
             table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
         });
 
+        $(document).on('keyup', '#SearchTagihan', function() {
+            searching($(this).val());
+        });
+
+        function searching(search) {
+            let data = table.data().toArray();
+
+            search = search.toLowerCase()
+            dataSearch = data.filter((element) => {
+                console.log(element)
+                return (
+                    element.installation.kode_instalasi.includes(search) ||
+                    element.customers.nama.toLowerCase().includes(search)
+                )
+            });
+
+            setTableData(dataSearch)
+        }
+
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
-            var data = table.data().toArray();
-            console.log(data);
+            const data = table.data().toArray();
 
-            var tbTagihan = $('#TbTagihan');
-            tbTagihan.find('tbody').html('');
-
-            // Ambil dan tampilkan cater & tanggal dari item pertama
             if (data.length > 0) {
                 const cater = data[0].users_cater.nama;
                 const tanggal = data[0].tgl_akhir;
-
                 $('#NamaCater').text(cater);
                 $('#TanggalCetak').text(tanggal);
-
                 $('#InputCater').val(cater);
                 $('#InputTanggal').val(tanggal);
             }
 
-            data.forEach((item) => {
-                tbTagihan.find('tbody').append(`
-                    <tr>
-                        <td align="center">
-                            <div class="form-check text-center ps-0 mb-0">
-                                <input checked class="form-check-input" type="checkbox" value="${item.id}" id="${item.id}" name="cetak[]" data-input="checked" data-bulan="${item.bulan}">
-                            </div>
-                        </td>
-                        <td align="left">${item.customers.nama}</td>
-                        <td align="left">${item.installation.village.nama}</td>
-                        <td align="left">${item.installation.village.dusun}</td>
-                        <td align="center">${item.installation.rt}</td>
-                        <td align="left">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
-                        <td align="right">${item.awal}</td>
-                        <td align="right">${item.akhir}</td>
-                        <td align="right">${item.jumlah}</td>
-                        <td align="right">${item.nominal}</td>
-                        <td align="center">${item.status}</td>
-                    </tr>
-                `);
-            });
+            setTableData(data);
 
             $('#CetakBuktiTagihan').modal('show');
         });
+
+        function setTableData(data) {
+            const tbTagihan = $('#TbTagihan');
+            tbTagihan.find('tbody').html('');
+
+            // Kelompokkan data berdasarkan dusun
+            const groupedByDusun = {};
+            data.forEach(item => {
+                const dusun = item.installation.village.dusun || 'Lainnya';
+                if (!groupedByDusun[dusun]) groupedByDusun[dusun] = [];
+                groupedByDusun[dusun].push(item);
+            });
+
+            // Urutkan nama dusun
+            const sortedDusuns = Object.keys(groupedByDusun).sort();
+
+            sortedDusuns.forEach(dusun => {
+                const items = groupedByDusun[dusun];
+
+                // Urutkan berdasarkan RT
+                items.sort((a, b) => parseInt(a.installation.rt || 0) - parseInt(b.installation.rt || 0));
+
+                // Tambah baris judul dusun
+                tbTagihan.find('tbody').append(`
+            <tr class="table-secondary fw-bold">
+                <td colspan="11">Dusun : ${dusun}</td>
+            </tr>
+        `);
+                // Tambah baris data
+                items.forEach(item => {
+                    tbTagihan.find('tbody').append(`
+                <tr>
+                    <td align="center">
+                        <div class="form-check text-center ps-0 mb-0">
+                            <input checked class="form-check-input" type="checkbox" value="${item.id}" id="${item.id}" name="cetak[]" data-input="checked" data-bulan="${item.bulan}">
+                        </div>
+                    </td>
+                    <td align="left">${item.customers.nama}</td>
+                    <td align="left">${item.installation.village.nama}</td>
+                    <td align="center">${item.installation.rt}</td>
+                    <td align="center">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
+                    <td align="center">${item.awal}</td>
+                    <td align="center">${item.akhir}</td>
+                    <td align="center">${item.jumlah}</td>
+                    <td align="right">${item.nominal}</td>
+                    <td align="center">${item.status}</td>
+                </tr>
+            `);
+                });
+            });
+        }
 
 
         $(document).on('click', '#BtnCetak', function(e) {

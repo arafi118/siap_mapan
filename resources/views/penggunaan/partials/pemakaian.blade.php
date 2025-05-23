@@ -71,7 +71,7 @@
                                                 name="awal_" id="awal_" placeholder="Awal Pemakaian" readonly>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <label for="awal">Meter Awal</label>
+                                            <label for="awal">Meter Akhir</label>
                                             <input type="text" class="form-control AkhirUsage input-nilai-akhir""
                                                 name="akhir_" id="akhir_" placeholder="Akhir Pemakaian">
                                         </div>
