@@ -53,19 +53,12 @@ class UsageController extends Controller
                     return $kode . ($inisial ? '-' . $inisial : '');
                 })
                 ->addColumn('aksi', function ($usage) {
-<<<<<<< HEAD
-                    $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i></a>';
-                    $delete = '<a href="#" data-id="' . $usage->id . '" class="btn-sm btn-danger mx-1 Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
-                    return $edit . $delete;
-                })
-=======
                     $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm mb-1 mb-md-0 me-md-1"><i class="fas fa-pencil-alt"></i></a>&nbsp;';
                     $delete = '<a href="#" data-id="' . $usage->id . '" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
 
                     return '<div class="d-flex flex-column flex-md-row">' . $edit . $delete . '</div>';
                 })
 
->>>>>>> 092b6893a8191dbccd66e4df2198e7993dc504f9
                 ->addColumn('tgl_akhir', function ($usage) {
                     return Tanggal::tglIndo($usage->tgl_akhir);
                 })
