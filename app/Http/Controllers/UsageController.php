@@ -137,7 +137,7 @@ class UsageController extends Controller
             'jumlah' => $data['akhir'] - $data['awal'],
             'id_instalasi' => $data['id'],
             'tgl_akhir' => $tglAkhir,
-            'nominal' => $harga[$index_harga] * $data['jumlah'],
+            'nominal' => $harga[$index_harga] * ($data['akhir'] - $data['awal']),
             'cater' =>  $data['id_cater'],
             'user_id' => auth()->user()->id,
         ];
