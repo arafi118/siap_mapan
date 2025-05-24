@@ -87,11 +87,9 @@
                                 </button>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
-                                @if (auth()->user()->jabatan == 1)
-                                    <button class="btn btn-danger btn-block" type="button" id="DetailCetakBuktiTagihan">
-                                        <i class="fas fa-info-circle"></i> Hasil Input
-                                    </button>
-                                @endif
+                                <button class="btn btn-danger btn-block" type="button" id="DetailCetakBuktiTagihan">
+                                    <i class="fas fa-info-circle"></i> Hasil Input
+                                </button>
                             </div>
 
                         </div>

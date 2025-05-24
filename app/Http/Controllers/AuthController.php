@@ -98,7 +98,7 @@ class AuthController extends Controller
             ]);
 
             if ($user->jabatan == '5') {
-                return redirect('/usages/create')->with('success', 'Selamat Datang ' . $user->nama);
+                return redirect('/usages/create?cater_id='.$user->id)->with('success', 'Selamat Datang ' . $user->nama);
             }
 
             return redirect('/')->with('success', 'Selamat Datang ' . $user->nama);
