@@ -7,6 +7,9 @@
     <form action="/usages" method="post" id="FormInputPemakaian">
         @csrf
         <input type="hidden" id="tgl_toleransi" value="{{ $settings->tanggal_toleransi }}">
+        <input type="hidden" id="caters" value="{{ $cater_id }}">
+        <input type="hidden" name="tanggal" id="tanggal" value="{{ date('d/m/Y') }}">
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
@@ -15,7 +18,7 @@
                         <div class="alert alert-info align-items-center text-white {{ auth()->user()->jabatan == '5' ? 'd-none' : 'd-flex mb-3' }}"
                             role="alert" style="border-radius: 1;">
                             <!-- Gambar -->
-                            <img src="../../assets/img/meteran.png"
+                            <img src="../../assets/img/air.png"
                                 style="max-height: 160px; margin-right: 15px; margin-left: 10px;"
                                 class="img-fluid d-none d-lg-block">
 
@@ -24,7 +27,7 @@
                                     <h3><b>Input Pemakaian Air Bulanan</b></h3>
                                 </div>
                                 <hr class="my-2 bg-white">
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-md-8 mb-2">
                                         <select class="select2 form-control" name="caters" id="caters">
                                             <option value=""></option>
@@ -37,63 +40,27 @@
                                         <input type="text" name="tanggal" id="tanggal"
                                             class="form-control tanggal date" value="{{ date('d/m/Y') }}">
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Tabel di Bawah Customer -->
-                        <div class="row">
-                            <!-- Datatables -->
-                            <div class="col-lg-12">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-4 mb-2">
-                                                <h5 class="mb-0">Daftar Pemakaian</h5>
-                                            </div>
-                                            <div class="col-md-2 mb-2 text-end" style="margin-top: -13px;">
-                                                @if (auth()->user()->jabatan == 5)
-                                                    <button type="button" class="btn btn-success" id="btnScanKartu"
-                                                        style="background-color: #2d5de0;">
-                                                        <span class="text">Scan Barcode</span>
-                                                    </button>
-                                                @endif
-                                            </div>
-
-                                            <div class="col-md-3 mb-2">
-                                                <div class="input-group">
-                                                    <input type="text" id="tanggal" class="form-control tanggal date"
-                                                        value="{{ date('d/m/Y') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 mb-2">
-                                                <div class="input-group">
-                                                    <input type="text" id="searchInput" class="form-control"
-                                                        placeholder="Search ...">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive p-3">
-                                        <table class="table align-items-center table-flush table-center table-hover"
-                                            id="TbPemakain">
-                                            <thead class="thead-light" align="center">
-                                                <tr>
-                                                    <th>NAMA</th>
-                                                    <th>NO.INDUK</th>
-                                                    <th>METER AWAL</th>
-                                                    <th>METER AKHIR</th>
-                                                    <th>PEMAKAIAN</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="DaftarInstalasi">
-                                                <!-- Data akan ditambahkan di sini -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
 
+                        <div style="overflow-x: auto;">
+                            <table class="table align-items-center table-flush table-center table-hover" id="TbPemakain">
+                                <thead class="thead-light" align="center">
+                                    <tr>
+                                        <th>NAMA</th>
+                                        <th>NO.INDUK</th>
+                                        <th>METER AWAL</th>
+                                        <th>METER AKHIR</th>
+                                        <th>PEMAKAIAN</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="DaftarInstalasi">
+                                    <!-- Data akan ditambahkan di sini -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr>
                         <div class="col-12  justify-content-end {{ auth()->user()->jabatan == '5' ? 'd-none' : 'd-flex' }}">
                             <a href="/usages" class="btn btn-secondary">Kembali</a>
                         </div>
@@ -115,12 +82,9 @@
         let indexInput;
         let dataPemakaian = [];
 
-        var id_user = '{{ auth()->user()->id }}'
-        $(document).ready(function() {
-            $('#caters').val(id_user).change()
-        })
         var startScan, scanningEnabled = true;
         var html5QrcodeScanner;
+
 
         $(document).ready(function() {
             scanningEnabled = true
@@ -150,6 +114,17 @@
 
             startScan = true
             $('#stopScan').html('Stop')
+        })
+
+        var id_cater = $('#caters').val();
+        var tanggal = $('#tanggal').val();
+
+        $.get('/installations/cater/' + id_cater + '?tanggal=' + tanggal, function(result) {
+            if (result.success) {
+                dataInstallation = result.installations;
+                dataSearch = dataInstallation
+                setTable(dataInstallation)
+            }
         })
 
         $(document).on('click', '#stopScan', function(e) {
@@ -299,20 +274,6 @@
             $('.tanggal').val($(this).val());
         })
 
-        $(document).on('change', '#caters, .tanggal', function(e) {
-            e.preventDefault()
-
-            var id_cater = $('#caters').val();
-            var tanggal = $('#tanggal').val();
-            $.get('/installations/cater/' + id_cater + '?tanggal=' + tanggal, function(result) {
-                if (result.success) {
-                    dataInstallation = result.installations;
-                    dataSearch = dataInstallation
-                    setTable(dataInstallation)
-                }
-            })
-        })
-
         $(document).on('click', '#TbPemakain #DaftarInstalasi tr td', function() {
             var parent = $(this).parent()
             var allowInput = parent.attr('data-allow-input')
@@ -350,10 +311,6 @@
             indexInput = index
         })
 
-        $(document).on('keyup', '#searchInput', function() {
-            searching($(this).val());
-        });
-
         function searching(search) {
             let data = dataInstallation;
 
@@ -368,51 +325,38 @@
         }
 
         function setTable(data) {
-            var table = $('#DaftarInstalasi');
+            $('#TbPemakain').DataTable().destroy();
+            const table = $('#DaftarInstalasi');
             table.html('');
 
+            const formatbulan1 = (tanggal, type = 'date') => {
+                if (!tanggal) return '';
+                const parts = tanggal.split('/');
+                return (parts.length === 3 && type === 'month') ? parts[1] : '';
+            };
+
+            const formatbulan2 = (tanggal, type = 'date') => {
+                if (!tanggal) return '';
+                const parts = tanggal.split('-');
+                return (parts.length === 3 && type === 'month') ? parts[1] : '';
+            };
+
+            const tgl_hariini = formatbulan1($('#tanggal').val(), 'month');
+
             data.forEach((item, index) => {
-                var nilai_awal = (item.one_usage) ? item.one_usage.akhir : '0';
-                var nilai_akhir = (item.one_usage) ? item.one_usage.akhir : '0';
-                var nilai_jumlah = (item.one_usage) ? item.one_usage.jumlah : '0';
+                const nilai_awal = item.one_usage ? item.one_usage.akhir : '0';
+                const nilai_akhir = item.one_usage ? item.one_usage.akhir : '0';
+                const nilai_jumlah = item.one_usage ? item.one_usage.jumlah : '0';
 
-                //set warna
-                function formatbulan1(tanggal,
-                    dataReturn = 'date') {
-                    if (!tanggal) return '';
-                    let parts = tanggal.split('/');
-                    if (parts.length === 3) {
-                        let [day, month, year] = parts;
-                        if (
-                            dataReturn == 'month') {
-                            return month;
-                        }
-                    }
-                }
+                const tgl_pemakaian = item.one_usage ? formatbulan2(item.one_usage.tgl_pemakaian, 'month') : '0';
+                const tgl_akhir = item.one_usage ? formatbulan2(item.one_usage.tgl_akhir, 'month') : '0';
 
-                function formatbulan2(tanggal,
-                    dataReturn = 'date') {
-                    if (!tanggal) return '';
-                    let parts = tanggal.split('-');
-                    if (parts.length === 3) {
-                        let [day, month, year] = parts;
-                        if (
-                            dataReturn == 'month') {
-                            return month;
-                        }
-                    }
-                }
+                let allowInput = false;
+                let colorClass = 'text-danger';
+                let hasildata = 0;
+                let jumlahN = 0;
 
-                var tgl_pemakaian = (item.one_usage) ? formatbulan2(item.one_usage.tgl_pemakaian, 'month') : '0';
-                var tgl_akhir = (item.one_usage) ? formatbulan2(item.one_usage.tgl_akhir, 'month') : '0';
-                var tgl_hariini = formatbulan1($('#tanggal').val(), 'month');
-
-                var allowInput = true;
-                var colorClass = 'text-danger';
-                allowInput = false;
-                hasildata = 0;
-                jumlahN = 0;
-
+                // tampilkan hanya jika belum pernah diinput dan waktunya sudah sesuai
                 if (tgl_akhir <= tgl_hariini) {
                     allowInput = true;
                     colorClass = 'text-warning';
@@ -420,24 +364,32 @@
                     jumlahN = 0;
                 }
 
-                if (tgl_pemakaian >= tgl_hariini || jQuery.inArray(item.id.toString(), dataPemakaian) !== -1) {
-                    allowInput = false;
-                    colorClass = 'text-success';
-                    hasildata = nilai_akhir;
-                    jumlahN = nilai_jumlah;
+                // jika sudah pernah diinput ATAU belum waktunya → jangan tampilkan
+                if (
+                    tgl_pemakaian >= tgl_hariini ||
+                    jQuery.inArray(item.id.toString(), dataPemakaian) !== -1
+                ) {
+                    // tetap disimpan kalau diperlukan, tapi tidak ditampilkan
+                    return;
                 }
-                //endset
-                table.append(`
-            <tr data-index="${index}" data-allow-input="${allowInput}" data-id="${item.id}">
-                <td align="left">${item.customer.nama}</td>    
-              <td align="center">${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>   
-                <td align="right" class="awal"><b>${nilai_awal}</b></td> 
-                <td align="right" class="akhir ${colorClass}"><b>${hasildata}</b></td> 
-                <td align="right" class="jumlah">${jumlahN}</td> 
-            </tr>
-        `);
+
+                // tampilkan di tabel jika memenuhi syarat
+                if (allowInput) {
+                    table.append(`
+                <tr data-index="${index}" data-allow-input="${allowInput}" data-id="${item.id}">
+                    <td align="left">${item.customer.nama}</td>    
+                    <td align="center">${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>   
+                    <td align="right" class="awal"><b>${nilai_awal}</b></td> 
+                    <td align="right" class="akhir ${colorClass}"><b>${hasildata}</b></td> 
+                    <td align="right" class="jumlah">${jumlahN}</td> 
+                </tr>
+            `);
+                }
             });
+
+            $('#TbPemakain').DataTable();
         }
+
 
         $(document).on('focus', '.input-nilai-akhir', function(e) {
             e.preventDefault();
@@ -467,7 +419,7 @@
         })
 
         $(document).on('click', '#SimpanPemakaian', function(e) {
-            e.preventDefault()
+            e.preventDefault();
 
             var id_cater = $('#caters').val();
             var customer = $('#customer').val();
@@ -487,9 +439,9 @@
                 akhir: akhir,
                 jumlah: jumlah,
                 toleransi: toleransi
-            }
+            };
 
-            var form = $('#FormInputPemakaian')
+            var form = $('#FormInputPemakaian');
             $.ajax({
                 type: 'POST',
                 url: form.attr('action'),
@@ -506,22 +458,17 @@
 
                         let pemakaian = result.pemakaian;
                         dataSearch[indexInput].one_usage = pemakaian;
+                        dataPemakaian.push(pemakaian.id_instalasi.toString());
+                        setTable(dataSearch);
 
-                        var tr = 'tr[data-index="' + indexInput + '"]';
-                        $('#DaftarInstalasi ' + tr).attr('data-allow-input', 'false')
-
-                        $('#DaftarInstalasi ' + tr + ' .awal').html(pemakaian.awal)
-                        $('#DaftarInstalasi ' + tr + ' .akhir').html(pemakaian.akhir)
-                        $('#DaftarInstalasi ' + tr + ' .jumlah').html(pemakaian.jumlah)
-
-                        $('#DaftarInstalasi ' + tr + ' .akhir').removeClass('text-warning')
-                        $('#DaftarInstalasi ' + tr + ' .akhir').addClass('text-success')
-
-                        dataPemakaian.push(pemakaian.id_instalasi)
-                        $('#staticBackdrop').modal('hide')
+                        // Tutup modal
+                        $('#staticBackdrop').modal('hide');
                     }
                 },
-            })
-        })
+                error: function() {
+                    alert('Terjadi kesalahan saat menyimpan');
+                }
+            });
+        });
     </script>
 @endsection
