@@ -31,12 +31,39 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
                                     <label for="bulan">Bulan Pemakaian</label>
+                                    {{-- MARET,FEBRUARI,JANUARI
                                     <select id="bulan" name="bulan" class="form-control select2">
                                         <option value="">-- Pilih Bulan --</option>
-                                        @for ($i = 1; $i <= 12; $i++)
-                                            <option {{ date('m') == $i ? 'selected' : '' }}
-                                                value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">
-                                                {{ Tanggal::namaBulan(date('Y') . '-' . str_pad($i, 2, '0', STR_PAD_LEFT) . '-01') }}
+                                        @php
+                                            $tahun = date('Y');
+                                            $bulanSekarang = date('n'); // 1-12 tanpa nol di depan
+                                        @endphp
+                                        @for ($i = $bulanSekarang; $i >= 1; $i--)
+                                            @php
+                                                $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
+                                                $tanggalObj = $tahun . '-' . $bulanValue . '-01';
+                                                $namaBulan = Tanggal::namaBulan($tanggalObj); // Januari, Februari, dst.
+                                            @endphp
+                                            <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
+                                                {{ $namaBulan }} {{ $tahun }}
+                                            </option>
+                                        @endfor
+                                    </select> --}}
+                                    {{-- JANUARI,FEBRUARI,MARET --}}
+                                    <select id="bulan" name="bulan" class="form-control select2">
+                                        <option value="">-- Pilih Bulan --</option>
+                                        @php
+                                            $tahun = date('Y');
+                                            $bulanSekarang = date('n'); // bulan sekarang, 1 - 12
+                                        @endphp
+                                        @for ($i = 1; $i <= $bulanSekarang; $i++)
+                                            @php
+                                                $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
+                                                $tanggalObj = $tahun . '-' . $bulanValue . '-01';
+                                                $namaBulan = Tanggal::namaBulan($tanggalObj);
+                                            @endphp
+                                            <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
+                                                {{ $namaBulan }} {{ $tahun }}
                                             </option>
                                         @endfor
                                     </select>
@@ -54,18 +81,17 @@
                                 </div>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
-                                @if (auth()->user()->jabatan == 1)
-                                    <button class="btn btn-danger btn-block" type="button" id="DetailCetakBuktiTagihan">
-                                        <i class="fas fa-info-circle"></i> Cetak Tagihan
-                                    </button>
-                                @endif
-                            </div>
-                            <div class="col-md-3 d-flex align-items-end">
                                 <button class="btn btn-warning btn-block" id="Registerpemakaian"
                                     @if (Session::get('jabatan') == 6) disabled @endif>
-                                    <i class="fas fa-plus"></i> Input Data Pemakaian
+                                    <i class="fas fa-plus"></i> Input Pemakaian
                                 </button>
                             </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-danger btn-block" type="button" id="DetailCetakBuktiTagihan">
+                                    <i class="fas fa-info-circle"></i> Hasil Input
+                                </button>
+                            </div>
+
                         </div>
                     </div>
 
@@ -79,7 +105,7 @@
                                     <th width="13%">Meter Akhir</th>
                                     <th width="5%">Pemakaian</th>
                                     <th width="12%">Tagihan</th>
-                                    <th width="15%">Tanggal Tagihan</th>
+                                    <th width="15%">Tanggal Akhir Bayar</th>
                                     <th width="5%">Status</th>
 
                                     <th style="text-align: center;" width="10%">Aksi</th>
@@ -109,11 +135,11 @@
                             <div>
                                 <div class="d-flex mb-1">
                                     <div class="fw-bold me-2" style="width: 120px;">Cater</div>
-                                    <div>: <span id="NamaCater">Ahmad Soeharto</span></div>
+                                    <div>: <span id="NamaCater"></span></div>
                                 </div>
                                 <div class="d-flex">
-                                    <div class="fw-bold me-2" style="width: 120px;">Tanggal Akhir</div>
-                                    <div>: <span id="TanggalCetak">27/02/2025</span></div>
+                                    <div class="fw-bold me-2" style="width: 120px;">Maksimal Bayar</div>
+                                    <div>: <span id="TanggalCetak"></span></div>
                                 </div>
                             </div>
 
@@ -122,11 +148,6 @@
                                     placeholder="Search ...">
                             </div>
                         </div>
-
-
-
-
-
                         {{-- <div class="d-flex justify-content-between mb-1">
                             <div>
                                 <span class="fw-bold">&nbsp;Cater</span> : <span id="NamaCater">-</span>
@@ -221,10 +242,19 @@
             $('#CetakBuktiTagihan').modal('hide');
         });
 
-        $(document).on(' click', '#Registerpemakaian', function(e) {
+        $(document).on('click', '#Registerpemakaian', function(e) {
             e.preventDefault();
-            window.location.href = '/usages/create';
+
+            var caterId = $('#caters').val(); // ambil cater yang dipilih
+            var url = '/usages/create';
+
+            if (caterId) {
+                url += '?cater_id=' + caterId;
+            }
+
+            window.location.href = url;
         });
+
 
         var cater = $('#caters').val()
         var bulan = $('#bulan').val()
@@ -236,7 +266,7 @@
                 "type": "GET"
             },
             "language": {
-                "processing": `<i class="fas fa-spinner fa-spin"></i> mohon tunggu....`,
+                "processing": `<i class="fas fa-spinner fa-spin"></i> Mohon Tunggu....`,
                 "emptyTable": "Tidak ada data yang tersedia",
                 "search": "",
                 "searchPlaceholder": "Pencarian...",
@@ -264,15 +294,35 @@
                     "data": "nominal"
                 },
                 {
-                    "data": "tgl_akhir"
+                    "data": "tgl_akhir",
+                    "render": function(data, type, row) {
+                        if (!data) return '';
+
+                        var parts = data.split('/');
+                        if (parts.length !== 3) return data;
+
+                        var day = parseInt(parts[0], 10);
+                        var month = parseInt(parts[1], 10) - 1;
+                        var year = parseInt(parts[2], 10);
+
+                        var t = new Date(year, month, day);
+                        t.setDate(t.getDate() - 1);
+
+                        var dd = String(t.getDate()).padStart(2, '0');
+                        var mm = String(t.getMonth() + 1).padStart(2, '0');
+                        var yyyy = t.getFullYear();
+
+                        return dd + '/' + mm + '/' + yyyy;
+                    }
                 },
                 {
                     "data": "status"
                 },
                 {
-                    "data": "aksi",
+                    "data": "aksi"
                 }
             ]
+
         });
 
         $('#caters').on('change', function() {
@@ -285,9 +335,7 @@
             table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
         });
 
-        $(document).on('keyup', '#SearchTagihan', function() {
-            searching($(this).val());
-        });
+
 
         function searching(search) {
             let data = table.data().toArray();
@@ -309,9 +357,13 @@
 
             if (data.length > 0) {
                 const cater = data[0].users_cater.nama;
-                const tanggal = data[0].tgl_akhir;
+                const tanggal = data[0].tgl_akhir; // 2025-05-22 | 22/05/2025
+
+                var tgl = tanggal.split('/') // [2025, 05, 22]
+                var hari = tgl[0] - 1;
+
                 $('#NamaCater').text(cater);
-                $('#TanggalCetak').text(tanggal);
+                $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
                 $('#InputCater').val(cater);
                 $('#InputTanggal').val(tanggal);
             }
