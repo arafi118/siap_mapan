@@ -88,6 +88,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
             session([
                 'nama_usaha' => $business->nama,
+                'lokasi' => $business->id,
                 'nama' => $user->nama,
                 'jabatan' => $user->jabatan,
                 'logo' => $business->logo,
@@ -98,7 +99,11 @@ class AuthController extends Controller
             ]);
 
             if ($user->jabatan == '5') {
+<<<<<<< HEAD
                 return redirect('/usages/?cater_id='.$user->id)->with('success', 'Selamat Datang ' . $user->nama);
+=======
+                return redirect('/usages/cater')->with('success', 'Selamat Datang ' . $user->nama);
+>>>>>>> bec5b2e0fdc22d97c8771f77e54f6f779e735352
             }
 
             return redirect('/')->with('success', 'Selamat Datang ' . $user->nama);
