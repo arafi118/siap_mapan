@@ -63,9 +63,10 @@
                             </table>
                         </div>
                         <hr>
-                        <div class="col-12  justify-content-end {{ auth()->user()->jabatan == '5' ? 'd-none' : 'd-flex' }}">
+                        <div class="col-12 justify-content-end d-flex">
                             <a href="/usages" class="btn btn-secondary">Kembali</a>
                         </div>
+
                     </div>
                 </div>
             </div>
