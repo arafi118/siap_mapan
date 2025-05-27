@@ -1,10 +1,7 @@
 @php
     use App\Utils\Tanggal;
-    if (Session::get('business_id') == 5) {
-        header('Location: /usages/cater');
-        exit();
-    }
 @endphp
+
 @extends('layouts.base')
 
 @section('content')
@@ -35,40 +32,41 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
                                     <label for="bulan">Bulan Pemakaian</label>
+                                    {{-- MARET,FEBRUARI,JANUARI
+                                    <select id="bulan" name="bulan" class="form-control select2">
+                                        <option value="">-- Pilih Bulan --</option>
+                                        @php
+                                            $tahun = date('Y');
+                                            $bulanSekarang = date('n'); // 1-12 tanpa nol di depan
+                                        @endphp
+                                        @for ($i = $bulanSekarang; $i >= 1; $i--)
+                                            @php
+                                                $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
+                                                $tanggalObj = $tahun . '-' . $bulanValue . '-01';
+                                                $namaBulan = Tanggal::namaBulan($tanggalObj); // Januari, Februari, dst.
+                                            @endphp
+                                            <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
+                                                {{ $namaBulan }} {{ $tahun }}
+                                            </option>
+                                        @endfor
+                                    </select> --}}
                                     {{-- JANUARI,FEBRUARI,MARET --}}
                                     <select id="bulan" name="bulan" class="form-control select2">
                                         <option value="">-- Pilih Bulan --</option>
                                         @php
-                                            $tgl_pakai = '2024-05-12';
-                                            $start = Carbon\Carbon::parse($tgl_pakai)->startOfMonth();
-                                            $end = Carbon\Carbon::now()->endOfMonth();
-                                            $current = Carbon\Carbon::now();
-
-                                            $months = [];
-                                            while ($start <= $end) {
-                                                $months[] = [
-                                                    'value' => $start->format('Y-m'),
-                                                    'label' =>
-                                                        Tanggal::namaBulan($start->format('Y-m-d')) .
-                                                        ' ' .
-                                                        $start->format('Y'),
-                                                    'is_current' =>
-                                                        $start->month == $current->month &&
-                                                        $start->year == $current->year,
-                                                ];
-                                                $start->addMonth();
-                                            }
-
-                                            // Urutkan dari bulan terbaru ke terlama
-                                            $months = array_reverse($months);
+                                            $tahun = date('Y');
+                                            $bulanSekarang = date('n'); // bulan sekarang, 1 - 12
                                         @endphp
-
-                                        @foreach ($months as $month)
-                                            <option value="{{ $month['value'] }}"
-                                                {{ $month['is_current'] ? 'selected' : '' }}>
-                                                {{ $month['label'] }}
+                                        @for ($i = 1; $i <= $bulanSekarang; $i++)
+                                            @php
+                                                $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
+                                                $tanggalObj = $tahun . '-' . $bulanValue . '-01';
+                                                $namaBulan = Tanggal::namaBulan($tanggalObj);
+                                            @endphp
+                                            <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
+                                                {{ $namaBulan }} {{ $tahun }}
                                             </option>
-                                        @endforeach
+                                        @endfor
                                     </select>
                                 </div>
                             </div>
@@ -262,20 +260,10 @@
             e.preventDefault();
 
             var caterId = $('#caters').val(); // ambil cater yang dipilih
-            var bulan = $('#bulan').val(); // ambil bulan yang dipilih
             var url = '/usages/create';
-            var params = [];
 
             if (caterId) {
-                params.push('cater_id=' + caterId);
-            }
-
-            if (bulan) {
-                params.push('tgl_kondisi=' + bulan);
-            }
-
-            if (params.length > 0) {
-                url += '?' + params.join('&');
+                url += '?cater_id=' + caterId;
             }
 
             window.location.href = url;

@@ -126,7 +126,6 @@ class UsageController extends Controller
         $title = '';
         return view('penggunaan.barcode')->with(compact('title'));
     }
-
     public function store(Request $request)
     {
         $data = $request->only('data')['data'];
@@ -166,35 +165,34 @@ class UsageController extends Controller
             'kode_instalasi' => $installation->kode_instalasi,
             'tgl_akhir' => $tglAkhir,
             'nominal' => $harga[$index_harga] * ($data['akhir'] - $data['awal']),
-            'cater' => $data['id_cater'],
+            'cater' =>  $data['id_cater'],
             'user_id' => auth()->user()->id,
         ];
 
+        // Simpan data
         $usage = Usage::create($insert);
 
         return response()->json([
             'success' => true,
-            'msg' => 'Input Pemakain Berhasil',
+            'msg' => 'Input Pemakain Berhasil ',
             'pemakaian' => $usage
         ]);
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function carianggota(Request $request)
     {
         $query = $request->input('query');
 
-        $customer = Customer::where('business_id', Session::get('business_id'))
-            ->join('installations', 'customers.id', 'installations.customer_id')
+        $customer = Customer::where('business_id', Session::get('business_id'))->join('installations', 'customers.id', 'installations.customer_id')
             ->where('customers.nama', 'LIKE', '%' . $query . '%')
-            ->orWhere('installations.kode_instalasi', 'LIKE', '%' . $query . '%')
-            ->get();
+            ->orwhere('installations.kode_instalasi', 'LIKE', '%' . $query . '%')->get();
 
         $data_customer = [];
         foreach ($customer as $cus) {
-            $usage = Usage::where('business_id', Session::get('business_id'))
-                ->where('id_instalasi', $cus->id)
-                ->orderBy('created_at', 'DESC')
-                ->first();
+            $usage = Usage::where('business_id', Session::get('business_id'))->where('id_instalasi', $cus->id)->orderBy('created_at', 'DESC')->first();
 
             $data_customer[] = [
                 'customer' => $cus,
@@ -202,8 +200,10 @@ class UsageController extends Controller
             ];
         }
 
+
         return response()->json($data_customer);
     }
+
 
     public function detailTagihan()
     {
@@ -214,16 +214,18 @@ class UsageController extends Controller
             ->whereHas('usersCater', function ($q) {
                 $q->where('jabatan', 5);
             })
-            ->with(['customers', 'installation', 'usersCater'])
+            ->with(['customers', 'installation', 'usersCater']) // panggil relasinya
             ->get();
 
+
         return [
-            'label' => '<i class="fas fa-book"></i> Detail Pemakaian Dengan Status <b>(UNPAID)</b>',
+            'label' => '<i class="fas fa-book"></i> ' . 'Detail Pemakaian Dengan Status <b>(UNPAID)</b>',
             'cetak' => view('penggunaan.partials.DetailTagihan', [
                 'usages' => $usages
             ])->render()
         ];
     }
+
 
     public function cetak(Request $request)
     {
@@ -231,10 +233,12 @@ class UsageController extends Controller
         $id = $request->cetak;
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
-        $data['usage'] = Usage::where('business_id', Session::get('business_id'))
-            ->whereIn('id', $id)
-            ->with('customers', 'installation', 'usersCater', 'installation.package')
-            ->get();
+        $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id)->with(
+            'customers',
+            'installation',
+            'usersCater',
+            'installation.package'
+        )->get();
         $data['jabatan'] = User::where([
             ['business_id', Session::get('business_id')],
             ['jabatan', '3']
@@ -247,7 +251,6 @@ class UsageController extends Controller
         $pdf = PDF::loadHTML($view)->setPaper('Legal', 'potrait');
         return $pdf->stream();
     }
-
     public function cetak_tagihan(Request $request)
     {
         $thn = $request->input('tahun');
@@ -268,6 +271,7 @@ class UsageController extends Controller
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
 
+        // Ambil petugas cater jika dipilih
         $jabatanQuery = User::where([
             ['business_id', Session::get('business_id')],
             ['jabatan', '5']
@@ -295,7 +299,7 @@ class UsageController extends Controller
             'usersCater',
             'installation.package'
         ])->get();
-
+        // Sortir berdasarkan dusun, rt, dan tgl_akhir
         $data['usages'] = $usages->sortBy([
             fn ($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
             fn ($a, $b) => $a->installation->rt <=> $b->installation->rt,
@@ -321,15 +325,22 @@ class UsageController extends Controller
         //
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(Usage $usage)
     {
-        $usages = Usage::where('business_id', Session::get('business_id'))
-            ->with(['customers', 'installation'])
-            ->get();
+        $usages = Usage::where('business_id', Session::get('business_id'))->with([
+            'customers',
+            'installation'
+        ])->get();
         $title = 'Data Pemakaian';
         return view('penggunaan.edit')->with(compact('title', 'usage', 'usages'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Usage $usage)
     {
         $data = $request->only([
@@ -340,9 +351,9 @@ class UsageController extends Controller
         ]);
 
         $rules = [
-            'awal' => 'required|numeric',
-            'akhir' => 'required|numeric',
-            'jumlah' => 'required|numeric',
+            'awal'      => 'required|numeric',
+            'akhir'     => 'required|numeric',
+            'jumlah'    => 'required|numeric',
             'tgl_akhir' => 'required|date_format:d/m/Y'
         ];
         $validate = Validator::make($data, $rules);
@@ -376,14 +387,17 @@ class UsageController extends Controller
         $nominal = $harga[$index_harga] * $jumlah;
         $usage->update([
             'tgl_akhir' => Tanggal::tglNasional($request->tgl_akhir),
-            'awal' => $request->awal,
-            'akhir' => $request->akhir,
-            'jumlah' => $jumlah,
-            'nominal' => $nominal
+            'awal'      => $request->awal,
+            'akhir'     => $request->akhir,
+            'jumlah'    => $jumlah,
+            'nominal'   => $nominal
         ]);
 
         return redirect('/usages')->with('berhasil', 'Usage berhasil diperbarui!');
     }
+
+
+
 
     public function destroy(Usage $usage)
     {

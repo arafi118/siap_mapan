@@ -1,14 +1,14 @@
 @extends('layouts.base')
 @php
-
     $label_search = 'Nama/Kode Installasi';
+
 @endphp
 @section('content')
     <form action="/usages" method="post" id="FormInputPemakaian">
         @csrf
         <input type="hidden" id="tgl_toleransi" value="{{ $settings->tanggal_toleransi }}">
         <input type="hidden" id="caters" value="{{ $cater_id }}">
-        <input type="hidden" name="tanggal" id="tanggal" value="{{ \Carbon\Carbon::parse($tgl_kondisi)->endOfMonth()->format('d/m/Y') }}">
+        <input type="hidden" name="tanggal" id="tanggal" value="{{ date('d/m/Y') }}">
 
         <div class="row">
             <div class="col-lg-12">
@@ -27,6 +27,20 @@
                                     <h3><b>Input Pemakaian Air Bulanan</b></h3>
                                 </div>
                                 <hr class="my-2 bg-white">
+                                {{-- <div class="row">
+                                    <div class="col-md-8 mb-2">
+                                        <select class="select2 form-control" name="caters" id="caters">
+                                            <option value=""></option>
+                                            @foreach ($caters as $cater)
+                                                <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <input type="text" name="tanggal" id="tanggal"
+                                            class="form-control tanggal date" value="{{ date('d/m/Y') }}">
+                                    </div>
+                                </div> --}}
                             </div>
                         </div>
 
@@ -49,7 +63,7 @@
                             </table>
                         </div>
                         <hr>
-                        <div class="col-12  justify-content-end d-flex">
+                        <div class="col-12  justify-content-end {{ auth()->user()->jabatan == '5' ? 'd-none' : 'd-flex' }}">
                             <a href="/usages" class="btn btn-secondary">Kembali</a>
                         </div>
                     </div>
@@ -365,13 +379,9 @@
                 if (allowInput) {
                     table.append(`
                 <tr data-index="${index}" data-allow-input="${allowInput}" data-id="${item.id}">
-<<<<<<< HEAD
                     <td align="left">${item.customer.nama}</td> 
                     <td align="left">${item.village.dusun}</td>   
                     <td align="left">${item.rt}</td>
-=======
-                    <td align="left">${item.customer.nama} | ${item.id}</td>    
->>>>>>> bec5b2e0fdc22d97c8771f77e54f6f779e735352
                     <td align="center">${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>   
                     <td align="right" class="awal"><b>${nilai_awal}</b></td> 
                     <td align="right" class="akhir ${colorClass}"><b>${hasildata}</b></td> 
