@@ -1,9 +1,9 @@
 @php
     use App\Utils\Tanggal;
-if(Session::get('business_id') == 5){
-    header('Location: /usages/cater');
-    exit();
-}
+    if (Session::get('business_id') == 5) {
+        header('Location: /usages/cater');
+        exit();
+    }
 @endphp
 @extends('layouts.base')
 
@@ -38,37 +38,42 @@ if(Session::get('business_id') == 5){
                                     {{-- JANUARI,FEBRUARI,MARET --}}
                                     <select id="bulan" name="bulan" class="form-control select2">
                                         <option value="">-- Pilih Bulan --</option>
-@php
-    $tgl_pakai = '2024-05-12';
-    $start = Carbon\Carbon::parse($tgl_pakai)->startOfMonth();
-    $end = Carbon\Carbon::now()->endOfMonth();
-    $current = Carbon\Carbon::now();
-    
-    $months = [];
-    while ($start <= $end) {
-        $months[] = [
-            'value' => $start->format('Y-m'),
-            'label' => Tanggal::namaBulan($start->format('Y-m-d')) . ' ' . $start->format('Y'),
-            'is_current' => $start->month == $current->month && $start->year == $current->year
-        ];
-        $start->addMonth();
-    }
-    
-    // Urutkan dari bulan terbaru ke terlama
-    $months = array_reverse($months);
-@endphp
+                                        @php
+                                            $tgl_pakai = '2024-05-12';
+                                            $start = Carbon\Carbon::parse($tgl_pakai)->startOfMonth();
+                                            $end = Carbon\Carbon::now()->endOfMonth();
+                                            $current = Carbon\Carbon::now();
 
-@foreach ($months as $month)
-    <option value="{{ $month['value'] }}" {{ $month['is_current'] ? 'selected' : '' }}>
-        {{ $month['label'] }}
-    </option>
-@endforeach
+                                            $months = [];
+                                            while ($start <= $end) {
+                                                $months[] = [
+                                                    'value' => $start->format('Y-m'),
+                                                    'label' =>
+                                                        Tanggal::namaBulan($start->format('Y-m-d')) .
+                                                        ' ' .
+                                                        $start->format('Y'),
+                                                    'is_current' =>
+                                                        $start->month == $current->month &&
+                                                        $start->year == $current->year,
+                                                ];
+                                                $start->addMonth();
+                                            }
+
+                                            // Urutkan dari bulan terbaru ke terlama
+                                            $months = array_reverse($months);
+                                        @endphp
+
+                                        @foreach ($months as $month)
+                                            <option value="{{ $month['value'] }}"
+                                                {{ $month['is_current'] ? 'selected' : '' }}>
+                                                {{ $month['label'] }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
-<<<<<<< HEAD
                                     @if (Session::get('jabatan') == 5)
                                         <label for="caters">Cater</label>
                                         {{-- Tampilkan nama cater sebagai input readonly (bisa juga <p> atau <span>) --}}
@@ -80,24 +85,14 @@ if(Session::get('business_id') == 5){
                                         <label for="caters">Cater</label>
                                         <select class="form-control select2" id="caters" name="caters">
                                             <option value="">Semua</option>
-=======
-                                    <label for="caters">Cater</label>
-                                        <select class="form-control select2" id="caters" name="caters">
-                                            @if ($caters->count() > 1)
-                                                <option value="">Semua</option>
-                                            @endif
->>>>>>> bec5b2e0fdc22d97c8771f77e54f6f779e735352
                                             @foreach ($caters as $cater)
                                                 <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
                                             @endforeach
                                         </select>
-<<<<<<< HEAD
                                     @endif
 
 
 
-=======
->>>>>>> bec5b2e0fdc22d97c8771f77e54f6f779e735352
                                 </div>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
@@ -267,7 +262,7 @@ if(Session::get('business_id') == 5){
             e.preventDefault();
 
             var caterId = $('#caters').val(); // ambil cater yang dipilih
-            var bulan = $('#bulan').val();    // ambil bulan yang dipilih
+            var bulan = $('#bulan').val(); // ambil bulan yang dipilih
             var url = '/usages/create';
             var params = [];
 
