@@ -20,62 +20,71 @@ use Yajra\DataTables\Facades\DataTables;
 class UsageController extends Controller
 {
 
-    public function index()
-    {
-        if (request()->ajax()) {
-            $bulan = request()->get('bulan') ?: date('m');
-            $cater = request()->get('cater') ?: '';
+   public function index()
+{
+    if (request()->ajax()) {
+        $bulan = request()->get('bulan') ?: date('m');
+        // Ganti dari 'cater' ke 'cater_id' sesuai parameter yang dipakai di frontend
+        $caterId = request()->get('cater_id') ?: '';
 
-            $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
-            $usages = Usage::where([
-                ['business_id', Session::get('business_id')],
-                ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%']
-            ]);
+        $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
 
-            if ($cater != '') {
-                $usages->where('cater', $cater);
-            }
+        $usages = Usage::where([
+            ['business_id', Session::get('business_id')],
+            ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%']
+        ]);
 
-            $usages = $usages->with([
-                'customers',
-                'installation',
-                'installation.village',
-                'usersCater',
-                'installation.package'
-            ])->orderBy('created_at', 'DESC')->get();
-
-            Session::put('usages', $usages);
-
-            return DataTables::of($usages)
-                ->addColumn('kode_instalasi_dengan_inisial', function ($usage) {
-                    $kode = $usage->installation->kode_instalasi ?? '-';
-                    $inisial = $usage->installation->package->inisial ?? '';
-                    return $kode . ($inisial ? '-' . $inisial : '');
-                })
-                ->addColumn('aksi', function ($usage) {
-                    $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm mb-1 mb-md-0 me-md-1"><i class="fas fa-pencil-alt"></i></a>&nbsp;';
-                    $delete = '<a href="#" data-id="' . $usage->id . '" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
-
-                    return '<div class="d-flex flex-column flex-md-row">' . $edit . $delete . '</div>';
-                })
-
-                ->addColumn('tgl_akhir', function ($usage) {
-                    return Tanggal::tglIndo($usage->tgl_akhir);
-                })
-                ->editColumn('nominal', function ($usage) {
-                    return number_format($usage->nominal, 2);
-                })
-                ->rawColumns(['aksi'])
-                ->make(true);
+        if ($caterId != '') {
+            // Asumsi kolom di DB adalah cater_id (atau sesuaikan nama kolom yang benar)
+            $usages->where('cater_id', $caterId);
         }
 
-        $caters = User::where([
-            ['business_id', Session::get('business_id')],
-            ['jabatan', '5']
-        ])->get();
-        $title = 'Data Pemakaian';
-        return view('penggunaan.index')->with(compact('title', 'caters'));
+        $usages = $usages->with([
+            'customers',
+            'installation',
+            'installation.village',
+            'usersCater',
+            'installation.package'
+        ])->orderBy('created_at', 'DESC')->get();
+
+        Session::put('usages', $usages);
+
+        return DataTables::of($usages)
+            ->addColumn('kode_instalasi_dengan_inisial', function ($usage) {
+                $kode = $usage->installation->kode_instalasi ?? '-';
+                $inisial = $usage->installation->package->inisial ?? '';
+                return $kode . ($inisial ? '-' . $inisial : '');
+            })
+            ->addColumn('aksi', function ($usage) {
+                $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm mb-1 mb-md-0 me-md-1"><i class="fas fa-pencil-alt"></i></a>&nbsp;';
+                $delete = '<a href="#" data-id="' . $usage->id . '" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
+                return '<div class="d-flex flex-column flex-md-row">' . $edit . $delete . '</div>';
+            })
+            ->addColumn('tgl_akhir', function ($usage) {
+                return Tanggal::tglIndo($usage->tgl_akhir);
+            })
+            ->editColumn('nominal', function ($usage) {
+                return number_format($usage->nominal, 2);
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
     }
+
+    // Ambil data cater (jabatan 5) untuk dropdown / hidden input
+    $caters = User::where([
+        ['business_id', Session::get('business_id')],
+        ['jabatan', '5']
+    ])->get();
+
+    $user = auth()->user(); // atau Session::get('user') kalau pakai session manual
+
+    // Kirim cater_id default untuk user jabatan 5 supaya otomatis filter
+    $cater_id = ($user->jabatan == 5) ? $user->id : '';
+
+    $title = 'Data Pemakaian';
+
+    return view('penggunaan.index')->with(compact('title', 'caters', 'user', 'cater_id'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -94,7 +103,7 @@ class UsageController extends Controller
         ->when($cater_id, function ($query) use ($cater_id) {
             $query->where('cater_id', $cater_id); 
         })
-        ->with(['customer', 'package', 'users', 'oneUsage'])
+        ->with(['customer', 'package', 'users', 'oneUsage','village'])
         ->orderBy('id', 'ASC')
         ->get();
 

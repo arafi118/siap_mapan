@@ -18,11 +18,12 @@
                 <div class="table-responsive p-3">
                     <div style="card-header">
                         <div class="row">
-                            <div class="col-md-12">
-                                <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
-                                <b>Data Pemakaian</b>
-                            </div>
-
+                            @if (Session::get('jabatan') != 5)
+                                <div class="col-md-12">
+                                    <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
+                                    <b>Data Pemakaian</b>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -71,13 +72,25 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
-                                    <label for="caters">Cater</label>
-                                    <select class="form-control select2" id="caters" name="caters">
-                                        <option value="">Semua</option>
-                                        @foreach ($caters as $cater)
-                                            <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
-                                        @endforeach
-                                    </select>
+                                    @if (Session::get('jabatan') == 5)
+                                        <label for="caters">Cater</label>
+                                        {{-- Tampilkan nama cater sebagai input readonly (bisa juga <p> atau <span>) --}}
+                                        <input type="text" class="form-control" id="caters_display"
+                                            value="{{ $user->nama }}" readonly>
+                                        {{-- Hidden input untuk filter --}}
+                                        <input type="hidden" id="caters" name="caters" value="{{ $user->id }}">
+                                    @else
+                                        <label for="caters">Cater</label>
+                                        <select class="form-control select2" id="caters" name="caters">
+                                            <option value="">Semua</option>
+                                            @foreach ($caters as $cater)
+                                                <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
+
+
+
                                 </div>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
@@ -107,8 +120,9 @@
                                     <th width="12%">Tagihan</th>
                                     <th width="15%">Tanggal Akhir Bayar</th>
                                     <th width="5%">Status</th>
-
-                                    <th style="text-align: center;" width="10%">Aksi</th>
+                                    @if (Session::get('jabatan') != 5)
+                                        <th style="text-align: center;" width="10%">Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -180,8 +194,8 @@
                                 <tr>
                                     <td align="center" width="40">
                                         <div class="form-check text-center ps-0 mb-0">
-                                            <input class="form-check-input" type="checkbox" value="true" id="checked"
-                                                name="checked" checked>
+                                            <input class="form-check-input" type="checkbox" value="true"
+                                                id="checked" name="checked" checked>
                                         </div>
                                     </td>
                                     <td align="center" width="120">Nama</td>
@@ -258,6 +272,57 @@
 
         var cater = $('#caters').val()
         var bulan = $('#bulan').val()
+        var columns = [{
+                "data": "customers.nama"
+            },
+            {
+                "data": "kode_instalasi_dengan_inisial"
+            },
+            {
+                "data": "awal"
+            },
+            {
+                "data": "akhir"
+            },
+            {
+                "data": "jumlah"
+            },
+            {
+                "data": "nominal"
+            },
+            {
+                "data": "tgl_akhir",
+                "render": function(data, type, row) {
+                    if (!data) return '';
+
+                    var parts = data.split('/');
+                    if (parts.length !== 3) return data;
+
+                    var day = parseInt(parts[0], 10);
+                    var month = parseInt(parts[1], 10) - 1;
+                    var year = parseInt(parts[2], 10);
+
+                    var t = new Date(year, month, day);
+                    t.setDate(t.getDate() - 1);
+
+                    var dd = String(t.getDate()).padStart(2, '0');
+                    var mm = String(t.getMonth() + 1).padStart(2, '0');
+                    var yyyy = t.getFullYear();
+
+                    return dd + '/' + mm + '/' + yyyy;
+                }
+            },
+            {
+                "data": "status"
+            }
+        ];
+
+        @if (Session::get('jabatan') != 5)
+            columns.push({
+                "data": "aksi"
+            });
+        @endif
+
         var table = $('#TbPemakain').DataTable({
             "processing": true,
             "serverSide": true,
@@ -275,55 +340,9 @@
                     "previous": "<i class='fas fa-angle-left'></i>"
                 }
             },
-            "columns": [{
-                    "data": "customers.nama"
-                },
-                {
-                    "data": "kode_instalasi_dengan_inisial"
-                },
-                {
-                    "data": "awal"
-                },
-                {
-                    "data": "akhir"
-                },
-                {
-                    "data": "jumlah"
-                },
-                {
-                    "data": "nominal"
-                },
-                {
-                    "data": "tgl_akhir",
-                    "render": function(data, type, row) {
-                        if (!data) return '';
-
-                        var parts = data.split('/');
-                        if (parts.length !== 3) return data;
-
-                        var day = parseInt(parts[0], 10);
-                        var month = parseInt(parts[1], 10) - 1;
-                        var year = parseInt(parts[2], 10);
-
-                        var t = new Date(year, month, day);
-                        t.setDate(t.getDate() - 1);
-
-                        var dd = String(t.getDate()).padStart(2, '0');
-                        var mm = String(t.getMonth() + 1).padStart(2, '0');
-                        var yyyy = t.getFullYear();
-
-                        return dd + '/' + mm + '/' + yyyy;
-                    }
-                },
-                {
-                    "data": "status"
-                },
-                {
-                    "data": "aksi"
-                }
-            ]
-
+            "columns": columns
         });
+
 
         $('#caters').on('change', function() {
             cater = $(this).val()
