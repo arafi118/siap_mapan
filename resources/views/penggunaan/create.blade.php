@@ -346,6 +346,7 @@
             const tgl_hariini = formatbulan1($('#tanggal').val(), 'month');
 
             data.forEach((item, index) => {
+                console.log(item);
                 const nilai_awal = item.one_usage ? item.one_usage.akhir : '0';
                 const nilai_akhir = item.one_usage ? item.one_usage.akhir : '0';
                 const nilai_jumlah = item.one_usage ? item.one_usage.jumlah : '0';
@@ -380,7 +381,7 @@
                     table.append(`
                 <tr data-index="${index}" data-allow-input="${allowInput}" data-id="${item.id}">
                     <td align="left">${item.customer.nama}</td> 
-                    <td align="left">${item.village.dusun}</td>   
+                    <td align="left">${item.village?.dusun || '-'}</td>
                     <td align="left">${item.rt}</td>
                     <td align="center">${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>   
                     <td align="right" class="awal"><b>${nilai_awal}</b></td> 
@@ -392,6 +393,7 @@
             });
 
             $('#TbPemakain').DataTable();
+
         }
 
 

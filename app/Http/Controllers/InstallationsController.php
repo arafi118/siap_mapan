@@ -61,12 +61,11 @@ class InstallationsController extends Controller
     {
         $installations = Installations::where('business_id', Session::get('business_id'))
             ->with([
-                'customer.village',
+                'customer',
                 'package',
                 'village',
                 'users'
             ])->get();
-
         $title = 'Data Intalasi';
         return view('perguliran.partials.DaftarInstalasi')->with(compact('title', 'installations'));
     }
@@ -1026,7 +1025,7 @@ class InstallationsController extends Controller
         $installasi = Installations::where('business_id', Session::get('business_id'))
             ->where('cater_id',$cater_id)
             ->whereNotIn('id', $usedInstallationIds)
-            ->with(['customer', 'package', 'users', 'oneUsage'])
+            ->with(['customer', 'package', 'users', 'oneUsage','village'])
             ->orderBy('id', 'ASC')
             ->get();
 

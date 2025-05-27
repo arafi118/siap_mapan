@@ -103,15 +103,19 @@ class UsageController extends Controller
         ->when($cater_id, function ($query) use ($cater_id) {
             $query->where('cater_id', $cater_id); 
         })
-        ->with(['customer', 'package', 'users', 'oneUsage','village'])
-        ->orderBy('id', 'ASC')
+        ->with([
+            'customer',
+            'package',
+            'users',
+            'oneUsage',
+            'village'
+            ])->orderBy('id', 'ASC')
         ->get();
 
     $caters = User::where([
         ['business_id', $business_id],
         ['jabatan', '5']
     ])->get();
-
     $usages = Usage::where('business_id', $business_id)->get();
 
     $pilih_customer = $cater_id ?? 0;
