@@ -5,12 +5,6 @@
 @extends('layouts.base')
 
 @section('content')
-    @if (session('success'))
-        <div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
-            <li class="	fas fa-check-circle"></li>
-            {{ session('success') }}
-        </div>
-    @endif
     <div class="row">
         <!-- Datatables -->
         <div class="col-lg-12">
