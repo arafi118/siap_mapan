@@ -1,10 +1,7 @@
 @php
     use App\Utils\Tanggal;
-if(Session::get('business_id') == 5){
-    header('Location: /usages/cater');
-    exit();
-}
 @endphp
+
 @extends('layouts.base')
 
 @section('content')
@@ -78,13 +75,7 @@ if(Session::get('business_id') == 5){
                                         </select>
                                 </div>
                             </div>
-                            <div class="col-md-3 d-flex align-items-end">
-                                <button class="btn btn-warning btn-block" id="Registerpemakaian"
-                                    @if (Session::get('jabatan') == 6) disabled @endif>
-                                    <i class="fas fa-plus"></i> Input Pemakaian
-                                </button>
-                            </div>
-                            <div class="col-md-3 d-flex align-items-end">
+                            <div class="col-md-6 d-flex align-items-end">
                                 <button class="btn btn-danger btn-block" type="button" id="DetailCetakBuktiTagihan">
                                     <i class="fas fa-info-circle"></i> Hasil Input
                                 </button>
@@ -270,7 +261,7 @@ if(Session::get('business_id') == 5){
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "/usages?bulan=" + bulan + "&cater=" + cater,
+                "url": "/usages/cater?bulan=" + bulan + "&cater=" + cater,
                 "type": "GET"
             },
             "language": {
@@ -283,64 +274,45 @@ if(Session::get('business_id') == 5){
                     "previous": "<i class='fas fa-angle-left'></i>"
                 }
             },
-            "columns": [{
-                    "data": "customers.nama"
+            "columns": [
+                {
+                    "data": "nama"
                 },
                 {
-                    "data": "kode_instalasi_dengan_inisial"
+                    "data": "no_induk"
                 },
                 {
-                    "data": "awal"
+                    "data": "meter_awal"
                 },
                 {
-                    "data": "akhir"
+                    "data": "meter_akhir"
                 },
                 {
-                    "data": "jumlah"
+                    "data": "pemakaian"
                 },
                 {
-                    "data": "nominal"
+                    "data": "tagihan"
                 },
                 {
-                    "data": "tgl_akhir",
-                    "render": function(data, type, row) {
-                        if (!data) return '';
-
-                        var parts = data.split('/');
-                        if (parts.length !== 3) return data;
-
-                        var day = parseInt(parts[0], 10);
-                        var month = parseInt(parts[1], 10) - 1;
-                        var year = parseInt(parts[2], 10);
-
-                        var t = new Date(year, month, day);
-                        t.setDate(t.getDate() - 1);
-
-                        var dd = String(t.getDate()).padStart(2, '0');
-                        var mm = String(t.getMonth() + 1).padStart(2, '0');
-                        var yyyy = t.getFullYear();
-
-                        return dd + '/' + mm + '/' + yyyy;
-                    }
+                    "data": "tgl_akhir_bayar"
                 },
                 {
-                    "data": "status"
+                    "data": "status",
+                    "className": "text-center" 
                 },
                 {
                     "data": "aksi"
                 }
             ]
-
         });
-
         $('#caters').on('change', function() {
             cater = $(this).val()
-            table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+            table.ajax.url("/usages/cater?bulan=" + bulan + "&cater=" + cater).load();
         });
 
         $('#bulan').on('change', function() {
             bulan = $(this).val()
-            table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+            table.ajax.url("/usages/cater?bulan=" + bulan + "&cater=" + cater).load();
         });
 
 
@@ -488,7 +460,7 @@ if(Session::get('business_id') == 5){
             e.preventDefault();
 
             var hapus_pemakaian = $(this).attr('data-id'); // Ambil ID yang terkait dengan tombol hapus
-            var actionUrl = '/usages/' + hapus_pemakaian; // URL endpoint untuk proses hapus
+            var actionUrl = '/usages/cater/' + hapus_pemakaian; // URL endpoint untuk proses hapus
 
             Swal.fire({
                 title: "Apakah Anda yakin?",
@@ -515,7 +487,7 @@ if(Session::get('business_id') == 5){
                                 if (res.isConfirmed) {
                                     window.location.reload()
                                 } else {
-                                    window.location.href = '/usages/';
+                                    window.location.href = '/usages/cater/';
                                 }
                             });
                         },

@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Utils\Tanggal;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -1009,28 +1010,29 @@ class InstallationsController extends Controller
     public function list($cater_id = 0)
     {
         $tanggal = request()->get('tanggal') ?: date('d/m/Y');
-        $tanggal = Tanggal::tglNasional($tanggal);
-
+        $tgl_kondisi = Carbon::createFromFormat('d/m/Y', $tanggal)->format('Y-m'); // Hasil: "2025-05"
         if ($cater_id == '0') {
             return response()->json([
                 'success' => true,
                 'installations' => []
             ]);
         }
+        
+        $usedInstallationIds = Usage::where('business_id', Session::get('business_id'))
+            ->where('cater', $cater_id)
+            ->where('tgl_pemakaian', 'like', $tgl_kondisi . '%')
+            ->pluck('id_instalasi');
 
-        $installations = Installations::where('business_id', Session::get('business_id'))->where('cater_id', $cater_id)->with([
-            'oneUsage' => function ($query) use ($tanggal) {
-                $query->orderBy('id', 'DESC');
-            },
-            'customer.village',
-            'package',
-            'village',
-            'users'
-        ])->get();
+        $installasi = Installations::where('business_id', Session::get('business_id'))
+            ->where('cater_id',$cater_id)
+            ->whereNotIn('id', $usedInstallationIds)
+            ->with(['customer', 'package', 'users', 'oneUsage'])
+            ->orderBy('id', 'ASC')
+            ->get();
 
         return response()->json([
             'success' => true,
-            'installations' => $installations
+            'installations' => $installasi
         ]);
     }
 }
