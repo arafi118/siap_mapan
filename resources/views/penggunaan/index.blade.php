@@ -26,25 +26,6 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
                                     <label for="bulan">Bulan Pemakaian</label>
-                                    {{-- MARET,FEBRUARI,JANUARI
-                                    <select id="bulan" name="bulan" class="form-control select2">
-                                        <option value="">-- Pilih Bulan --</option>
-                                        @php
-                                            $tahun = date('Y');
-                                            $bulanSekarang = date('n'); // 1-12 tanpa nol di depan
-                                        @endphp
-                                        @for ($i = $bulanSekarang; $i >= 1; $i--)
-                                            @php
-                                                $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
-                                                $tanggalObj = $tahun . '-' . $bulanValue . '-01';
-                                                $namaBulan = Tanggal::namaBulan($tanggalObj); // Januari, Februari, dst.
-                                            @endphp
-                                            <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
-                                                {{ $namaBulan }} {{ $tahun }}
-                                            </option>
-                                        @endfor
-                                    </select> --}}
-                                    {{-- JANUARI,FEBRUARI,MARET --}}
                                     <select id="bulan" name="bulan" class="form-control select2">
                                         <option value="">-- Pilih Bulan --</option>
                                         @php
@@ -101,8 +82,37 @@
 
                         </div>
                     </div>
+                    {{-- <div class="alert alert-info mt-3" style="background-color: rgb(63, 63, 63); color: white;"> --}}
+                    @if (Session::get('jabatan') == 5)
+                        <div class="alert alert-info mt-3">
+                            <div
+                                style="position: relative; background-color: #32bcfc; padding: 20px 10px 20px 10px; border-radius: 6px; color: white; text-align: left;">
+                                <p style="padding-left: 30px; font-weight: bold;">PERHATIAN!</p>
+                                <ol style="padding-left: 20px; margin-left: 0;">
+                                    <li> Pastikan nama <b>Cater</b> yang tertera di atas adalah nama Anda pribadi. Apabila
+                                        bukan,
+                                        segera laporkan kepada Bagian Admin.</li>
+                                    <li>Untuk &nbsp;melakukan &nbsp;proses &nbsp;input, silakan &nbsp;pilih bulan terlebih
+                                        dahulu, kemudian klik
+                                        tombol <b>"+Input Pemakaian"</b>. Sistem akan <br>menampilkan seluruh data pelanggan
+                                        yang
+                                        belum terinput pemakaian airnya.</li>
+                                    <li> Untuk melihat hasil input pemakaian air, silakan pilih bulan, lalu klik tombol
+                                        <b>"Lihat Hasil Input"</b>.
+                                    </li>
+                                    <li>Jika terjadi kesalahan dalam penginputan data, harap segera melapor kepada Bagian
+                                        Admin untuk mengajukan permohonan<br> koreksi atau pembetulan data.</li>
+                                </ol>
 
-                    <div class="table-responsive">
+                                <!-- Gambar diletakkan mutlak di kanan bawah -->
+                                <img src="../../assets/img/air.png"
+                                    style="position: absolute; bottom: 20px; right: 40px; max-height:200px;"
+                                    alt="Maskot Air">
+
+                            </div>
+                        </div>
+                    @endif
+                    <div class="table-responsive {{ Session::get('jabatan') == 5 ? 'd-none' : '' }}">
                         <table class="table align-items-center table-flush" id="TbPemakain">
                             <thead class="thead-light" align="center">
                                 <tr>
@@ -114,13 +124,9 @@
                                     <th width="12%">Tagihan</th>
                                     <th width="15%">Tanggal Akhir Bayar</th>
                                     <th width="5%">Status</th>
-                                    @if (Session::get('jabatan') != 5)
-                                        <th style="text-align: center;" width="10%">Aksi</th>
-                                    @endif
+                                    <th style="text-align: center;" width="10%">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
                         </table>
                     </div>
                 </div>
