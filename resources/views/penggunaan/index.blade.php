@@ -87,7 +87,7 @@
                         <div class="alert alert-info mt-3">
                             <div
                                 style="position: relative; background-color: #32bcfc; padding: 20px 10px 20px 10px; border-radius: 6px; color: white; text-align: left;">
-                                <p style="padding-left: 30px; font-weight: bold;">PERHATIAN!</p>
+                                <p style="padding-left: 5px; font-weight: bold;">PERHATIAN!</p>
                                 <ol style="padding-left: 20px; margin-left: 0;">
                                     <li> Pastikan nama <b>Cater</b> yang tertera di atas adalah nama Anda pribadi. Apabila
                                         bukan,
