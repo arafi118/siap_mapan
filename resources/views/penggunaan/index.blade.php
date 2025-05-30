@@ -105,9 +105,10 @@
                                 </ol>
 
                                 <!-- Gambar diletakkan mutlak di kanan bawah -->
-                                <img src="../../assets/img/air.png"
+                                <img src="../../assets/img/air.png" class="mb-3 img-fluid d-none d-lg-block"
                                     style="position: absolute; bottom: 20px; right: 40px; max-height:200px;"
                                     alt="Maskot Air">
+
 
                             </div>
                         </div>
