@@ -24,7 +24,7 @@ class UsageController extends Controller
 {
     if (request()->ajax()) {
         $bulan = request()->get('bulan') ?: date('m');
-        // Ganti dari 'cater' ke 'cater_id' sesuai parameter yang dipakai di frontend
+         // Ganti dari 'cater' ke 'cater_id' sesuai parameter yang dipakai di frontend
         $caterId = request()->get('cater_id') ?: '';
 
         $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
@@ -85,9 +85,9 @@ class UsageController extends Controller
 
     return view('penggunaan.index')->with(compact('title', 'caters', 'user', 'cater_id'));
 }
-
+ 
     /**
-     * Show the form for creating a new resource.
+     * Show cthe form for creating a new resource.
      */
     public function create(Request $request)
 {
