@@ -319,48 +319,49 @@
             "columns": columns
         });
 
-
         $('#caters, #bulan').on('change', function() {
             cater = $('#caters').val()
             bulan = $('#bulan').val()
             table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
         });
 
+        function fetchAllDataFullAndShowModal() {
+            $.ajax({
+                url: "/usages",
+                type: "GET",
+                data: {
+                    bulan: $('#bulan').val(),
+                    cater: $('#caters').val(),
+                    // kalau di server expect parameter cater_id atau cater sesuaikan
+                },
+                success: function(response) {
+                    // Jika kamu memakai yajra datatables, data array biasanya di response.data
+                    // Pastikan ini sesuai response API-mu
+                    const fullData = response.data || response;
 
-        function searching(search) {
-            let data = table.data().toArray();
+                    if (fullData.length > 0) {
+                        const cater = $('#caters').val();
+                        const tanggal = fullData[0].tgl_akhir;
+                        var tgl = tanggal.split('/');
+                        var hari = tgl[0] - 1;
 
-            search = search.toLowerCase()
-            dataSearch = data.filter((element) => {
-                console.log(element)
-                return (
-                    element.installation.kode_instalasi.includes(search) ||
-                    element.customers.nama.toLowerCase().includes(search)
-                )
+                        $('#NamaCater').text(cater);
+                        $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
+                        $('#InputCater').val(cater);
+                        $('#InputTanggal').val(tanggal);
+                    }
+
+                    setTableData(fullData);
+                    $('#CetakBuktiTagihan').modal('show');
+                },
+                error: function(err) {
+                    alert('Gagal mengambil data lengkap');
+                }
             });
-
-            setTableData(dataSearch)
         }
 
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
-            const data = table.data().toArray();
-
-            if (data.length > 0) {
-                const cater = $('#caters_display').val(); // ✅ ambil dari input yang sudah ada
-                const tanggal = data[0].tgl_akhir;
-
-                var tgl = tanggal.split('/');
-                var hari = tgl[0] - 1;
-
-                $('#NamaCater').text(cater);
-                $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
-                $('#InputCater').val(cater);
-                $('#InputTanggal').val(tanggal);
-            }
-
-            setTableData(data);
-
-            $('#CetakBuktiTagihan').modal('show');
+            fetchAllDataFullAndShowModal();
         });
 
 
@@ -368,7 +369,6 @@
             const tbTagihan = $('#TbTagihan');
             tbTagihan.find('tbody').html('');
 
-            // Kelompokkan data berdasarkan dusun
             const groupedByDusun = {};
             data.forEach(item => {
                 const dusun = item.installation.village.dusun || 'Lainnya';
@@ -376,22 +376,18 @@
                 groupedByDusun[dusun].push(item);
             });
 
-            // Urutkan nama dusun
             const sortedDusuns = Object.keys(groupedByDusun).sort();
 
             sortedDusuns.forEach(dusun => {
                 const items = groupedByDusun[dusun];
-
-                // Urutkan berdasarkan RT
                 items.sort((a, b) => parseInt(a.installation.rt || 0) - parseInt(b.installation.rt || 0));
 
-                // Tambah baris judul dusun
                 tbTagihan.find('tbody').append(`
             <tr class="table-secondary fw-bold">
                 <td colspan="11">Dusun : ${dusun}</td>
             </tr>
         `);
-                // Tambah baris data
+
                 items.forEach(item => {
                     tbTagihan.find('tbody').append(`
                 <tr>

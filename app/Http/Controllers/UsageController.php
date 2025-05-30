@@ -69,7 +69,6 @@ class UsageController extends Controller
             ->rawColumns(['aksi'])
             ->make(true);
     }
-
     // Ambil data cater (jabatan 5) untuk dropdown / hidden input
     $caters = User::where([
         ['business_id', Session::get('business_id')],
