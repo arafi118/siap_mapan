@@ -52,7 +52,7 @@
                                         {{-- Tampilkan nama cater sebagai input readonly (bisa juga <p> atau <span>) --}}
                                         <input type="text" class="form-control" id="caters_display"
                                             value="{{ $user->nama }}" readonly>
-                                        {{-- Hidden input untuk filter --}}
+                                        {{-- Hiddenn input untuk filter --}}
                                         <input type="hidden" id="caters" name="caters" value="{{ $user->id }}">
                                     @else
                                         <label for="caters">Cater</label>
