@@ -163,8 +163,8 @@
                                     placeholder="Search ...">
                             </div>
                         </div>
-                        <input type="hidden" name="cater" id="InputCater">
-                        <input type="hidden" name="tanggal" id="InputTanggal">
+
+
                         <table id="TbTagihan" class="table table-striped midle">
                             <thead class="bg-dark text-white">
                                 <tr>
@@ -320,16 +320,11 @@
         });
 
 
-        $('#caters').on('change', function() {
-            cater = $(this).val()
+        $('#caters, #bulan').on('change', function() {
+            cater = $('#caters').val()
+            bulan = $('#bulan').val()
             table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
         });
-
-        $('#bulan').on('change', function() {
-            bulan = $(this).val()
-            table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
-        });
-
 
 
         function searching(search) {
@@ -373,34 +368,30 @@
             const tbTagihan = $('#TbTagihan');
             tbTagihan.find('tbody').html('');
 
+            // Kelompokkan data berdasarkan dusun
             const groupedByDusun = {};
-
             data.forEach(item => {
-                let dusun = item.installation.village?.dusun?.trim();
-
-                // Abaikan jika dusun kosong/null
-                if (!dusun) dusun = 'Lainnya';
-
-                // Normalisasi huruf besar
-                dusun = dusun.charAt(0).toUpperCase() + dusun.slice(1).toLowerCase();
-
+                const dusun = item.installation.village.dusun || 'Lainnya';
                 if (!groupedByDusun[dusun]) groupedByDusun[dusun] = [];
                 groupedByDusun[dusun].push(item);
             });
 
+            // Urutkan nama dusun
             const sortedDusuns = Object.keys(groupedByDusun).sort();
 
             sortedDusuns.forEach(dusun => {
                 const items = groupedByDusun[dusun];
 
+                // Urutkan berdasarkan RT
                 items.sort((a, b) => parseInt(a.installation.rt || 0) - parseInt(b.installation.rt || 0));
 
+                // Tambah baris judul dusun
                 tbTagihan.find('tbody').append(`
             <tr class="table-secondary fw-bold">
                 <td colspan="11">Dusun : ${dusun}</td>
             </tr>
         `);
-
+                // Tambah baris data
                 items.forEach(item => {
                     tbTagihan.find('tbody').append(`
                 <tr>
@@ -423,6 +414,7 @@
                 });
             });
         }
+
 
         $(document).on('click', '#BtnCetak', function(e) {
             e.preventDefault()

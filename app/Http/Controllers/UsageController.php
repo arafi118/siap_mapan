@@ -24,8 +24,8 @@ class UsageController extends Controller
 {
     if (request()->ajax()) {
         $bulan = request()->get('bulan') ?: date('m');
-         // Ganti dari 'cater' ke 'cater_id' sesuai parameter yang dipakai di frontend
-        $caterId = request()->get('cater_id') ?: '';
+        // Ganti dari 'cater' ke 'cater_id' sesuai parameter yang dipakai di frontend
+        $caterId = request()->get('cater') ?: '';
 
         $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
 
@@ -36,7 +36,7 @@ class UsageController extends Controller
 
         if ($caterId != '') {
             // Asumsi kolom di DB adalah cater_id (atau sesuaikan nama kolom yang benar)
-            $usages->where('cater_id', $caterId);
+            $usages->where('cater', $caterId);
         }
 
         $usages = $usages->with([
