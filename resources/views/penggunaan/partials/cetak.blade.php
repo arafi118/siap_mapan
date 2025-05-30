@@ -62,7 +62,7 @@
                         </td>
                         <td width="22%">
                             <div style="font-size: 9px;">
-                                : {{ strtoupper($use->usersCater->nama) }}
+                                : {{ strtoupper($user->nama) }}
                             </div>
                             <div style="font-size: 9px;">: {{ $use->installation->id }}</div>
                             <div style="font-size: 9px;">
@@ -88,11 +88,11 @@
                 <table class="tb-padding" border="1" width="100%"
                     style="border-collapse: collapse; border: 1px solid #000; margin-top: 12px; font-size: 11px;">
                     <tr>
-                        <td width="20%" align="center">NAMA PELANGGAN</td>
-                        <td width="13%" align="center">NO INDUK</td>
+                        <td width="27%" align="center">NAMA PELANGGAN</td>
+                        <td width="11%" align="center">NO INDUK</td>
                         <td width="24%" align="center">ALAMAT</td>
-                        <td width="12%" align="center">METER AWAL</td>
-                        <td width="12%" align="center">METER AKHIR</td>
+                        <td width="11%" align="center">METER AWAL</td>
+                        <td width="11%" align="center">METER AKHIR</td>
                         <td width="11%" align="center">PEMAKAIAN</td>
                     </tr>
                     <tr>

@@ -232,29 +232,45 @@ class UsageController extends Controller
 
 
     public function cetak(Request $request)
-    {
-        $keuangan = new Keuangan;
-        $id = $request->cetak;
+{
+    $keuangan = new Keuangan;
+    $id = $request->cetak;
 
-        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
-        $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id)->with(
+    $user = auth()->user(); // ✅ ambil user yang login
+
+    $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+
+    // Ambil hanya usage milik cater login (opsional kalau data sudah terfilter sebelumnya)
+    $data['usage'] = Usage::where('business_id', Session::get('business_id'))
+        ->whereIn('id', $id)
+        ->with([
             'customers',
             'installation',
             'usersCater',
             'installation.package'
-        )->get();
-        $data['jabatan'] = User::where([
-            ['business_id', Session::get('business_id')],
-            ['jabatan', '3']
-        ])->first();
-        $logo = $data['bisnis']->logo;
-        $data['gambar'] = $logo;
-        $data['keuangan'] = $keuangan;
+        ])
+        ->get();
 
-        $view = view('penggunaan.partials.cetak', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'potrait');
-        return $pdf->stream();
-    }
+    $data['jabatan'] = User::where([
+        ['business_id', Session::get('business_id')],
+        ['jabatan', '3']
+    ])->first();
+
+    $data['caters'] = User::where([
+        ['business_id', Session::get('business_id')],
+        ['jabatan', '5']
+    ])->get();
+
+    $data['user'] = $user; // ✅ kirim user login ke view
+
+    $data['gambar'] = $data['bisnis']->logo;
+    $data['keuangan'] = $keuangan;
+
+    $view = view('penggunaan.partials.cetak', $data)->render();
+    $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait'); // ✅ perbaiki 'potrait' → 'portrait'
+    return $pdf->stream();
+}
+
     public function cetak_tagihan(Request $request)
     {
         $thn = $request->input('tahun');

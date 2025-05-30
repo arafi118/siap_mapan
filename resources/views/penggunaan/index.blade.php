@@ -375,10 +375,10 @@
             const data = table.data().toArray();
 
             if (data.length > 0) {
-                const cater = data[0].users_cater.nama;
-                const tanggal = data[0].tgl_akhir; // 2025-05-22 | 22/05/2025
+                const cater = $('#caters_display').val(); // ✅ ambil dari input yang sudah ada
+                const tanggal = data[0].tgl_akhir;
 
-                var tgl = tanggal.split('/') // [2025, 05, 22]
+                var tgl = tanggal.split('/');
                 var hari = tgl[0] - 1;
 
                 $('#NamaCater').text(cater);
@@ -391,6 +391,7 @@
 
             $('#CetakBuktiTagihan').modal('show');
         });
+
 
         function setTableData(data) {
             const tbTagihan = $('#TbTagihan');
