@@ -373,25 +373,27 @@
         }
 
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
-            const data = table.data().toArray();
+            const cater = $('#caters_display').val();
 
-            if (data.length > 0) {
-                const cater = $('#caters_display').val(); // ✅ ambil dari input yang sudah ada
-                const tanggal = data[0].tgl_akhir;
+            table.ajax.reload(function() {
+                const data = table.data().toArray();
 
-                var tgl = tanggal.split('/');
-                var hari = tgl[0] - 1;
+                if (data.length > 0) {
+                    const tanggal = data[0].tgl_akhir;
+                    var tgl = tanggal.split('/');
+                    var hari = tgl[0] - 1;
 
-                $('#NamaCater').text(cater);
-                $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
-                $('#InputCater').val(cater);
-                $('#InputTanggal').val(tanggal);
-            }
+                    $('#NamaCater').text(cater);
+                    $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
+                    $('#InputCater').val(cater);
+                    $('#InputTanggal').val(tanggal);
+                }
 
-            setTableData(data);
-
-            $('#CetakBuktiTagihan').modal('show');
+                setTableData(data);
+                $('#CetakBuktiTagihan').modal('show');
+            });
         });
+
 
 
         function setTableData(data) {
