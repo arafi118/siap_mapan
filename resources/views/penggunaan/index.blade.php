@@ -163,34 +163,9 @@
                                     placeholder="Search ...">
                             </div>
                         </div>
-                        {{-- <div class="d-flex justify-content-between mb-1">
-                            <div>
-                                <span class="fw-bold">&nbsp;Cater</span> : <span id="NamaCater">-</span>
-                            </div>
-                            <div>
-                                <span class="fw-bold">Tanggal Akhir</span> : <span id="TanggalCetak">-</span>
-                            </div>
-                        </div> --}}
-
-                        <!-- Hidden input untuk dikirim ke backend -->
                         <input type="hidden" name="cater" id="InputCater">
                         <input type="hidden" name="tanggal" id="InputTanggal">
-
-                        <!-- Tabel tagihan -->
                         <table id="TbTagihan" class="table table-striped midle">
-                            {{-- <div class="card-header bg-dark text-white p-2 pe-2 pb-2 pt-2">
-                                <div class="row align-items-center">
-                                    <div class="col-md-10 mb-0">
-                                        <h6 class="mb-0"><b>Daftar Tagihan Pemakaian</b></h6>
-                                    </div>
-                                    <div class="col-md-2 mb-0">
-                                        <div class="input-group input-group-sm">
-                                            <input type="text" id="SearchTagihan" class="form-control form-control-sm"
-                                                placeholder="Search ...">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> --}}
                             <thead class="bg-dark text-white">
                                 <tr>
                                     <td align="center" width="40">
@@ -373,57 +348,59 @@
         }
 
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
-            const cater = $('#caters_display').val();
+            const data = table.data().toArray();
 
-            table.ajax.reload(function() {
-                const data = table.data().toArray();
+            if (data.length > 0) {
+                const cater = $('#caters_display').val(); // ✅ ambil dari input yang sudah ada
+                const tanggal = data[0].tgl_akhir;
 
-                if (data.length > 0) {
-                    const tanggal = data[0].tgl_akhir;
-                    var tgl = tanggal.split('/');
-                    var hari = tgl[0] - 1;
+                var tgl = tanggal.split('/');
+                var hari = tgl[0] - 1;
 
-                    $('#NamaCater').text(cater);
-                    $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
-                    $('#InputCater').val(cater);
-                    $('#InputTanggal').val(tanggal);
-                }
+                $('#NamaCater').text(cater);
+                $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
+                $('#InputCater').val(cater);
+                $('#InputTanggal').val(tanggal);
+            }
 
-                setTableData(data);
-                $('#CetakBuktiTagihan').modal('show');
-            });
+            setTableData(data);
+
+            $('#CetakBuktiTagihan').modal('show');
         });
-
 
 
         function setTableData(data) {
             const tbTagihan = $('#TbTagihan');
             tbTagihan.find('tbody').html('');
 
-            // Kelompokkan data berdasarkan dusun
             const groupedByDusun = {};
+
             data.forEach(item => {
-                const dusun = item.installation.village.dusun || 'Lainnya';
+                let dusun = item.installation.village?.dusun?.trim();
+
+                // Abaikan jika dusun kosong/null
+                if (!dusun) dusun = 'Lainnya';
+
+                // Normalisasi huruf besar
+                dusun = dusun.charAt(0).toUpperCase() + dusun.slice(1).toLowerCase();
+
                 if (!groupedByDusun[dusun]) groupedByDusun[dusun] = [];
                 groupedByDusun[dusun].push(item);
             });
 
-            // Urutkan nama dusun
             const sortedDusuns = Object.keys(groupedByDusun).sort();
 
             sortedDusuns.forEach(dusun => {
                 const items = groupedByDusun[dusun];
 
-                // Urutkan berdasarkan RT
                 items.sort((a, b) => parseInt(a.installation.rt || 0) - parseInt(b.installation.rt || 0));
 
-                // Tambah baris judul dusun
                 tbTagihan.find('tbody').append(`
             <tr class="table-secondary fw-bold">
                 <td colspan="11">Dusun : ${dusun}</td>
             </tr>
         `);
-                // Tambah baris data
+
                 items.forEach(item => {
                     tbTagihan.find('tbody').append(`
                 <tr>
@@ -446,7 +423,6 @@
                 });
             });
         }
-
 
         $(document).on('click', '#BtnCetak', function(e) {
             e.preventDefault()
