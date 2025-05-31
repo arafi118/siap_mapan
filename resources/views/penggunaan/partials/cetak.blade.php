@@ -62,7 +62,7 @@
                         </td>
                         <td width="22%">
                             <div style="font-size: 9px;">
-                                : {{ strtoupper($user->nama) }}
+                                : {{ strtoupper($use->usersCater->nama) }}
                             </div>
                             <div style="font-size: 9px;">: {{ $use->installation->id }}</div>
                             <div style="font-size: 9px;">

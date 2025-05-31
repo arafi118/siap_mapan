@@ -332,20 +332,18 @@
                 data: {
                     bulan: $('#bulan').val(),
                     cater: $('#caters').val(),
-                    // kalau di server expect parameter cater_id atau cater sesuaikan
                 },
                 success: function(response) {
-                    // Jika kamu memakai yajra datatables, data array biasanya di response.data
-                    // Pastikan ini sesuai response API-mu
                     const fullData = response.data || response;
 
                     if (fullData.length > 0) {
                         const cater = $('#caters').val();
+                        const caterText = $('#caters option:selected').text(); // Ambil nama cater
                         const tanggal = fullData[0].tgl_akhir;
                         var tgl = tanggal.split('/');
                         var hari = tgl[0] - 1;
 
-                        $('#NamaCater').text(cater);
+                        $('#NamaCater').text(caterText); // Tampilkan nama, bukan ID
                         $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
                         $('#InputCater').val(cater);
                         $('#InputTanggal').val(tanggal);
@@ -363,6 +361,7 @@
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
             fetchAllDataFullAndShowModal();
         });
+
 
 
         function setTableData(data) {
