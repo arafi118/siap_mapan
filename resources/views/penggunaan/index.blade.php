@@ -57,7 +57,7 @@
                                     @else
                                         <label for="caters">Cater</label>
                                         <select class="form-control select2" id="caters" name="caters">
-                                            <option value="">Semua</option>
+                                            <option value="">Pilih Cater</option>
                                             @foreach ($caters as $cater)
                                                 <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
                                             @endforeach
