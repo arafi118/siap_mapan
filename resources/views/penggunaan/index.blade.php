@@ -376,7 +376,7 @@
 
             const groupedByDusun = {};
             data.forEach(item => {
-                const dusun = item.installation.village.dusun || 'Lainnya';
+                const dusun = item.installation.village.dusun || '';
                 if (!groupedByDusun[dusun]) groupedByDusun[dusun] = [];
                 groupedByDusun[dusun].push(item);
             });
