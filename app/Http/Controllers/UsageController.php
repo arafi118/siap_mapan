@@ -81,37 +81,42 @@ class UsageController extends Controller
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
-{
-    $business_id = Session::get('business_id');
-    $cater_id = $request->input('cater_id'); 
-    $caters = User::where([
-        ['business_id', $business_id],
-        ['jabatan', '5']
-    ])->get();
-    $settings = Settings::where('business_id', $business_id)->first();
+    {
+        $business_id = Session::get('business_id');
+        $cater_id = $request->input('cater_id');
+        $caters = User::where([
+            ['business_id', $business_id],
+            ['jabatan', '5']
+        ])->get();
+        $settings = Settings::where('business_id', $business_id)->first();
 
-    $installasi = Installations::where('business_id', $business_id)
-        ->when($cater_id, function ($query) use ($cater_id) {
-            $query->where('cater_id', $cater_id); 
-        })
-        ->with(['customer', 'package', 'users', 'oneUsage'])
-        ->orderBy('id', 'ASC')
-        ->get();
+        $installasi = Installations::where('business_id', $business_id)
+            ->when($cater_id, function ($query) use ($cater_id) {
+                $query->where('cater_id', $cater_id);
+            })
+            ->with(['customer', 'package', 'users', 'oneUsage'])
+            ->orderBy('id', 'ASC')
+            ->get();
 
-    $caters = User::where([
-        ['business_id', $business_id],
-        ['jabatan', '5']
-    ])->get();
+        $caters = User::where([
+            ['business_id', $business_id],
+            ['jabatan', '5']
+        ])->get();
 
-    $usages = Usage::where('business_id', $business_id)->get();
+        $usages = Usage::where('business_id', $business_id)->get();
 
-    $pilih_customer = $cater_id ?? 0;
-    $title = 'Register Pemakaian';
+        $pilih_customer = $cater_id ?? 0;
+        $title = 'Register Pemakaian';
 
-    return view('penggunaan.create')->with(compact(
-        'installasi', 'settings', 'pilih_customer', 'cater_id', 'title', 'usages'
-    ));
-}
+        return view('penggunaan.create')->with(compact(
+            'installasi',
+            'settings',
+            'pilih_customer',
+            'cater_id',
+            'title',
+            'usages'
+        ));
+    }
     public function barcode(Usage $usage)
     {
         $title = '';
@@ -224,7 +229,17 @@ class UsageController extends Controller
         $id = $request->cetak;
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
-        $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id)->with(
+        $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id);
+
+        if ($request->cater != '') {
+            $data['usage']->where('cater', $request->cater);
+        }
+
+        if ($request->bulan_tagihan != '') {
+            $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . date('Y') . '-' . $request->bulan_tagihan . '%');
+        }
+
+        $data['usages'] = $data['usages']->with(
             'customers',
             'installation',
             'usersCater',

@@ -141,6 +141,8 @@
                                     <div class="fw-bold me-2" style="width: 120px;">Maksimal Bayar</div>
                                     <div>: <span id="TanggalCetak"></span></div>
                                 </div>
+
+
                             </div>
 
                             <div style="width: 200px; align-self: flex-end; margin-top: 2px;">
@@ -429,7 +431,17 @@
             e.preventDefault()
 
             if ($('#FormCetakBuktiTagihan').serializeArray().length > 1) {
-                $('#FormCetakBuktiTagihan').submit();
+                var formTagihan = $('#FormCetakBuktiTagihan');
+
+                var bulan = $('#bulan').val()
+                var caters = $('#caters').val()
+
+                formTagihan.find('form').html('')
+                var row = formTagihan.append(`
+                    <input type="hidden" name="bulan_tagihan" value="${bulan}">
+                    <input type="hidden" name="pemakaian_cater" value="${cater}">
+                `);
+                formTagihan.submit();
             } else {
                 Swal.fire('Error', "Tidak ada transaksi yang dipilih.", 'error')
             }
@@ -446,7 +458,7 @@
             formTagihan.find('form').html('')
             var row = formTagihan.append(`
                 <input type="hidden" name="bulan_tagihan" value="${bulan}">
-                <input type="hidden" name="pemakaian_cater" value="${cater}">
+                <input type="hidden" name="cater" value="${cater}">
             `);
 
             $('#FormCetakTagihan').submit();
