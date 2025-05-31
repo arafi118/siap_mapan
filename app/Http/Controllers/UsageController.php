@@ -264,8 +264,6 @@ class UsageController extends Controller
             ['jabatan', '5']
         ])->get();
 
-        $data['user'] = $user; // ✅ kirim user login ke view
-
         $data['gambar'] = $data['bisnis']->logo;
         $data['keuangan'] = $keuangan;
 
