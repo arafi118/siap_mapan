@@ -247,7 +247,7 @@ class UsageController extends Controller
             $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . date('Y') . '-' . $request->bulan_tagihan . '%');
         }
 
-        $data['usages'] = $data['usages']->with([
+        $data['usage'] = $data['usage']->with([
             'customers',
             'installation',
             'usersCater',
