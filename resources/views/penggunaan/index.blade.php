@@ -308,7 +308,7 @@
             bulan = $('#bulan').val()
 
             if (table == '') {
-                table = ('#TbPemakain').DataTable({
+                table = $('#TbPemakain').DataTable({
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
