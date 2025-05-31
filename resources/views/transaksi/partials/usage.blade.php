@@ -128,7 +128,7 @@
                         <input type="hidden" name="id_usage" id="id_usage-{{ $usage->id }}"
                             value="{{ $usage->id }}">
                         <input type="hidden" name="tgl_akhir" id="tgl-akhir-{{ $usage->id }}"
-                            value="{{ date('Y-m-d', strtotime('-1 month', strtotime($usage->tgl_akhir))) }}">
+                            value="{{ date('Y-m', strtotime('+1 month', strtotime($usage->tgl_akhir))) }}">
                         <input type="hidden" name="denda" id="denda-{{ $usage->id }}"
                             value="{{ $installations->package->denda }}">
 
