@@ -28,7 +28,7 @@ class Usage extends Model
     {
         return $this->belongsTo(Customer::class, 'customer', 'id');
     }
-    
+
     public function usersCater()
     {
         return $this->belongsTo(user::class, 'cater', 'id');
@@ -37,6 +37,11 @@ class Usage extends Model
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'usage_id');
+    }
+
+    public function oneTransaction()
+    {
+        return $this->hasOne(Transaction::class, 'usage_id');
     }
 
     public function usage()

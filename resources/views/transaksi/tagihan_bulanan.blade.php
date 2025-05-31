@@ -32,7 +32,7 @@
             <div class="text-center">
                 <img src="../../assets/img/air.png" style="max-height: 200px;" class="mb-3">
                 <h3 class="text-gray-800 font-weight-bold">Tagihan!</h3>
-                <p class="lead text-gray-800 mx-auto">Seacrh untuk melakukan pembayaran</p>
+                <p class="lead text-gray-800 mx-auto">Search untuk melakukan pembayaran</p>
                 <a href="/">&larr; Back to Dashboard</a>
             </div>
         </div>
@@ -244,33 +244,33 @@
         }
 
         //form input denda
-        $(document).on('change', '.tgl_transaksi', function() {
-            var tglTransaksi = $(this).val();
+        // $(document).on('change', '.tgl_transaksi', function() {
+        //     var tglTransaksi = $(this).val();
 
-            var id = $(this).attr('data-id');
-            var tglAkhir = new Date($('#tgl-akhir-' + id).val()).getTime();
-            var denda = $('#denda-' + id).val();
+        //     var id = $(this).attr('data-id');
+        //     var tglAkhir = new Date($('#tgl-akhir-' + id).val()).getTime();
+        //     var denda = $('#denda-' + id).val();
 
-            let tgl = tglTransaksi.split('/');
-            let hari = tgl[0];
-            let bulan = tgl[1];
-            let tahun = tgl[2];
+        //     let tgl = tglTransaksi.split('/');
+        //     let hari = tgl[0];
+        //     let bulan = tgl[1];
+        //     let tahun = tgl[2];
 
-            var tanggal = new Date(`${tahun}-${bulan}-${hari}`).getTime();
-            if (tanggal >= tglAkhir) {
-                denda = denda;
-            } else {
-                denda = 0;
-            }
+        //     var tanggal = new Date(`${tahun}-${bulan}-${hari}`).getTime();
+        //     if (tanggal >= tglAkhir) {
+        //         denda = denda;
+        //     } else {
+        //         denda = 0;
+        //     }
 
-            var denda_tagihan = numFormat.format(Math.abs(denda))
-            var abodemen = cleanNumber($("#abodemen-bulanan-" + id).val());
-            var tagihan = cleanNumber($("#tagihan-" + id).val());
-            var denda = cleanNumber(denda_tagihan);
+        //     var denda_tagihan = numFormat.format(Math.abs(denda))
+        //     var abodemen = cleanNumber($("#abodemen-bulanan-" + id).val());
+        //     var tagihan = cleanNumber($("#tagihan-" + id).val());
+        //     var denda = cleanNumber(denda_tagihan);
 
-            $("#denda-bulanan-" + id).val(denda_tagihan);
-            $('#pembayaran-' + id).val(numFormat.format(Math.abs(denda + abodemen + tagihan)))
-        })
+        //     $("#denda-bulanan-" + id).val(denda_tagihan);
+        //     $('#pembayaran-' + id).val(numFormat.format(Math.abs(denda + abodemen + tagihan)))
+        // })
 
         $(document).on('change', '.perhitungan', function() {
             var jumlah = cleanNumber($(this).val());

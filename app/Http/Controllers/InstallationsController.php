@@ -161,6 +161,11 @@ class InstallationsController extends Controller
             ['business_id', $business_id]
         ])->first();
 
+        $rekening_denda = Account::where([
+            ['kode_akun', '4.1.01.04'],
+            ['business_id', $business_id]
+        ])->first();
+
         $installations = Installations::where('kode_instalasi', $kode_instalasi)->where('business_id', Session::get('business_id'))
             ->with([
                 'package',
@@ -181,17 +186,19 @@ class InstallationsController extends Controller
                     }
                 },
             ], 'total')
+            ->with([
+                'transaction' => function ($query) use ($rekening_denda) {
+                    $query->where('rekening_kredit', $rekening_denda->id);
+                }
+            ])
             ->first();
-
-
 
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
-        $package = Package::where('business_id', Session::get('business_id'))->get();
         $usages = Usage::where('business_id', Session::get('business_id'))->where([
             ['id_instalasi', $installations->id],
             ['status', '=', 'UNPAID']
-        ])->get();
+        ])->orderBy('tgl_pemakaian', 'DESC')->get();
 
         $jumlah_trx = $installations->transaction_sum_total;
         $biaya_instal = $installations->biaya_instalasi;
@@ -209,7 +216,7 @@ class InstallationsController extends Controller
 
         return response()->json([
             'success' => true,
-            'view' => view('transaksi.partials.usage')->with(compact('qr', 'installations',  'usages', 'trx_settings', 'package'))->render(),
+            'view' => view('transaksi.partials.usage')->with(compact('qr', 'installations',  'usages', 'trx_settings'))->render(),
             'rek_debit' => $tagihan1,
             'rek_kredit' => $tagihan2,
         ]);
@@ -1016,16 +1023,16 @@ class InstallationsController extends Controller
                 'installations' => []
             ]);
         }
-        
+
         $usedInstallationIds = Usage::where('business_id', Session::get('business_id'))
             ->where('cater', $cater_id)
             ->where('tgl_pemakaian', 'like', $tgl_kondisi . '%')
             ->pluck('id_instalasi');
 
         $installasi = Installations::where('business_id', Session::get('business_id'))
-            ->where('cater_id',$cater_id)
+            ->where('cater_id', $cater_id)
             ->whereNotIn('id', $usedInstallationIds)
-            ->with(['customer', 'package', 'users', 'oneUsage','village'])
+            ->with(['customer', 'package', 'users', 'oneUsage', 'village'])
             ->orderBy('id', 'ASC')
             ->get();
 

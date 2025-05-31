@@ -21,39 +21,6 @@
         </div>
     </div>
 @else
-    {{-- <div class="alert alert-success" role="alert" style="color: white !important;">
-        <table class="table table-borderless table-sm mb-0 w-100"
-            style="font-size: 0.875rem; table-layout: fixed; color: white !important;">
-            <tr>
-                <td style="width: 110px; text-align: left; padding-left: 4px;">Nama</td>
-                <td style="width: 10px; padding-left: 8px;">:</td>
-                <td style="padding-left: 0;">{{ $installations->customer->nama ?? '-' }}</td>
-
-                <td style="width: 90px; text-align: left; padding-left: 4px;">Desa</td>
-                <td style="width: 10px; padding-left: 8px;">:</td>
-                <td style="padding-left: 0;">{{ $installations->village->nama ?? '-' }}</td>
-
-                <td style="width: 90px; text-align: left; padding-left: 4px;">Dusun</td>
-                <td style="width: 10px; padding-left: 8px;">:</td>
-                <td style="padding-left: 0;">{{ $installations->village->dusun ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: left; padding-left: 4px;">No Induk</td>
-                <td style="padding-left: 8px;">:</td>
-                <td style="padding-left: 0;">
-                    {{ $installations->kode_instalasi ?? '-' }}-{{ $installations->package->inisial ?? '-' }}</td>
-
-                <td style="text-align: left; padding-left: 4px;">Cater</td>
-                <td style="padding-left: 8px;">:</td>
-                <td style="padding-left: 0;">{{ $installations->users->nama ?? '-' }}</td>
-
-                <td style="text-align: left; padding-left: 4px;">Rt/Rw</td>
-                <td style="padding-left: 8px;">:</td>
-                <td style="padding-left: 0;">
-                    {{ $installations->rt ?? '-' }}/{{ $installations->rw ?? '-' }}</td>
-            </tr>
-        </table>
-    </div> --}}
     <div class="alert alert-success position-relative" role="alert"
         style="color: white !important; padding-left: 70px;">
         <i
@@ -91,8 +58,6 @@
         </table>
     </div>
 
-
-
     @foreach ($usages as $usage)
         @php
             $blok = json_decode($trx_settings->block, true);
@@ -101,9 +66,16 @@
             $harga = 0;
             $daftar_harga = json_decode($installations->package->harga, true);
 
-            $denda = 0;
+            $dendaPemakaian = 0;
             if (date('Y-m-d') >= $usage->tgl_akhir) {
-                $denda = $installations->package->denda;
+                $dendaPemakaian = $installations->package->denda;
+            }
+
+            $dendaPemakaianLalu = 0;
+            foreach ($installations->transaction as $trx_denda) {
+                if ($trx_denda->tgl_transaksi < $usage->tgl_akhir) {
+                    $dendaPemakaianLalu = $trx_denda->total;
+                }
             }
         @endphp
 
@@ -128,7 +100,7 @@
                         <input type="hidden" name="id_usage" id="id_usage-{{ $usage->id }}"
                             value="{{ $usage->id }}">
                         <input type="hidden" name="tgl_akhir" id="tgl-akhir-{{ $usage->id }}"
-                            value="{{ date('Y-m', strtotime('+1 month', strtotime($usage->tgl_akhir))) }}-1">
+                            value="{{ $usage->tgl_akhir }}">
                         <input type="hidden" name="denda" id="denda-{{ $usage->id }}"
                             value="{{ $installations->package->denda }}">
 
@@ -197,7 +169,8 @@
                                                 <label for="denda">Denda</label>
                                                 <input type="text" class="form-control denda" name="denda"
                                                     id="denda-bulanan-{{ $usage->id }}" readonly
-                                                    placeholder="0.00" value="{{ number_format($denda, 2) }}">
+                                                    placeholder="0.00"
+                                                    value="{{ number_format($dendaPemakaianLalu, 2) }}">
                                                 <small class="text-danger"></small>
                                             </div>
                                         </div>
@@ -210,7 +183,7 @@
                                                 <input type="text" class="form-control total perhitungan"
                                                     name="pembayaran" id="pembayaran-{{ $usage->id }}"
                                                     data-id="{{ $usage->id }}"
-                                                    value="{{ number_format($usage->nominal + $trx_settings->abodemen + $denda, 2) }}"
+                                                    value="{{ number_format($usage->nominal + $trx_settings->abodemen + $dendaPemakaianLalu, 2) }}"
                                                     {!! $trx_settings->swit_tombol_trx == '1' ? 'readonly' : '' !!}>
                                                 <small class="text-danger" id="msg_pembayaran"></small>
                                             </div>
