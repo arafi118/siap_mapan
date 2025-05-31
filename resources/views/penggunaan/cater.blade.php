@@ -5,6 +5,12 @@
 @extends('layouts.base')
 
 @section('content')
+    @if (session('success'))
+        <div id="success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            <li class="	fas fa-check-circle"></li>
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="row">
         <!-- Datatables -->
         <div class="col-lg-12">
@@ -12,12 +18,11 @@
                 <div class="table-responsive p-3">
                     <div style="card-header">
                         <div class="row">
-                            @if (Session::get('jabatan') != 5)
-                                <div class="col-md-12">
-                                    <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
-                                    <b>Data Pemakaian</b>
-                                </div>
-                            @endif
+                            <div class="col-md-12">
+                                <i class="fas fa-tint" style="font-size: 28px; margin-right: 8px;"></i>
+                                <b>Data Pemakaian</b>
+                            </div>
+
                         </div>
                     </div>
 
@@ -26,55 +31,51 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
                                     <label for="bulan">Bulan Pemakaian</label>
+                                    {{-- JANUARI,FEBRUARI,MARET --}}
                                     <select id="bulan" name="bulan" class="form-control select2">
                                         <option value="">-- Pilih Bulan --</option>
-                                        @php
-                                            $tahun = date('Y');
-                                            $bulanSekarang = date('n'); // bulan sekarang, 1 - 12
-                                        @endphp
-                                        @for ($i = 1; $i <= $bulanSekarang; $i++)
-                                            @php
-                                                $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
-                                                $tanggalObj = $tahun . '-' . $bulanValue . '-01';
-                                                $namaBulan = Tanggal::namaBulan($tanggalObj);
-                                            @endphp
-                                            <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
-                                                {{ $namaBulan }} {{ $tahun }}
-                                            </option>
-                                        @endfor
+@php
+    $tgl_pakai = '2024-05-12';
+    $start = Carbon\Carbon::parse($tgl_pakai)->startOfMonth();
+    $end = Carbon\Carbon::now()->endOfMonth();
+    $current = Carbon\Carbon::now();
+    
+    $months = [];
+    while ($start <= $end) {
+        $months[] = [
+            'value' => $start->format('Y-m'),
+            'label' => Tanggal::namaBulan($start->format('Y-m-d')) . ' ' . $start->format('Y'),
+            'is_current' => $start->month == $current->month && $start->year == $current->year
+        ];
+        $start->addMonth();
+    }
+    
+    // Urutkan dari bulan terbaru ke terlama
+    $months = array_reverse($months);
+@endphp
+
+@foreach ($months as $month)
+    <option value="{{ $month['value'] }}" {{ $month['is_current'] ? 'selected' : '' }}>
+        {{ $month['label'] }}
+    </option>
+@endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group mb-0">
-                                    @if (Session::get('jabatan') == 5)
-                                        <label for="caters">Cater</label>
-                                        {{-- Tampilkan nama cater sebagai input readonly (bisa juga <p> atau <span>) --}}
-                                        <input type="text" class="form-control" id="caters_display"
-                                            value="{{ $user->nama }}" readonly>
-                                        {{-- Hiddenn input untuk filter --}}
-                                        <input type="hidden" id="caters" name="caters" value="{{ $user->id }}">
-                                    @else
-                                        <label for="caters">Cater</label>
+                                    <label for="caters">Cater</label>
                                         <select class="form-control select2" id="caters" name="caters">
-                                            <option value="">Semua</option>
+                                            @if ($caters->count() > 1)
+                                                <option value="">Semua</option>
+                                            @endif
                                             @foreach ($caters as $cater)
                                                 <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
                                             @endforeach
                                         </select>
-                                    @endif
-
-
-
                                 </div>
                             </div>
-                            <div class="col-md-3 d-flex align-items-end">
-                                <button class="btn btn-warning btn-block" id="Registerpemakaian"
-                                    @if (Session::get('jabatan') == 6) disabled @endif>
-                                    <i class="fas fa-plus"></i> Input Pemakaian
-                                </button>
-                            </div>
-                            <div class="col-md-3 d-flex align-items-end">
+                            <div class="col-md-6 d-flex align-items-end">
                                 <button class="btn btn-danger btn-block" type="button" id="DetailCetakBuktiTagihan">
                                     <i class="fas fa-info-circle"></i> Hasil Input
                                 </button>
@@ -82,38 +83,8 @@
 
                         </div>
                     </div>
-                    {{-- <div class="alert alert-info mt-3" style="background-color: rgb(63, 63, 63); color: white;"> --}}
-                    @if (Session::get('jabatan') == 5)
-                        <div class="alert alert-info mt-3">
-                            <div
-                                style="position: relative; background-color: #32bcfc; padding: 20px 10px 20px 10px; border-radius: 6px; color: white; text-align: left;">
-                                <p style="padding-left: 5px; font-weight: bold;">PERHATIAN!</p>
-                                <ol style="padding-left: 20px; margin-left: 0;">
-                                    <li> Pastikan nama <b>Cater</b> yang tertera di atas adalah nama Anda pribadi. Apabila
-                                        bukan,
-                                        segera laporkan kepada Bagian Admin.</li>
-                                    <li>Untuk &nbsp;melakukan &nbsp;proses &nbsp;input, silakan &nbsp;pilih bulan terlebih
-                                        dahulu, kemudian klik
-                                        tombol <b>"+Input Pemakaian"</b>. Sistem akan <br>menampilkan seluruh data pelanggan
-                                        yang
-                                        belum terinput pemakaian airnya.</li>
-                                    <li> Untuk melihat hasil input pemakaian air, silakan pilih bulan, lalu klik tombol
-                                        <b>"Lihat Hasil Input"</b>.
-                                    </li>
-                                    <li>Jika terjadi kesalahan dalam penginputan data, harap segera melapor kepada Bagian
-                                        Admin untuk mengajukan permohonan<br> koreksi atau pembetulan data.</li>
-                                </ol>
 
-                                <!-- Gambar diletakkan mutlak di kanan bawah -->
-                                <img src="../../assets/img/air.png" class="mb-3 img-fluid d-none d-lg-block"
-                                    style="position: absolute; bottom: 20px; right: 40px; max-height:200px;"
-                                    alt="Maskot Air">
-
-
-                            </div>
-                        </div>
-                    @endif
-                    <div class="table-responsive {{ Session::get('jabatan') == 5 ? 'd-none' : '' }}">
+                    <div class="table-responsive">
                         <table class="table align-items-center table-flush" id="TbPemakain">
                             <thead class="thead-light" align="center">
                                 <tr>
@@ -125,9 +96,12 @@
                                     <th width="12%">Tagihan</th>
                                     <th width="15%">Tanggal Akhir Bayar</th>
                                     <th width="5%">Status</th>
+
                                     <th style="text-align: center;" width="10%">Aksi</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -156,8 +130,6 @@
                                     <div class="fw-bold me-2" style="width: 120px;">Maksimal Bayar</div>
                                     <div>: <span id="TanggalCetak"></span></div>
                                 </div>
-
-
                             </div>
 
                             <div style="width: 200px; align-self: flex-end; margin-top: 2px;">
@@ -165,15 +137,40 @@
                                     placeholder="Search ...">
                             </div>
                         </div>
+                        {{-- <div class="d-flex justify-content-between mb-1">
+                            <div>
+                                <span class="fw-bold">&nbsp;Cater</span> : <span id="NamaCater">-</span>
+                            </div>
+                            <div>
+                                <span class="fw-bold">Tanggal Akhir</span> : <span id="TanggalCetak">-</span>
+                            </div>
+                        </div> --}}
 
+                        <!-- Hidden input untuk dikirim ke backend -->
+                        <input type="hidden" name="cater" id="InputCater">
+                        <input type="hidden" name="tanggal" id="InputTanggal">
 
+                        <!-- Tabel tagihan -->
                         <table id="TbTagihan" class="table table-striped midle">
+                            {{-- <div class="card-header bg-dark text-white p-2 pe-2 pb-2 pt-2">
+                                <div class="row align-items-center">
+                                    <div class="col-md-10 mb-0">
+                                        <h6 class="mb-0"><b>Daftar Tagihan Pemakaian</b></h6>
+                                    </div>
+                                    <div class="col-md-2 mb-0">
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" id="SearchTagihan" class="form-control form-control-sm"
+                                                placeholder="Search ...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
                             <thead class="bg-dark text-white">
                                 <tr>
                                     <td align="center" width="40">
                                         <div class="form-check text-center ps-0 mb-0">
-                                            <input class="form-check-input" type="checkbox" value="true"
-                                                id="checked" name="checked" checked>
+                                            <input class="form-check-input" type="checkbox" value="true" id="checked"
+                                                name="checked" checked>
                                         </div>
                                     </td>
                                     <td align="center" width="120">Nama</td>
@@ -238,10 +235,20 @@
             e.preventDefault();
 
             var caterId = $('#caters').val(); // ambil cater yang dipilih
+            var bulan = $('#bulan').val();    // ambil bulan yang dipilih
             var url = '/usages/create';
+            var params = [];
 
             if (caterId) {
-                url += '?cater_id=' + caterId;
+                params.push('cater_id=' + caterId);
+            }
+
+            if (bulan) {
+                params.push('tgl_kondisi=' + bulan);
+            }
+
+            if (params.length > 0) {
+                url += '?' + params.join('&');
             }
 
             window.location.href = url;
@@ -250,62 +257,11 @@
 
         var cater = $('#caters').val()
         var bulan = $('#bulan').val()
-        var columns = [{
-                "data": "customers.nama"
-            },
-            {
-                "data": "kode_instalasi_dengan_inisial"
-            },
-            {
-                "data": "awal"
-            },
-            {
-                "data": "akhir"
-            },
-            {
-                "data": "jumlah"
-            },
-            {
-                "data": "nominal"
-            },
-            {
-                "data": "tgl_akhir",
-                "render": function(data, type, row) {
-                    if (!data) return '';
-
-                    var parts = data.split('/');
-                    if (parts.length !== 3) return data;
-
-                    var day = parseInt(parts[0], 10);
-                    var month = parseInt(parts[1], 10) - 1;
-                    var year = parseInt(parts[2], 10);
-
-                    var t = new Date(year, month, day);
-                    t.setDate(t.getDate() - 1);
-
-                    var dd = String(t.getDate()).padStart(2, '0');
-                    var mm = String(t.getMonth() + 1).padStart(2, '0');
-                    var yyyy = t.getFullYear();
-
-                    return dd + '/' + mm + '/' + yyyy;
-                }
-            },
-            {
-                "data": "status"
-            }
-        ];
-
-        @if (Session::get('jabatan') != 5)
-            columns.push({
-                "data": "aksi"
-            });
-        @endif
-
         var table = $('#TbPemakain').DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "/usages?bulan=" + bulan + "&cater=" + cater,
+                "url": "/usages/cater?bulan=" + bulan + "&cater=" + cater,
                 "type": "GET"
             },
             "language": {
@@ -318,58 +274,90 @@
                     "previous": "<i class='fas fa-angle-left'></i>"
                 }
             },
-            "columns": columns
-        });
-
-        $('#caters, #bulan').on('change', function() {
-            cater = $('#caters').val()
-            bulan = $('#bulan').val()
-            table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
-        });
-
-        function fetchAllDataFullAndShowModal() {
-            $.ajax({
-                url: "/usages",
-                type: "GET",
-                data: {
-                    bulan: $('#bulan').val(),
-                    cater: $('#caters').val(),
+            "columns": [
+                {
+                    "data": "nama"
                 },
-                success: function(response) {
-                    const fullData = response.data || response;
-
-                    if (fullData.length > 0) {
-                        const cater = $('#caters').val();
-                        const caterText = $('#caters option:selected').text(); // Ambil nama cater
-                        const tanggal = fullData[0].tgl_akhir;
-                        var tgl = tanggal.split('/');
-                        var hari = tgl[0] - 1;
-
-                        $('#NamaCater').text(caterText); // Tampilkan nama, bukan ID
-                        $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
-                        $('#InputCater').val(cater);
-                        $('#InputTanggal').val(tanggal);
-                    }
-
-                    setTableData(fullData);
-                    $('#CetakBuktiTagihan').modal('show');
+                {
+                    "data": "no_induk"
                 },
-                error: function(err) {
-                    alert('Gagal mengambil data lengkap');
+                {
+                    "data": "meter_awal"
+                },
+                {
+                    "data": "meter_akhir"
+                },
+                {
+                    "data": "pemakaian"
+                },
+                {
+                    "data": "tagihan"
+                },
+                {
+                    "data": "tgl_akhir_bayar"
+                },
+                {
+                    "data": "status",
+                    "className": "text-center" 
+                },
+                {
+                    "data": "aksi"
                 }
+            ]
+        });
+        $('#caters').on('change', function() {
+            cater = $(this).val()
+            table.ajax.url("/usages/cater?bulan=" + bulan + "&cater=" + cater).load();
+        });
+
+        $('#bulan').on('change', function() {
+            bulan = $(this).val()
+            table.ajax.url("/usages/cater?bulan=" + bulan + "&cater=" + cater).load();
+        });
+
+
+
+        function searching(search) {
+            let data = table.data().toArray();
+
+            search = search.toLowerCase()
+            dataSearch = data.filter((element) => {
+                console.log(element)
+                return (
+                    element.installation.kode_instalasi.includes(search) ||
+                    element.customers.nama.toLowerCase().includes(search)
+                )
             });
+
+            setTableData(dataSearch)
         }
 
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
-            fetchAllDataFullAndShowModal();
+            const data = table.data().toArray();
+
+            if (data.length > 0) {
+                const cater = data[0].users_cater.nama;
+                const tanggal = data[0].tgl_akhir; // 2025-05-22 | 22/05/2025
+
+                var tgl = tanggal.split('/') // [2025, 05, 22]
+                var hari = tgl[0] - 1;
+
+                $('#NamaCater').text(cater);
+                $('#TanggalCetak').text(hari + '/' + tgl[1] + '/' + tgl[2]);
+                $('#InputCater').val(cater);
+                $('#InputTanggal').val(tanggal);
+            }
+
+            setTableData(data);
+
+            $('#CetakBuktiTagihan').modal('show');
         });
-
-
 
         function setTableData(data) {
             const tbTagihan = $('#TbTagihan');
             tbTagihan.find('tbody').html('');
 
+            // Kelompokkan data berdasarkan dusun
             const groupedByDusun = {};
             data.forEach(item => {
                 const dusun = item.installation.village.dusun || 'Lainnya';
@@ -377,18 +365,22 @@
                 groupedByDusun[dusun].push(item);
             });
 
+            // Urutkan nama dusun
             const sortedDusuns = Object.keys(groupedByDusun).sort();
 
             sortedDusuns.forEach(dusun => {
                 const items = groupedByDusun[dusun];
+
+                // Urutkan berdasarkan RT
                 items.sort((a, b) => parseInt(a.installation.rt || 0) - parseInt(b.installation.rt || 0));
 
+                // Tambah baris judul dusun
                 tbTagihan.find('tbody').append(`
             <tr class="table-secondary fw-bold">
                 <td colspan="11">Dusun : ${dusun}</td>
             </tr>
         `);
-
+                // Tambah baris data
                 items.forEach(item => {
                     tbTagihan.find('tbody').append(`
                 <tr>
@@ -417,17 +409,7 @@
             e.preventDefault()
 
             if ($('#FormCetakBuktiTagihan').serializeArray().length > 1) {
-                var formTagihan = $('#FormCetakBuktiTagihan');
-
-                var bulan = $('#bulan').val()
-                var caters = $('#caters').val()
-
-                formTagihan.find('form').html('')
-                var row = formTagihan.append(`
-                    <input type="hidden" name="bulan_tagihan" value="${bulan}">
-                    <input type="hidden" name="pemakaian_cater" value="${cater}">
-                `);
-                formTagihan.submit();
+                $('#FormCetakBuktiTagihan').submit();
             } else {
                 Swal.fire('Error', "Tidak ada transaksi yang dipilih.", 'error')
             }
@@ -444,7 +426,7 @@
             formTagihan.find('form').html('')
             var row = formTagihan.append(`
                 <input type="hidden" name="bulan_tagihan" value="${bulan}">
-                <input type="hidden" name="cater" value="${cater}">
+                <input type="hidden" name="pemakaian_cater" value="${cater}">
             `);
 
             $('#FormCetakTagihan').submit();
@@ -478,7 +460,7 @@
             e.preventDefault();
 
             var hapus_pemakaian = $(this).attr('data-id'); // Ambil ID yang terkait dengan tombol hapus
-            var actionUrl = '/usages/' + hapus_pemakaian; // URL endpoint untuk proses hapus
+            var actionUrl = '/usages/cater/' + hapus_pemakaian; // URL endpoint untuk proses hapus
 
             Swal.fire({
                 title: "Apakah Anda yakin?",
@@ -505,7 +487,7 @@
                                 if (res.isConfirmed) {
                                     window.location.reload()
                                 } else {
-                                    window.location.href = '/usages/';
+                                    window.location.href = '/usages/cater/';
                                 }
                             });
                         },

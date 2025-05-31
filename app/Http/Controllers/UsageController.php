@@ -24,16 +24,19 @@ class UsageController extends Controller
     {
         if (request()->ajax()) {
             $bulan = request()->get('bulan') ?: date('m');
-            $cater = request()->get('cater') ?: '';
+            // Ganti dari 'cater' ke 'cater_id' sesuai parameter yang dipakai di frontend
+            $caterId = request()->get('cater') ?: '';
 
             $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
+
             $usages = Usage::where([
                 ['business_id', Session::get('business_id')],
                 ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%']
             ]);
 
-            if ($cater != '') {
-                $usages->where('cater', $cater);
+            if ($caterId != '') {
+                // Asumsi kolom di DB adalah cater_id (atau sesuaikan nama kolom yang benar)
+                $usages->where('cater', $caterId);
             }
 
             $usages = $usages->with([
@@ -55,10 +58,8 @@ class UsageController extends Controller
                 ->addColumn('aksi', function ($usage) {
                     $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm mb-1 mb-md-0 me-md-1"><i class="fas fa-pencil-alt"></i></a>&nbsp;';
                     $delete = '<a href="#" data-id="' . $usage->id . '" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
-
                     return '<div class="d-flex flex-column flex-md-row">' . $edit . $delete . '</div>';
                 })
-
                 ->addColumn('tgl_akhir', function ($usage) {
                     return Tanggal::tglIndo($usage->tgl_akhir);
                 })
@@ -68,17 +69,24 @@ class UsageController extends Controller
                 ->rawColumns(['aksi'])
                 ->make(true);
         }
-
+        // Ambil data cater (jabatan 5) untuk dropdown / hidden input
         $caters = User::where([
             ['business_id', Session::get('business_id')],
             ['jabatan', '5']
         ])->get();
+
+        $user = auth()->user(); // atau Session::get('user') kalau pakai session manual
+
+        // Kirim cater_id default untuk user jabatan 5 supaya otomatis filter
+        $cater_id = ($user->jabatan == 5) ? $user->id : '';
+
         $title = 'Data Pemakaian';
-        return view('penggunaan.index')->with(compact('title', 'caters'));
+
+        return view('penggunaan.index')->with(compact('title', 'caters', 'user', 'cater_id'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show cthe form for creating a new resource.
      */
     public function create(Request $request)
     {
@@ -239,24 +247,33 @@ class UsageController extends Controller
             $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . date('Y') . '-' . $request->bulan_tagihan . '%');
         }
 
-        $data['usages'] = $data['usages']->with(
+        $data['usages'] = $data['usages']->with([
             'customers',
             'installation',
             'usersCater',
             'installation.package'
-        )->get();
+        ])->get();
+
         $data['jabatan'] = User::where([
             ['business_id', Session::get('business_id')],
             ['jabatan', '3']
         ])->first();
-        $logo = $data['bisnis']->logo;
-        $data['gambar'] = $logo;
+
+        $data['caters'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ])->get();
+
+        $data['user'] = $user; // ✅ kirim user login ke view
+
+        $data['gambar'] = $data['bisnis']->logo;
         $data['keuangan'] = $keuangan;
 
         $view = view('penggunaan.partials.cetak', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'potrait');
+        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait'); // ✅ perbaiki 'potrait' → 'portrait'
         return $pdf->stream();
     }
+
     public function cetak_tagihan(Request $request)
     {
         $thn = $request->input('tahun');
@@ -322,6 +339,74 @@ class UsageController extends Controller
             : '-';
 
         $view = view('penggunaan.partials.cetak1', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
+        return $pdf->stream();
+    }
+    public function cetak_input(Request $request)
+    {
+        $thn = $request->input('tahun');
+        $bln = $request->input('bulan');
+        $hari = $request->input('hari');
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+
+        $data = [
+            'tahun' => $thn,
+            'bulan' => $bln,
+            'hari' => $hari,
+            'judul' => 'Laporan Keuangan',
+            'tgl' => Tanggal::tahun($tgl),
+            'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
+            'cater' => $request->input('cater', null),
+        ];
+
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+
+        // Ambil petugas cater jika dipilih
+        $jabatanQuery = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5']
+        ]);
+
+        if ($request->pemakaian_cater != '') {
+            $jabatanQuery->where('id', $request->pemakaian_cater);
+        }
+
+        $data['jabatan'] = $jabatanQuery->first();
+
+        $usagesQuery = Usage::where([
+            ['business_id', Session::get('business_id')],
+            ['tgl_pemakaian', 'LIKE', date('Y') . '-' . $request->bulan_tagihan . '%']
+        ]);
+
+        if ($request->pemakaian_cater != '') {
+            $usagesQuery->where('cater', $request->pemakaian_cater);
+        }
+
+        $usages = $usagesQuery->with([
+            'customers',
+            'installation',
+            'installation.village',
+            'usersCater',
+            'installation.package'
+        ])->get();
+        // Sortir berdasarkan dusun, rt, dan tgl_akhir
+        $data['usages'] = $usages->sortBy([
+            fn ($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
+            fn ($a, $b) => $a->installation->rt <=> $b->installation->rt,
+            fn ($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
+        ]);
+
+        $data['title'] = 'Cetak';
+        $data['pemakaian_cater'] = optional($data['jabatan'])->nama ?? '-';
+        \Carbon\Carbon::setLocale('id');
+
+        $bulan_angka = $request->bulan_tagihan ?? '';
+        $data['bulan'] = $bulan_angka
+            ? \Carbon\Carbon::create($thn, $bulan_angka, 1)->translatedFormat('F Y')
+            : '-';
+
+        $view = view('penggunaan.partials.cetak2', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
         return $pdf->stream();
     }

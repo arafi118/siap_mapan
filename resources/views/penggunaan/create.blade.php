@@ -49,6 +49,8 @@
                                 <thead class="thead-light" align="center">
                                     <tr>
                                         <th>NAMA</th>
+                                        <th>DUSUN</th>
+                                        <th>RT</th>
                                         <th>NO.INDUK</th>
                                         <th>METER AWAL</th>
                                         <th>METER AKHIR</th>
@@ -61,9 +63,10 @@
                             </table>
                         </div>
                         <hr>
-                        <div class="col-12  justify-content-end {{ auth()->user()->jabatan == '5' ? 'd-none' : 'd-flex' }}">
+                        <div class="col-12 justify-content-end d-flex">
                             <a href="/usages" class="btn btn-secondary">Kembali</a>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -344,6 +347,7 @@
             const tgl_hariini = formatbulan1($('#tanggal').val(), 'month');
 
             data.forEach((item, index) => {
+                console.log(item);
                 const nilai_awal = item.one_usage ? item.one_usage.akhir : '0';
                 const nilai_akhir = item.one_usage ? item.one_usage.akhir : '0';
                 const nilai_jumlah = item.one_usage ? item.one_usage.jumlah : '0';
@@ -377,7 +381,9 @@
                 if (allowInput) {
                     table.append(`
                 <tr data-index="${index}" data-allow-input="${allowInput}" data-id="${item.id}">
-                    <td align="left">${item.customer.nama}</td>    
+                    <td align="left">${item.customer.nama}</td> 
+                    <td align="left">${item.village?.dusun || '-'}</td>
+                    <td align="left">${item.rt}</td>
                     <td align="center">${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>   
                     <td align="right" class="awal"><b>${nilai_awal}</b></td> 
                     <td align="right" class="akhir ${colorClass}"><b>${hasildata}</b></td> 
@@ -388,6 +394,7 @@
             });
 
             $('#TbPemakain').DataTable();
+
         }
 
 

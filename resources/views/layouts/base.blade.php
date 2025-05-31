@@ -109,7 +109,9 @@
 <body id="page-top">
     <div id="wrapper">
         <!-- Sidebar -->
-        @include('layouts.sidebar')
+        @if (auth()->user()->jabatan != 5)
+            @include('layouts.sidebar')
+        @endif
         <!-- Sidebar -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
