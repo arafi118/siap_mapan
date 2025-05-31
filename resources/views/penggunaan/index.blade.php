@@ -222,6 +222,7 @@
 @section('script')
     <script>
         let dataSearch;
+        var table = ''
 
         $(document).ready(function() {
             $('.select2').select2({
@@ -301,30 +302,34 @@
             });
         @endif
 
-        var table = $('#TbPemakain').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                "url": "/usages?bulan=" + bulan + "&cater=" + cater,
-                "type": "GET"
-            },
-            "language": {
-                "processing": `<i class="fas fa-spinner fa-spin"></i> Mohon Tunggu....`,
-                "emptyTable": "Tidak ada data yang tersedia",
-                "search": "",
-                "searchPlaceholder": "Pencarian...",
-                "paginate": {
-                    "next": "<i class='fas fa-angle-right'></i>",
-                    "previous": "<i class='fas fa-angle-left'></i>"
-                }
-            },
-            "columns": columns
-        });
 
         $('#caters, #bulan').on('change', function() {
             cater = $('#caters').val()
             bulan = $('#bulan').val()
-            table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+
+            if (table == '') {
+                table = ('#TbPemakain').DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "/usages?bulan=" + bulan + "&cater=" + cater,
+                        "type": "GET"
+                    },
+                    "language": {
+                        "processing": `<i class="fas fa-spinner fa-spin"></i> Mohon Tunggu....`,
+                        "emptyTable": "Tidak ada data yang tersedia",
+                        "search": "",
+                        "searchPlaceholder": "Pencarian...",
+                        "paginate": {
+                            "next": "<i class='fas fa-angle-right'></i>",
+                            "previous": "<i class='fas fa-angle-left'></i>"
+                        }
+                    },
+                    "columns": columns
+                });
+            } else {
+                table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+            }
         });
 
         function fetchAllDataFullAndShowModal() {
@@ -363,7 +368,6 @@
         $(document).on('click', '#DetailCetakBuktiTagihan', function(e) {
             fetchAllDataFullAndShowModal();
         });
-
 
 
         function setTableData(data) {
