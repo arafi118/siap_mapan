@@ -91,11 +91,9 @@ class UsageController extends Controller
     public function create(Request $request)
     {
         $business_id = Session::get('business_id');
-        $cater_id = $request->input('cater_id');
-        $caters = User::where([
-            ['business_id', $business_id],
-            ['jabatan', '5']
-        ])->get();
+        $cater_id = $request->get('cater_id');
+        $bulan = $request->get('bulan') ?: date('d/m/Y');
+
         $settings = Settings::where('business_id', $business_id)->first();
 
         $installasi = Installations::where('business_id', $business_id)
@@ -105,11 +103,6 @@ class UsageController extends Controller
             ->with(['customer', 'package', 'users', 'oneUsage'])
             ->orderBy('id', 'ASC')
             ->get();
-
-        $caters = User::where([
-            ['business_id', $business_id],
-            ['jabatan', '5']
-        ])->get();
 
         $usages = Usage::where('business_id', $business_id)->get();
 
@@ -122,7 +115,8 @@ class UsageController extends Controller
             'pilih_customer',
             'cater_id',
             'title',
-            'usages'
+            'usages',
+            'bulan'
         ));
     }
     public function barcode(Usage $usage)

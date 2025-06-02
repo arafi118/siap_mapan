@@ -30,15 +30,14 @@
                                         <option value="">-- Pilih Bulan --</option>
                                         @php
                                             $tahun = date('Y');
-                                            $bulanSekarang = date('n'); // bulan sekarang, 1 - 12
                                         @endphp
-                                        @for ($i = 1; $i <= $bulanSekarang; $i++)
+                                        @for ($i = 1; $i <= 12; $i++)
                                             @php
                                                 $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
                                                 $tanggalObj = $tahun . '-' . $bulanValue . '-01';
                                                 $namaBulan = Tanggal::namaBulan($tanggalObj);
                                             @endphp
-                                            <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
+                                            <option {{ date('m') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
                                                 {{ $namaBulan }} {{ $tahun }}
                                             </option>
                                         @endfor
@@ -63,9 +62,6 @@
                                             @endforeach
                                         </select>
                                     @endif
-
-
-
                                 </div>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
@@ -238,14 +234,19 @@
         $(document).on('click', '#Registerpemakaian', function(e) {
             e.preventDefault();
 
-            var caterId = $('#caters').val(); // ambil cater yang dipilih
-            var url = '/usages/create';
+            var tahun = "{{ date('Y') }}";
+            var bulanTerpilih = '01' + '/' + $('#bulan').val() + '/' + tahun;
+            var caterId = $('#caters').val();
 
-            if (caterId) {
-                url += '?cater_id=' + caterId;
+            if (bulanTerpilih && caterId) {
+                window.location.href = '/usages/create?bulan=' + bulanTerpilih + '&cater_id=' + caterId;
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan',
+                    text: 'Silakan pilih bulan dan cater terlebih dahulu sebelum melakukan input pemakaian.',
+                });
             }
-
-            window.location.href = url;
         });
 
 
@@ -307,28 +308,30 @@
             cater = $('#caters').val()
             bulan = $('#bulan').val()
 
-            if (table == '') {
-                table = $('#TbPemakain').DataTable({
-                    "processing": true,
-                    "serverSide": true,
-                    "ajax": {
-                        "url": "/usages?bulan=" + bulan + "&cater=" + cater,
-                        "type": "GET"
-                    },
-                    "language": {
-                        "processing": `<i class="fas fa-spinner fa-spin"></i> Mohon Tunggu....`,
-                        "emptyTable": "Tidak ada data yang tersedia",
-                        "search": "",
-                        "searchPlaceholder": "Pencarian...",
-                        "paginate": {
-                            "next": "<i class='fas fa-angle-right'></i>",
-                            "previous": "<i class='fas fa-angle-left'></i>"
-                        }
-                    },
-                    "columns": columns
-                });
-            } else {
-                table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+            if (cater != '') {
+                if (table == '') {
+                    table = $('#TbPemakain').DataTable({
+                        "processing": true,
+                        "serverSide": true,
+                        "ajax": {
+                            "url": "/usages?bulan=" + bulan + "&cater=" + cater,
+                            "type": "GET"
+                        },
+                        "language": {
+                            "processing": `<i class="fas fa-spinner fa-spin"></i> Mohon Tunggu....`,
+                            "emptyTable": "Tidak ada data yang tersedia",
+                            "search": "",
+                            "searchPlaceholder": "Pencarian...",
+                            "paginate": {
+                                "next": "<i class='fas fa-angle-right'></i>",
+                                "previous": "<i class='fas fa-angle-left'></i>"
+                            }
+                        },
+                        "columns": columns
+                    });
+                } else {
+                    table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+                }
             }
         });
 

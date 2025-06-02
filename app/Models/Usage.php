@@ -46,6 +46,6 @@ class Usage extends Model
 
     public function usage()
     {
-        return $this->hasMany(Usage::class, 'id_instalasi', 'id');
+        return $this->hasMany(Usage::class, 'id_instalasi', 'id_instalasi');
     }
 }

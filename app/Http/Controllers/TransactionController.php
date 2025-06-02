@@ -1198,11 +1198,19 @@ class TransactionController extends Controller
         $biaya_tagihan = $data['tagihan'] + $data['abodemen'] + $data['denda'];
         $biaya_instalasi = $data['pembayaran'];
 
-        $usage = Usage::where('id', $data['id_usage'])->with('installation', 'customers')->first();
+        $tgl_transaksi = Tanggal::tglNasional($data['tgl_transaksi']);
+        $usage = Usage::where('id', $data['id_usage'])->with([
+            'installation',
+            'customers',
+            'usage' => function ($query) use ($tgl_transaksi) {
+                $query->where('tgl_akhir', '<=', $tgl_transaksi)->where('status', 'UNPAID');
+            },
+            'usersCater'
+        ])->first();
 
         $tgl_transaksi = Tanggal::tglNasional($request->tgl_transaksi);
         $accounts = Account::where('business_id', Session::get('business_id'))
-            ->whereIn('kode_akun', ['1.1.01.01', '1.1.03.01', '4.1.01.02', '4.1.01.03', '4.1.01.04', '5.1.02.04'])
+            ->whereIn('kode_akun', ['1.1.01.01', '1.1.03.01', '2.1.02.02', '4.1.01.02', '4.1.01.03', '4.1.01.04', '5.1.02.04'])
             ->get()
             ->keyBy('kode_akun');
 
@@ -1211,7 +1219,9 @@ class TransactionController extends Controller
         $kode_abodemen = $accounts['4.1.01.02'] ?: null;
         $kode_pemakaian = $accounts['4.1.01.03'] ?: null;
         $kode_denda = $accounts['4.1.01.04'] ?: null;
-        $kode_fee = $accounts['5.1.02.04'] ?: null;
+
+        $utang_komisi = $accounts['2.1.02.02'] ?: null;
+        $beban_komisi = $accounts['5.1.02.04'] ?: null;
 
         $transaksi_piutang = Transaction::where('business_id', Session::get('business_id'))
             ->where('tgl_transaksi', '<=', $tgl_transaksi)
@@ -1245,8 +1255,8 @@ class TransactionController extends Controller
             $rek_denda = $kode_denda->id;
         }
 
-        $trx_id = substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
-
+        $sumTransakksi = 0;
+        $trx_id = 'TB-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
         if ($data['abodemen'] != 0) {
             $insert[] = [
                 'business_id' => Session::get('business_id'),
@@ -1262,6 +1272,8 @@ class TransactionController extends Controller
                 'keterangan' => 'Pendapatan Abodemen pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
                 'created_at' => date('Y-m-d H:i:s')
             ];
+
+            $sumTransakksi += $data['abodemen'];
         }
         if ($data['tagihan'] != 0) {
             $insert[] = [
@@ -1278,6 +1290,8 @@ class TransactionController extends Controller
                 'keterangan' => 'Pendapatan Tagihan pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
                 'created_at' => date('Y-m-d H:i:s')
             ];
+
+            $sumTransakksi += $data['tagihan'];
         }
         if ($data['denda'] != 0) {
             $insert[] = [
@@ -1294,10 +1308,26 @@ class TransactionController extends Controller
                 'keterangan' => 'Pendapatan Denda pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
                 'created_at' => date('Y-m-d H:i:s')
             ];
+
+            $sumTransakksi += $data['denda'];
         }
 
-        if ($usage->installation->status_tunggakan) {
-            // SPS
+        $komisiId = 'BK-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
+        if (count($usage->usage) >= 3) {
+            $insert[] = [
+                'business_id' => Session::get('business_id'),
+                'rekening_debit' => $beban_komisi->id,
+                'rekening_kredit' => $utang_komisi->id,
+                'tgl_transaksi' => $tgl_transaksi,
+                'total' => $sumTransakksi * 0.1,
+                'installation_id' => $request->id_instal,
+                'transaction_id' => $komisiId,
+                'usage_id' => $request->id_usage,
+                'user_id' => auth()->user()->id,
+                'relasi' => '-',
+                'keterangan' => 'Utang Komisi 10% instalasi ' . $usage->installation->kode_instalasi,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
         }
 
         Transaction::insert($insert);
@@ -1358,55 +1388,55 @@ class TransactionController extends Controller
     /**
      * .cetak detail Transaksi Tagihan Bulanan
      */
-   public function detailTransaksiTagihan(Request $request)
-{
-    $installation_id = $request->id;
-    $rek_debit = $request->rek_debit;
-    $rek_kredit = $request->rek_kredit;
+    public function detailTransaksiTagihan(Request $request)
+    {
+        $installation_id = $request->id;
+        $rek_debit = $request->rek_debit;
+        $rek_kredit = $request->rek_kredit;
 
-    $akun_kas = Account::where([
-        ['business_id', Session::get('business_id')],
-        ['kode_akun', '1.1.01.01']
-    ])->first();
+        $akun_kas = Account::where([
+            ['business_id', Session::get('business_id')],
+            ['kode_akun', '1.1.01.01']
+        ])->first();
 
-    // Ambil semua tahun unik dari transaksi
-    $tahun_options = Transaction::where('installation_id', $installation_id)
-        ->where('rekening_debit', $akun_kas->id)
-        ->selectRaw('YEAR(tgl_transaksi) as tahun')
-        ->distinct()
-        ->orderBy('tahun', 'desc')
-        ->pluck('tahun')
-        ->toArray();
+        // Ambil semua tahun unik dari transaksi
+        $tahun_options = Transaction::where('installation_id', $installation_id)
+            ->where('rekening_debit', $akun_kas->id)
+            ->selectRaw('YEAR(tgl_transaksi) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun')
+            ->toArray();
 
-    // Default tahun adalah tahun berjalan atau request
-    $tahun = $request->tahun ?? date('Y');
+        // Default tahun adalah tahun berjalan atau request
+        $tahun = $request->tahun ?? date('Y');
 
-    $transaksi = Transaction::where('installation_id', $installation_id)
-        ->where('rekening_debit', $akun_kas->id)
-        ->whereYear('tgl_transaksi', $tahun)
-        ->with(['Installations.customer', 'Usages', 'rek_debit', 'rek_kredit'])
-        ->orderBy('tgl_transaksi', 'ASC')
-        ->orderBy('urutan', 'ASC')
-        ->orderBy('id', 'ASC')
-        ->get();
+        $transaksi = Transaction::where('installation_id', $installation_id)
+            ->where('rekening_debit', $akun_kas->id)
+            ->whereYear('tgl_transaksi', $tahun)
+            ->with(['Installations.customer', 'Usages', 'rek_debit', 'rek_kredit'])
+            ->orderBy('tgl_transaksi', 'ASC')
+            ->orderBy('urutan', 'ASC')
+            ->orderBy('id', 'ASC')
+            ->get();
 
-    $data = [
-        'installation_id' => $installation_id,
-        'rek_debit' => $rek_debit,
-        'rek_kredit' => $rek_kredit,
-        'akun_kas' => $akun_kas,
-        'judul' => 'Detail Transaksi',
-        'sub_judul' => 'Tagihan Bulanan',
-        'tahun' => $tahun,
-        'tahun_options' => $tahun_options,
-        'transaksi' => $transaksi
-    ];
+        $data = [
+            'installation_id' => $installation_id,
+            'rek_debit' => $rek_debit,
+            'rek_kredit' => $rek_kredit,
+            'akun_kas' => $akun_kas,
+            'judul' => 'Detail Transaksi',
+            'sub_judul' => 'Tagihan Bulanan',
+            'tahun' => $tahun,
+            'tahun_options' => $tahun_options,
+            'transaksi' => $transaksi
+        ];
 
-    return [
-        'label' => '<i class="fas fa-book"></i> Riwayat Pembayaran ',
-        'view' => view('transaksi.partials.detail_tagihan', $data)->render(),
-    ];
-}
+        return [
+            'label' => '<i class="fas fa-book"></i> Riwayat Pembayaran ',
+            'view' => view('transaksi.partials.detail_tagihan', $data)->render(),
+        ];
+    }
 
     /**
      * Set saldo.

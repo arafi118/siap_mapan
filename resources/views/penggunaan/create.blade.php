@@ -8,7 +8,7 @@
         @csrf
         <input type="hidden" id="tgl_toleransi" value="{{ $settings->tanggal_toleransi }}">
         <input type="hidden" id="caters" value="{{ $cater_id }}">
-        <input type="hidden" name="tanggal" id="tanggal" value="{{ date('d/m/Y') }}">
+        <input type="hidden" name="tanggal" id="tanggal" value="{{ $bulan }}">
 
         <div class="row">
             <div class="col-lg-12">
@@ -27,20 +27,6 @@
                                     <h3><b>Input Pemakaian Air Bulanan</b></h3>
                                 </div>
                                 <hr class="my-2 bg-white">
-                                {{-- <div class="row">
-                                    <div class="col-md-8 mb-2">
-                                        <select class="select2 form-control" name="caters" id="caters">
-                                            <option value=""></option>
-                                            @foreach ($caters as $cater)
-                                                <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <input type="text" name="tanggal" id="tanggal"
-                                            class="form-control tanggal date" value="{{ date('d/m/Y') }}">
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>
 
