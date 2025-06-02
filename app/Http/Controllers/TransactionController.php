@@ -1312,7 +1312,7 @@ class TransactionController extends Controller
             $sumTransakksi += $data['denda'];
         }
 
-        $komisiId = 'BK-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
+        $komisiId = str_replace('TB', 'BK', $trx_id);
         if (count($usage->usage) >= 3) {
             $insert[] = [
                 'business_id' => Session::get('business_id'),
