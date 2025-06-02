@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Business;
 use App\Models\Customer;
 use App\Models\Installations;
@@ -24,10 +25,16 @@ class UsageController extends Controller
     {
         if (request()->ajax()) {
             $bulan = request()->get('bulan') ?: date('m');
-            // Ganti dari 'cater' ke 'cater_id' sesuai parameter yang dipakai di frontend
             $caterId = request()->get('cater') ?: '';
-
             $tgl_pakai = date('Y-m', strtotime(date('Y') . '-' . $bulan . '-01'));
+
+            $rekening_denda = Account::where([
+                ['kode_akun', '4.1.01.04'],
+                ['business_id', Session::get('business_id')]
+            ])->first();
+
+            $pengaturan = Settings::where('business_id', Session::get('business_id'));
+            $trx_settings = $pengaturan->first();
 
             $usages = Usage::where([
                 ['business_id', Session::get('business_id')],
@@ -35,13 +42,15 @@ class UsageController extends Controller
             ]);
 
             if ($caterId != '') {
-                // Asumsi kolom di DB adalah cater_id (atau sesuaikan nama kolom yang benar)
                 $usages->where('cater', $caterId);
             }
 
             $usages = $usages->with([
                 'customers',
                 'installation',
+                'installation.transaction' => function ($query) use ($rekening_denda) {
+                    $query->where('rekening_kredit', $rekening_denda->id);
+                },
                 'installation.village',
                 'usersCater',
                 'installation.package'
@@ -63,8 +72,16 @@ class UsageController extends Controller
                 ->addColumn('tgl_akhir', function ($usage) {
                     return Tanggal::tglIndo($usage->tgl_akhir);
                 })
-                ->editColumn('nominal', function ($usage) {
-                    return number_format($usage->nominal, 2);
+                ->editColumn('nominal', function ($usage) use ($trx_settings) {
+                    $dendaPemakaianLalu = 0;
+                    foreach ($usage->installation->transaction as $trx_denda) {
+                        if ($trx_denda->tgl_transaksi < $usage->tgl_akhir) {
+                            $dendaPemakaianLalu = $trx_denda->total;
+                        }
+                    }
+
+                    $nominal = $usage->nominal + $dendaPemakaianLalu + $trx_settings->abodemen;
+                    return number_format($nominal, 2);
                 })
                 ->rawColumns(['aksi'])
                 ->make(true);
@@ -267,65 +284,65 @@ class UsageController extends Controller
     }
 
     public function cetak_tagihan(Request $request)
-{
-    $thn = $request->input('tahun');
-    $bln = $request->input('bulan');
-    $hari = $request->input('hari');
+    {
+        $thn = $request->input('tahun');
+        $bln = $request->input('bulan');
+        $hari = $request->input('hari');
 
-    $tgl = $thn . '-' . $bln . '-' . $hari;
+        $tgl = $thn . '-' . $bln . '-' . $hari;
 
-    $data = [
-        'tahun' => $thn,
-        'bulan' => $bln,
-        'hari' => $hari,
-        'judul' => 'Laporan Keuangan',
-        'tgl' => Tanggal::tahun($tgl),
-        'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
-        'cater' => $request->input('cater', null),
-    ];
+        $data = [
+            'tahun' => $thn,
+            'bulan' => $bln,
+            'hari' => $hari,
+            'judul' => 'Laporan Keuangan',
+            'tgl' => Tanggal::tahun($tgl),
+            'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
+            'cater' => $request->input('cater', null),
+        ];
 
-    $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
 
-    // Ambil data usage sesuai filter
-    $usagesQuery = Usage::where([
-        ['business_id', Session::get('business_id')],
-        ['tgl_pemakaian', 'LIKE', date('Y') . '-' . $request->bulan_tagihan . '%']
-    ]);
+        // Ambil data usage sesuai filter
+        $usagesQuery = Usage::where([
+            ['business_id', Session::get('business_id')],
+            ['tgl_pemakaian', 'LIKE', date('Y') . '-' . $request->bulan_tagihan . '%']
+        ]);
 
-    if ($request->cater != '') {
-        $usagesQuery->where('cater', $request->cater);
+        if ($request->cater != '') {
+            $usagesQuery->where('cater', $request->cater);
+        }
+
+        $usages = $usagesQuery->with([
+            'customers',
+            'installation',
+            'installation.village',
+            'usersCater',
+            'installation.package'
+        ])->get();
+
+        // Sort
+        $data['usages'] = $usages->sortBy([
+            fn ($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
+            fn ($a, $b) => $a->installation->rt <=> $b->installation->rt,
+            fn ($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
+        ]);
+
+        // Ambil nama cater dari relasi Usage → usersCater (jika ada)
+        $data['pemakaian_cater'] = $usages->first()?->usersCater?->nama ?? '-';
+
+        $data['title'] = 'Cetak Daftar Tagihan';
+
+        \Carbon\Carbon::setLocale('id');
+        $bulan_angka = $request->bulan_tagihan ?? '';
+        $data['bulan'] = $bulan_angka
+            ? \Carbon\Carbon::create($thn, $bulan_angka, 1)->translatedFormat('F Y')
+            : '-';
+
+        $view = view('penggunaan.partials.cetak1', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
+        return $pdf->stream();
     }
-
-    $usages = $usagesQuery->with([
-        'customers',
-        'installation',
-        'installation.village',
-        'usersCater',
-        'installation.package'
-    ])->get();
-
-    // Sort
-    $data['usages'] = $usages->sortBy([
-        fn ($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
-        fn ($a, $b) => $a->installation->rt <=> $b->installation->rt,
-        fn ($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
-    ]);
-
-    // Ambil nama cater dari relasi Usage → usersCater (jika ada)
-    $data['pemakaian_cater'] = $usages->first()?->usersCater?->nama ?? '-';
-
-    $data['title'] = 'Cetak Daftar Tagihan';
-
-    \Carbon\Carbon::setLocale('id');
-    $bulan_angka = $request->bulan_tagihan ?? '';
-    $data['bulan'] = $bulan_angka
-        ? \Carbon\Carbon::create($thn, $bulan_angka, 1)->translatedFormat('F Y')
-        : '-';
-
-    $view = view('penggunaan.partials.cetak1', $data)->render();
-    $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
-    return $pdf->stream();
-}
 
     public function cetak_input(Request $request)
     {
