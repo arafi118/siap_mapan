@@ -368,14 +368,22 @@ class UsageController extends Controller
 
     $bulanAwal = \Carbon\Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
 
-    foreach ($installations as $installation) {
-        $usage = $installation->usage()
-            ->where('tgl_pemakaian', '<', $bulanAwal->format('Y-m-d'))
-            ->orderBy('tgl_pemakaian', 'desc')
-            ->first();
-
-        $installation->akhir = $usage ? $usage->akhir : 0; 
+   foreach ($installations as $installation) {
+    // Cek apakah instalasi punya usage sama sekali
+    if (!$installation->usage()->exists()) {
+        $installation->akhir = 0;
+        continue;
     }
+
+    // Kalau ada usage, ambil pemakaian terakhir sebelum bulan ini
+    $usage = $installation->usage()
+        ->where('tgl_pemakaian', '<', $bulanAwal->format('Y-m-d'))
+        ->orderBy('tgl_pemakaian', 'desc')
+        ->first();
+
+    $installation->akhir = $usage ? $usage->akhir : 0;
+}
+
 
     $caterUser = null;
     if ($cater) {

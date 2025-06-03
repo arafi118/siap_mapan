@@ -1,3 +1,9 @@
+@php
+    use App\Utils\Tanggal;
+    \Carbon\Carbon::setLocale('id');
+
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -87,6 +93,9 @@
         <table class="info" style="width:100%; border-collapse: collapse;">
             <tr>
                 <td style="width:130px;">Bulan Pemakaian</td>
+                @php
+                    \Carbon\Carbon::setLocale('id');
+                @endphp
                 <td>: <b>{{ \Carbon\Carbon::createFromFormat('Y-m', $bulan)->translatedFormat('F Y') }}</b></td>
                 <td style="width:130px; text-align:right;"></td>
                 <td style="text-align:left;"></b></td>
