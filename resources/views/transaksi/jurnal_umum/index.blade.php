@@ -22,8 +22,8 @@
                                     <div class="col-md-6">
                                         <div class="position-relative mb-3">
                                             <label for="jenis_transaksi">Jenis Transaksi</label>
-                                            <select class="form-control select2" name="jenis_transaksi"
-                                                id="jenis_transaksi">
+                                            <select class="form-control select2" name="jenis_transaksi" id="jenis_transaksi"
+                                                style="width: 100%;">
                                                 <option value="">-- Pilih Jenis Transaksi --</option>
                                                 @foreach ($jenis_transaksi as $jt)
                                                     <option value="{{ $jt->id }}">
@@ -40,7 +40,7 @@
                                         <div class="position-relative mb-3">
                                             <label for="sumber_dana">Sumber Dana</label>
                                             <select class="form-control select2" name="sumber_dana" id="sumber_dana"
-                                                style="height: 38px;">
+                                                style="height: 38px; width: 100%;">
                                                 <option value="">-- Pilih Sumber Dana --</option>
                                             </select>
                                             <small class="text-danger"></small>
@@ -50,7 +50,7 @@
                                         <div class="position-relative mb-3">
                                             <label for="disimpan_ke">Disimpan ke</label>
                                             <select class="form-control select2" name="disimpan_ke" id="disimpan_ke"
-                                                style="height: 38px;">
+                                                style="height: 38px; width: 100%;">
                                                 <option value="">-- Disimpan Ke --</option>
                                             </select>
                                             <small class="text-danger"></small>
@@ -111,7 +111,8 @@
                                         <div class="col-md-12">
                                             <div class="position-relative mb-3">
                                                 <label for="tahun">Tahun</label>
-                                                <select class="form-control select2" name="tahun" id="tahun">
+                                                <select class="form-control select2" name="tahun" id="tahun"
+                                                    style="width: 100%">
                                                     @php
                                                         $tgl_pakai = $business->tgl_pakai ?? '2000-01-01';
                                                         $th_pakai = explode('-', $tgl_pakai)[0];
@@ -132,7 +133,8 @@
                                         <div class="col-md-12">
                                             <div class="position-relative mb-3">
                                                 <label for="bulan">Bulan</label>
-                                                <select class="form-control select2" name="bulan" id="bulan">
+                                                <select class="form-control select2" name="bulan" id="bulan"
+                                                    style="width: 100%">
                                                     <option value="">--</option>
                                                     <option {{ date('m') == '01' ? 'selected' : '' }} value="01">
                                                         01.
@@ -191,7 +193,8 @@
                                         <div class="col-md-12">
                                             <div class="position-relative mb-3">
                                                 <label for="tanggal">Tanggal</label>
-                                                <select class="form-control select2" name="tanggal" id="tanggal">
+                                                <select class="form-control select2" name="tanggal" id="tanggal"
+                                                    style="width: 100%">
                                                     <option value="">--</option>
                                                     @for ($j = 1; $j <= 31; $j++)
                                                         @php $no=str_pad($j, 2, "0" , STR_PAD_LEFT) @endphp
@@ -307,13 +310,34 @@
             i18n: {
                 de: {
                     months: [
-                        'Januar', 'Februar', 'März', 'April',
-                        'Mai', 'Juni', 'Juli', 'August',
-                        'September', 'Oktober', 'November', 'Dezember',
+                        'Januari', 'Februari', 'Maret', 'April',
+                        'Mei', 'Juni', 'Juli', 'Agustus',
+                        'September', 'Oktober', 'November', 'Desember',
+                    ],
+                    days: [
+                        'Minggu', 'Senin', 'Selasa', 'Rabu',
+                        'Kamis', 'Jumat', 'Sabtu',
+                    ],
+                    dayOfWeekShort: [
+                        "Min", "Sen", "Sel", "Rab",
+                        "Kam", "Jum", "Sab",
                     ],
                     dayOfWeek: [
-                        "So.", "Mo", "Di", "Mi",
-                        "Do", "Fr", "Sa.",
+                        "Minggu", "Senin", "Selasa", "Rabu",
+                        "Kamis", "Jumat", "Sabtu",
+                    ],
+                    monthsShort: [
+                        "Jan", "Feb", "Mar", "Apr",
+                        "Mei", "Jun", "Jul", "Agu",
+                        "Sep", "Okt", "Nov", "Des",
+                    ],
+                    daysShort: [
+                        "Ming.", "Sen", "Sel", "Rab",
+                        "Kam", "Jum", "Sab",
+                    ],
+                    daysMin: [
+                        "Ming.", "Sen", "Sel", "Rab",
+                        "Kam", "Jum", "Sab",
                     ]
                 }
             },
@@ -351,6 +375,7 @@
                 var sumber_dana = $('#sumber_dana').val();
                 var tgl_transaksi = $(this).val().split('/')
 
+                setFormNominal()
                 setSaldo(sumber_dana, tgl_transaksi)
             }
         });
@@ -359,41 +384,14 @@
         $(document).on('change', '#sumber_dana', function(e) {
             e.preventDefault()
             var sumber_dana = $(this).val()
-
-            if (sumber_dana == '1.2.02.01') {
-                simpan.setChoiceByValue('5.1.07.08')
-            }
-
-            if (sumber_dana == '1.2.02.02') {
-                simpan.setChoiceByValue('5.1.07.09')
-            }
-
-            if (sumber_dana == '1.2.02.03') {
-                simpan.setChoiceByValue('5.1.07.10')
-            }
-
             var tgl_transaksi = $('#tgl_transaksi').val().split('/')
-
             setSaldo(sumber_dana, tgl_transaksi)
         })
 
         //form sumber dana & disimpan ke
         $(document).on('change', '#sumber_dana,#disimpan_ke', function(e) {
             e.preventDefault()
-
-            var tgl_transaksi = $('#tgl_transaksi').val()
-            var jenis_transaksi = $('#jenis_transaksi').val()
-            var sumber_dana = $('#sumber_dana').val()
-            var disimpan_ke = $('#disimpan_ke').val()
-
-            $.get('/transactions/form_nominal/', {
-                jenis_transaksi,
-                sumber_dana,
-                disimpan_ke,
-                tgl_transaksi
-            }, function(result) {
-                $('#form_nominal').html(result)
-            })
+            setFormNominal()
         })
 
         //simpan Jurnal Umum
@@ -713,6 +711,24 @@
                 tooltipList = tooltipTriggerList.map(function(e) {
                     return new bootstrap.Tooltip(e)
                 });
+        }
+
+        function setFormNominal() {
+            var tgl_transaksi = $('#tgl_transaksi').val()
+            var jenis_transaksi = $('#jenis_transaksi').val()
+            var sumber_dana = $('#sumber_dana').val()
+            var disimpan_ke = $('#disimpan_ke').val()
+
+            if (sumber_dana && disimpan_ke) {
+                $.get('/transactions/form_nominal/', {
+                    jenis_transaksi,
+                    sumber_dana,
+                    disimpan_ke,
+                    tgl_transaksi
+                }, function(result) {
+                    $('#form_nominal').html(result)
+                })
+            }
         }
 
         function setSaldo(sumber_dana, tgl_transaksi) {
