@@ -79,9 +79,9 @@ class AuthController extends Controller
                 'auth_token' => $auth_token,
             ]);
 
-            $menu = Menu::where('parent_id', '0')->whereNotIn('id', json_decode($user->akses_menu, true))->with([
+            $menu = Menu::where('parent_id', '0')->whereNotIn('id', json_decode($user->akses_menu, true))->where('status', 'A')->with([
                 'child' => function ($query) use ($user) {
-                    $query->whereNotIn('id', json_decode($user->akses_menu, true));
+                    $query->whereNotIn('id', json_decode($user->akses_menu, true))->where('status', 'A');
                 }
             ])->get();
 
@@ -98,7 +98,7 @@ class AuthController extends Controller
             ]);
 
             if ($user->jabatan == '5') {
-                return redirect('/usages/?cater_id='.$user->id)->with('success', 'Selamat Datang ' . $user->nama);
+                return redirect('/usages/?cater_id=' . $user->id)->with('success', 'Selamat Datang ' . $user->nama);
             }
 
             return redirect('/')->with('success', 'Selamat Datang ' . $user->nama);
