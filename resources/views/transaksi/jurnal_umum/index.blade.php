@@ -314,7 +314,28 @@
                         'Mei', 'Juni', 'Juli', 'Agustus',
                         'September', 'Oktober', 'November', 'Desember',
                     ],
+                    days: [
+                        'Minggu', 'Senin', 'Selasa', 'Rabu',
+                        'Kamis', 'Jumat', 'Sabtu',
+                    ],
+                    dayOfWeekShort: [
+                        "Min", "Sen", "Sel", "Rab",
+                        "Kam", "Jum", "Sab",
+                    ],
                     dayOfWeek: [
+                        "Minggu", "Senin", "Selasa", "Rabu",
+                        "Kamis", "Jumat", "Sabtu",
+                    ],
+                    monthsShort: [
+                        "Jan", "Feb", "Mar", "Apr",
+                        "Mei", "Jun", "Jul", "Agu",
+                        "Sep", "Okt", "Nov", "Des",
+                    ],
+                    daysShort: [
+                        "Ming.", "Sen", "Sel", "Rab",
+                        "Kam", "Jum", "Sab",
+                    ],
+                    daysMin: [
                         "Ming.", "Sen", "Sel", "Rab",
                         "Kam", "Jum", "Sab",
                     ]
