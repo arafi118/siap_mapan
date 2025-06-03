@@ -1023,7 +1023,7 @@ class PelaporanController extends Controller
                 'Installations.transaction' => function ($query) use ($rekening_denda) {
                     $query->where('rekening_kredit', $rekening_denda->id);
                 },
-                'Installations.users',
+                'Installations.village',
                 'Usages',
                 'transaction' => function ($query) use ($akunFeeKolektor) {
                     $query->where('rekening_debit', $akunFeeKolektor->id);
