@@ -73,6 +73,7 @@
                             @endif
                         </div>
                     </div>
+
                     <div class="col d-flex align-items-end">
                         <button class="btn btn-warning btn-block w-100" id="Registerpemakaian"
                             @if (Session::get('jabatan') == 6) disabled @endif>
