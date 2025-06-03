@@ -54,6 +54,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $url = request()->getHost();
         $data = $request->only(['username', 'password']);
 
         $validate = Validator::make($data, [
@@ -65,25 +66,32 @@ class AuthController extends Controller
             return redirect()->back()->with('error', 'Username dan Password harus diisi');
         }
 
+        $user = User::where('username', $data['username'])->first();
+        if (!$user) {
+            return redirect()->back()->with('error', 'Login Gagal. Username atau Password salah');
+        }
+
+        $business = Business::where('id', $user->business_id)->first();
+        $menu = Menu::where('parent_id', '0')->whereNotIn('id', json_decode($user->akses_menu, true));
+        if ($url != 'siap_mapan.test') {
+            $menu = $menu->where('status', 'A');
+        }
+
+        $menu = $menu->with([
+            'child' => function ($query) use ($user, $url) {
+                if ($url != 'siap_mapan.test') {
+                    $query->whereNotIn('id', json_decode($user->akses_menu, true))->where('status', 'A');
+                } else {
+                    $query->whereNotIn('id', json_decode($user->akses_menu, true));
+                }
+            }
+        ])->get();
+
         if (Auth::attempt($data)) {
-
-            $user = User::where('username', $data['username'])->first();
-            $business = Business::where('id', $user->business_id)->first();
-            $pengaturan = Settings::where('business_id', $business->id)->first();
-            $installations = Installations::where('business_id', $business->id)->where('status', 'A')->get();
-            $usages = Usage::whereIn('id_instalasi', $installations->pluck('id'))->where('status', 'LIKE', 'UNPAID')->get()->groupBy('id_instalasi');
-
-            //proses login
             $auth_token = md5(strtolower($data['username'] . '|' . $data['password']));
             User::where('id', $user->id)->update([
                 'auth_token' => $auth_token,
             ]);
-
-            $menu = Menu::where('parent_id', '0')->whereNotIn('id', json_decode($user->akses_menu, true))->where('status', 'A')->with([
-                'child' => function ($query) use ($user) {
-                    $query->whereNotIn('id', json_decode($user->akses_menu, true))->where('status', 'A');
-                }
-            ])->get();
 
             $request->session()->regenerate();
             session([

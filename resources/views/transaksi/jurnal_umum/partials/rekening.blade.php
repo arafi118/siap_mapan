@@ -1,7 +1,7 @@
 <div class="col-md-6">
     <div class="position-relative mb-3">
         <label for="sumber_dana">Sumber Dana</label>
-        <select class="form-control select" name="sumber_dana" id="sumber_dana">
+        <select class="form-control select" name="sumber_dana" id="sumber_dana" style="width: 100%;">
             <option value="">-- {{ $label1 }} --</option>
             @foreach ($rek1 as $r1)
                 <option value="{{ $r1->id }}">
@@ -15,7 +15,7 @@
 <div class="col-md-6">
     <div class="position-relative mb-3">
         <label class="form-label" for="disimpan_ke">{{ $label2 }}</label>
-        <select class="form-control select" name="disimpan_ke" id="disimpan_ke">
+        <select class="form-control select" name="disimpan_ke" id="disimpan_ke" style="width: 100%;">
             <option value="">-- {{ $label2 }} --</option>
             @foreach ($rek2 as $r2)
                 <option value="{{ $r2->id }}">
