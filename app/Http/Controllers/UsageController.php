@@ -344,7 +344,7 @@ class UsageController extends Controller
         return $pdf->stream();
     }
 
-   public function cetak_input(Request $request)
+     public function cetak_input(Request $request)
 {
     $bulan = $request->bulan_tagihan;
     $cater = $request->cater;
@@ -371,11 +371,11 @@ class UsageController extends Controller
 
     foreach ($installations as $installation) {
         $usage = $installation->usage()
-            ->where('tgl_akhir', '<', $bulanAwal->format('Y-m-d'))
-            ->orderBy('tgl_akhir', 'desc')
+            ->where('tgl_pemakaian', '<', $bulanAwal->format('Y-m-d'))
+            ->orderBy('tgl_pemakaian', 'desc')
             ->first();
 
-        $installation->awal = $usage ? $usage->awal : 0; 
+        $installation->akhir = $usage ? $usage->akhir : 0; 
     }
 
     $caterUser = null;
