@@ -80,7 +80,7 @@
                     <td>{{ $inst->village->dusun ?? '-' }}</td>
                     <td align="center">{{ $inst->kode_instalasi }}-{{ $inst->package->inisial }}</td>
                     <td align="center">{{ $inst->rt ?? '00' }}</td>
-                    <td align="center">{{ $inst->awal ?? 0 }}</td> {{-- nilai awal sudah disiapkan dari controller --}}
+                    <td align="center">{{ $inst->akhir ?? 0 }}</td> {{-- nilai awal sudah disiapkan dari controller --}}
                     <td></td> {{-- Data akhir bulan ini, isi sesuai kebutuhan --}}
                     <td></td>
                 </tr>
