@@ -23,112 +23,126 @@
 
                     <div class="alert alert-info mt-3">
                         <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group mb-0">
-                                    <label for="bulan">Bulan Pemakaian</label>
-                                    <select id="bulan" name="bulan" class="form-control select2">
-                                        <option value="">-- Pilih Bulan --</option>
+                            @if (Session::get('jabatan') == 5)
+                                <div class="col-md-3">
+                                @else
+                                    <div class="col-md-2">
+                            @endif
+                            <div class="form-group mb-0">
+                                <label for="bulan">Bulan Pemakaian</label>
+                                <select id="bulan" name="bulan" class="form-control select2">
+                                    <option value="">-- Pilih Bulan --</option>
+                                    @php
+                                        $tahun = date('Y');
+                                        $bulanSekarang = date('n'); // bulan sekarang, 1 - 12
+                                    @endphp
+                                    @for ($i = 1; $i <= $bulanSekarang; $i++)
                                         @php
-                                            $tahun = date('Y');
+                                            $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
+                                            $tanggalObj = $tahun . '-' . $bulanValue . '-01';
+                                            $namaBulan = Tanggal::namaBulan($tanggalObj);
                                         @endphp
-                                        @for ($i = 1; $i <= 12; $i++)
-                                            @php
-                                                $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
-                                                $tanggalObj = $tahun . '-' . $bulanValue . '-01';
-                                                $namaBulan = Tanggal::namaBulan($tanggalObj);
-                                            @endphp
-                                            <option {{ date('m') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
-                                                {{ $namaBulan }} {{ $tahun }}
-                                            </option>
-                                        @endfor
-                                    </select>
-                                </div>
+                                        <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
+                                            {{ $namaBulan }} {{ $tahun }}
+                                        </option>
+                                    @endfor
+                                </select>
                             </div>
+                        </div>
+                        @if (Session::get('jabatan') == 5)
                             <div class="col-md-3">
-                                <div class="form-group mb-0">
-                                    @if (Session::get('jabatan') == 5)
-                                        <label for="caters">Cater</label>
-                                        {{-- Tampilkan nama cater sebagai input readonly (bisa juga <p> atau <span>) --}}
-                                        <input type="text" class="form-control" id="caters_display"
-                                            value="{{ $user->nama }}" readonly>
-                                        {{-- Hiddenn input untuk filter --}}
-                                        <input type="hidden" id="caters" name="caters" value="{{ $user->id }}">
-                                    @else
-                                        <label for="caters">Cater</label>
-                                        <select class="form-control select2" id="caters" name="caters">
-                                            <option value="">Pilih Cater</option>
-                                            @foreach ($caters as $cater)
-                                                <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-3 d-flex align-items-end">
-                                <button class="btn btn-warning btn-block" id="Registerpemakaian"
-                                    @if (Session::get('jabatan') == 6) disabled @endif>
-                                    <i class="fas fa-plus"></i> Input Pemakaian
-                                </button>
-                            </div>
-                            <div class="col-md-3 d-flex align-items-end">
-                                <button class="btn btn-danger btn-block" type="button" id="DetailCetakBuktiTagihan">
-                                    <i class="fas fa-info-circle"></i> Hasil Input
-                                </button>
-                            </div>
-
+                            @else
+                                <div class="col-md-2">
+                        @endif
+                        <div class="form-group mb-0">
+                            @if (Session::get('jabatan') == 5)
+                                <label for="caters">Cater</label>
+                                {{-- Tampilkan nama cater sebagai input readonly (bisa juga <p> atau <span>) --}}
+                                <input type="text" class="form-control" id="caters_display" value="{{ $user->nama }}"
+                                    readonly>
+                                {{-- Hiddenn input untuk filter --}}
+                                <input type="hidden" id="caters" name="caters" value="{{ $user->id }}">
+                            @else
+                                <label for="caters">Cater</label>
+                                <select class="form-control select2" id="caters" name="caters">
+                                    <option value="">Pilih Cater</option>
+                                    @foreach ($caters as $cater)
+                                        <option value="{{ $cater->id }}">{{ $cater->nama }}</option>
+                                    @endforeach
+                                </select>
+                            @endif
                         </div>
                     </div>
-                    {{-- <div class="alert alert-info mt-3" style="background-color: rgb(63, 63, 63); color: white;"> --}}
-                    @if (Session::get('jabatan') == 5)
-                        <div class="alert alert-info mt-3">
-                            <div
-                                style="position: relative; background-color: #32bcfc; padding: 20px 10px 20px 10px; border-radius: 6px; color: white; text-align: left;">
-                                <p style="padding-left: 5px; font-weight: bold;">PERHATIAN!</p>
-                                <ol style="padding-left: 20px; margin-left: 0;">
-                                    <li> Pastikan nama <b>Cater</b> yang tertera di atas adalah nama Anda pribadi. Apabila
-                                        bukan,
-                                        segera laporkan kepada Bagian Admin.</li>
-                                    <li>Untuk &nbsp;melakukan &nbsp;proses &nbsp;input, silakan &nbsp;pilih bulan terlebih
-                                        dahulu, kemudian klik
-                                        tombol <b>"+Input Pemakaian"</b>. Sistem akan <br>menampilkan seluruh data pelanggan
-                                        yang
-                                        belum terinput pemakaian airnya.</li>
-                                    <li> Untuk melihat hasil input pemakaian air, silakan pilih bulan, lalu klik tombol
-                                        <b>"Lihat Hasil Input"</b>.
-                                    </li>
-                                    <li>Jika terjadi kesalahan dalam penginputan data, harap segera melapor kepada Bagian
-                                        Admin untuk mengajukan permohonan<br> koreksi atau pembetulan data.</li>
-                                </ol>
+                    <div class="col d-flex align-items-end">
+                        <button class="btn btn-warning btn-block w-100" id="Registerpemakaian"
+                            @if (Session::get('jabatan') == 6) disabled @endif>
+                            <i class="fas fa-plus"></i> Input Pemakaian
+                        </button>
+                    </div>
 
-                                <!-- Gambar diletakkan mutlak di kanan bawah -->
-                                <img src="../../assets/img/air.png" class="mb-3 img-fluid d-none d-lg-block"
-                                    style="position: absolute; bottom: 20px; right: 40px; max-height:200px;"
-                                    alt="Maskot Air">
+                    <div class="col d-flex align-items-end">
+                        <button class="btn btn-danger btn-block w-100" type="button" id="DetailCetakBuktiTagihan">
+                            <i class="fas fa-info-circle"></i> Hasil Input
+                        </button>
+                    </div>
 
-
-                            </div>
-                        </div>
-                    @endif
-                    <div class="table-responsive {{ Session::get('jabatan') == 5 ? 'd-none' : '' }}">
-                        <table class="table align-items-center table-flush" id="TbPemakain">
-                            <thead class="thead-light" align="center">
-                                <tr>
-                                    <th width="12%">Nama</th>
-                                    <th width="15%">No. Induk</th>
-                                    <th width="13%">Meter Awal</th>
-                                    <th width="13%">Meter Akhir</th>
-                                    <th width="5%">Pemakaian</th>
-                                    <th width="12%">Tagihan</th>
-                                    <th width="15%">Tanggal Akhir Bayar</th>
-                                    <th width="5%">Status</th>
-                                    <th style="text-align: center;" width="10%">Aksi</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <div class="col d-flex align-items-end">
+                        <button class="btn btn-dark btn-block w-100" type="button" id="BtnCetak2">
+                            <i class="fa fa-print"></i> Cetak Form Input
+                        </button>
                     </div>
                 </div>
             </div>
+            {{-- <div class="alert alert-info mt-3" style="background-color: rgb(63, 63, 63); color: white;"> --}}
+            @if (Session::get('jabatan') == 5)
+                <div class="alert alert-info mt-3">
+                    <div
+                        style="position: relative; background-color: #32bcfc; padding: 20px 10px 20px 10px; border-radius: 6px; color: white; text-align: left;">
+                        <p style="padding-left: 5px; font-weight: bold;">PERHATIAN!</p>
+                        <ol style="padding-left: 20px; margin-left: 0;">
+                            <li> Pastikan nama <b>Cater</b> yang tertera di atas adalah nama Anda pribadi. Apabila
+                                bukan,
+                                segera laporkan kepada Bagian Admin.</li>
+                            <li>Untuk &nbsp;melakukan &nbsp;proses &nbsp;input, silakan &nbsp;pilih bulan terlebih
+                                dahulu, kemudian klik
+                                tombol <b>"+Input Pemakaian"</b>. Sistem akan <br>menampilkan seluruh data pelanggan
+                                yang
+                                belum terinput pemakaian airnya.</li>
+                            <li> Untuk melihat hasil input pemakaian air, silakan pilih bulan, lalu klik tombol
+                                <b>"Lihat Hasil Input"</b>.
+                            </li>
+                            <li>Jika terjadi kesalahan dalam penginputan data, harap segera melapor kepada Bagian
+                                Admin untuk mengajukan permohonan<br> koreksi atau pembetulan data.</li>
+                        </ol>
+
+                        <!-- Gambar diletakkan mutlak di kanan bawah -->
+                        <img src="../../assets/img/air.png" class="mb-3 img-fluid d-none d-lg-block"
+                            style="position: absolute; bottom: 20px; right: 40px; max-height:200px;" alt="Maskot Air">
+
+
+                    </div>
+                </div>
+            @endif
+            <div class="table-responsive {{ Session::get('jabatan') == 5 ? 'd-none' : '' }}">
+                <table class="table align-items-center table-flush" id="TbPemakain">
+                    <thead class="thead-light" align="center">
+                        <tr>
+                            <th width="12%">Nama</th>
+                            <th width="15%">No. Induk</th>
+                            <th width="13%">Meter Awal</th>
+                            <th width="13%">Meter Akhir</th>
+                            <th width="5%">Pemakaian</th>
+                            <th width="12%">Tagihan</th>
+                            <th width="15%">Tanggal Akhir Bayar</th>
+                            <th width="5%">Status</th>
+                            <th style="text-align: center;" width="10%">Aksi</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
+    </div>
+    </div>
     </div>
 
     <div class="modal fade" id="CetakBuktiTagihan" tabindex="-1" aria-labelledby="CetakBuktiTagihanLabel"
@@ -144,14 +158,15 @@
                         @csrf
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <div>
-                                <div class="d-flex mb-1">
-                                    <div class="fw-bold me-2" style="width: 120px;">Cater</div>
-                                    <div>: <span id="NamaCater"></span></div>
+                                <div class="d-flex mb-1" style="line-height: 1.2; font-size: 13px;">
+                                    <div class="fw-bold" style="width: 120px;">Cater</div>
+                                    <div><span>:</span> <span id="NamaCater"></span></div>
                                 </div>
-                                <div class="d-flex">
-                                    <div class="fw-bold me-2" style="width: 120px;">Maksimal Bayar</div>
-                                    <div>: <span id="TanggalCetak"></span></div>
+                                <div class="d-flex" style="line-height: 1.2; font-size: 13px;">
+                                    <div class="fw-bold" style="width: 120px;">Maksimal Bayar</div>
+                                    <div><span>:</span> <span id="TanggalCetak"></span></div>
                                 </div>
+
 
 
                             </div>
@@ -187,8 +202,13 @@
                             </tbody>
                         </table>
                     </form>
+                    <div class="d-none">
+                        <form action="/usages/cetak_input" method="post" id="FormCetakBonggol" target="_blank">
+                            @csrf
 
-
+                            <div id="formbonggol"></div>
+                        </form>
+                    </div>
                     <div class="d-none">
                         <form action="/usages/cetak_tagihan" method="post" id="FormCetakTagihan" target="_blank">
                             @csrf
@@ -209,6 +229,7 @@
             </div>
         </div>
     </div>
+
 
     <form action="" method="post" id="FormHapusPemakaian">
         @method('DELETE')
@@ -456,6 +477,23 @@
 
             $('#FormCetakTagihan').submit();
         })
+        $(document).on('click', '#BtnCetak2', function(e) {
+            e.preventDefault();
+
+            var formTagihan = $('#formbonggol');
+
+            var bulan = $('#bulan').val();
+            var cater = $('#caters').val();
+
+            formTagihan.html('');
+
+            formTagihan.append(`
+        <input type="hidden" name="bulan_tagihan" value="${bulan}">
+        <input type="hidden" name="cater" value="${cater}">
+    `);
+
+            $('#FormCetakBonggol').submit();
+        });
     </script>
 
     @if (Session::has('berhasil'))
@@ -557,6 +595,40 @@
             $('#checked').on('click', function() {
                 var status = $(this).is(':checked');
                 $('[data-input=checked]:visible').prop('checked', status);
+            });
+        });
+    </script>
+    <script>
+        document.getElementById('SearchTagihan').addEventListener('keyup', function() {
+            const keyword = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#TbTagihan tbody tr');
+
+            let currentGroup = null;
+            let groupVisible = false;
+
+            rows.forEach(row => {
+                if (row.classList.contains('table-secondary')) {
+                    // Ini baris grup (Dusun)
+                    currentGroup = row;
+                    groupVisible = false;
+                    return;
+                }
+
+                // Gabungkan semua isi sel dalam satu baris
+                const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+                const match = rowText.includes(keyword);
+
+                row.style.display = match ? '' : 'none';
+                if (match && currentGroup) groupVisible = true;
+
+                // Jika baris berikutnya bukan baris data, simpan status grup
+                const nextRow = row.nextElementSibling;
+                if (!nextRow || nextRow.classList.contains('table-secondary')) {
+                    if (currentGroup) {
+                        currentGroup.style.display = groupVisible ? '' : 'none';
+                        currentGroup = null;
+                    }
+                }
             });
         });
     </script>

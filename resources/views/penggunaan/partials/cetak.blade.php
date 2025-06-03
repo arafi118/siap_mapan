@@ -89,8 +89,8 @@
                     style="border-collapse: collapse; border: 1px solid #000; margin-top: 12px; font-size: 11px;">
                     <tr>
                         <td width="27%" align="center">NAMA PELANGGAN</td>
-                        <td width="11%" align="center">NO INDUK</td>
-                        <td width="24%" align="center">ALAMAT</td>
+                        <td width="14%" align="center">NO INDUK</td>
+                        <td width="20%" align="center">ALAMAT</td>
                         <td width="11%" align="center">METER AWAL</td>
                         <td width="11%" align="center">METER AKHIR</td>
                         <td width="11%" align="center">PEMAKAIAN</td>
@@ -99,7 +99,8 @@
                         <td align="center">{{ strtoupper($use->customers->nama) }}</td>
                         <td align="center">{{ $use->installation->kode_instalasi }}
                             {{ substr($use->installation->package->kelas, 0, 1) }}</td>
-                        <td align="center">{{ $use->installation->alamat }}</td>
+                        <td align="center">{{ $use->installation->village->dusun }}, RT. {{ $use->installation->rt }}
+                        </td>
                         <td align="center">{{ $use->awal }}</td>
                         <td align="center">{{ $use->akhir }}</td>
                         <td align="center">{{ $use->jumlah }}</td>
