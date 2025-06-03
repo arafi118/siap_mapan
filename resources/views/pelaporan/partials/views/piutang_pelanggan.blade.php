@@ -31,7 +31,7 @@
         </tr>
     </table>
 
-    <table border="1" width="100%">
+    <table border="0" width="100%">
         <thead>
             <tr style="background-color: rgb(230, 230, 230); font-weight: bold;">
                 <th width="4%" class="t l b" rowspan="2">No</th>

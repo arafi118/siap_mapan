@@ -119,48 +119,7 @@ class PelaporanController extends Controller
             }
         }
 
-        if ($file == 'daftar_pelanggan') {
-            $caters = User::where([
-                ['business_id', Session::get('business_id')],
-                ['jabatan', '5']
-            ])->get();
-
-            $sub_laporan = [
-                0 => [
-                    'value' => '',
-                    'title' => 'Pilih Cater'
-                ]
-            ];
-
-            foreach ($caters as $ct) {
-                $sub_laporan[] = [
-                    'value' => $ct->id,
-                    'title' => $ct->nama
-                ];
-            }
-        }
-
-        if ($file == 'piutang_pelanggan') {
-            $caters = User::where([
-                ['business_id', Session::get('business_id')],
-                ['jabatan', '5']
-            ])->get();
-
-            $sub_laporan = [
-                0 => [
-                    'value' => '',
-                    'title' => 'Pilih Cater'
-                ]
-            ];
-
-            foreach ($caters as $ct) {
-                $sub_laporan[] = [
-                    'value' => $ct->id,
-                    'title' => $ct->nama
-                ];
-            }
-        }
-        if ($file == 'tagihan_pelanggan') {
+        if (in_array($file, ['daftar_pelanggan', 'piutang_pelanggan', 'tagihan_pelanggan'])) {
             $caters = User::where([
                 ['business_id', Session::get('business_id')],
                 ['jabatan', '5']
@@ -1017,6 +976,62 @@ class PelaporanController extends Controller
 
         $data['title'] = 'Daftar Piutang Pelanggan';
         $view = view('pelaporan.partials.views.piutang_pelanggan', $data)->render();
+        $pdf = PDF::loadHTML($view)->setOptions([
+            'header-html' => view('pelaporan.layouts.header', $data)->render(),
+            'header-line' => true,
+            'margin-top'     => 20,
+            'margin-bottom'  => 15,
+            'margin-left'    => 25,
+            'margin-right'   => 20,
+            'enable-local-file-access' => true,
+            'header-spacing' => 2,
+            'orientation' => 'landscape',
+        ]);
+        return $pdf->inline();
+    }
+
+    private function piutang_komisi(array $data)
+    {
+        $thn = $data['tahun'];
+        $bln = $data['bulan'];
+        $hari = $data['hari'];
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $data['judul'] = 'Piutang Komisi SPS';
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['tgl'] = Tanggal::tahun($tgl);
+        $data['cater'] = $data['cater'] ?? request()->input('cater', null);
+        if ($data['bulanan']) {
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+        }
+
+        $data['pengaturan'] = Settings::where('business_id', Session::get('business_id'))->first();
+        $akunFeeKolektor = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '2.1.02.02')->first();
+        $rekening_denda = Account::where([
+            ['kode_akun', '4.1.01.04'],
+            ['business_id', Session::get('business_id')]
+        ])->first();
+
+        $data['commissionTransactions'] = Transaction::where('business_id', Session::get('business_id'))
+            ->where('rekening_kredit', $akunFeeKolektor->id)
+            ->where('tgl_transaksi', '<=', $data['tgl_kondisi'])
+            ->with([
+                'Installations',
+                'Installations.customer',
+                'Installations.package',
+                'Installations.transaction' => function ($query) use ($rekening_denda) {
+                    $query->where('rekening_kredit', $rekening_denda->id);
+                },
+                'Installations.users',
+                'Usages',
+                'transaction' => function ($query) use ($akunFeeKolektor) {
+                    $query->where('rekening_debit', $akunFeeKolektor->id);
+                }
+            ])->get();
+
+        $data['title'] = 'Daftar Piutang Komisi SPS';
+        $view = view('pelaporan.partials.views.piutang_komisi', $data)->render();
         $pdf = PDF::loadHTML($view)->setOptions([
             'header-html' => view('pelaporan.layouts.header', $data)->render(),
             'header-line' => true,

@@ -67,7 +67,7 @@ class SystemController extends Controller
                     ->sum('total');
 
                 if ($usage->tgl_akhir <= $date && $jumlahPembayaran <= $usage->nominal) {
-                    $trxId = substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
+                    $trxId = 'PT-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
 
                     $nama = $usage->customers->nama ?: '-';
                     $instId = $ins->id;
