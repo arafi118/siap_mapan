@@ -27,7 +27,7 @@
             <th width="11%" class="t l b">No. Induk</th>
             <th width="12%" class="t l b">Bulan Tagihan</th>
             <th width="11%" class="t l b">Jumlah</th>
-            <th width="15%" class="t l b">Cater</th>
+            <th width="15%" class="t l b">Kolektor</th>
             <th width="11%" class="t l b">Komisi</th>
             <th width="11%" class="t l b r">Dibayar</th>
         </tr>
@@ -41,7 +41,7 @@
         @foreach ($commissionTransactions as $com)
             @php
                 $installation = $com->Installations;
-                $cater = $installation->users;
+                $kolektor = $installation->village->kolektor;
                 $customer = $installation->customer;
                 $usage = $com->Usages;
                 $abodemen = $pengaturan->abodemen;
@@ -74,7 +74,7 @@
                 <td class="t l b" align="right">
                     {{ number_format($usage->nominal + $dendaPemakaianLalu + $abodemen, 2) }}
                 </td>
-                <td class="t l b">{{ $cater->nama }}</td>
+                <td class="t l b">{{ $kolektor }}</td>
                 <td class="t l b" align="right">{{ number_format($com->total, 2) }}</td>
                 <td class="t l b r" align="right">{{ number_format($komisiTerbayar, 2) }}</td>
             </tr>
