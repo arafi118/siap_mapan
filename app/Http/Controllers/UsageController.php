@@ -344,7 +344,7 @@ class UsageController extends Controller
         return $pdf->stream();
     }
 
-     public function cetak_input(Request $request)
+    public function cetak_input(Request $request)
 {
     $bulan = $request->bulan_tagihan;
     $cater = $request->cater;
@@ -359,13 +359,12 @@ class UsageController extends Controller
         ->when($cater, function ($query) use ($cater) {
             return $query->where('cater_id', $cater);
         })
-        ->with([
-            'customer',
-            'package',
-            'village',
-            'users'
-        ])
-        ->get();
+        ->with(['customer', 'package', 'village', 'users'])
+        ->get()
+        ->sortBy([
+            fn ($a, $b) => strcmp($a->village->dusun, $b->village->dusun),
+            fn ($a, $b) => $a->rt <=> $b->rt,
+        ]);
 
     $bulanAwal = \Carbon\Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
 
@@ -392,9 +391,10 @@ class UsageController extends Controller
     ];
 
     $view = view('penggunaan.partials.cetak2', $data)->render();
-     $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
+    $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
     return $pdf->stream();
 }
+
     public function show(Usage $usage)
     {
         //
