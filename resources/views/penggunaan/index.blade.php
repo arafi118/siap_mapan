@@ -89,7 +89,7 @@
 
                     <div class="col d-flex align-items-end">
                         <button class="btn btn-dark btn-block w-100" type="button" id="BtnCetak2">
-                            <i class="fa fa-print"></i> Cetak Form Input
+                            <i class="fa fa-print"></i> Cetak Form Cater
                         </button>
                     </div>
                 </div>
