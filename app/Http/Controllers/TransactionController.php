@@ -80,6 +80,29 @@ class TransactionController extends Controller
         $title = 'Pelunasan Tagihan Bulanan';
         return view('transaksi.tagihan_bulanan')->with(compact('title', 'transactions', 'status_0'));
     }
+
+    public function komisi_sps()
+    {
+        $akunKas = Account::where('business_id', Session::get('business_id'))->where('kode_akun', 'like', '1.1.01%')->get();
+        $akunFeeKolektor = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '2.1.02.02')->first();
+
+        $commissionTransactions = Transaction::where('business_id', Session::get('business_id'))
+            ->where('rekening_kredit', $akunFeeKolektor->id)
+            ->where('tgl_transaksi', '<=', date('Y-m-d'))
+            ->with([
+                'Installations',
+                'Installations.village',
+                'Installations.customer',
+                'Usages',
+                'transaction' => function ($query) use ($akunFeeKolektor) {
+                    $query->where('rekening_debit', $akunFeeKolektor->id)->where('tgl_transaksi', '<=', date('Y-m-d'));
+                }
+            ])->get();
+
+        $title = 'Transaksi Komisi SPS';
+        return view('transaksi.komisi_sps')->with(compact('title', 'commissionTransactions', 'akunKas', 'akunFeeKolektor'));
+    }
+
     //tampil rekening jurnal umum
     public function rekening($id)
     {
@@ -198,10 +221,6 @@ class TransactionController extends Controller
             } else {
                 if (Keuangan::startWith($sumber_dana->kode_akun, '1.1.01') && Keuangan::startWith($disimpan_ke->kode_akun, '2.1.02.02')) {
                     $akunFeeKolektor = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '2.1.02.02')->first();
-                    $rekening_denda = Account::where([
-                        ['kode_akun', '4.1.01.04'],
-                        ['business_id', Session::get('business_id')]
-                    ])->first();
 
                     $commissionTransactions = Transaction::where('business_id', Session::get('business_id'))
                         ->where('rekening_kredit', $akunFeeKolektor->id)

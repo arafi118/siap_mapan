@@ -6,9 +6,9 @@
 <input type="hidden" name="keterangan" id="keterangan">
 <div class="col-md-12">
     <div class="position-relative mb-3">
-        <label class="form-label" for="piutang_komisi">Piutang Komisi</label>
+        <label class="form-label" for="piutang_komisi">Utang Komisi</label>
         <select class="select2 form-control" name="piutang_komisi" id="piutang_komisi" style="width: 100%">
-            <option value="">-- Pilih Piutang --</option>
+            <option value="">-- Pilih Utang Komisi --</option>
             @foreach ($commissionTransactions as $com)
                 @php
                     $tgl_akhir = $com->Usages->tgl_akhir;

@@ -131,7 +131,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::post('/usages/cetak_tagihan', [UsageController::class, 'cetak_tagihan']);
     Route::post('/usages/cetak_input', [UsageController::class, 'cetak_input']);
 
-    
+
     Route::get('/usages/cater', [UsageController::class, 'cater']);
 
     Route::resource('/usages', UsageController::class);
@@ -155,6 +155,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/transactions/ebudgeting', [TransactionController::class, 'ebudgeting']);
     Route::post('/transactions/anggaran', [TransactionController::class, 'anggaran']);
     Route::post('/transactions/simpan_anggaran', [TransactionController::class, 'simpananggaran']);
+
+    Route::get('/transaction/komisi_sps', [TransactionController::class, 'komisi_sps']);
 
     Route::get('/transactions/dokumen/struk_instalasi/{id}', [TransactionController::class, 'struk_instalasi']);
     Route::get('/transactions/dokumen/struk_tagihan/{id}', [TransactionController::class, 'struk_tagihan']);
