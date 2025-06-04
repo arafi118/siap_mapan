@@ -9,7 +9,7 @@
     <tr>
         <td colspan="3" align="center">
             <div style="font-size: 18px; font-weight: bold;">
-                DAFTAR PIUTANG KOMISI SPS
+                DAFTAR UTANG KOMISI SPS
             </div>
             <div style="font-size: 16px; font-weight: bold;">{{ strtoupper($sub_judul) }}</div>
         </td>

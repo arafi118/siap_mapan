@@ -1030,7 +1030,7 @@ class PelaporanController extends Controller
                 }
             ])->get();
 
-        $data['title'] = 'Daftar Piutang Komisi SPS';
+        $data['title'] = 'Daftar Utang Komisi SPS';
         $view = view('pelaporan.partials.views.piutang_komisi', $data)->render();
         $pdf = PDF::loadHTML($view)->setOptions([
             'header-html' => view('pelaporan.layouts.header', $data)->render(),
