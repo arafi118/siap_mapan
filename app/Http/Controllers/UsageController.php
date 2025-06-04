@@ -350,51 +350,39 @@ class UsageController extends Controller
     $cater = $request->cater;
 
     if (strlen($bulan) == 2) {
-        $bulan = date('Y') . '-' . $bulan;
+        $bulan = date('Y') . '-' . $bulan . '-01';
     }
-    $bisnis = Business::where('id', Session::get('business_id'))->first();
+
+    $bulanCarbon = \Carbon\Carbon::parse($bulan);
+    $bulanAwal = $bulanCarbon->copy()->subMonth()->format('Y-m');
+
+    $bisnis = Business::find(Session::get('business_id'));
 
     $installations = Installations::where('business_id', Session::get('business_id'))
         ->whereIn('status', ['A', 'B'])
         ->when($cater, function ($query) use ($cater) {
             return $query->where('cater_id', $cater);
         })
-        ->with(['customer', 'package', 'village', 'users'])
-        ->get()
-        ->sortBy([
-            fn ($a, $b) => strcmp($a->village->dusun, $b->village->dusun),
-            fn ($a, $b) => $a->rt <=> $b->rt,
-        ]);
+        ->with([
+            'customer',
+            'package',
+            'village',
+            'users',
+            'oneUsage' => function ($query) use ($bulanAwal) {
+                $query->where('tgl_pemakaian', 'like', $bulanAwal . '%');
+            }
+        ])
+        ->orderBy('desa', 'ASC')
+        ->get();
 
-    $bulanAwal = \Carbon\Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
-
-   foreach ($installations as $installation) {
-    // Cek apakah instalasi punya usage sama sekali
-    if (!$installation->usage()->exists()) {
-        $installation->akhir = 0;
-        continue;
-    }
-
-    // Kalau ada usage, ambil pemakaian terakhir sebelum bulan ini
-    $usage = $installation->usage()
-        ->where('tgl_pemakaian', '<', $bulanAwal->format('Y-m-d'))
-        ->orderBy('tgl_pemakaian', 'desc')
-        ->first();
-
-    $installation->akhir = $usage ? $usage->akhir : 0;
-}
-
-
-    $caterUser = null;
-    if ($cater) {
-        $caterUser = User::find($cater);
-    }
+    $caterUser = $cater ? User::find($cater) : null;
 
     $data = [
         'installations' => $installations,
-        'bulan' => $bulan,
+        'bulan' => $bulanCarbon,
         'caterUser' => $caterUser,
-        'bisnis'    => $bisnis, 
+        'bisnis' => $bisnis,
+        'dusun' => '-', // bisa diganti dengan filter dusun jika ada
         'title' => 'Cetak Form Input',
     ];
 

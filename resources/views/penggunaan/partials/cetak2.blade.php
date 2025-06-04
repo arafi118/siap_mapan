@@ -96,8 +96,8 @@
                 @php
                     \Carbon\Carbon::setLocale('id');
                 @endphp
-                <td>: <b>{{ \Carbon\Carbon::createFromFormat('Y-m', $bulan)->translatedFormat('F Y') }}</b></td>
-                <td style="width:130px; text-align:right;"></td>
+                <td>: <b>{{ $bulan->translatedFormat('F Y') }}</b></td>
+                <td style="wbidth:130px; text-align:right;"></td>
                 <td style="text-align:left;"></b></td>
             </tr>
             <tr>
@@ -122,14 +122,20 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($instGroup as $inst)
+                @foreach ($installations as $inst)
+                    @php
+                        $awal = 0;
+                        if ($inst->oneUsage) {
+                            $awal = $inst->oneUsage->cater == $inst->cater_id ? $inst->oneUsage->akhir : '0';
+                        }
+                    @endphp
                     <tr>
                         <td style="border: 1px solid #000; text-align:center;">{{ $loop->iteration }}</td>
                         <td style="border: 1px solid #000; text-align:left;">{{ $inst->customer->nama ?? '-' }}</td>
                         <td style="border: 1px solid #000;">{{ $inst->kode_instalasi }}-{{ $inst->package->inisial }}
                         </td>
                         <td style="border: 1px solid #000; text-align:center;">{{ $inst->rt ?? '00' }}</td>
-                        <td style="border: 1px solid #000; text-align:center;">{{ $inst->akhir ?? 0 }}</td>
+                        <td style="border: 1px solid #000; text-align:center;">{{ $awal }}</td>
                         <td style="border: 1px solid #000; text-align:center;"></td> {{-- akhir bulan ini --}}
                         <td style="border: 1px solid #000; text-align:center;"></td> {{-- keterangan --}}
                     </tr>
