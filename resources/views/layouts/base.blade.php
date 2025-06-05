@@ -67,30 +67,30 @@
 
         .scan-overlay.top {
             top: 0;
-            left: 0;
-            width: 100%;
+            left: 20%;
+            width: 60%;
             height: 40%;
         }
 
         .scan-overlay.bottom {
             bottom: 0;
-            left: 0;
-            width: 100%;
+            left: 20%;
+            width: 60%;
             height: 40%;
         }
 
         .scan-overlay.left {
-            top: 40%;
+            top: 0%;
             left: 0;
             width: 20%;
-            height: 20%;
+            height: 100%;
         }
 
         .scan-overlay.right {
-            top: 40%;
+            top: 0%;
             right: 0;
             width: 20%;
-            height: 20%;
+            height: 100%;
         }
 
         .scan-area {
@@ -104,6 +104,8 @@
             z-index: 3;
         }
     </style>
+
+    @yield('style')
 </head>
 
 <body id="page-top">
@@ -161,7 +163,6 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@v5.0.1/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.3/typeahead.jquery.min.js"

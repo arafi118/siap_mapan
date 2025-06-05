@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Yajra\DataTables\Facades\DataTables;
 
 class InstallationsController extends Controller
 {
@@ -1029,16 +1030,36 @@ class InstallationsController extends Controller
             ->where('tgl_pemakaian', 'like', $tgl_kondisi . '%')
             ->pluck('id_instalasi');
 
-        $installasi = Installations::where('business_id', Session::get('business_id'))
-            ->where('cater_id', $cater_id)
-            ->whereNotIn('id', $usedInstallationIds)
-            ->with(['customer', 'package', 'users', 'oneUsage', 'village'])
-            ->orderBy('id', 'ASC')
-            ->get();
+        $installasi = Installations::where('installations.business_id', Session::get('business_id'))
+            ->where('installations.cater_id', $cater_id)
+            ->whereNotIn('installations.id', $usedInstallationIds)
+            ->with(['customer', 'package', 'users', 'oneUsage', 'village']);
 
-        return response()->json([
-            'success' => true,
-            'installations' => $installasi
-        ]);
+        if (request()->get('installation_id')) {
+            $installation_id = request()->get('installation_id');
+            $installasi = $installasi->where('installations.id', $installation_id);
+        }
+
+        return DataTables::eloquent($installasi)
+            ->addColumn('akhir', function ($ins) use ($tgl_kondisi) {
+                $tgl_kondisi = $tgl_kondisi . '-01';
+                $tgl_akhir = $ins->oneUsage ? date('Y-m', strtotime($ins->oneUsage->tgl_akhir)) . '-01' : $tgl_kondisi;
+
+                $allowInput = 'false';
+                $textColor = 'text-danger';
+                if ($tgl_akhir <= $tgl_kondisi) {
+                    $allowInput = 'true';
+                    $textColor = 'text-warning';
+                }
+
+                $akhir = 0;
+                if ($ins->oneUsage) {
+                    $akhir = $ins->oneUsage->akhir;
+                }
+
+                return '<div class="' . $textColor . ' text-right" data-allow-input="' . $allowInput . '">' . $akhir . '</div>';
+            })
+            ->rawColumns(['akhir'])
+            ->make(true);
     }
 }

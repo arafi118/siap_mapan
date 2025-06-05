@@ -84,9 +84,9 @@
                                         <div class="row">
                                             <div class="col-sm-8">
                                                 <canvas id="tmpImage" style="display:none;"></canvas>
-                                                <canvas id="previewImage" style="display:none;"></canvas>
+                                                <canvas id="previewImage" style="display: none;"></canvas>
                                                 <div class="camera-container">
-                                                    <video id="video" autoplay playsinline></video>
+                                                    <video id="scanMeter" autoplay playsinline></video>
                                                     <div class="scan-overlay top"></div>
                                                     <div class="scan-overlay bottom"></div>
                                                     <div class="scan-overlay left"></div>
@@ -95,7 +95,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
-                                                <button type="button" id="scanMeter"
+                                                <button type="button" id="btnScanMeter"
                                                     class="btn btn-block btn-primary h-100 mt-0">
                                                     Scan
                                                 </button>

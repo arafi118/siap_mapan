@@ -59,168 +59,332 @@
         </div>
     </form>
 
+    <div class="modal fade" id="modalScanQrCode" tabindex="-1" aria-labelledby="modalScanQrCodeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalScanQrCodeLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <video id="video" style="width: 100%; height: 100%;" autoplay muted playsinline></video>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div style="display: none;" id="print"></div>
     @include('penggunaan.partials.pemakaian')
-    @include('penggunaan.barcode')
 @endsection
 
 @section('script')
-    <script>
-        let dataInstallation;
-        let dataSearch;
-        let indexInput;
-        let dataPemakaian = [];
+    <script type="text/javascript" src="https://unpkg.com/@zxing/browser@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@v5.0.1/dist/tesseract.min.js"></script>
 
-        var startScan, scanningEnabled = true;
-        var html5QrcodeScanner;
+    {{-- SCAN QR CODE PELANGGAN --}}
+    <script type="module">
+        import {
+            BrowserMultiFormatReader
+        } from 'https://cdn.jsdelivr.net/npm/@zxing/browser@0.0.10/+esm';
 
+        document.addEventListener('DOMContentLoaded', async function() {
+            var video = document.getElementById('video');
+            var resultScan = null;
+            var codeReader = null;
+            var readerControl = null;
 
-        $(document).ready(function() {
-            scanningEnabled = true
-
-            html5QrcodeScanner = new Html5QrcodeScanner(
-                "reader", {
-                    fps: 10,
-                    qrbox: {
-                        width: 250,
-                        height: 250
-                    }
-                },
-                false);
-
-            html5QrcodeScanner.render((result) => {
-                if (scanningEnabled) {
-                    $('tr[data-id=' + result + '] td:first-child').click()
-                    $('#scanQrCode').modal('hide')
-                }
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true
             });
+            stream.getTracks().forEach(track => track.stop());
 
-            $('#html5-qrcode-button-camera-start').hide()
-            $('#html5-qrcode-button-camera-stop').hide()
-            $('#html5-qrcode-anchor-scan-type-change').hide()
+            var btnScanQr = document.getElementById('scanQrCode');
+            btnScanQr.addEventListener('click', async function() {
+                video = document.getElementById('video');
+                codeReader = new BrowserMultiFormatReader();
 
-            $('#html5-qrcode-button-camera-start').trigger('click')
+                $('#modalScanQrCode').modal('show');
+                navigator.mediaDevices.enumerateDevices().then(async (devices) => {
+                    const videoDevices = devices.filter(device => device.kind ===
+                        "videoinput");
 
-            startScan = true
-            $('#stopScan').html('Stop')
-        })
+                    let backCamera = videoDevices.find(device =>
+                        device.label.toLowerCase().includes("back")
+                    );
 
-        var id_cater = $('#caters').val();
-        var tanggal = $('#tanggal').val();
+                    const selectedDeviceId = (backCamera || videoDevices[0])?.deviceId;
 
-        $.get('/installations/cater/' + id_cater + '?tanggal=' + tanggal, function(result) {
-            if (result.success) {
-                dataInstallation = result.installations;
-                dataSearch = dataInstallation
-                setTable(dataInstallation)
-            }
-        })
-
-        $(document).on('click', '#stopScan', function(e) {
-            e.preventDefault()
-
-            if (startScan) {
-                $(this).html('Scan Ulang')
-                $('#html5-qrcode-button-camera-stop').trigger('click')
-            } else {
-                scanningEnabled = true;
-                $(this).html('Stop')
-                $('#html5-qrcode-button-camera-start').trigger('click')
-            }
-
-            startScan = !startScan
-        })
-
-        $(document).on('click', '#scanQrCodeClose', function(e) {
-            $('#scanQrCode').modal('hide')
-            $('#html5-qrcode-button-camera-stop').trigger('click')
-            $('#stopScan').html('Stop')
-        })
-
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Code matched = ${decodedText}`, decodedResult);
-        }
-
-        function onScanFailure(error) {
-            console.warn(`Code scan error = ${error}`);
-        }
-
-        const video = document.getElementById('video');
-        navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: {
-                        ideal: "environment"
+                    if (!selectedDeviceId) {
+                        console.log("Tidak ada kamera yang tersedia.");
+                        return;
                     }
+
+                    readerControl = await codeReader.decodeFromVideoDevice(
+                        selectedDeviceId,
+                        video, (result, err,
+                            controls) => {
+                            if (result) {
+                                var idInstallation = result.getText();
+                                $('#modalScanQrCode').modal('hide');
+                                controls.stop();
+
+                                if (idInstallation) {
+                                    var id_cater = $('#caters').val();
+                                    var tanggal = $('#tanggal').val();
+
+                                    Swal.fire({
+                                        title: 'Mohon tunggu...',
+                                        text: 'Sedang memproses data',
+                                        allowOutsideClick: false,
+                                        didOpen: () => {
+                                            Swal.showLoading()
+                                        }
+                                    });
+
+                                    $.get(`/installations/cater/${id_cater}?tanggal=${tanggal}&installation_id=${idInstallation}`,
+                                        function(result) {
+                                            Swal.close();
+                                            if (result.data.length > 0) {
+                                                var installation =
+                                                    result.data[0];
+                                                showModalInputPemakaian(
+                                                    installation
+                                                );
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Data Tidak Ditemukan',
+                                                    text: 'Pastikan Kode Instalasi yang dimasukkan benar.',
+                                                    icon: 'warning',
+                                                });
+                                            };
+                                        })
+                                }
+                            }
+                        });
+                }).catch(err => {
+                    resultElement.textContent = "Gagal mengakses kamera: " + err;
+                    console.error(err);
+                });
+            })
+
+            $('#modalScanQrCode').on('hidden.bs.modal', function(e) {
+                if (readerControl) {
+                    readerControl.stop();
+                    readerControl = null;
                 }
             })
-            .then(stream => {
-                video.srcObject = stream;
+        });
+    </script>
 
-                const track = stream.getVideoTracks()[0];
-                const settings = track.getSettings();
+    <script>
+        var videoScanMeter = document.getElementById('scanMeter');
+        var btnScanMeter = document.getElementById('btnScanMeter');
 
-                if (settings.facingMode === "user") {
-                    video.classList.add("mirror");
-                } else {
-                    video.classList.remove("mirror");
-                }
-            });
+        const previewCanvas = document.getElementById('previewImage');
+        const previewCtx = previewCanvas.getContext('2d');
 
-        $(document).on('click', '#scanMeter', function(e) {
-            const canvas = document.getElementById('tmpImage');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+        const tmpCanvas = document.getElementById('tmpImage');
+        const tmpCtx = tmpCanvas.getContext('2d');
 
-            const context = canvas.getContext('2d');
-            context.filter = "contrast(250%) brightness(125%)";
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        btnScanMeter.addEventListener('click', async function() {
+            if (videoScanMeter.videoWidth === 0 || videoScanMeter.videoHeight === 0) {
+                alert('Kamera scan belum siap');
+                return;
+            }
 
-            const scanX = canvas.width * 0.20;
-            const scanY = canvas.height * 0.40;
-            const scanWidth = canvas.width * 0.60;
-            const scanHeight = canvas.height * 0.20;
+            tmpCanvas.width = videoScanMeter.videoWidth;
+            tmpCanvas.height = videoScanMeter.videoHeight;
+
+            tmpCtx.filter = "contrast(250%) brightness(125%)";
+            tmpCtx.drawImage(videoScanMeter, 0, 0, tmpCanvas.width, tmpCanvas.height);
+
+            const scanX = tmpCanvas.width * 0.20;
+            const scanY = tmpCanvas.height * 0.40;
+            const scanWidth = tmpCanvas.width * 0.60;
+            const scanHeight = tmpCanvas.height * 0.20;
 
             const previewImage = document.getElementById("previewImage");
             previewImage.width = scanWidth;
             previewImage.height = scanHeight;
 
             const previewContex = previewImage.getContext("2d");
-            const imageData = context.getImageData(scanX, scanY, scanWidth, scanHeight);
+            const imageData = tmpCtx.getImageData(scanX, scanY, scanWidth, scanHeight);
             previewContex.putImageData(imageData, 0, 0);
 
-            setTimeout(() => {
-                Tesseract.recognize(
-                    previewImage,
-                    'eng', {
-                        logger: m => console.log(m),
-                        tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
-                        preserve_interword_spaces: 1,
-                        oem: 3,
-                        psm: 4,
-                    }
-                ).then(({
+            try {
+                const {
                     data: {
                         text
                     }
-                }) => {
-                    const hasilMatch = text.match(/\d+/);
-                    const angka = hasilMatch ? hasilMatch[0] : "0";
-
-                    console.log(text, angka);
-                    $('.input-nilai-akhir').val(angka);
+                } = await Tesseract.recognize(tmpCanvas, 'eng', {
+                    logger: m => {
+                        console.log(m);
+                    },
+                    tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
+                    preserve_interword_spaces: 1,
+                    oem: 3,
+                    psm: 4,
                 });
-            }, 500);
+
+                const hasilMatch = text.match(/\d+/);
+                const angka = hasilMatch ? hasilMatch[0] : "0";
+
+                console.log(text, angka);
+                $('.input-nilai-akhir').val(angka);
+            } catch (e) {
+                console.log(e.message);
+            }
         })
+
+        function preprocessImage(imgData) {
+            for (let i = 0; i < imgData.data.length; i += 4) {
+                const r = imgData.data[i];
+                const g = imgData.data[i + 1];
+                const b = imgData.data[i + 2];
+                const avg = (r + g + b) / 3;
+                const threshold = avg > 140 ? 255 : 0;
+                imgData.data[i] = threshold;
+                imgData.data[i + 1] = threshold;
+                imgData.data[i + 2] = threshold;
+            }
+        }
+
+        function showModalInputPemakaian(installation) {
+            var akhir = $(installation.akhir)
+            var allowInput = akhir.attr('data-allow-input') || false;
+
+            if (installation.customer.jk == 'P') {
+                $('.avatar-customer').attr('src', '{{ asset('assets/img/woman.png') }}')
+            } else {
+                $('.avatar-customer').attr('src', '{{ asset('assets/img/man.png') }}')
+            }
+
+            var inisialPaket = installation.package.kelas.charAt(0).toUpperCase()
+            $('.namaCustomer').html(installation.customer.nama)
+            $('.customer').val(installation.customer_id)
+            $('.NikCustomer').html(installation.customer.nik ? installation.customer.nik : '-')
+            $('.id_instalasi').val(installation.id)
+            $('.AlamatCustomer').html(installation.customer.alamat + '.' + installation.customer.hp)
+            $('.KdInstallasi').html(installation.kode_instalasi + ' ' + inisialPaket)
+            $('.CaterInstallasi').html(installation.users.nama)
+            $('.PackageInstallasi').html(installation.package.kelas)
+            $('.AlamatInstallasi').html(installation.alamat)
+            $('.AkhirUsage').val(installation.one_usage?.akhir || 0)
+            $('.TglAkhirUsage').val(installation.one_usage?.tgl_akhir || 0)
+            $('.PemakaianUsage').val(installation.one_usage?.tgl_pemakaian || 0)
+
+            if (allowInput == 'false') {
+                $('#SimpanPemakaian').attr('disabled', true)
+            } else {
+                $('#SimpanPemakaian').attr('disabled', false)
+            }
+
+            $('#staticBackdrop').modal('show')
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'environment'
+                }
+            }).then(function(stream) {
+                videoScanMeter.srcObject = stream;
+                videoScanMeter.play();
+
+                const videoTrack = stream.getVideoTracks()[0];
+                const settings = videoTrack.getSettings();
+
+                if (settings.facingMode === 'user') {
+                    videoScanMeter.classList.add('mirror');
+                } else {
+                    videoScanMeter.classList.remove('mirror');
+                }
+            }).catch(function(err) {
+                console.error("Error accessing camera: " + err);
+            });
+        }
+    </script>
+
+    <script>
+        let dataInstallation;
+        let dataSearch;
+        let indexInput;
+        let dataPemakaian = [];
+
+        var id_cater = $('#caters').val();
+        var tanggal = $('#tanggal').val();
+
+        var dataTable = $('#TbPemakain').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": '/installations/cater/' + id_cater + '?tanggal=' + tanggal,
+                "type": "GET"
+            },
+            "language": {
+                "processing": `<i class="fas fa-spinner fa-spin"></i> Mohon Tunggu....`,
+                "emptyTable": "Tidak ada data yang tersedia",
+                "search": "",
+                "searchPlaceholder": "Pencarian...",
+                "paginate": {
+                    "next": "<i class='fas fa-angle-right'></i>",
+                    "previous": "<i class='fas fa-angle-left'></i>"
+                }
+            },
+            "columns": [{
+                data: 'customer.nama',
+            }, {
+                data: 'village.dusun',
+            }, {
+                data: 'rt',
+            }, {
+                data: 'kode_instalasi',
+                render: function(data, type, row) {
+                    return `${data}.${row.package.kelas.charAt(0).toUpperCase()}`;
+                }
+            }, {
+                data: 'one_usage.akhir',
+                render: function(data, type, row) {
+                    var nilai_awal = data || '0';
+                    return `<div class="text-right">${nilai_awal}</div>`
+                }
+            }, {
+                data: 'akhir',
+            }, {
+                data: 'one_usage.jumlah',
+                render: function(data, type, row) {
+                    return `<div class="text-right">0</div>`
+                }
+            }],
+            columnDefs: [{
+                targets: [4, 5, 6],
+                searchable: false,
+                orderable: false,
+            }],
+        })
+
+        $('#TbPemakain_filter').html(`
+            <div class="input-group">
+                <input type="text" id="customSearch" class="form-control" placeholder="Cari Pelanggan...">
+                <div class="input-group-append">
+                    <button class="btn btn-info mt-0" type="button" id="scanQrCode"><i class="fas fa-qrcode"></i></button>
+                </div>
+            </div>
+        `);
+
+        $('#customSearch').on('keyup', function() {
+            dataTable.search(this.value).draw();
+        });
 
         $(document).ready(function() {
             $('.select2').select2({
                 theme: 'bootstrap4',
             });
         });
-        $('#btnScanKartu').on('click', function(e) {
-            e.preventDefault();
-            $('#scanQrCode').modal('show');
-        });
+
         document.addEventListener('DOMContentLoaded', function() {
             const alert = document.getElementById('success-alert');
             if (alert) {
@@ -263,126 +427,11 @@
             $('.tanggal').val($(this).val());
         })
 
-        $(document).on('click', '#TbPemakain #DaftarInstalasi tr td', function() {
-            var parent = $(this).parent()
-            var allowInput = parent.attr('data-allow-input')
-            var index = parent.attr('data-index')
+        $('#TbPemakain').on('click', 'tbody tr', function(e) {
+            var installation = dataTable.row(this).data();
 
-            var installation = dataSearch[index]
-
-            if (installation.customer.jk == 'P') {
-                $('.avatar-customer').attr('src', '{{ asset('assets/img/woman.png') }}')
-            } else {
-                $('.avatar-customer').attr('src', '{{ asset('assets/img/man.png') }}')
-            }
-
-            var inisialPaket = installation.package.kelas.charAt(0).toUpperCase()
-            $('.namaCustomer').html(installation.customer.nama)
-            $('.customer').val(installation.customer_id)
-            $('.NikCustomer').html(installation.customer.nik)
-            $('.id_instalasi').val(installation.id)
-            $('.AlamatCustomer').html(installation.customer.alamat + '.' + installation.customer.hp)
-            $('.KdInstallasi').html(installation.kode_instalasi + ' ' + inisialPaket)
-            $('.CaterInstallasi').html(installation.users.nama)
-            $('.PackageInstallasi').html(installation.package.kelas)
-            $('.AlamatInstallasi').html(installation.alamat)
-            $('.AkhirUsage').val(installation.one_usage?.akhir || 0)
-            $('.TglAkhirUsage').val(installation.one_usage?.tgl_akhir || 0)
-            $('.PemakaianUsage').val(installation.one_usage?.tgl_pemakaian || 0)
-
-            if (allowInput == 'false') {
-                $('#SimpanPemakaian').attr('disabled', true)
-            } else {
-                $('#SimpanPemakaian').attr('disabled', false)
-            }
-
-            $('#staticBackdrop').modal('show')
-            indexInput = index
+            showModalInputPemakaian(installation);
         })
-
-        function searching(search) {
-            let data = dataInstallation;
-
-            dataSearch = data.filter((element) => {
-                return (
-                    element.kode_instalasi.includes(search) ||
-                    element.customer.nama.toLowerCase().includes(search)
-                )
-            });
-
-            setTable(dataSearch)
-        }
-
-        function setTable(data) {
-            $('#TbPemakain').DataTable().destroy();
-            const table = $('#DaftarInstalasi');
-            table.html('');
-
-            const formatbulan1 = (tanggal, type = 'date') => {
-                if (!tanggal) return '';
-                const parts = tanggal.split('/');
-                return (parts.length === 3 && type === 'month') ? parts[1] : '';
-            };
-
-            const formatbulan2 = (tanggal, type = 'date') => {
-                if (!tanggal) return '';
-                const parts = tanggal.split('-');
-                return (parts.length === 3 && type === 'month') ? parts[1] : '';
-            };
-
-            const tgl_hariini = formatbulan1($('#tanggal').val(), 'month');
-
-            data.forEach((item, index) => {
-                console.log(item);
-                const nilai_awal = item.one_usage ? item.one_usage.akhir : '0';
-                const nilai_akhir = item.one_usage ? item.one_usage.akhir : '0';
-                const nilai_jumlah = item.one_usage ? item.one_usage.jumlah : '0';
-
-                const tgl_pemakaian = item.one_usage ? formatbulan2(item.one_usage.tgl_pemakaian, 'month') : '0';
-                const tgl_akhir = item.one_usage ? formatbulan2(item.one_usage.tgl_akhir, 'month') : '0';
-
-                let allowInput = false;
-                let colorClass = 'text-danger';
-                let hasildata = 0;
-                let jumlahN = 0;
-
-                // tampilkan hanya jika belum pernah diinput dan waktunya sudah sesuai
-                if (tgl_akhir <= tgl_hariini) {
-                    allowInput = true;
-                    colorClass = 'text-warning';
-                    hasildata = nilai_awal;
-                    jumlahN = 0;
-                }
-
-                // jika sudah pernah diinput ATAU belum waktunya → jangan tampilkan
-                if (
-                    tgl_pemakaian >= tgl_hariini ||
-                    jQuery.inArray(item.id.toString(), dataPemakaian) !== -1
-                ) {
-                    // tetap disimpan kalau diperlukan, tapi tidak ditampilkan
-                    return;
-                }
-
-                // tampilkan di tabel jika memenuhi syarat
-                if (allowInput) {
-                    table.append(`
-                <tr data-index="${index}" data-allow-input="${allowInput}" data-id="${item.id}">
-                    <td align="left">${item.customer.nama}</td> 
-                    <td align="left">${item.village?.dusun || '-'}</td>
-                    <td align="left">${item.rt}</td>
-                    <td align="center">${item.kode_instalasi} ${item.package.kelas.charAt(0)}</td>   
-                    <td align="right" class="awal"><b>${nilai_awal}</b></td> 
-                    <td align="right" class="akhir ${colorClass}"><b>${hasildata}</b></td> 
-                    <td align="right" class="jumlah">${jumlahN}</td> 
-                </tr>
-            `);
-                }
-            });
-
-            $('#TbPemakain').DataTable();
-
-        }
-
 
         $(document).on('focus', '.input-nilai-akhir', function(e) {
             e.preventDefault();
@@ -449,13 +498,9 @@
                             title: 'Pemakaian Berhasil di Input'
                         });
 
-                        let pemakaian = result.pemakaian;
-                        dataSearch[indexInput].one_usage = pemakaian;
-                        dataPemakaian.push(pemakaian.id_instalasi.toString());
-                        setTable(dataSearch);
-
                         // Tutup modal
                         $('#staticBackdrop').modal('hide');
+                        dataTable.ajax.reload();
                     }
                 },
                 error: function() {

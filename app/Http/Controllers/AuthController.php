@@ -34,7 +34,7 @@ class AuthController extends Controller
     public function index()
     {
         $url = request()->getHost();
-        if (str_contains($url, 'free.app')) {
+        if (str_contains($url, 'free.app') || str_contains($url, 'localhost') || str_contains($url, '192.168.')) {
             $url = 'siap_mapan.test';
         }
 
@@ -55,6 +55,9 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $url = request()->getHost();
+        if (str_contains($url, 'free.app') || str_contains($url, 'localhost') || str_contains($url, '192.168.')) {
+            $url = 'siap_mapan.test';
+        }
         $data = $request->only(['username', 'password']);
 
         $validate = Validator::make($data, [
