@@ -31,31 +31,53 @@ class InstallationsController extends Controller
      */
     public function index()
     {
-        $installations = Installations::where('business_id', Session::get('business_id'))->get();
-        $status_R = Installations::where('business_id', Session::get('business_id'))->whereIn('status', ['R', '0'])->with(
-            'customer',
-            'village',
-            'package'
-        )->get();
-        $status_I = Installations::where('business_id', Session::get('business_id'))->where('status', 'I')->with(
-            'customer',
-            'package'
-        )->get();
-        $status_A = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')->with(
-            'customer',
-            'package'
-        )->get();
-        $status_B = Installations::where('business_id', Session::get('business_id'))->where('status', 'B')->with(
-            'customer',
-            'package'
-        )->get();
-        $status_C = Installations::where('business_id', Session::get('business_id'))->where('status', 'C')->with(
-            'customer',
-            'package'
-        )->get();
+        // $status_R = Installations::where('business_id', Session::get('business_id'))->whereIn('status', ['R', '0'])->with(
+        //     'customer',
+        //     'village',
+        //     'package'
+        // )->get();
+        // $status_I = Installations::where('business_id', Session::get('business_id'))->where('status', 'I')->with(
+        //     'customer',
+        //     'package'
+        // )->get();
+        // $status_A = Installations::where('business_id', Session::get('business_id'))->where('status', 'A')->with(
+        //     'customer',
+        //     'package'
+        // )->get();
+        // $status_B = Installations::where('business_id', Session::get('business_id'))->where('status', 'B')->with(
+        //     'customer',
+        //     'package'
+        // )->get();
+        // $status_C = Installations::where('business_id', Session::get('business_id'))->where('status', 'C')->with(
+        //     'customer',
+        //     'package'
+        // )->get();
+
+        if (request()->ajax()) {
+            $status = explode(',', request()->get('status'));
+            $installations = Installations::where('installations.business_id', Session::get('business_id'))->whereIn('installations.status', $status)->with(
+                'customer',
+                'village',
+                'package'
+            );
+
+            return DataTables::eloquent($installations)
+                ->addColumn('aksi', function ($row) {
+                    $view = '<div class="btn-group"><a href="/installations/' . $row->id . '" class="btn btn-info btn-sm btn-data btn-detail"><i class="fas fa-info-circle"></i></a>';
+                    if ($row->status == 'R') {
+                        $view .= '<a href="/installations/' . $row->id . '/edit" class="btn btn-warning btn-sm btn-data btn-edit"><i class="fas fa-exclamation-triangle"></i></a>';
+                        $view .= '<a href="#" data-id="' . $row->id . '" class="btn btn-danger btn-sm btn-data btn-hapus Hapus_id"><i class="fas fa-trash"></i></a>';
+                    }
+                    $view .= '</div>';
+
+                    return $view;
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+        }
 
         $title = 'Permohonan';
-        return view('perguliran.index')->with(compact('title', 'installations', 'status_R', 'status_I', 'status_A', 'status_B', 'status_C'));
+        return view('perguliran.index')->with(compact('title'));
     }
 
     public function DaftarInstalasi()
