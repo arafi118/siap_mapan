@@ -163,15 +163,15 @@
                                     <div class="fw-bold" style="width: 120px;">Cater</div>
                                     <div><span>:</span> <span id="NamaCater"></span></div>
                                 </div>
-                                <div class="d-flex" style="line-height: 1.2; font-size: 13px;">
+                                <div class="d-flex mb-1" style="line-height: 1.2; font-size: 13px;">
                                     <div class="fw-bold" style="width: 120px;">Maksimal Bayar</div>
                                     <div><span>:</span> <span id="TanggalCetak"></span></div>
                                 </div>
-
-
-
+                                <div class="d-flex mb-1" style="line-height: 1.2; font-size: 13px;">
+                                    <div class="fw-bold" style="width: 120px;">Total Data</div>
+                                    <div><span>:</span> <span id="totalData"></span></div>
+                                </div>
                             </div>
-
                             <div style="width: 200px; align-self: flex-end; margin-top: 2px;">
                                 <input type="text" id="SearchTagihan" class="form-control form-control-sm"
                                     placeholder="Search ...">
@@ -182,21 +182,22 @@
                         <table id="TbTagihan" class="table table-striped midle">
                             <thead class="bg-dark text-white">
                                 <tr>
-                                    <td align="center" width="40">
+                                    <td align="center" width="20">
                                         <div class="form-check text-center ps-0 mb-0">
                                             <input class="form-check-input" type="checkbox" value="true"
                                                 id="checked" name="checked" checked>
                                         </div>
                                     </td>
-                                    <td align="center" width="120">Nama</td>
-                                    <td align="center" width="100">Desa</td>
-                                    <td align="center" width="100">RT</td>
+                                    <td align="center" width="8">No</td>
+                                    <td align="center" width="200">Nama</td>
+                                    <td align="center" width="90">Desa</td>
+                                    <td align="center" width="70">RT</td>
                                     <td align="center" width="100">No. Induk</td>
                                     <td align="center" width="80">Meter Awal</td>
                                     <td align="center" width="80">Meter Akhir</td>
-                                    <td align="center" width="100">Pemakaian</td>
-                                    <td align="center" width="100">Tagihan Air</td>
-                                    <td align="center" width="100">Status</td>
+                                    <td align="center" width="70">Pemakaian</td>
+                                    <td align="center" width="90">Tagihan Air</td>
+                                    <td align="center" width="90">Status</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -407,38 +408,45 @@
             });
 
             const sortedDusuns = Object.keys(groupedByDusun).sort();
+            let totalData = 0;
 
             sortedDusuns.forEach(dusun => {
                 const items = groupedByDusun[dusun];
                 items.sort((a, b) => parseInt(a.installation.rt || 0) - parseInt(b.installation.rt || 0));
 
                 tbTagihan.find('tbody').append(`
-            <tr class="table-secondary fw-bold">
-                <td colspan="11">Dusun : ${dusun}</td>
-            </tr>
-        `);
+        <tr class="table-secondary fw-bold">
+            <td colspan="12">Dusun : ${dusun}</td>
+        </tr>
+    `);
 
+                let no = 1; // Tambahkan penomoran
                 items.forEach(item => {
                     tbTagihan.find('tbody').append(`
-                <tr>
-                    <td align="center">
-                        <div class="form-check text-center ps-0 mb-0">
-                            <input checked class="form-check-input" type="checkbox" value="${item.id}" id="${item.id}" name="cetak[]" data-input="checked" data-bulan="${item.bulan}">
-                        </div>
-                    </td>
-                    <td align="left">${item.customers.nama}</td>
-                    <td align="left">${item.installation.village.nama}</td>
-                    <td align="center">${item.installation.rt}</td>
-                    <td align="center">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
-                    <td align="center">${item.awal}</td>
-                    <td align="center">${item.akhir}</td>
-                    <td align="center">${item.jumlah}</td>
-                    <td align="right">${item.nominal}</td>
-                    <td align="center">${item.status}</td>
-                </tr>
-            `);
+            <tr>
+                <td align="center">
+                    <div class="form-check text-center ps-0 mb-0">
+                        <input checked class="form-check-input" type="checkbox" value="${item.id}" id="${item.id}" name="cetak[]" data-input="checked" data-bulan="${item.bulan}">
+                    </div>
+                </td>
+                <td align="center">${no++}</td>
+                <td align="left">${item.customers.nama}</td>
+                <td align="left">${item.installation.village.nama}</td>
+                <td align="center">${item.installation.rt}</td>
+                <td align="center">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
+                <td align="center">${item.awal}</td>
+                <td align="center">${item.akhir}</td>
+                <td align="center">${item.jumlah}</td>
+                <td align="right">${item.nominal}</td>
+                <td align="center">${item.status}</td>
+            </tr>
+        `);
                 });
+                totalData += items.length; // Akumulasi jumlah data per dusun
+
             });
+            $('#totalData').text(`[${totalData}]`);
+
         }
 
 
