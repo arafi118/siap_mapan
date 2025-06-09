@@ -1052,7 +1052,7 @@ class InstallationsController extends Controller
             ->where('tgl_pemakaian', 'like', $tgl_kondisi . '%')
             ->pluck('id_instalasi');
 
-        $installasi = Installations::where('installations.business_id', Session::get('business_id'))
+        $installasi = Installations::select('installations.*')->where('installations.business_id', Session::get('business_id'))
             ->where('installations.cater_id', $cater_id)
             ->whereNotIn('installations.id', $usedInstallationIds)
             ->with(['customer', 'package', 'users', 'oneUsage', 'village']);
