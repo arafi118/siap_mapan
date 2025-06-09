@@ -35,7 +35,7 @@ class SystemController extends Controller
             return;
         }
 
-        $installations = Installations::where('business_id', $businessId)->where('id', '9343')->with([
+        $installations = Installations::where('business_id', $businessId)->with([
             'package',
             'usage' => function ($query) use ($date) {
                 $query->where('status', 'UNPAID')
