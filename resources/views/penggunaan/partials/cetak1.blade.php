@@ -104,8 +104,15 @@
             <tbody>
                 @foreach ($usagesGroup->sortBy([['installation.rt', 'asc'], ['tgl_akhir', 'asc']]) as $i => $usage)
                     @php
+                        $dendaPemakaianLalu = 0;
+                        foreach ($usage->installation->transaction as $trx_denda) {
+                            if ($trx_denda->tgl_transaksi < $usage->tgl_akhir) {
+                                $dendaPemakaianLalu = $trx_denda->total;
+                            }
+                        }
+
                         $abodemen = $usage->installation->abodemen ?? 0;
-                        $total = $usage->nominal + $abodemen;
+                        $total = $usage->nominal + $abodemen + $dendaPemakaianLalu;
                     @endphp
                     <tr>
                         <td align="center">{{ $i + 1 }}</td>

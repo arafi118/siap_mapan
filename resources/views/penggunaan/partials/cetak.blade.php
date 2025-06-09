@@ -48,6 +48,16 @@
 <body>
     <div class="container">
         @foreach ($usage as $use)
+            @php
+                $dendaPemakaianLalu = 0;
+                foreach ($use->installation->transaction as $trx_denda) {
+                    if ($trx_denda->tgl_transaksi < $use->tgl_akhir) {
+                        $dendaPemakaianLalu = $trx_denda->total;
+                    }
+                }
+
+                $total = $use->nominal + $use->installation->abodemen + $dendaPemakaianLalu;
+            @endphp
             <div class="box">
                 <table border="0" width="100%">
                     <tr>
@@ -133,7 +143,7 @@
                     <tr>
                         <td width="15%" align="left" style="padding-left: 24px;">Denda</td>
                         <td width="2%" align="right">:</td>
-                        <td width="20%" align="left">Rp. 0.00</td>
+                        <td width="20%" align="left">Rp. {{ number_format($dendaPemakaianLalu, 2) }}</td>
                         <td width="2%" align="center">&nbsp;</td>
                         <td rowspan="2" width="14%" align="left">
                             <div style="position: absolute; height: 24px; transform: translateY(-12px);">
@@ -146,7 +156,7 @@
                         <td width="15%" align="left" style="padding-left: 24px;">Total</td>
                         <td width="2%" align="right">:</td>
                         <td width="20%" align="left">
-                            <b>Rp. {{ number_format($use->nominal + $use->installation->abodemen, 2) }}</b>
+                            <b>Rp. {{ number_format($total, 2) }}</b>
                         </td>
                         <td width="2%" align="center">&nbsp;</td>
                     </tr>
@@ -154,7 +164,7 @@
                         <td width="15%" align="left" style="padding-left: 24px;">Terbilang</td>
                         <td width="2%" align="right">:</td>
                         <td width="35%" class="keterangan terbilang">
-                            <i>{{ ucwords($keuangan->terbilang($use->nominal + $use->installation->abodemen)) }}
+                            <i>{{ ucwords($keuangan->terbilang($total)) }}
                                 Rupiah</i>
                         </td>
                         <td width="2%" align="center">&nbsp;</td>

@@ -247,6 +247,11 @@ class UsageController extends Controller
         $keuangan = new Keuangan;
         $id = $request->cetak;
 
+        $rekening_denda = Account::where([
+            ['kode_akun', '4.1.01.04'],
+            ['business_id', Session::get('business_id')]
+        ])->first();
+
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
         $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id);
 
@@ -261,6 +266,9 @@ class UsageController extends Controller
         $data['usage'] = $data['usage']->with([
             'customers',
             'installation.village',
+            'installation.transaction' => function ($query) use ($rekening_denda) {
+                $query->where('rekening_kredit', $rekening_denda->id);
+            },
             'usersCater',
             'installation.package'
         ])->get();
@@ -291,6 +299,11 @@ class UsageController extends Controller
 
         $tgl = $thn . '-' . $bln . '-' . $hari;
 
+        $rekening_denda = Account::where([
+            ['kode_akun', '4.1.01.04'],
+            ['business_id', Session::get('business_id')]
+        ])->first();
+
         $data = [
             'tahun' => $thn,
             'bulan' => $bln,
@@ -317,6 +330,9 @@ class UsageController extends Controller
             'customers',
             'installation',
             'installation.village',
+            'installation.transaction' => function ($query) use ($rekening_denda) {
+                $query->where('rekening_kredit', $rekening_denda->id);
+            },
             'usersCater',
             'installation.package'
         ])->get();
@@ -345,51 +361,51 @@ class UsageController extends Controller
     }
 
     public function cetak_input(Request $request)
-{
-    $bulan = $request->bulan_tagihan;
-    $cater = $request->cater;
+    {
+        $bulan = $request->bulan_tagihan;
+        $cater = $request->cater;
 
-    if (strlen($bulan) == 2) {
-        $bulan = date('Y') . '-' . $bulan . '-01';
+        if (strlen($bulan) == 2) {
+            $bulan = date('Y') . '-' . $bulan . '-01';
+        }
+
+        $bulanCarbon = \Carbon\Carbon::parse($bulan);
+        $bulanAwal = $bulanCarbon->copy()->subMonth()->format('Y-m');
+
+        $bisnis = Business::find(Session::get('business_id'));
+
+        $installations = Installations::where('business_id', Session::get('business_id'))
+            ->whereIn('status', ['A', 'B'])
+            ->when($cater, function ($query) use ($cater) {
+                return $query->where('cater_id', $cater);
+            })
+            ->with([
+                'customer',
+                'package',
+                'village',
+                'users',
+                'oneUsage' => function ($query) use ($bulanAwal) {
+                    $query->where('tgl_pemakaian', 'like', $bulanAwal . '%');
+                }
+            ])
+            ->orderBy('desa', 'ASC')
+            ->get();
+
+        $caterUser = $cater ? User::find($cater) : null;
+
+        $data = [
+            'installations' => $installations,
+            'bulan' => $bulanCarbon,
+            'caterUser' => $caterUser,
+            'bisnis' => $bisnis,
+            'dusun' => '-', // bisa diganti dengan filter dusun jika ada
+            'title' => 'Cetak Form Input',
+        ];
+
+        $view = view('penggunaan.partials.cetak2', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
+        return $pdf->stream();
     }
-
-    $bulanCarbon = \Carbon\Carbon::parse($bulan);
-    $bulanAwal = $bulanCarbon->copy()->subMonth()->format('Y-m');
-
-    $bisnis = Business::find(Session::get('business_id'));
-
-    $installations = Installations::where('business_id', Session::get('business_id'))
-        ->whereIn('status', ['A', 'B'])
-        ->when($cater, function ($query) use ($cater) {
-            return $query->where('cater_id', $cater);
-        })
-        ->with([
-            'customer',
-            'package',
-            'village',
-            'users',
-            'oneUsage' => function ($query) use ($bulanAwal) {
-                $query->where('tgl_pemakaian', 'like', $bulanAwal . '%');
-            }
-        ])
-        ->orderBy('desa', 'ASC')
-        ->get();
-
-    $caterUser = $cater ? User::find($cater) : null;
-
-    $data = [
-        'installations' => $installations,
-        'bulan' => $bulanCarbon,
-        'caterUser' => $caterUser,
-        'bisnis' => $bisnis,
-        'dusun' => '-', // bisa diganti dengan filter dusun jika ada
-        'title' => 'Cetak Form Input',
-    ];
-
-    $view = view('penggunaan.partials.cetak2', $data)->render();
-    $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
-    return $pdf->stream();
-}
 
     public function show(Usage $usage)
     {
