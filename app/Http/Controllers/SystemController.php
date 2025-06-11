@@ -147,7 +147,7 @@ class SystemController extends Controller
             $kodeDenda->id
         ]);
 
-        // echo '<script>window.close()</script>';
+        echo '<script>window.close()</script>';
         exit;
     }
 
