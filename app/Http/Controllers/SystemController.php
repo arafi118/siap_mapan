@@ -36,6 +36,7 @@ class SystemController extends Controller
         }
 
         $installations = Installations::where('business_id', $businessId)->with([
+            'customer',
             'package',
             'usage' => function ($query) use ($date) {
                 $query->where('status', 'UNPAID')
@@ -44,7 +45,6 @@ class SystemController extends Controller
                     ->orderBy('id');
             },
             'usage.transaction',
-            'usage.customers'
         ])->get();
 
         $dataUsage = [];
@@ -62,14 +62,11 @@ class SystemController extends Controller
             $denda = $ins->package->denda;
 
             foreach ($usages as $usage) {
-                $jumlahPembayaran = $usage->transaction
-                    ->where('rekening_kredit', $kodePemakaian->id)
-                    ->sum('total');
 
-                if ($usage->tgl_akhir <= $date && $jumlahPembayaran <= $usage->nominal) {
+                if ($usage->tgl_akhir <= $date) {
                     $trxId = 'PT-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
 
-                    $nama = $usage->customers->nama ?: '-';
+                    $nama = $ins->customer->nama ?: '-';
                     $instId = $ins->id;
                     $usageId = $usage->id;
                     $idInstalasi = $usage->id_instalasi;
@@ -101,7 +98,7 @@ class SystemController extends Controller
                             'usage_id' => $usageId,
                             'installation_id' => $idInstalasi,
                             'transaction_id' => $trxId,
-                            'total' => $usage->nominal - $jumlahPembayaran,
+                            'total' => $usage->nominal,
                             'relasi' => $nama,
                             'keterangan' => "Utang Pemakaian Air " . $namaBulan . " $nama ($instId)",
                             'urutan' => 0,
@@ -150,7 +147,7 @@ class SystemController extends Controller
             $kodeDenda->id
         ]);
 
-        echo '<script>window.close()</script>';
+        // echo '<script>window.close()</script>';
         exit;
     }
 
