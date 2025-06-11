@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/akubumdes/public_html/pamsides
+    - /bin/cp -R images $DEPLOYPATH
