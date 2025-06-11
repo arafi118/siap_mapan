@@ -943,7 +943,13 @@ class PelaporanController extends Controller
             $data['tgl'] = Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        $data['akun_piutang'] = Account::where('business_id', Session::get('business_id'))->where('kode_akun', '1.1.03.01')->first();
+        $accounts = Account::where('business_id', Session::get('business_id'))
+            ->whereIn('kode_akun', ['1.1.03.01', '4.1.01.04'])
+            ->get()
+            ->keyBy('kode_akun');
+
+        $data['akun_piutang'] = $accounts['1.1.03.01'];
+        $data['akun_denda'] = $accounts['4.1.01.04'];
 
         $data['cater_id'] = $data['sub_laporan'];
         $caters = User::where([

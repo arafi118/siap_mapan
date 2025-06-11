@@ -98,32 +98,49 @@
                 @endif
 
                 @php
-                    $tgl_toleransi = $ins->settings->tanggal_toleransi;
-
                     $bayar = 0;
                     $sampai_bulan_lalu = 0;
                     $bulan_lalu = 0;
                     $bulan_ini = 0;
                     $jumlah_menunggak = 0;
                     foreach ($ins->usage as $usage) {
+                        $denda_sampai_bulan_lalu = 0;
+                        $denda_bulan_lalu = 0;
+                        $denda_bulan_ini = 0;
+
                         foreach ($usage->transaction as $trx) {
                             $bulan_tagihan = date('Y-m', strtotime($usage->tgl_akhir)) . '-01';
                             $bulan_kondisi = date('Y-m', strtotime($tgl_kondisi)) . '-01';
                             $bulan_kondisi_lalu = date('Y-m', strtotime('-1 month', strtotime($bulan_kondisi))) . '-01';
-                            $toleransi = date('Y-m', strtotime($bulan_kondisi)) . '-' . $tgl_toleransi;
+                            $bulan_kondisi_lama =
+                                date('Y-m', strtotime('-1 month', strtotime($bulan_kondisi_lalu))) . '-01';
 
                             if ($trx->rekening_debit == $akun_piutang->id) {
-                                if ($bulan_tagihan < $bulan_kondisi_lalu) {
-                                    $sampai_bulan_lalu += $trx->total;
-                                } elseif ($bulan_tagihan < $bulan_kondisi) {
-                                    $bulan_lalu += $trx->total;
+                                if ($trx->rekening_kredit == $akun_denda->id) {
+                                    if ($bulan_tagihan < $bulan_kondisi_lama) {
+                                        $denda_sampai_bulan_lalu += $trx->total;
+                                    } elseif ($bulan_tagihan < $bulan_kondisi_lalu) {
+                                        $denda_bulan_lalu += $trx->total;
+                                    } elseif ($bulan_tagihan < $bulan_kondisi) {
+                                        $denda_bulan_ini += $trx->total;
+                                    }
                                 } else {
-                                    $bulan_ini += $trx->total;
+                                    if ($bulan_tagihan < $bulan_kondisi_lalu) {
+                                        $sampai_bulan_lalu += $trx->total;
+                                    } elseif ($bulan_tagihan < $bulan_kondisi) {
+                                        $bulan_lalu += $trx->total;
+                                    } else {
+                                        $bulan_ini += $trx->total;
+                                    }
                                 }
                             } else {
                                 $bayar += $trx->total;
                             }
                         }
+
+                        $sampai_bulan_lalu += $denda_sampai_bulan_lalu;
+                        $bulan_lalu += $denda_bulan_lalu;
+                        $bulan_ini += $denda_bulan_ini;
 
                         $jumlah_menunggak += 1;
                     }
@@ -147,6 +164,10 @@
                     $jumlah_menunggak_bulan_ini += $bulan_ini;
                     $jumlah_tunggakan += $tunggakan;
                     $jumlah_bayar += $bayar;
+
+                    if ($tunggakan <= 0) {
+                        continue;
+                    }
                 @endphp
 
                 <tr>
