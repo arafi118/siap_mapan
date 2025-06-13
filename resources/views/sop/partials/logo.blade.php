@@ -21,8 +21,47 @@
         </div>
     </div>
 </div>
-<form action="/pengaturan/logo/{{ $business->id }}" method="post" enctype="multipart/form-data" id="FormLogo">
+
+<form action="/pengaturan/sop/logo/{{ $business->id }}" method="post" enctype="multipart/form-data" id="FormLogo">
     @csrf
     @method('PUT')
     <input type="file" name="logo_busines" id="logo_busines" class="d-none">
 </form>
+
+<!-- SweetAlert CDN -->
+@section('script')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery CDN (jika belum ada) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $('#EditLogo').on('click', function() {
+            $('#logo_busines').click();
+        });
+
+        $('#logo_busines').on('change', function() {
+            var formData = new FormData($('#FormLogo')[0]);
+
+            $.ajax({
+                url: $('#FormLogo').attr('action'),
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire('Berhasil!', response.msg, 'success');
+                        // Update logo preview
+                        $('#previewLogo').attr('src', '/storage/logo/' + response.msg + '?' + new Date()
+                            .getTime());
+                    } else {
+                        Swal.fire('Gagal!', response.msg, 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Oops!', 'Terjadi kesalahan saat upload.', 'error');
+                }
+            });
+        });
+    </script>
+@endsection

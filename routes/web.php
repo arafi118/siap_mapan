@@ -186,7 +186,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/pengaturan/sop/sistem_instal', [SopController::class, 'sistem_instal']);
     Route::get('/pengaturan/sop/block_paket', [SopController::class, 'block_paket']);
     Route::post('/pengaturan/pesan_whatsapp', [SopController::class, 'pesan']);
-    Route::get('/pengaturan/sop/logo/{business}', [SopController::class, 'logo']);
+    Route::put('/pengaturan/sop/logo/{business}', [SopController::class, 'logo']);
     Route::resource('/pengaturan', SopController::class);
 
     // Users || Pengguna
