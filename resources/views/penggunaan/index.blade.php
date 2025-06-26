@@ -66,9 +66,7 @@
                                 </div>
                             </div>
                         </div>
-
                         <hr>
-
                         <div class="row justify-content-end">
                             <div class="col-md-3">
                                 <button class="btn btn-warning btn-block w-100" id="Registerpemakaian"
@@ -159,9 +157,6 @@
                                         <div class="fw-bold" style="width: 120px;">Maksimal Bayar</div>
                                         <div><span>:</span> <span id="TanggalCetak"></span></div>
                                     </div>
-
-
-
                                 </div>
 
                                 <div style="width: 200px; align-self: flex-end; margin-top: 2px;">
@@ -169,7 +164,6 @@
                                         placeholder="Search ...">
                                 </div>
                             </div>
-
 
                             <table id="TbTagihan" class="table table-striped midle">
                                 <thead class="bg-dark text-white">
@@ -198,14 +192,12 @@
                         <div class="d-none">
                             <form action="/usages/cetak_input" method="post" id="FormCetakBonggol" target="_blank">
                                 @csrf
-
                                 <div id="formbonggol"></div>
                             </form>
                         </div>
                         <div class="d-none">
                             <form action="/usages/cetak_tagihan" method="post" id="FormCetakTagihan" target="_blank">
                                 @csrf
-
                                 <div id="form"></div>
                             </form>
                         </div>
@@ -222,7 +214,6 @@
                 </div>
             </div>
         </div>
-
 
         <form action="" method="post" id="FormHapusPemakaian">
             @method('DELETE')
@@ -405,10 +396,10 @@
                     items.sort((a, b) => parseInt(a.installation.rt || 0) - parseInt(b.installation.rt || 0));
 
                     tbTagihan.find('tbody').append(`
-            <tr class="table-secondary fw-bold">
-                <td colspan="11">Dusun : ${dusun}</td>
-            </tr>
-        `);
+                            <tr class="table-secondary fw-bold">
+                                <td colspan="11">Dusun : ${dusun}</td>
+                            </tr>
+                        `);
 
                     items.forEach(item => {
                         tbTagihan.find('tbody').append(`

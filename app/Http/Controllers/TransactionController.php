@@ -1216,22 +1216,34 @@ class TransactionController extends Controller
                     ->orWhere('rekening_kredit', $kode_pemakaian->id)
                     ->orWhere('rekening_kredit', $kode_denda->id);
             })->get();
-        $saldo_piutang = $transaksi_piutang->sum('total');
+        $saldo_piutang = $transaksi_piutang->sum('total'); // 120.000
 
         $riwayat_transaksi = Transaction::where('business_id', Session::get('business_id'))
             ->where('tgl_transaksi', '<=', $tgl_transaksi)
             ->where('usage_id', $data['id_usage'])->where('installation_id', $data['id_instal'])
             ->where('rekening_debit', $kode_kas->id)
             ->get();
-        $saldo_kas = $riwayat_transaksi->sum('total');
 
+        $rek_saldo_pemakaian = $riwayat_transaksi->where('rekening_kredit', $kode_pemakaian->id)->sum('total');
+        $rek_saldo_abodemen = $riwayat_transaksi->where('rekening_kredit', $kode_abodemen->id)->sum('total');
+        $rek_saldo_denda = $riwayat_transaksi->where('rekening_kredit', $kode_denda->id)->sum('total');
+        $saldo_kas = $rek_saldo_pemakaian + $rek_saldo_abodemen + $rek_saldo_denda;
+
+        $sumTransakksi = 0;
+        $rek_saldo_pemakaian = 0;
+        $rek_saldo_abodemen = 0;
+        $rek_saldo_denda = 0;
         $insert = [];
         if ($saldo_kas < $saldo_piutang && $saldo_piutang > 0) {
             $rek_pemakaian = $kode_piutang->id;
-            if ($saldo_kas <= 0) {
-                $rek_abodemen = $kode_piutang->id;
-                $rek_denda = $kode_piutang->id;
-            }
+            $rek_abodemen = $kode_piutang->id;
+            $rek_denda = $kode_piutang->id;
+
+            $data['tagihan'] = $data['tagihan'] - $rek_saldo_pemakaian;
+            $data['abodemen'] = $data['abodemen'] - $rek_saldo_abodemen;
+            $data['abodemen'] = $data['abodemen'] - $rek_saldo_denda;
+
+            $sumTransakksi = $saldo_kas;
         }
 
         if ($saldo_piutang <= 0) {
@@ -1240,7 +1252,6 @@ class TransactionController extends Controller
             $rek_denda = $kode_denda->id;
         }
 
-        $sumTransakksi = 0;
         $trx_id = 'TB-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
         if ($data['abodemen'] != 0) {
             $insert[] = [
