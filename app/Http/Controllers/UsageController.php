@@ -403,7 +403,7 @@ class UsageController extends Controller
         ];
 
         $view = view('penggunaan.partials.cetak2', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
+        $pdf = PDF::loadHTML($view)->setPaper([0, 0, 595.28, 935.43], 'portrait'); // ukuran F4
         return $pdf->stream();
     }
 
