@@ -179,21 +179,16 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer)
     {
-        // Cek jika customer masih memiliki status di tabel installations
         $Cek_Instal = Installations::where('business_id', Session::get('business_id'))->where('customer_id', $customer->id)->exists();
-
         if ($Cek_Instal) {
             return response()->json([
-                'success' => false, // Operasi gagal karena ada status Pemakaian
-                'msg' => 'Customer tidak dapat dihapus karena masih memiliki status Pemakaian.',
+                'success' => false,
+                'msg' => 'Customer tidak dapat dihapus karena masih memiliki status Pemakaian Instalasi.',
             ]);
         }
-
-        // Hapus customer
         $customer->delete();
-
         return response()->json([
-            'success' => true, // Operasi berhasil
+            'success' => true,
             'msg' => 'Customer berhasil dihapus.',
         ]);
     }

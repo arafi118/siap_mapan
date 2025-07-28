@@ -171,7 +171,8 @@
                         @if (!empty($installation->alamat))
                             {{ $installation->alamat }}
                         @else
-                            {{ $installation->village->nama ?? '' }}{{ $installation->rt ?? '' }}
+                            Dusun {{ $installation->village->dusun ?? '' }} RW-{{ $installation->rw ?? '' }}
+                            RT-{{ $installation->rt ?? '' }}
                         @endif
                     </td>
                 </tr>

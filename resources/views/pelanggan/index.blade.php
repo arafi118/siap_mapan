@@ -15,7 +15,7 @@
                                 </div>
                                 <div>&nbsp;</div>
                                 <tr>
-                                    <th>ID Customers</th>
+                                    <th>ID</th>
                                     <th>NIK</th>
                                     <th>NAMA LENGKAP</th>
                                     <th>ALAMAT</th>
@@ -43,7 +43,6 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-
                         </table>
                     </div>
                 </div>
@@ -93,7 +92,7 @@
                 if (result.isConfirmed) {
                     var form = $('#FormHapusPelanggan');
                     $.ajax({
-                        type: form.attr('method'), // Gunakan metode HTTP DELETE
+                        type: form.attr('method'),
                         url: actionUrl,
                         data: form.serialize(),
                         success: function(result) {
