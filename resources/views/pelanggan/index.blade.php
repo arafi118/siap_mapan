@@ -15,6 +15,7 @@
                                 </div>
                                 <div>&nbsp;</div>
                                 <tr>
+                                    <th>ID Customers</th>
                                     <th>NIK</th>
                                     <th>NAMA LENGKAP</th>
                                     <th>ALAMAT</th>
@@ -25,6 +26,7 @@
                             <tbody>
                                 @foreach ($customers as $customer)
                                     <tr>
+                                        <td>{{ $customer->id }}</td>
                                         <td>{{ $customer->nik }}</td>
                                         <td>{{ $customer->nama }}</td>
                                         <td>{{ $customer->alamat }}</td>

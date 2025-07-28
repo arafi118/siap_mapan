@@ -166,7 +166,14 @@
                 </tr>
                 <tr>
                     <td style="text-align: left; border: none;">ALAMAT</td>
-                    <td style="border: none;">: {{ $installation->village->nama }}</td>
+                    <td style="border: none;">
+                        :
+                        @if (!empty($installation->alamat))
+                            {{ $installation->alamat }}
+                        @else
+                            {{ $installation->village->nama ?? '' }}{{ $installation->rt ?? '' }}
+                        @endif
+                    </td>
                 </tr>
             </table>
         </div>
