@@ -22,7 +22,6 @@
                                 <th style="width: 20%;">RT</th>
                                 <th style="width: 35%;">Alamat</th>
                                 <th style="width: 35%;">Status</th>
-                                {{-- <th style="text-align: center;">Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -36,14 +35,6 @@
                                     <td>{{ $ins->rt ?? '00' }}</td>
                                     <td>{{ $ins->alamat }}</td>
                                     <td>{{ $ins->status }}</td>
-                                    {{-- <td style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                        <a href="/villages/{{ $village->id }}/edit" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a>
-                                        <a href="#" data-id="{{ $village->id }}"
-                                            class="btn btn-danger btn-sm mx-1 Hapus_desa"><i class="fas fa-trash-alt"></i>
-                                        </a>
-                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
