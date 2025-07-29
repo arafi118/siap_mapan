@@ -26,9 +26,6 @@
                         </thead>
                         <tbody>
                             @foreach ($installations as $ins)
-                                @php
-                                    dd($ins);
-                                @endphp
                                 <tr>
                                     <td>{{ $ins->id }}</td>
                                     <td>{{ $ins->kode_instalasi }}-{{ $ins->package->inisial }}</td>
