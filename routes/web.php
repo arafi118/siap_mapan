@@ -18,8 +18,12 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VillageController;
+use App\Models\Account;
+use App\Models\Installations;
 use App\Models\Transaction;
+use App\Models\Usage;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +75,54 @@ Route::get('/link', function () {
     $target = '/home/akubumdes/public_html/pamsides/storage/app/public';
     $shortcut = '/home/akubumdes/public_html/pamsides/public/storage';
     symlink($target, $shortcut);
+});
+
+Route::get('/delete-denda', function () {
+    $rekening_denda = Account::where([
+        ['kode_akun', '4.1.01.04'],
+        ['business_id', Session::get('business_id')]
+    ])->first();
+
+    $rekening_piutang = Account::where([
+        ['kode_akun', '1.1.03.01'],
+        ['business_id', Session::get('business_id')]
+    ])->first();
+
+    $installations = Installations::where('business_id', Session::get('business_id'))->with([
+        'usage.transaction'  => function ($query) use ($rekening_denda, $rekening_piutang) {
+            $query->where([
+                ['rekening_kredit', $rekening_denda->id],
+                ['rekening_debit', $rekening_piutang->id]
+            ]);
+        }
+    ])->get();
+
+    $deleteTrx = [];
+    foreach ($installations as $ins) {
+        $piutangDenda = null;
+        foreach ($ins->usage as $usage) {
+
+            if ($piutangDenda != null) {
+                $tgl_akhir_lalu = date('Y-m', strtotime('-1 month', strtotime($usage->tgl_akhir))) . '-01';
+                $tanggal_piutang = date('Y-m', strtotime($piutangDenda)) . '-01';
+
+                $tglAkhirLalu  = new DateTime($tgl_akhir_lalu);
+                $tglPiutang = new DateTime($tanggal_piutang);
+                $selisih  = $tglPiutang->diff($tglAkhirLalu);
+
+                if ($selisih->m > 0 && $tgl_akhir_lalu > $tanggal_piutang) {
+                    $deleteTrx[] = $usage->id;
+                }
+            }
+
+            if (count($usage->transaction) > 0) {
+                $trxDenda = $usage->transaction[0];
+                $piutangDenda = $trxDenda->tgl_transaksi;
+            }
+        }
+    }
+
+    dd(implode(',', $deleteTrx));
 });
 
 Route::get('/import-excel', [ExcelController::class, 'index']);

@@ -189,6 +189,11 @@ class InstallationsController extends Controller
             ['business_id', $business_id]
         ])->first();
 
+        $rekening_piutang = Account::where([
+            ['kode_akun', '1.1.03.01'],
+            ['business_id', $business_id]
+        ])->first();
+
         $installations = Installations::where('kode_instalasi', $kode_instalasi)->where('business_id', Session::get('business_id'))
             ->with([
                 'package',
@@ -210,8 +215,11 @@ class InstallationsController extends Controller
                 },
             ], 'total')
             ->with([
-                'transaction' => function ($query) use ($rekening_denda) {
-                    $query->where('rekening_kredit', $rekening_denda->id);
+                'transaction' => function ($query) use ($rekening_denda, $rekening_piutang) {
+                    $query->where([
+                        ['rekening_kredit', $rekening_denda->id],
+                        ['rekening_debit', $rekening_piutang->id]
+                    ]);
                 }
             ])
             ->first();
