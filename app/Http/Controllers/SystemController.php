@@ -106,21 +106,21 @@ class SystemController extends Controller
                         ];
                     }
 
-                    $trxTunggakan[] = [
-                        'business_id' => $businessId,
-                        'tgl_transaksi' => $usage->tgl_akhir,
-                        'rekening_debit' => $kodePiutang->id,
-                        'rekening_kredit' => $kodeDenda->id,
-                        'user_id' => auth()->user()->id,
-                        'usage_id' => $usageId,
-                        'installation_id' => $idInstalasi,
-                        'transaction_id' => $trxId,
-                        'total' => $denda,
-                        'relasi' => $nama,
-                        'keterangan' => "Utang Denda " . $namaBulan . " $nama ($instId)",
-                        'urutan' => 0,
-                        'created_at' => $createdAt
-                    ];
+                    // $trxTunggakan[] = [
+                    //     'business_id' => $businessId,
+                    //     'tgl_transaksi' => $usage->tgl_akhir,
+                    //     'rekening_debit' => $kodePiutang->id,
+                    //     'rekening_kredit' => $kodeDenda->id,
+                    //     'user_id' => auth()->user()->id,
+                    //     'usage_id' => $usageId,
+                    //     'installation_id' => $idInstalasi,
+                    //     'transaction_id' => $trxId,
+                    //     'total' => $denda,
+                    //     'relasi' => $nama,
+                    //     'keterangan' => "Utang Denda " . $namaBulan . " $nama ($instId)",
+                    //     'urutan' => 0,
+                    //     'created_at' => $createdAt
+                    // ];
 
                     $dataUsage[] = $usageId;
                 }
@@ -162,9 +162,9 @@ class SystemController extends Controller
         $accounts = Account::where('business_id', $businessId)
             ->whereIn('id', $akun)
             ->with([
-                'trx_debit' => fn ($q) => $q->whereBetween('tgl_transaksi', [$date, $tglKondisi]),
-                'trx_kredit' => fn ($q) => $q->whereBetween('tgl_transaksi', [$date, $tglKondisi]),
-                'oneAmount' => fn ($q) => $q->where('tahun', $tahun)->where('bulan', $bulanLalu)
+                'trx_debit' => fn($q) => $q->whereBetween('tgl_transaksi', [$date, $tglKondisi]),
+                'trx_kredit' => fn($q) => $q->whereBetween('tgl_transaksi', [$date, $tglKondisi]),
+                'oneAmount' => fn($q) => $q->where('tahun', $tahun)->where('bulan', $bulanLalu)
             ])->get();
 
         $amounts = [];
