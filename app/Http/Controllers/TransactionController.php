@@ -1014,7 +1014,8 @@ class TransactionController extends Controller
         }
 
         $trx = Transaction::where('id', $transaksi->id)->with([
-            'rek_debit', 'rek_kredit'
+            'rek_debit',
+            'rek_kredit'
         ])->first();
 
         $view = view('transaksi.jurnal_umum.partials.notifikasi')->with(compact('trx', 'keuangan'))->render();
@@ -1250,6 +1251,24 @@ class TransactionController extends Controller
             $rek_pemakaian = $kode_pemakaian->id;
             $rek_abodemen = $kode_abodemen->id;
             $rek_denda = $kode_denda->id;
+        }
+
+        if ($tgl_transaksi > $usage->tgl_akhir) {
+            $insert[] = [
+                'business_id' => Session::get('business_id'),
+                'tgl_transaksi' => $tgl_transaksi,
+                'rekening_debit' => $kode_piutang->id,
+                'rekening_kredit' => $kode_denda->id,
+                'user_id' => auth()->user()->id,
+                'usage_id' => $usage->id,
+                'installation_id' => $usage->installation_id,
+                'transaction_id' => 'PT-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6),
+                'total' => $usage->installation->package->denda,
+                'relasi' => $usage->customers->nama,
+                'keterangan' => "Piutang Denda pemakaian atas nama " . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
+                'urutan' => 0,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
         }
 
         $trx_id = 'TB-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
