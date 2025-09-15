@@ -64,7 +64,7 @@ class SystemController extends Controller
             foreach ($usages as $usage) {
 
                 if ($usage->tgl_akhir <= $date) {
-                    $trxId = 'PT-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
+                    $trxId = 'PT-' . bin2hex(random_bytes(6));
 
                     $nama = $ins->customer->nama ?: '-';
                     $instId = $ins->id;

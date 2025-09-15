@@ -1262,7 +1262,7 @@ class TransactionController extends Controller
                 'user_id' => auth()->user()->id,
                 'usage_id' => $usage->id,
                 'installation_id' => $usage->installation_id,
-                'transaction_id' => 'PT-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6),
+                'transaction_id' => 'PT-' . bin2hex(random_bytes(6)),
                 'total' => $usage->installation->package->denda,
                 'relasi' => $usage->customers->nama,
                 'keterangan' => "Piutang Denda pemakaian atas nama " . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
@@ -1271,7 +1271,7 @@ class TransactionController extends Controller
             ];
         }
 
-        $trx_id = 'TB-' . substr(password_hash($usage->id, PASSWORD_DEFAULT), 7, 6);
+        $trx_id = 'TB-' . bin2hex(random_bytes(6));
         if ($data['abodemen'] != 0) {
             $insert[] = [
                 'business_id' => Session::get('business_id'),
