@@ -71,7 +71,7 @@
                 $dendaPemakaian = $installations->package->denda;
             }
 
-            $tgl_akhhir_lalu = date('Y-m', strtotime('-1 month', strtotime($usage->tgl_akhir)));
+            $tgl_akhhir_lalu = date('Y-m', strtotime('-0 month', strtotime($usage->tgl_akhir)));
 
             $isUnpaid = false;
             if (isset($usages[$index - 1])) {
