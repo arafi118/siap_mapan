@@ -1185,6 +1185,9 @@ class TransactionController extends Controller
         $biaya_instalasi = $data['pembayaran'];
 
         $tgl_transaksi = Tanggal::tglNasional($data['tgl_transaksi']);
+
+        Transaction::where('business_id', Session::get('business_id'))->where('usage_id', $request->id_usage)->where('tgl_transaksi', '>=', $tgl_transaksi)->delete();
+
         $usage = Usage::where('id', $data['id_usage'])->with([
             'installation',
             'customers',
@@ -1344,7 +1347,6 @@ class TransactionController extends Controller
             ];
         }
 
-        Transaction::where('business_id', Session::get('business_id'))->where('usage_id', $request->id_usage)->where('tgl_transaksi', '>=', $tgl_transaksi)->delete();
         Transaction::insert($insert);
 
         if ($biaya_instalasi  >= $biaya_tagihan) {
