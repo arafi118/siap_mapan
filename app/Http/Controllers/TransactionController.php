@@ -1258,9 +1258,9 @@ class TransactionController extends Controller
         if ($tgl_transaksi > $usage->tgl_akhir) {
             $insert[] = [
                 'business_id' => Session::get('business_id'),
-                'tgl_transaksi' => $tgl_transaksi,
                 'rekening_debit' => $kode_piutang->id,
                 'rekening_kredit' => $kode_denda->id,
+                'tgl_transaksi' => $tgl_transaksi,
                 'user_id' => auth()->user()->id,
                 'usage_id' => $usage->id,
                 'installation_id' => $usage->installation_id,
@@ -1287,6 +1287,7 @@ class TransactionController extends Controller
                 'user_id' => auth()->user()->id,
                 'relasi' => $usage->customers->nama,
                 'keterangan' => 'Pendapatan Abodemen pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
+                'urutan' => 0,
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
@@ -1305,6 +1306,7 @@ class TransactionController extends Controller
                 'user_id' => auth()->user()->id,
                 'relasi' => $usage->customers->nama,
                 'keterangan' => 'Pendapatan Tagihan pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
+                'urutan' => 0,
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
@@ -1323,6 +1325,7 @@ class TransactionController extends Controller
                 'user_id' => auth()->user()->id,
                 'relasi' => $usage->customers->nama,
                 'keterangan' => 'Pendapatan Denda pemakaian atas nama ' . $usage->customers->nama . ' (' . $usage->id_instalasi . ')',
+                'urutan' => 0,
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
@@ -1343,10 +1346,12 @@ class TransactionController extends Controller
                 'user_id' => auth()->user()->id,
                 'relasi' => '-',
                 'keterangan' => 'Utang Komisi 10% instalasi ' . $usage->installation->kode_instalasi,
+                'urutan' => 0,
                 'created_at' => date('Y-m-d H:i:s')
             ];
         }
 
+        dd($insert);
         Transaction::insert($insert);
 
         if ($biaya_instalasi  >= $biaya_tagihan) {
