@@ -186,6 +186,7 @@
                 <tbody>
                     @php
                         $jumlah_liabilitas_equitas = 0;
+                        $jumlah_aset = 0;
                     @endphp
                     @foreach ($akun1 as $lev1)
                         @php
@@ -240,6 +241,12 @@
                             <td colspan="2">&nbsp; Jumlah {{ $lev1->nama_akun }}</td>
                             <td class="right-align">{{ number_format($saldo_akun, 2) }}&nbsp;</td>
                         </tr>
+
+                        @if ($akun1->lev1 == '1')
+                            @php
+                                $jumlah_aset += $saldo_akun;
+                            @endphp
+                        @endif
                     @endforeach
 
                     <tr>
@@ -260,10 +267,12 @@
                 </tbody>
             </table>
         </div>
-        <div style="color: #f44335">
-            Ada selisih antara Jumlah Aset dan Jumlah Liabilitas + Ekuitas sebesar
-            <b></b>
-        </div>
+        @if ($jumlah_aset - $jumlah_liabilitas_equitas > 0)
+            <div style="color: #f44335">
+                Ada selisih antara Jumlah Aset dan Jumlah Liabilitas + Ekuitas sebesar
+                <b>{{ number_format($jumlah_aset - $jumlah_liabilitas_equitas, 2) }}</b>
+            </div>
+        @endif
     </li>
     <li style="margin-top: 12px;">
         <div style="text-transform: uppercase;">
