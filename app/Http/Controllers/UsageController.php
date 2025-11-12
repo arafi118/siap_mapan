@@ -74,9 +74,11 @@ class UsageController extends Controller
                 })
                 ->editColumn('nominal', function ($usage) use ($trx_settings) {
                     $dendaPemakaianLalu = 0;
-                    foreach ($usage->installation->transaction as $trx_denda) {
-                        if ($trx_denda->tgl_transaksi < $usage->tgl_akhir) {
-                            $dendaPemakaianLalu = $trx_denda->total;
+                    if ($usage->installation) {
+                        foreach ($usage->installation->transaction as $trx_denda) {
+                            if ($trx_denda->tgl_transaksi < $usage->tgl_akhir) {
+                                $dendaPemakaianLalu = $trx_denda->total;
+                            }
                         }
                     }
 
