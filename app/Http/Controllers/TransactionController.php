@@ -1210,7 +1210,6 @@ class TransactionController extends Controller
         $beban_komisi = $accounts['5.1.02.04'] ?: null;
 
         $transaksi_piutang = Transaction::where('business_id', Session::get('business_id'))
-            ->where('tgl_transaksi', '<=', $tgl_transaksi)
             ->where('usage_id', $data['id_usage'])->where('installation_id', $data['id_instal'])
             ->where('rekening_debit', $kode_piutang->id)->where(function ($query) use ($kode_abodemen, $kode_pemakaian, $kode_denda) {
                 $query->where('rekening_kredit', $kode_abodemen->id)
