@@ -1351,7 +1351,6 @@ class TransactionController extends Controller
             ];
         }
 
-        dd($insert);
         Transaction::insert($insert);
 
         if ($biaya_instalasi  >= $biaya_tagihan) {
