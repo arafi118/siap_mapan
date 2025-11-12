@@ -1345,6 +1345,7 @@ class TransactionController extends Controller
             ];
         }
 
+        Transaction::where('business_id', Session::get('business_id'))->where('usage_id', $request->id_usage)->where('tgl_transaksi', '>=', $tgl_transaksi)->delete();
         Transaction::insert($insert);
 
         if ($biaya_instalasi  >= $biaya_tagihan) {
