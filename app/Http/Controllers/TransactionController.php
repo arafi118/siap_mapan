@@ -1430,9 +1430,7 @@ class TransactionController extends Controller
             ->where('rekening_debit', $akun_kas->id)
             ->whereYear('tgl_transaksi', $tahun)
             ->with(['Installations.customer', 'Usages', 'rek_debit', 'rek_kredit'])
-            ->orderBy('tgl_transaksi', 'ASC')
-            ->orderBy('urutan', 'ASC')
-            ->orderBy('id', 'ASC')
+            ->orderBy('tgl_transaksi', 'DESC')
             ->get();
 
         $data = [
