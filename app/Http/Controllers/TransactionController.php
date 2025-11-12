@@ -1263,7 +1263,7 @@ class TransactionController extends Controller
                 'tgl_transaksi' => $tgl_transaksi,
                 'user_id' => auth()->user()->id,
                 'usage_id' => $usage->id,
-                'installation_id' => $usage->installation_id,
+                'installation_id' => $usage->id_instalasi,
                 'transaction_id' => 'PT-' . bin2hex(random_bytes(6)),
                 'total' => $usage->installation->package->denda,
                 'relasi' => $usage->customers->nama,
