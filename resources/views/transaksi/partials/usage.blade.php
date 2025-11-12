@@ -58,7 +58,7 @@
         </table>
     </div>
 
-    @foreach ($usages as $usage)
+    @foreach ($usages as $index => $usage)
         @php
             $blok = json_decode($trx_settings->block, true);
             $jumlah_blok = count($blok);
@@ -73,11 +73,17 @@
 
             $tgl_akhhir_lalu = date('Y-m', strtotime('-1 month', strtotime($usage->tgl_akhir)));
 
+            $isUnpaid = false;
+            if (isset($usages[$index - 1])) {
+                $isUnpaid = $usages[$index - 1]->status == 'UNPAID' ? true : false;
+            }
+
             $dendaPemakaianLalu = 0;
             foreach ($installations->transaction as $trx_denda) {
                 if (
                     $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
-                    date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
+                    date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu &&
+                    $isUnpaid
                 ) {
                     $dendaPemakaianLalu = $trx_denda->total;
                 }
