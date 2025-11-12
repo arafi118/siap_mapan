@@ -277,7 +277,7 @@
                 </td>
             </tr>
         </table>
-        @if ($jumlah_aset - $jumlah_liabilitas_equitas > 0)
+        @if ($jumlah_aset - $jumlah_liabilitas_equitas != 0)
             <div style="color: #f44335">
                 Ada selisih antara Jumlah Aset dan Jumlah Liabilitas + Ekuitas sebesar
                 <b>{{ number_format($jumlah_aset - $jumlah_liabilitas_equitas, 2) }}</b>
