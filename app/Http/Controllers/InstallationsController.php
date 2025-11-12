@@ -226,10 +226,13 @@ class InstallationsController extends Controller
 
         $pengaturan = Settings::where('business_id', $business_id);
         $trx_settings = $pengaturan->first();
-        $usages = Usage::where('business_id', Session::get('business_id'))->where([
-            ['id_instalasi', $installations->id],
-            ['status', '=', 'UNPAID']
-        ])->orderBy('tgl_pemakaian', 'DESC')->get();
+        $usages = Usage::select('usages.*')->where('usages.business_id', Session::get('business_id'))
+            ->join('installations', 'installations.id', '=', 'usages.id_instalasi')
+            ->where([
+                ['usages.id_instalasi', $installations->id],
+                ['usages.status', '=', 'UNPAID'],
+                ['installations.package_id', '!=', '155']
+            ])->orderBy('usages.tgl_pemakaian', 'DESC')->get();
 
         $jumlah_trx = $installations->transaction_sum_total;
         $biaya_instal = $installations->biaya_instalasi;
