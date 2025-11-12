@@ -126,7 +126,7 @@
                     @php
                         $awal = 0;
                         if ($inst->oneUsage) {
-                            $awal = $inst->oneUsage->cater == $inst->cater_id ? $inst->oneUsage->akhir : '0';
+                            $awal = $inst->oneUsage->akhir;
                         }
                     @endphp
                     <tr>

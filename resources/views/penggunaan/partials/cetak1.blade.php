@@ -40,10 +40,10 @@
     });
 @endphp
 
-@foreach ($usagesByDusun as $dusun => $usagesGroup)
 
-    <body>
+<body>
 
+    @foreach ($usagesByDusun as $dusun => $usagesGroup)
         <!-- HEADER - letakkan di luar table -->
         <div style="text-align: center; max-width: 100%;">
             <div style="font-size: 14px; margin-bottom: 2px;"><b>DAFTAR TAGIHAN PEMAKAIAN AIR</b></div>
@@ -128,7 +128,7 @@
                 @endforeach
             </tbody>
         </table>
-    </body>
-@endforeach
+    @endforeach
+</body>
 
 </html>

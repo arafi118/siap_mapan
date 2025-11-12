@@ -339,9 +339,9 @@ class UsageController extends Controller
 
         // Sort
         $data['usages'] = $usages->sortBy([
-            fn ($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
-            fn ($a, $b) => $a->installation->rt <=> $b->installation->rt,
-            fn ($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
+            fn($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
+            fn($a, $b) => $a->installation->rt <=> $b->installation->rt,
+            fn($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
         ]);
 
         // Ambil nama cater dari relasi Usage → usersCater (jika ada)
