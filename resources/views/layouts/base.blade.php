@@ -181,216 +181,300 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="/assets/js/demo/ruang-admin.js"></script>
+    {{-- Logout --}}
+    <script>
+        $(document).on('click', '#logoutButton', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Konfirmasi Logout",
+                icon: 'info',
+                showDenyButton: true,
+                confirmButtonText: "Logout",
+                denyButtonText: "Batal",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#logoutForm').submit();
+                }
+            });
+        })
+    </script>
 
     <script>
-        $(document).ready(function() {
-            $('#PelunasanInstalasi').typeahead({
-                hint: true,
-                highlight: true,
-                minLength: 1
-            }, {
-                name: 'states',
-                source: function(query, process) {
-                    if (query.length < 2) return;
-                    $.ajax({
-                        url: '/installations/CariPelunasan_Instalasi',
-                        method: 'GET',
-                        data: {
-                            query: query
-                        },
-                        dataType: 'json',
-                        success: function(result) {
-                            var states = [];
-                            result.map(function(item) {
-                                if (item.installation.length > 0) {
-                                    item.installation.map(function(instal) {
-                                        states.push({
-                                            id: instal.id,
-                                            installation: instal,
-                                            name: item.nama +
-                                                ' - ' + instal
-                                                .village.nama +
-                                                ' - ' + instal
-                                                .kode_instalasi +
-                                                ' [' + item.nik +
-                                                ']',
-                                            value: instal.id
-                                        })
+        var numFormat = new Intl.NumberFormat('en-EN', {
+            minimumFractionDigits: 2
+        })
+
+        //cari customors
+        $('#PelunasanInstalasi').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: 'states',
+            source: function(query, process) {
+                if (query.length < 2) return;
+
+                $.ajax({
+                    url: '/installations/CariPelunasan_Instalasi',
+                    method: 'GET',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        var states = [];
+                        result.map(function(item) {
+                            if (item.installation.length > 0) {
+                                item.installation.map(function(instal) {
+                                    states.push({
+                                        id: instal.id,
+                                        installation: instal,
+                                        name: item.nama +
+                                            ' - ' + instal.village.nama +
+                                            ' - ' + instal.kode_instalasi +
+                                            ' [' + item.nik + ']',
+                                        value: instal.id
                                     })
-                                }
-                            });
-                            process(states);
-                        },
-                        error: function() {
-                            process([]);
-                        }
-                    });
-                },
-                displayKey: 'name',
-                autoSelect: true,
-                fitToElement: true,
-                items: 10
-            }).bind('typeahead:selected', function(event, item) {
-                var installation = item.installation;
-                var trx = installation.transaction;
-                var sum_total = 0,
-                    rekening_debit = 0,
-                    rekening_kredit = 0;
-                trx.map(function(item) {
-                    rekening_debit = item.rekening_debit;
-                    rekening_kredit = item.rekening_kredit;
-                    sum_total += item.total;
-                });
-                var rek_debit = rekening_debit;
-                var rek_kredit = rekening_kredit;
-                var tagihan = installation.biaya_instalasi;
-                var numFormat = new Intl.NumberFormat('en-EN', {
-                    minimumFractionDigits: 2
-                });
-                $("#installation").val(installation.id);
-                $("#order").val(installation.order);
-                $("#kode_instalasi").val(installation.kode_instalasi);
-                $("#alamat").val(installation.village.nama);
-                $("#package").val(installation.package.kelas);
-                $("#abodemen").val(numFormat.format(installation.abodemen));
-                $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
-                $("#tagihan").val(numFormat.format(tagihan));
-                $("#pembayaran").val(numFormat.format(tagihan));
-                $("#_total").val(numFormat.format(sum_total));
-                $("#rek_debit").val(rek_debit);
-                $("#rek_kredit").val(rek_kredit);
-            });
+                                })
+                            }
+                        });
 
-            $('#TagihanBulanan').typeahead({
-                hint: true,
-                highlight: true,
-                minLength: 1
-            }, {
-                name: 'states',
-                source: function(query, process) {
-                    if (query.length < 2) return;
-                    $.ajax({
-                        url: '/installations/CariTagihan_bulanan',
-                        method: 'GET',
-                        data: {
-                            query: query
-                        },
-                        dataType: 'json',
-                        success: function(result) {
-                            var states = [];
-                            result.map(function(item) {
-                                let inisial = item.package_inisial ? '-' + item
-                                    .package_inisial : '';
-                                states.push({
-                                    kode_instalasi: item.kode_instalasi,
-                                    name: item.nama + ' - ' + item
-                                        .kode_instalasi + inisial + ' [' +
-                                        item.nik + ']',
-                                    value: item.kode_instalasi,
-                                    item: item,
-                                });
-                            });
-                            process(states);
-                        },
-                        error: function() {
-                            process([]);
-                        }
-                    });
-                },
-                displayKey: 'name',
-                autoSelect: true,
-                fitToElement: true,
-                items: 10
-            }).bind('typeahead:selected', function(event, item) {
-                $.get('/installations/usage/' + item.item.kode_instalasi, (result) => {
-                    $('#accordion').html(result.view);
-                });
-            });
-
-            $('#carianggota').typeahead({
-                hint: true,
-                highlight: true,
-                minLength: 2
-            }, {
-                name: 'states',
-                source: function(query, process) {
-                    if (query.length < 2) return;
-                    $.ajax({
-                        url: '/usages/cari_anggota',
-                        method: 'GET',
-                        data: {
-                            query: query
-                        },
-                        dataType: 'json',
-                        success: function(result) {
-                            process(result.map(function(item) {
-                                return {
-                                    id: item.customer.kode_instalasi,
-                                    name: `${item.customer.nama} [${item.customer.kode_instalasi}]`,
-                                    value: item.customer.kode_instalasi,
-                                    data: item
-                                };
-                            }));
-                        },
-                        error: function() {
-                            process([]);
-                        }
-                    });
-                },
-                displayKey: 'name',
-                autoSelect: true,
-                fitToElement: true,
-                items: 10
-            }).bind('typeahead:selected', function(event, item) {
-                var data = item.data;
-                var usage = data.usage;
-                $('#awal').val(usage ? usage.akhir || 0 : 0);
-                $('#customer_id').val(data.customer.customer_id);
-                $('#id_instalasi').val(data.customer.id);
-            });
-
-            $('.hitungan').on('change', function() {
-                var awal = parseFloat($('#awal').val()) || 0;
-                var akhir = parseFloat($('#akhir').val()) || 0;
-                var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
-                if (akhir <= awal || akhir === 0) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Nilai akhir tidak valid',
-                        text: 'Nilai akhir harus lebih besar dari nilai awal.',
-                        confirmButtonText: 'Coba lagi'
-                    });
-                    $('#jumlah').val('');
-                    return;
-                }
-                var selisih = akhir - awal;
-                $('#jumlah').val(selisih >= jarak_awal ? selisih : '');
-            });
-
-            $('#logoutButton').on('click', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: "Konfirmasi Logout",
-                    icon: 'info',
-                    showDenyButton: true,
-                    confirmButtonText: "Logout",
-                    denyButtonText: "Batal",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $('#logoutForm').submit();
+                        process(states);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
+                        process([]);
                     }
                 });
-            });
+            },
 
-            $('.btn-modal-close').on('click', function(e) {
-                e.preventDefault();
-                $('.modal').modal('hide');
-            });
+            displayKey: 'name',
+            autoSelect: true,
+            fitToElement: true,
+            items: 10
 
-            $('.datepicker').datetimepicker({
-                format: 'd/m/Y H:i',
-                step: 15
-            });
+        }).bind('typeahead:selected', function(event, item) {
+            var installation = item.installation
+            var trx = installation.transaction
+
+            var sum_total = 0;
+            var rekening_debit = 0;
+            var rekening_kredit = 0;
+
+            trx.map(function(item) {
+                rekening_debit = item.rekening_debit;
+                rekening_kredit = item.rekening_kredit;
+                sum_total += item.total;
+            })
+
+            var rek_debit = rekening_debit;
+            var rek_kredit = rekening_kredit;
+            var tagihan = (installation.biaya_instalasi);
+            console.log(sum_total);
+
+            $("#installation").val(installation.id);
+            $("#order").val(installation.order);
+            $("#kode_instalasi").val(installation.kode_instalasi);
+            $("#alamat").val(installation.village.nama);
+            $("#package").val(installation.package.kelas);
+            $("#abodemen").val(numFormat.format(installation.abodemen));
+            $("#biaya_sudah_dibayar").val(numFormat.format(sum_total));
+            $("#tagihan").val(numFormat.format(tagihan));
+            $("#pembayaran").val(numFormat.format(tagihan));
+            $("#_total").val(numFormat.format(sum_total));
+            $("#rek_debit").val(rek_debit);
+            $("#rek_kredit").val(rek_kredit);
+
+        });
+
+
+        //end cari customors
+    </script>
+
+    <script>
+        var numFormat = new Intl.NumberFormat('en-EN', {
+            minimumFractionDigits: 2
+        })
+
+        var dataCustomer;
+
+        //Tagihan Bulanan (Aktif)
+        $('#TagihanBulanan').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: 'states',
+            source: function(query, process) {
+                if (query.length < 2) return;
+
+                $.ajax({
+                    url: '/installations/CariTagihan_bulanan',
+                    method: 'GET',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        var states = [];
+                        result.map(function(item) {
+                            let inisial = item.package_inisial ? '-' + item
+                                .package_inisial : '';
+                            states.push({
+                                kode_instalasi: item.kode_instalasi,
+                                name: item.nama + ' - ' + item.kode_instalasi +
+                                    inisial + ' [' + item.nik + ']',
+                                value: item.kode_instalasi,
+                                item: item,
+                            });
+                        });
+
+
+                        process(states);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Terjadi kesalahan saat pemanggilan custommers:", error);
+                        process([]);
+                    }
+                });
+            },
+
+            displayKey: 'name',
+            autoSelect: true,
+            fitToElement: true,
+            items: 10
+
+        }).bind('typeahead:selected', function(event, item) {
+            formTagihanBulanan(item.item);
+        });
+
+        function formTagihanBulanan(installation) {
+            $.get('/installations/usage/' + installation.kode_instalasi, (result) => {
+                if (result.success) {
+                    $('#accordion').html(result.view)
+                } else {
+                    $('#accordion').html(result.view)
+                }
+
+                dataCustomer = {
+                    item: installation,
+                    rek_debit: result.rek_debit,
+                    rek_kredit: result.rek_kredit,
+                }
+            })
+        }
+        //end cari Tagihan perbulan
+    </script>
+
+    <script>
+        // Awal script untuk cari Anggota Pemakaian
+        $('#carianggota').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 2 // Minimal karakter untuk memulai pencarian
+        }, {
+            name: 'states',
+            source: function(query, process) {
+                if (query.length < 2) return; // Hindari pengiriman permintaan jika terlalu pendek
+
+                $.ajax({
+                    url: '/usages/cari_anggota',
+                    method: 'GET',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        var states = result.map(function(item) {
+                            return {
+                                id: item.customer.kode_instalasi,
+                                name: `${item.customer.nama} [${item.customer.kode_instalasi}]`,
+                                value: item.customer.kode_instalasi,
+                                data: item
+                            };
+                        });
+
+                        process(states);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Terjadi kesalahan saat memanggil pelanggan:", error);
+                        process([]); // Tetap proses dengan data kosong jika ada error
+                    }
+                });
+            },
+            displayKey: 'name',
+            autoSelect: true,
+            fitToElement: true,
+            items: 10
+        }).bind('typeahead:selected', function(event, item) {
+            var data = item.data;
+            var usage = data.usage;
+
+            // Default nilai awal adalah 0 jika tidak ada data penggunaan sebelumnya
+            var nilai_awal = usage ? usage.akhir || 0 : 0;
+
+            // Set nilai awal dan customer_id di form
+            $('#awal').val(nilai_awal);
+            $('#customer_id').val(data.customer.customer_id);
+            $('#id_instalasi').val(data.customer.id);
+        });
+
+        $(document).on('change', '.hitungan', function() {
+            var awal = parseFloat($('#awal').val()) || 0;
+            var akhir = parseFloat($('#akhir').val()) || 0;
+            var jarak_awal = parseFloat($('#jarak_awal').val()) || 0;
+
+            if (akhir <= awal || akhir === 0) {
+                // Menggunakan SweetAlert2 untuk menampilkan pesan kesalahan
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Nilai akhir tidak valid',
+                    text: 'Nilai akhir harus lebih besar dari nilai awal.',
+                    confirmButtonText: 'Coba lagi'
+                });
+                $('#jumlah').val('');
+                return;
+            }
+
+            var selisih = akhir - awal;
+
+            if (selisih >= jarak_awal) {
+                $('#jumlah').val(selisih);
+                $('#awal').val(awal);
+            } else {
+                $('#jumlah').val();
+                alert('Selisih tidak memenuhi syarat jarak minimum.');
+            }
+        });
+    </script>
+    <script>
+        //property lainya
+        function open_window(link) {
+            return window.open(link)
+        }
+
+        $(document).on('click', '.btn-modal-close', function(e) {
+            e.preventDefault();
+            $('.modal').modal('hide');
+        });
+
+        const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+
+            return `${day}/${month}/${year}`;
+        };
+
+        var toastMixin = Swal.mixin({
+            toast: true,
+            icon: 'success',
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
         });
     </script>
 
@@ -400,7 +484,7 @@
                 icon: 'success',
                 title: 'Login Berhasil',
                 text: '{{ Session::get('success') }}.',
-            }).then(() => {
+            }).then((result) => {
                 window.open('/dataset/{{ time() }}')
             })
         </script>
