@@ -1,32 +1,68 @@
 @extends('layouts.base')
 
 @section('content')
-    <div class="container-fluid" id="container-wrapper">
-        <style>
-            .custom-height {
-                height: 38px;
-                /* Sesuaikan dengan tinggi yang diinginkan */
+    <style>
+        .search-bar-sticky {
+            position: sticky;
+            top: 75px;
+            z-index: 1050;
+            background-color: #f8f9fc;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 0.5rem 0.75rem;
+        }
+
+        .sidebar-pelanggan-sticky {
+            position: sticky;
+            top: calc(75px + 0.5rem + 2.5rem);
+            z-index: 1040;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (max-width: 576px) {
+            .search-bar-sticky {
+                top: 56px;
+                padding: 0.5rem;
+                border-radius: 0.5rem;
             }
-        </style>
 
-        <div class="row align-items-center">
-            <div class="col-9">
-                <div class="form-group mb-0">
-                    <input type="text" class="form-control is-valid custom-height" id="TagihanBulanan"
-                        placeholder="Usages (Kode Installasi / Nama Custommers)">
+            .sidebar-pelanggan-sticky {
+                top: calc(56px + 0.5rem + 1rem);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar-pelanggan-sticky {
+                position: static;
+                top: auto;
+                box-shadow: none;
+            }
+        }
+    </style>
+
+    <div class="container-fluid" id="container-wrapper">
+        <div class="search-bar-sticky">
+            <div class="row align-items-center g-2">
+                <div class="col-9">
+                    <div class="form-group mb-0">
+                        <input type="text" class="form-control is-valid" style="height: 38px; border-radius: 0.5rem;"
+                            id="TagihanBulanan" placeholder="Usages (Kode Installasi / Nama Custommers)">
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-3">
-                <div class="form-group mb-0">
-                    <a href="#" class="btn btn-warning w-100 custom-height" type="button" id="BtndetailTransaksi">
-                        <span class="text">Detail Transaksi</span>
-                    </a>
+                <div class="col-3">
+                    <div class="form-group mb-0">
+                        <a href="#" class="btn btn-warning w-100" style="height: 38px; border-radius: 0.5rem;"
+                            type="button" id="BtndetailTransaksi">
+                            <span class="text">Detail Transaksi</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        <hr class="my-2 bg-white">
-        <br>
+
+        <hr class="my-2 mb-2 bg-white">
 
         <div id="accordion">
             <div class="text-center">
@@ -37,8 +73,14 @@
             </div>
         </div>
     </div>
+    <form action="/transactions/hapus" method="post" id="formHapus">
+        @csrf
 
-    <!-- Modal detailTransaksi  tagihan-->
+        <input type="hidden" name="del_id" id="del_id">
+        <input type="hidden" name="del_istal_id" id="del_istal_id">
+    </form>
+@endsection
+@section('modal')
     <div class="modal fade" id="detailTransaksi" tabindex="-1" role="dialog" aria-labelledby="detailTransaksiLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-fullscreen modal-dialog-scrollable" style="max-width: 100%; margin: 0; height: 100%;"
@@ -56,13 +98,6 @@
             </div>
         </div>
     </div>
-
-    <form action="/transactions/hapus" method="post" id="formHapus">
-        @csrf
-
-        <input type="hidden" name="del_id" id="del_id">
-        <input type="hidden" name="del_istal_id" id="del_istal_id">
-    </form>
 @endsection
 @section('script')
     <script>
