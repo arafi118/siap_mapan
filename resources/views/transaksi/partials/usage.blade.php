@@ -31,9 +31,8 @@
             <div class="row">
                 <div class="col-md-4 mb-3 sidebar-pelanggan-wrapper">
                     <div class="card border-0 w-100 sidebar-pelanggan-sticky">
-
-                        <div class="card-body pt-4">
-                            <div class="d-flex justify-content-between align-items-start mb-0 pt-2">
+                        <div class="card-body pt-3">
+                            <div class="d-flex justify-content-between align-items-start mb-0 pt-1">
                                 <div>
                                     <h4 class="mb-1 font-weight-bold">
                                         {{ $installations->kode_instalasi ?? '-' }}-{{ $installations->package->inisial ?? '-' }}
@@ -42,7 +41,7 @@
                                 </div>
                             </div>
                             <hr class="mb-0 p-0">
-                            <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mt-2 mb-2">
                                 <div>
                                     <h6 class="mb-1 font-weight-bold">Informasi Pelanggan</h6>
                                     <p class="mb-0 text-muted small">aktif tanggal {{ $installations->aktif }}</p>
@@ -130,17 +129,17 @@
                                                 style="font-family: 'Courier New', monospace;">
                                                 <li class="mb-1 d-flex">
                                                     <span class="label flex-shrink-0"
-                                                        style="min-width: 50px; font-weight: 600;">Kelas</span>
+                                                        style="min-width: 92px; font-weight: 600;">Kelas</span>
                                                     <span class="mx-1">:</span>
                                                     <span
                                                         class="flex-grow-1">{{ $installations->package->kelas }}</span>
                                                 </li>
                                                 <li class="mb-1 d-flex">
                                                     <span class="label flex-shrink-0"
-                                                        style="min-width: 50px; font-weight: 600;">Denda</span>
+                                                        style="min-width: 92px; font-weight: 600;">Denda</span>
                                                     <span class="mx-1">:</span>
                                                     <span class="flex-grow-1">
-                                                        Rp. {{ number_format($trx_settings->denda, 2) }}
+                                                        Rp.{{ number_format($trx_settings->denda, 2) }}
                                                     </span>
                                                 </li>
                                                 <li class="mb-1">
@@ -149,20 +148,16 @@
                                                         Harga
                                                     </span>
                                                 </li>
-                                                <li class="mb-1">
-                                                    <ul class="pl-3 mb-0">
-                                                        @for ($i = 0; $i < $jumlah_blok; $i++)
-                                                            <li class="mb-1">
-                                                                <div style="font-weight: 600;">
-                                                                    {{ $blok[$i]['jarak'] }}
-                                                                </div>
-                                                                <div style="padding-left: 10px;">
-                                                                    Rp.{{ number_format(isset($daftar_harga[$i]) ? $daftar_harga[$i] : 0, 2) }}
-                                                                </div>
-                                                            </li>
-                                                        @endfor
-                                                    </ul>
-                                                </li>
+                                                @for ($i = 0; $i < $jumlah_blok; $i++)
+                                                    <li class="mb-1 d-flex">
+                                                        <span class="label flex-shrink-0"
+                                                            style="min-width: 92px">{{ $blok[$i]['jarak'] }}</span>
+                                                        <span class="mx-1">:</span>
+                                                        <span class="flex-grow-1">
+                                                            Rp.{{ number_format(isset($daftar_harga[$i]) ? $daftar_harga[$i] : 0, 2) }}
+                                                        </span>
+                                                    </li>
+                                                @endfor
                                             </ul>
                                         </div>
                                     </div>
@@ -199,7 +194,7 @@
                         @endphp
 
                         <div class="card">
-                            <div class="card-header" id="Judul-{{ $usage->id }}">
+                            <div class="card-header p-1" id="Judul-{{ $usage->id }}">
                                 <h5 class="mb-0 alert alert-light bg-white" data-toggle="collapse"
                                     data-target="#Body-{{ $usage->id }}" aria-expanded="true"
                                     aria-controls="Body-{{ $usage->id }}">
@@ -210,7 +205,7 @@
                             </div>
                             <div id="Body-{{ $usage->id }}" class="collapse"
                                 aria-labelledby="Judul-{{ $usage->id }}" data-parent="#accordion">
-                                <div class="card-body pt-0">
+                                <div class="card-body p-3">
                                     <form action="/transactions" method="post"
                                         id="FormTagihan-{{ $usage->id }}">
                                         @csrf
@@ -224,190 +219,139 @@
                                         <input type="hidden" name="denda" id="denda-{{ $usage->id }}"
                                             value="{{ $installations->package->denda }}">
 
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="alert alert-light" role="alert">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="position-relative mb-1">
-                                                                <label for="tgl_transaksi-{{ $usage->id }}">Tanggal
-                                                                    Transaksi</label>
-                                                                <input type="text"
-                                                                    class="form-control date tgl_transaksi"
-                                                                    data-id="{{ $usage->id }}"
-                                                                    name="tgl_transaksi" value="{{ date('d/m/Y') }}"
-                                                                    id="tgl_transaksi-{{ $usage->id }}">
-                                                                <small class="text-danger"></small>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="position-relative mb-1">
-                                                                <label for="kode_instalasi-{{ $usage->id }}">Kode
-                                                                    Instalasi</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="kode_instalasi-{{ $usage->id }}"
-                                                                    value="{{ $installations->kode_instalasi }}"
-                                                                    name="kode_instalasi" readonly>
-                                                                <small class="text-danger"
-                                                                    id="msg_kode_instalasi"></small>
-                                                            </div>
-                                                        </div>
+                                        <div class="alert alert-light" role="alert">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="tgl_transaksi-{{ $usage->id }}">Tanggal
+                                                            Transaksi</label>
+                                                        <input type="text" class="form-control date tgl_transaksi"
+                                                            data-id="{{ $usage->id }}" name="tgl_transaksi"
+                                                            value="{{ date('d/m/Y') }}"
+                                                            id="tgl_transaksi-{{ $usage->id }}">
+                                                        <small class="text-danger"></small>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <div class="position-relative mb-1">
-                                                                <label for="awal">Meter Awal</label>
-                                                                <input type="text" class="form-control awal"
-                                                                    id="awal-{{ $usage->id }}"
-                                                                    value="{{ $usage->awal }}" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <div class="position-relative mb-1">
-                                                                <label for="akhir">Meter Akhir</label>
-                                                                <input type="text" class="form-control akhir"
-                                                                    id="akhir-{{ $usage->id }}"
-                                                                    value="{{ $usage->akhir }}" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <div class="position-relative mb-1">
-                                                                <label for="selisih">Pemakaian</label>
-                                                                <input type="text" class="form-control selisih"
-                                                                    id="selisih-{{ $usage->id }}"
-                                                                    value="{{ $usage->jumlah }}" disabled>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {{-- <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="position-relative mb-1">
-                                                            <label for="keterangan-{{ $usage->id }}">Keterangan</label>
-                                                            <input type="text" class="form-control"
-                                                                id="keterangan-{{ $usage->id }}"
-                                                                value="Pembayaran Tagihan Bulanan Atas Nama {{ $installations->customer->nama }}"
-                                                                name="keterangan">
-                                                            <small class="text-danger" id="msg_keterangan"></small>
-                                                        </div>
-                                                    </div>
-                                                </div> --}}
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="position-relative mb-1">
-                                                                <label
-                                                                    for="tagihan-{{ $usage->id }}">Tagihan</label>
-                                                                <input type="text"
-                                                                    class="form-control tagihan mt-1" name="tagihan"
-                                                                    id="tagihan"
-                                                                    value="{{ number_format($usage->nominal, 2) }}"
-                                                                    readonly>
-                                                                <small class="text-danger"></small>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="position-relative mb-1">
-                                                                <label
-                                                                    for="abodemen-bulanan-{{ $usage->id }}">Abodemen</label>
-                                                                <input type="text" class="form-control abodemen"
-                                                                    name="abodemen"
-                                                                    id="abodemen-bulanan-{{ $usage->id }}" readonly
-                                                                    placeholder="0.00"
-                                                                    value="{{ number_format($trx_settings->abodemen, 2) }}">
-                                                                <small class="text-danger"></small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="position-relative mb-1">
-                                                                <label
-                                                                    for="denda-bulanan-{{ $usage->id }}">Denda</label>
-                                                                <input type="text" class="form-control denda"
-                                                                    name="denda"
-                                                                    id="denda-bulanan-{{ $usage->id }}" readonly
-                                                                    placeholder="0.00"
-                                                                    value="{{ number_format($dendaPemakaianLalu, 2) }}">
-                                                                <small class="text-danger"></small>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="position-relative mb-1">
-                                                                <label
-                                                                    for="pembayaran-{{ $usage->id }}">Pembayaran</label>
-                                                                <input type="text"
-                                                                    class="form-control total perhitungan"
-                                                                    name="pembayaran"
-                                                                    id="pembayaran-{{ $usage->id }}"
-                                                                    data-id="{{ $usage->id }}"
-                                                                    value="{{ number_format($usage->nominal + $trx_settings->abodemen + $dendaPemakaianLalu, 2) }}"
-                                                                    {!! $trx_settings->swit_tombol_trx == '1' ? 'readonly' : '' !!}>
-                                                                <small class="text-danger"
-                                                                    id="msg_pembayaran"></small>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 d-none">
-                                                            <div class="position-relative mb-1">
-                                                                <label for="total-{{ $usage->id }}">Total</label>
-                                                                <input type="text" class="form-control total"
-                                                                    name="total" id="total-{{ $usage->id }}"
-                                                                    readonly placeholder="0.00">
-                                                                <small class="text-danger"></small>
-                                                            </div>
-                                                        </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="kode_instalasi-{{ $usage->id }}">Kode
+                                                            Instalasi</label>
+                                                        <input type="text" class="form-control"
+                                                            id="kode_instalasi-{{ $usage->id }}"
+                                                            value="{{ $installations->kode_instalasi }}"
+                                                            name="kode_instalasi" readonly>
+                                                        <small class="text-danger" id="msg_kode_instalasi"></small>
                                                     </div>
                                                 </div>
                                             </div>
-                                            {{-- <div class="col-lg-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="position-relative mb-3">
-                                                                <label for="awal">Meter Awal</label>
-                                                                <input type="text" class="form-control awal"
-                                                                    id="awal-{{ $usage->id }}"
-                                                                    value="{{ $usage->awal }}" disabled>
-                                                            </div>
-                                                        </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="awal">Meter Awal</label>
+                                                        <input type="text" class="form-control awal"
+                                                            id="awal-{{ $usage->id }}"
+                                                            value="{{ $usage->awal }}" disabled>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="position-relative mb-3">
-                                                                <label for="akhir">Meter Akhir</label>
-                                                                <input type="text" class="form-control akhir"
-                                                                    id="akhir-{{ $usage->id }}"
-                                                                    value="{{ $usage->akhir }}" disabled>
-                                                            </div>
-                                                        </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="akhir">Meter Akhir</label>
+                                                        <input type="text" class="form-control akhir"
+                                                            id="akhir-{{ $usage->id }}"
+                                                            value="{{ $usage->akhir }}" disabled>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="position-relative mb-3">
-                                                                <label for="selisih">Pemakaian</label>
-                                                                <input type="text" class="form-control selisih"
-                                                                    id="selisih-{{ $usage->id }}"
-                                                                    value="{{ $usage->jumlah }}" disabled>
-                                                            </div>
-                                                        </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="selisih">Pemakaian</label>
+                                                        <input type="text" class="form-control selisih"
+                                                            id="selisih-{{ $usage->id }}"
+                                                            value="{{ $usage->jumlah }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div> --}}
-                                            <div class="col-12 d-flex justify-content-end mt-1">
-                                                <button class="btn btn-sm btn-secondary btn-icon-split SimpanTagihan"
-                                                    type="submit" data-form="#FormTagihan-{{ $usage->id }}">
-                                                    <span class="icon text-white-50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                            height="16" fill="currentColor"
-                                                            class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
-                                                        </svg>
-                                                    </span>
-                                                    <span class="text" style="float: right;">Simpan
-                                                        Pembayaran</span>
-                                                </button>
+                                            {{-- <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="keterangan-{{ $usage->id }}">Keterangan</label>
+                                                        <input type="text" class="form-control"
+                                                            id="keterangan-{{ $usage->id }}"
+                                                            value="Pembayaran Tagihan Bulanan Atas Nama {{ $installations->customer->nama }}"
+                                                            name="keterangan">
+                                                        <small class="text-danger" id="msg_keterangan"></small>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="tagihan-{{ $usage->id }}">Tagihan</label>
+                                                        <input type="text" class="form-control tagihan mt-1"
+                                                            name="tagihan" id="tagihan"
+                                                            value="{{ number_format($usage->nominal, 2) }}" readonly>
+                                                        <small class="text-danger"></small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="position-relative mb-1">
+                                                        <label
+                                                            for="abodemen-bulanan-{{ $usage->id }}">Abodemen</label>
+                                                        <input type="text" class="form-control abodemen"
+                                                            name="abodemen" id="abodemen-bulanan-{{ $usage->id }}"
+                                                            readonly placeholder="0.00"
+                                                            value="{{ number_format($trx_settings->abodemen, 2) }}">
+                                                        <small class="text-danger"></small>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="denda-bulanan-{{ $usage->id }}">Denda</label>
+                                                        <input type="text" class="form-control denda"
+                                                            name="denda" id="denda-bulanan-{{ $usage->id }}"
+                                                            readonly placeholder="0.00"
+                                                            value="{{ number_format($dendaPemakaianLalu, 2) }}">
+                                                        <small class="text-danger"></small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="pembayaran-{{ $usage->id }}">Pembayaran</label>
+                                                        <input type="text" class="form-control total perhitungan"
+                                                            name="pembayaran" id="pembayaran-{{ $usage->id }}"
+                                                            data-id="{{ $usage->id }}"
+                                                            value="{{ number_format($usage->nominal + $trx_settings->abodemen + $dendaPemakaianLalu, 2) }}"
+                                                            {!! $trx_settings->swit_tombol_trx == '1' ? 'readonly' : '' !!}>
+                                                        <small class="text-danger" id="msg_pembayaran"></small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 d-none">
+                                                    <div class="position-relative mb-1">
+                                                        <label for="total-{{ $usage->id }}">Total</label>
+                                                        <input type="text" class="form-control total"
+                                                            name="total" id="total-{{ $usage->id }}" readonly
+                                                            placeholder="0.00">
+                                                        <small class="text-danger"></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button
+                                                class="d-flex justify-content-end btn btn-sm btn-secondary btn-icon-split SimpanTagihan"
+                                                type="submit" data-form="#FormTagihan-{{ $usage->id }}">
+                                                <span class="icon text-white-50">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                        height="16" fill="currentColor"
+                                                        class="bi bi-sign-intersection-fill" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM7.25 4h1.5v3.25H12v1.5H8.75V12h-1.5V8.75H4v-1.5h3.25z" />
+                                                    </svg>
+                                                </span>
+                                                <span class="text" style="float: right;">Simpan
+                                                    Pembayaran</span>
+                                            </button>
                                         </div>
                                     </form>
                                 </div>

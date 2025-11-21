@@ -14,7 +14,7 @@
 
         .sidebar-pelanggan-sticky {
             position: sticky;
-            top: calc(75px + 0.5rem + 2.5rem);
+            top: calc(90px + 0.5rem + 2.5rem);
             z-index: 1040;
             border-radius: 0.75rem;
             overflow: hidden;
@@ -61,9 +61,7 @@
                 </div>
             </div>
         </div>
-
         <hr class="my-2 mb-2 bg-white">
-
         <div id="accordion">
             <div class="text-center">
                 <img src="../../assets/img/air.png" style="max-height: 200px;" class="mb-3">
