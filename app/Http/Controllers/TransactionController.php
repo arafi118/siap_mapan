@@ -1260,7 +1260,7 @@ class TransactionController extends Controller
                 'business_id' => Session::get('business_id'),
                 'rekening_debit' => $kode_piutang->id,
                 'rekening_kredit' => $kode_denda->id,
-                'tgl_transaksi' => $tgl_transaksi,
+                'tgl_transaksi' => date('Y-m', strtotime('+1 month', strtotime($usage->tgl_akhir))) . '-01',
                 'user_id' => auth()->user()->id,
                 'usage_id' => $usage->id,
                 'installation_id' => $usage->id_instalasi,
