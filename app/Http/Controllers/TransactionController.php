@@ -1186,7 +1186,10 @@ class TransactionController extends Controller
 
         $tgl_transaksi = Tanggal::tglNasional($data['tgl_transaksi']);
 
-        Transaction::where('business_id', Session::get('business_id'))->where('usage_id', $request->id_usage)->where('tgl_transaksi', '>=', $tgl_transaksi)->delete();
+        $trx = Transaction::where('business_id', Session::get('business_id'))->where('usage_id', $request->id_usage)->where('tgl_transaksi', '>=', $tgl_transaksi);
+        if ($trx->count() < 3) {
+            $trx->delete();
+        }
 
         $usage = Usage::where('id', $data['id_usage'])->with([
             'installation',
