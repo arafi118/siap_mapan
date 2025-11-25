@@ -110,7 +110,7 @@ class SystemController extends Controller
                     //     'business_id' => $businessId,
                     //     'tgl_transaksi' => $usage->tgl_akhir,
                     //     'rekening_debit' => $kodePiutang->id,
-                    //     'rekening_kredit' => $kodeDenda->id,
+                    //     'rekening_kredit' => $rekening_kredit->id,
                     //     'user_id' => auth()->user()->id,
                     //     'usage_id' => $usageId,
                     //     'installation_id' => $idInstalasi,
@@ -135,6 +135,7 @@ class SystemController extends Controller
             DB::statement('SET @DISABLE_TRIGGER = 1');
             Transaction::whereIn('usage_id', $dataUsage)
                 ->where('rekening_debit', $kodePiutang->id)
+                ->where('rekening_kredit', '!=', $kodeDenda->id)
                 ->delete();
             Transaction::insert($trxTunggakan);
             DB::statement('SET @DISABLE_TRIGGER = 0');
