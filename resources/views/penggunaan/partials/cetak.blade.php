@@ -47,7 +47,7 @@
 
 <body>
     <div class="container">
-        @foreach ($usage as $use)
+        @foreach ($usage as $index => $use)
             @php
                 $tgl_akhhir_lalu = date('Y-m', strtotime('-0 month', strtotime($use->tgl_akhir)));
                 $isUnpaid = false;
