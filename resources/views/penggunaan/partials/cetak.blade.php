@@ -47,15 +47,12 @@
 
 <body>
     <div class="container">
-        @foreach ($usage as $index => $use)
+        @foreach ($usage as $use)
             @php
                 $tgl_akhhir_lalu = date('Y-m', strtotime('-0 month', strtotime($use->tgl_akhir)));
-                $isUnpaid = false;
-                if (isset($usage[$index - 1])) {
-                    $isUnpaid = $usage[$index - 1]->status == 'UNPAID' ? true : false;
-                }
+
                 $dendaPemakaianLalu = 0;
-                foreach ($installations->transaction as $trx_denda) {
+                foreach ($use->installation->transaction as $trx_denda) {
                     if (
                         $trx_denda->tgl_transaksi < $use->tgl_akhir &&
                         date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
