@@ -384,7 +384,7 @@
 
                 const groupedByDusun = {};
                 data.forEach(item => {
-                    const dusun = item.installation.village.dusun || '';
+                    const dusun = item.installation?.village?.dusun || '';
                     if (!groupedByDusun[dusun]) groupedByDusun[dusun] = [];
                     groupedByDusun[dusun].push(item);
                 });
