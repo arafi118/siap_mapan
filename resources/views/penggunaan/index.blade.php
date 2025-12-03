@@ -393,7 +393,7 @@
 
                 sortedDusuns.forEach(dusun => {
                     const items = groupedByDusun[dusun];
-                    items.sort((a, b) => parseInt(a.installation.rt || 0) - parseInt(b.installation.rt || 0));
+                    items.sort((a, b) => parseInt(a.installation?.rt || 0) - parseInt(b.installation.rt || 0));
 
                     tbTagihan.find('tbody').append(`
                             <tr class="table-secondary fw-bold">
