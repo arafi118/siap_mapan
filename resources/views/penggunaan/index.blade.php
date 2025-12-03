@@ -410,9 +410,9 @@
                         </div>
                     </td>
                     <td align="left">${item.customers.nama}</td>
-                    <td align="left">${item.installation.village.nama}</td>
-                    <td align="center">${item.installation.rt}</td>
-                    <td align="center">${item.installation.kode_instalasi} ${item.installation.package.kelas.charAt(0)}</td>
+                    <td align="left">${item.installation?.village?.nama}</td>
+                    <td align="center">${item.installation?.rt}</td>
+                    <td align="center">${item.installation?.kode_instalasi} ${item.installation?.package?.kelas.charAt(0)}</td>
                     <td align="center">${item.awal}</td>
                     <td align="center">${item.akhir}</td>
                     <td align="center">${item.jumlah}</td>
