@@ -77,12 +77,14 @@ class UsageController extends Controller
                     $tgl_akhhir_lalu = date('Y-m', strtotime('-0 month', strtotime($usage->tgl_akhir)));
 
                     $dendaPemakaianLalu = 0;
-                    foreach ($usage->installation->transaction as $trx_denda) {
-                        if (
-                            $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
-                            date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
-                        ) {
-                            $dendaPemakaianLalu = $trx_denda->total;
+                    if ($usage->installation) {
+                        foreach ($usage->installation->transaction as $trx_denda) {
+                            if (
+                                $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
+                                date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
+                            ) {
+                                $dendaPemakaianLalu = $trx_denda->total;
+                            }
                         }
                     }
 
