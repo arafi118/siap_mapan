@@ -27,7 +27,7 @@
                                 <div class="form-group mb-0">
                                     <label for="tahun_pakai">Tahun Pemakaian</label>
                                     <select id="tahun_pakai" name="tahun_pakai" class="form-control select2">
-                                        <option value="">-- Pilih Bulan --</option>
+                                        <option value="">-- Pilih Tahun --</option>
                                         @php
                                             $tahun = date('Y');
                                         @endphp
