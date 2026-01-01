@@ -58,7 +58,6 @@
                                 </div>
                             </div>
 
-                            <input type="hidden" id="bulan" name="bulan" value="{{ date('Y-m-') . '01' }}">
                             <div class="col-md-4">
                                 <div class="form-group mb-0">
                                     @if (Session::get('jabatan') == 5)
@@ -271,6 +270,7 @@
 
             var cater = $('#caters').val()
             var bulan = $('#bulan_pakai').val()
+            var tahun = $('#tahun_pakai').val()
             var columns = [{
                     "data": "customers.nama"
                 },
@@ -326,6 +326,7 @@
             $('#caters, #bulan_pakai').on('change', function() {
                 cater = $('#caters').val()
                 bulan = $('#bulan_pakai').val()
+                tahun = $('#tahun_pakai').val()
 
                 if (cater != '') {
                     if (table == '') {
@@ -333,7 +334,7 @@
                             "processing": true,
                             "serverSide": true,
                             "ajax": {
-                                "url": "/usages?bulan=" + bulan + "&cater=" + cater,
+                                "url": "/usages?bulan=" + bulan + "&tahun=" + tahun + "&cater=" + cater,
                                 "type": "GET"
                             },
                             "language": {
@@ -349,7 +350,7 @@
                             "columns": columns
                         });
                     } else {
-                        table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+                        table.ajax.url("/usages?bulan=" + bulan + "&tahun=" + tahun + "&cater=" + cater).load();
                     }
                 }
             });
@@ -359,6 +360,7 @@
                     url: "/usages",
                     type: "GET",
                     data: {
+                        tahun: $('#tahun_pakai').val(),
                         bulan: $('#bulan_pakai').val(),
                         cater: $('#caters').val(),
                     },
@@ -444,11 +446,13 @@
                 if ($('#FormCetakBuktiTagihan').serializeArray().length > 1) {
                     var formTagihan = $('#FormCetakBuktiTagihan');
 
+                    var tahun = $('#tahun_pakai').val()
                     var bulan = $('#bulan_pakai').val()
                     var caters = $('#caters').val()
 
                     formTagihan.find('form').html('')
                     var row = formTagihan.append(`
+                    <input type="hidden" name="tahun_tagihan" value="${tahun}">
                     <input type="hidden" name="bulan_tagihan" value="${bulan}">
                     <input type="hidden" name="pemakaian_cater" value="${cater}">
                 `);
@@ -463,11 +467,13 @@
                 var data = table.data().toArray()
                 var formTagihan = $('#form');
 
+                var tahun = $('#tahun_pakai').val()
                 var bulan = $('#bulan_pakai').val()
                 var caters = $('#caters').val()
 
                 formTagihan.find('form').html('')
                 var row = formTagihan.append(`
+                <input type="hidden" name="tahun_tagihan" value="${tahun}">
                 <input type="hidden" name="bulan_tagihan" value="${bulan}">
                 <input type="hidden" name="cater" value="${cater}">
             `);
@@ -479,12 +485,14 @@
 
                 var formTagihan = $('#formbonggol');
 
+                var tahun = $('#tahun_pakai').val();
                 var bulan = $('#bulan_pakai').val();
                 var cater = $('#caters').val();
 
                 formTagihan.html('');
 
                 formTagihan.append(`
+        <input type="hidden" name="tahun_tagihan" value="${tahun}">
         <input type="hidden" name="bulan_tagihan" value="${bulan}">
         <input type="hidden" name="cater" value="${cater}">
     `);

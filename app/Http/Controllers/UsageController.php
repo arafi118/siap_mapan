@@ -23,9 +23,10 @@ class UsageController extends Controller
     public function index()
     {
         if (request()->ajax()) {
+            $tahun = request()->get('tahun') ?: date('m');
             $bulan = request()->get('bulan') ?: date('m');
             $caterId = request()->get('cater') ?: '';
-            $tgl_pakai = date('Y-m', strtotime(date('Y').'-'.$bulan.'-01'));
+            $tgl_pakai = date('Y-m', strtotime($tahun.'-'.$bulan.'-01'));
 
             $rekening_denda = Account::where([
                 ['kode_akun', '4.1.01.04'],
