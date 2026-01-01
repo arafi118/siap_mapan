@@ -31,7 +31,7 @@
                                         @php
                                             $tahun = date('Y');
                                         @endphp
-                                        @for ($i = 2925; $i <= $tahun; $i++)
+                                        @for ($i = 2025; $i <= $tahun; $i++)
                                             <option {{ date('Y') == $i ? 'selected' : '' }} value="{{ $i }}">
                                                 {{ $i }}
                                             </option>
