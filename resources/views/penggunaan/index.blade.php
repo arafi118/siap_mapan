@@ -253,7 +253,7 @@
             $(document).on('click', '#Registerpemakaian', function(e) {
                 e.preventDefault();
 
-                var tahun = $('#tahun_pakai).val();
+                var tahun = $('#tahun_pakai').val();
                 var bulanTerpilih = '01' + '/' + $('#bulan_pakai').val() + '/' + tahun;
                 var caterId = $('#caters').val();
 
