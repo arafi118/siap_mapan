@@ -23,29 +23,43 @@
 
                     <div class="alert alert-info mt-3">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-0">
-                                    <label for="bulan">Bulan Pemakaian</label>
-                                    <select id="bulan" name="bulan" class="form-control select2">
+                                    <label for="tahun_pakai">Tahun Pemakaian</label>
+                                    <select id="tahun_pakai" name="tahun_pakai" class="form-control select2">
                                         <option value="">-- Pilih Bulan --</option>
                                         @php
                                             $tahun = date('Y');
-                                            $bulanSekarang = date('n'); // bulan sekarang, 1 - 12
                                         @endphp
-                                        @for ($i = 1; $i <= $bulanSekarang; $i++)
+                                        @for ($i = 2925; $i <= $tahun; $i++)
+                                            <option {{ date('Y') == $i ? 'selected' : '' }} value="{{ $i }}">
+                                                {{ $i }}
+                                            </option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-0">
+                                    <label for="bulan_pakai">Bulan Pemakaian</label>
+                                    <select id="bulan_pakai" name="bulan_pakai" class="form-control select2">
+                                        <option value="">-- Pilih Bulan --</option>
+                                        @for ($i = 1; $i <= 12; $i++)
                                             @php
                                                 $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
                                                 $tanggalObj = $tahun . '-' . $bulanValue . '-01';
                                                 $namaBulan = Tanggal::namaBulan($tanggalObj);
                                             @endphp
                                             <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
-                                                {{ $namaBulan }} {{ $tahun }}
+                                                {{ $namaBulan }}
                                             </option>
                                         @endfor
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+
+                            <input type="hidden" id="bulan" name="bulan" value="{{ date('Y-m-') . '01' }}">
+                            <div class="col-md-4">
                                 <div class="form-group mb-0">
                                     @if (Session::get('jabatan') == 5)
                                         <label for="caters">Cater</label>
@@ -424,6 +438,15 @@
                 });
             }
 
+            $(document).on('change', '#tahun_pakai, #bulan_pakai', function (e) {
+                e.preventDefault();
+
+                var tahun = $('#tahun_pakai').val();
+                var bulan = $('#bulan_pakai').val();
+
+                var tanggalBulan = tahun + '-' + bulan + '-01';
+                $('#bulan).val(tanggalBulan)
+            })
 
             $(document).on('click', '#BtnCetak', function(e) {
                 e.preventDefault()
