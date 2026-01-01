@@ -253,8 +253,8 @@
             $(document).on('click', '#Registerpemakaian', function(e) {
                 e.preventDefault();
 
-                var tahun = "{{ date('Y') }}";
-                var bulanTerpilih = '01' + '/' + $('#bulan').val() + '/' + tahun;
+                var tahun = $('#tahun_pakai).val();
+                var bulanTerpilih = '01' + '/' + $('#bulan_pakai').val() + '/' + tahun;
                 var caterId = $('#caters').val();
 
                 if (bulanTerpilih && caterId) {
@@ -270,7 +270,7 @@
 
 
             var cater = $('#caters').val()
-            var bulan = $('#bulan').val()
+            var bulan = $('#bulan_pakai').val()
             var columns = [{
                     "data": "customers.nama"
                 },
@@ -323,9 +323,9 @@
             @endif
 
 
-            $('#caters, #bulan').on('change', function() {
+            $('#caters, #bulan_pakai').on('change', function() {
                 cater = $('#caters').val()
-                bulan = $('#bulan').val()
+                bulan = $('#bulan_pakai').val()
 
                 if (cater != '') {
                     if (table == '') {
@@ -359,7 +359,7 @@
                     url: "/usages",
                     type: "GET",
                     data: {
-                        bulan: $('#bulan').val(),
+                        bulan: $('#bulan_pakai').val(),
                         cater: $('#caters').val(),
                     },
                     success: function(response) {
@@ -438,23 +438,13 @@
                 });
             }
 
-            $(document).on('change', '#tahun_pakai, #bulan_pakai', function (e) {
-                e.preventDefault();
-
-                var tahun = $('#tahun_pakai').val();
-                var bulan = $('#bulan_pakai').val();
-
-                var tanggalBulan = tahun + '-' + bulan + '-01';
-                $('#bulan).val(tanggalBulan)
-            })
-
             $(document).on('click', '#BtnCetak', function(e) {
                 e.preventDefault()
 
                 if ($('#FormCetakBuktiTagihan').serializeArray().length > 1) {
                     var formTagihan = $('#FormCetakBuktiTagihan');
 
-                    var bulan = $('#bulan').val()
+                    var bulan = $('#bulan_pakai').val()
                     var caters = $('#caters').val()
 
                     formTagihan.find('form').html('')
@@ -473,7 +463,7 @@
                 var data = table.data().toArray()
                 var formTagihan = $('#form');
 
-                var bulan = $('#bulan').val()
+                var bulan = $('#bulan_pakai').val()
                 var caters = $('#caters').val()
 
                 formTagihan.find('form').html('')
@@ -489,7 +479,7 @@
 
                 var formTagihan = $('#formbonggol');
 
-                var bulan = $('#bulan').val();
+                var bulan = $('#bulan_pakai').val();
                 var cater = $('#caters').val();
 
                 formTagihan.html('');
