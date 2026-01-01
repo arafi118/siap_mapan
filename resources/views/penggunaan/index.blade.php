@@ -323,7 +323,7 @@
             @endif
 
 
-            $('#caters, #bulan_pakai').on('change', function() {
+            $('#caters, #bulan_pakai, #tahun_pakai').on('change', function() {
                 cater = $('#caters').val()
                 bulan = $('#bulan_pakai').val()
                 tahun = $('#tahun_pakai').val()
