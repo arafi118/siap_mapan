@@ -49,14 +49,9 @@
     <div class="container">
         @foreach ($usage as $use)
             @php
-                $tgl_akhhir_lalu = date('Y-m', strtotime('-0 month', strtotime($use->tgl_akhir)));
-
                 $dendaPemakaianLalu = 0;
                 foreach ($use->installation->transaction as $trx_denda) {
-                    if (
-                        $trx_denda->tgl_transaksi < $use->tgl_akhir &&
-                        date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
-                    ) {
+                    if ($trx_denda->tgl_transaksi < $use->tgl_akhir) {
                         $dendaPemakaianLalu = $trx_denda->total;
                     }
                 }
