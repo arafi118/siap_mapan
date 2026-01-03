@@ -473,8 +473,8 @@
 
                 formTagihan.find('form').html('')
                 var row = formTagihan.append(`
-                <input type="hidden" name="tahun_tagihan" value="${tahun}">
-                <input type="hidden" name="bulan_tagihan" value="${bulan}">
+                <input type="hidden" name="tahun" value="${tahun}">
+                <input type="hidden" name="bulan" value="${bulan}">
                 <input type="hidden" name="cater" value="${cater}">
             `);
 
@@ -492,8 +492,8 @@
                 formTagihan.html('');
 
                 formTagihan.append(`
-        <input type="hidden" name="tahun_tagihan" value="${tahun}">
-        <input type="hidden" name="bulan_tagihan" value="${bulan}">
+        <input type="hidden" name="tahun" value="${tahun}">
+        <input type="hidden" name="bulan" value="${bulan}">
         <input type="hidden" name="cater" value="${cater}">
     `);
 
