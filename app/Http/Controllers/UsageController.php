@@ -269,7 +269,7 @@ class UsageController extends Controller
         }
 
         if ($request->bulan_tagihan != '') {
-            $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . date('Y') . '-' . $request->bulan_tagihan . '%');
+            $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
         }
 
         $data['usage'] = $data['usage']->with([
