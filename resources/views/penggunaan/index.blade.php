@@ -23,29 +23,42 @@
 
                     <div class="alert alert-info mt-3">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-0">
-                                    <label for="bulan">Bulan Pemakaian</label>
-                                    <select id="bulan" name="bulan" class="form-control select2">
-                                        <option value="">-- Pilih Bulan --</option>
+                                    <label for="tahun_pakai">Tahun Pemakaian</label>
+                                    <select id="tahun_pakai" name="tahun_pakai" class="form-control select2">
+                                        <option value="">-- Pilih Tahun --</option>
                                         @php
                                             $tahun = date('Y');
-                                            $bulanSekarang = date('n'); // bulan sekarang, 1 - 12
                                         @endphp
-                                        @for ($i = 1; $i <= $bulanSekarang; $i++)
+                                        @for ($i = 2025; $i <= $tahun; $i++)
+                                            <option {{ date('Y') == $i ? 'selected' : '' }} value="{{ $i }}">
+                                                {{ $i }}
+                                            </option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-0">
+                                    <label for="bulan_pakai">Bulan Pemakaian</label>
+                                    <select id="bulan_pakai" name="bulan_pakai" class="form-control select2">
+                                        <option value="">-- Pilih Bulan --</option>
+                                        @for ($i = 1; $i <= 12; $i++)
                                             @php
                                                 $bulanValue = str_pad($i, 2, '0', STR_PAD_LEFT);
                                                 $tanggalObj = $tahun . '-' . $bulanValue . '-01';
                                                 $namaBulan = Tanggal::namaBulan($tanggalObj);
                                             @endphp
                                             <option {{ date('n') == $i ? 'selected' : '' }} value="{{ $bulanValue }}">
-                                                {{ $namaBulan }} {{ $tahun }}
+                                                {{ $namaBulan }}
                                             </option>
                                         @endfor
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+
+                            <div class="col-md-4">
                                 <div class="form-group mb-0">
                                     @if (Session::get('jabatan') == 5)
                                         <label for="caters">Cater</label>
@@ -239,8 +252,8 @@
             $(document).on('click', '#Registerpemakaian', function(e) {
                 e.preventDefault();
 
-                var tahun = "{{ date('Y') }}";
-                var bulanTerpilih = '01' + '/' + $('#bulan').val() + '/' + tahun;
+                var tahun = $('#tahun_pakai').val();
+                var bulanTerpilih = '01' + '/' + $('#bulan_pakai').val() + '/' + tahun;
                 var caterId = $('#caters').val();
 
                 if (bulanTerpilih && caterId) {
@@ -256,7 +269,8 @@
 
 
             var cater = $('#caters').val()
-            var bulan = $('#bulan').val()
+            var bulan = $('#bulan_pakai').val()
+            var tahun = $('#tahun_pakai').val()
             var columns = [{
                     "data": "customers.nama"
                 },
@@ -309,9 +323,10 @@
             @endif
 
 
-            $('#caters, #bulan').on('change', function() {
+            $('#caters, #bulan_pakai, #tahun_pakai').on('change', function() {
                 cater = $('#caters').val()
-                bulan = $('#bulan').val()
+                bulan = $('#bulan_pakai').val()
+                tahun = $('#tahun_pakai').val()
 
                 if (cater != '') {
                     if (table == '') {
@@ -319,7 +334,7 @@
                             "processing": true,
                             "serverSide": true,
                             "ajax": {
-                                "url": "/usages?bulan=" + bulan + "&cater=" + cater,
+                                "url": "/usages?bulan=" + bulan + "&tahun=" + tahun + "&cater=" + cater,
                                 "type": "GET"
                             },
                             "language": {
@@ -335,7 +350,7 @@
                             "columns": columns
                         });
                     } else {
-                        table.ajax.url("/usages?bulan=" + bulan + "&cater=" + cater).load();
+                        table.ajax.url("/usages?bulan=" + bulan + "&tahun=" + tahun + "&cater=" + cater).load();
                     }
                 }
             });
@@ -345,7 +360,8 @@
                     url: "/usages",
                     type: "GET",
                     data: {
-                        bulan: $('#bulan').val(),
+                        tahun: $('#tahun_pakai').val(),
+                        bulan: $('#bulan_pakai').val(),
                         cater: $('#caters').val(),
                     },
                     success: function(response) {
@@ -424,18 +440,19 @@
                 });
             }
 
-
             $(document).on('click', '#BtnCetak', function(e) {
                 e.preventDefault()
 
                 if ($('#FormCetakBuktiTagihan').serializeArray().length > 1) {
                     var formTagihan = $('#FormCetakBuktiTagihan');
 
-                    var bulan = $('#bulan').val()
+                    var tahun = $('#tahun_pakai').val()
+                    var bulan = $('#bulan_pakai').val()
                     var caters = $('#caters').val()
 
                     formTagihan.find('form').html('')
                     var row = formTagihan.append(`
+                    <input type="hidden" name="tahun_tagihan" value="${tahun}">
                     <input type="hidden" name="bulan_tagihan" value="${bulan}">
                     <input type="hidden" name="pemakaian_cater" value="${cater}">
                 `);
@@ -450,11 +467,13 @@
                 var data = table.data().toArray()
                 var formTagihan = $('#form');
 
-                var bulan = $('#bulan').val()
+                var tahun = $('#tahun_pakai').val()
+                var bulan = $('#bulan_pakai').val()
                 var caters = $('#caters').val()
 
                 formTagihan.find('form').html('')
                 var row = formTagihan.append(`
+                <input type="hidden" name="tahun_tagihan" value="${tahun}">
                 <input type="hidden" name="bulan_tagihan" value="${bulan}">
                 <input type="hidden" name="cater" value="${cater}">
             `);
@@ -466,12 +485,14 @@
 
                 var formTagihan = $('#formbonggol');
 
-                var bulan = $('#bulan').val();
+                var tahun = $('#tahun_pakai').val();
+                var bulan = $('#bulan_pakai').val();
                 var cater = $('#caters').val();
 
                 formTagihan.html('');
 
                 formTagihan.append(`
+        <input type="hidden" name="tahun_tagihan" value="${tahun}">
         <input type="hidden" name="bulan_tagihan" value="${bulan}">
         <input type="hidden" name="cater" value="${cater}">
     `);

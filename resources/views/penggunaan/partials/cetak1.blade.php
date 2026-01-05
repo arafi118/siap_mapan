@@ -31,6 +31,10 @@
             border: none;
             padding: 2px 4px;
         }
+
+        .break {
+            page-break-after: always;
+        }
     </style>
 </head>
 @php
@@ -42,8 +46,13 @@
 
 
 <body>
-
+    @php
+        $indexes = 1;
+    @endphp
     @foreach ($usagesByDusun as $dusun => $usagesGroup)
+        @if ($indexes > 1)
+            <div class="break"></div>
+        @endif
         <!-- HEADER - letakkan di luar table -->
         <div style="text-align: center; max-width: 100%;">
             <div style="font-size: 14px; margin-bottom: 2px;"><b>DAFTAR TAGIHAN PEMAKAIAN AIR</b></div>
@@ -128,6 +137,10 @@
                 @endforeach
             </tbody>
         </table>
+
+        @php
+            $indexes++;
+        @endphp
     @endforeach
 </body>
 
