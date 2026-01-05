@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Amount;
 use App\Models\Installations;
-use App\Models\Settings;
 use App\Models\Transaction;
 use App\Utils\Tanggal;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -26,12 +24,12 @@ class SystemController extends Controller
             ->get()
             ->keyBy('kode_akun');
 
-        $kodePiutang   = $accounts['1.1.03.01'] ?: null;
-        $kodeAbodemen  = $accounts['4.1.01.02'] ?: null;
+        $kodePiutang = $accounts['1.1.03.01'] ?: null;
+        $kodeAbodemen = $accounts['4.1.01.02'] ?: null;
         $kodePemakaian = $accounts['4.1.01.03'] ?: null;
-        $kodeDenda     = $accounts['4.1.01.04'] ?: null;
+        $kodeDenda = $accounts['4.1.01.04'] ?: null;
 
-        if (!($kodePiutang && $kodeAbodemen && $kodePemakaian && $kodeDenda)) {
+        if (! ($kodePiutang && $kodeAbodemen && $kodePemakaian && $kodeDenda)) {
             return;
         }
 
@@ -64,14 +62,14 @@ class SystemController extends Controller
             foreach ($usages as $usage) {
 
                 if ($usage->tgl_akhir <= $date) {
-                    $trxId = 'PT-' . bin2hex(random_bytes(6));
+                    $trxId = 'PT-'.bin2hex(random_bytes(6));
 
                     $nama = $ins->customer->nama ?: '-';
                     $instId = $ins->id;
                     $usageId = $usage->id;
                     $idInstalasi = $usage->id_instalasi;
 
-                    $namaBulan = Tanggal::namaBulan($usage->tgl_pemakaian) . ' ' . Tanggal::tahun($usage->tgl_pemakaian);
+                    $namaBulan = Tanggal::namaBulan($usage->tgl_pemakaian).' '.Tanggal::tahun($usage->tgl_pemakaian);
                     $trxTunggakan[] = [
                         'business_id' => $businessId,
                         'tgl_transaksi' => $usage->tgl_akhir,
@@ -83,9 +81,9 @@ class SystemController extends Controller
                         'transaction_id' => $trxId,
                         'total' => $abodemen,
                         'relasi' => $nama,
-                        'keterangan' => "Utang Abodemen " . $namaBulan . " $nama ($instId)",
+                        'keterangan' => 'Utang Abodemen '.$namaBulan." $nama ($instId)",
                         'urutan' => 0,
-                        'created_at' => $createdAt
+                        'created_at' => $createdAt,
                     ];
 
                     if ($usage->jumlah != 0) {
@@ -100,9 +98,9 @@ class SystemController extends Controller
                             'transaction_id' => $trxId,
                             'total' => $usage->nominal,
                             'relasi' => $nama,
-                            'keterangan' => "Utang Pemakaian Air " . $namaBulan . " $nama ($instId)",
+                            'keterangan' => 'Utang Pemakaian Air '.$namaBulan." $nama ($instId)",
                             'urutan' => 0,
-                            'created_at' => $createdAt
+                            'created_at' => $createdAt,
                         ];
                     }
 
@@ -127,11 +125,11 @@ class SystemController extends Controller
             }
         }
 
-        if (!empty($updateSps)) {
+        if (! empty($updateSps)) {
             Installations::whereIn('id', $updateSps)->update(['status_tunggakan' => 'sps']);
         }
 
-        if (!empty($trxTunggakan)) {
+        if (! empty($trxTunggakan)) {
             DB::statement('SET @DISABLE_TRIGGER = 1');
             Transaction::whereIn('usage_id', $dataUsage)
                 ->where('rekening_debit', $kodePiutang->id)
@@ -145,7 +143,7 @@ class SystemController extends Controller
             $kodePiutang->id,
             $kodeAbodemen->id,
             $kodePemakaian->id,
-            $kodeDenda->id
+            $kodeDenda->id,
         ]);
 
         echo '<script>window.close()</script>';
@@ -163,18 +161,18 @@ class SystemController extends Controller
         $accounts = Account::where('business_id', $businessId)
             ->whereIn('id', $akun)
             ->with([
-                'trx_debit' => fn($q) => $q->whereBetween('tgl_transaksi', [$date, $tglKondisi]),
-                'trx_kredit' => fn($q) => $q->whereBetween('tgl_transaksi', [$date, $tglKondisi]),
-                'oneAmount' => fn($q) => $q->where('tahun', $tahun)->where('bulan', $bulanLalu)
+                'trx_debit' => fn ($q) => $q->whereBetween('tgl_transaksi', [$date, $tglKondisi]),
+                'trx_kredit' => fn ($q) => $q->whereBetween('tgl_transaksi', [$date, $tglKondisi]),
+                'oneAmount' => fn ($q) => $q->where('tahun', $tahun)->where('bulan', $bulanLalu),
             ])->get();
 
         $amounts = [];
         $dataIds = [];
 
         foreach ($accounts as $account) {
-            $id = $account->id . $tahun . $bulan;
-            $debit = ($account->oneAmount->debit ?: 0) + $account->trx_debit->sum('total');
-            $kredit = ($account->oneAmount->kredit ?: 0) + $account->trx_kredit->sum('total');
+            $id = $account->id.$tahun.$bulan;
+            $debit = (($account->oneAmount) ? $account->oneAmount->debit : 0) + $account->trx_debit->sum('total');
+            $kredit = (($account->oneAmount) ? $account->oneAmount->kredit : 0) + $account->trx_kredit->sum('total');
 
             $amounts[] = [
                 'id' => $id,
@@ -182,12 +180,12 @@ class SystemController extends Controller
                 'tahun' => $tahun,
                 'bulan' => $bulan,
                 'debit' => $debit,
-                'kredit' => $kredit
+                'kredit' => $kredit,
             ];
             $dataIds[] = $id;
         }
 
-        if (!empty($dataIds)) {
+        if (! empty($dataIds)) {
             Amount::whereIn('id', $dataIds)->delete();
             Amount::insert($amounts);
         }
