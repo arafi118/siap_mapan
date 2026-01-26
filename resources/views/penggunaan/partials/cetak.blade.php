@@ -67,7 +67,7 @@
                             </div>
                             <div style="font-size: 9px;">NO URUT</div>
                             <div style="font-size: 9px;">
-                                BULAN
+                                PEMAKAIAN
                             </div>
                         </td>
                         <td width="22%">
@@ -76,7 +76,7 @@
                             </div>
                             <div style="font-size: 9px;">: {{ $use->installation->id }}</div>
                             <div style="font-size: 9px;">
-                                : {{ Tanggal::namaBulan($use->tgl_pemakaian) }}
+                                : {{ Tanggal::namaBulan($use->tgl_pemakaian) }}123
                                 {{ Tanggal::tahun($use->tgl_pemakaian) }}
                             </div>
                         </td>
