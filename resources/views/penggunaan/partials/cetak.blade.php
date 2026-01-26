@@ -76,7 +76,7 @@
                             </div>
                             <div style="font-size: 9px;">: {{ $use->installation->id }}</div>
                             <div style="font-size: 9px;">
-                                : {{ Tanggal::namaBulan($use->tgl_pemakaian) }}123
+                                : {{ Tanggal::namaBulan($use->tgl_pemakaian) }}
                                 {{ Tanggal::tahun($use->tgl_pemakaian) }}
                             </div>
                         </td>
