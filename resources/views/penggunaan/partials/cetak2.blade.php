@@ -122,7 +122,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($installations as $inst)
+                @foreach ($instGroup as $inst)
                     @php
                         $awal = 0;
                         if ($inst->oneUsage) {
