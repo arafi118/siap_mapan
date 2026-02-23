@@ -53,9 +53,15 @@
                 foreach ($use->installation->transaction as $trx_denda) {
                     if ($trx_denda->tgl_transaksi < $use->tgl_akhir) {
                         $dendaPemakaianLalu = $trx_denda->total;
+                        if ($trx_denda->rekening_kredit == $rekening_piutang->id) {
+                            $dendaPemakaianLalu -= $trx_denda->total;
+                        }
                     }
                 }
 
+                if ($dendaPemakaianLalu < 0) {
+                    $dendaPemakaianLalu = 0;
+                }
                 $total = $use->nominal + $use->installation->abodemen + $dendaPemakaianLalu;
             @endphp
             <div class="box">
