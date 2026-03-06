@@ -51,7 +51,7 @@
                                             <span class="badge badge-primary"
                                                 style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->kode_instalasi }}
-                                                {{ substr($installation->package->kelas, 0, 1) }}
+                                                {{ substr($installation->package->kelas ?? '-', 0, 1) }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
@@ -74,7 +74,7 @@
                                             <span style="float: left;">Paket Instalasi</span>
                                             <span class="badge badge-primary"
                                                 style="float: right; width: 30%; padding: 5px; text-align: center;">
-                                                {{ $installation->package->kelas }}
+                                                {{ $installation->package->kelas ?? '-' }}
                                             </span>
                                         </td>
                                     </tr>

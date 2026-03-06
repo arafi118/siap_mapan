@@ -54,20 +54,26 @@ class InstallationsController extends Controller
         // )->get();
 
         if (request()->ajax()) {
+
             $status = explode(',', request()->get('status'));
-            $installations = Installations::where('installations.business_id', Session::get('business_id'))->whereIn('installations.status', $status)->with(
-                'customer',
-                'village',
-                'package'
-            );
+
+            $installations = Installations::query()
+                ->where('installations.business_id', Session::get('business_id'))
+                ->whereIn('installations.status', $status)
+                ->leftJoin('packages', 'packages.id', '=', 'installations.package_id')
+                ->with(['customer', 'village', 'package'])
+                ->select('installations.*', 'packages.kelas as package_kelas');
 
             return DataTables::eloquent($installations)
                 ->addColumn('aksi', function ($row) {
+
                     $view = '<div class="btn-group"><a href="/installations/' . $row->id . '" class="btn btn-info btn-sm btn-data btn-detail"><i class="fas fa-info-circle"></i></a>';
+
                     if ($row->status == 'R') {
                         $view .= '<a href="/installations/' . $row->id . '/edit" class="btn btn-warning btn-sm btn-data btn-edit"><i class="fas fa-exclamation-triangle"></i></a>';
                         $view .= '<a href="#" data-id="' . $row->id . '" class="btn btn-danger btn-sm btn-data btn-hapus Hapus_id"><i class="fas fa-trash"></i></a>';
                     }
+
                     $view .= '</div>';
 
                     return $view;
@@ -415,6 +421,7 @@ class InstallationsController extends Controller
             "desa",
             "cater",
             "jalan",
+            "kategori",
             "rw",
             "rt",
             "koordinate",
@@ -435,7 +442,6 @@ class InstallationsController extends Controller
             'rw' => 'required',
             'rt' => 'required',
             'koordinate' => 'required',
-            'package_id' => 'required'
         ];
 
         $validate = Validator::make($data, $rules);
@@ -443,27 +449,31 @@ class InstallationsController extends Controller
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $data['pasang_baru'] = str_replace(',', '', $data['pasang_baru']);
+        $data['pasang_baru'] = str_replace(',', '', $data['pasang_baru'] ?? 0);
         $data['pasang_baru'] = str_replace('.00', '', $data['pasang_baru']);
         $data['pasang_baru'] = floatval($data['pasang_baru']);
 
-        $data['abodemen'] = str_replace(',', '', $data['abodemen']);
+        $data['abodemen'] = str_replace(',', '', $data['abodemen'] ?? 0);
         $data['abodemen'] = str_replace('.00', '', $data['abodemen']);
         $data['abodemen'] = floatval($data['abodemen']);
 
-        $data['total'] = str_replace(',', '', $data['total']);
+        $data['total'] = str_replace(',', '', $data['total'] ?? 0);
         $data['total'] = str_replace('.00', '', $data['total']);
         $data['total'] = floatval($data['total']);
 
-        $pasangbaru        = $data['pasang_baru'];
-        $abodemen          = $data['abodemen'];
-        $biaya_instalasi   = $data['total'];
+        $pasangbaru        = $data['pasang_baru'] ?? 0;
+        $abodemen          = $data['abodemen'] ?? 0;
+        $biaya_instalasi   = $data['total'] ?? 0;
 
         $biaya_instal = $pasangbaru - $biaya_instalasi;
 
         $status = '0';
-        $jumlah = $biaya_instal;
-        if ($jumlah <= 0) {
+        if ($request->kategori == '1') {
+            $jumlah = $biaya_instal;
+            if ($jumlah <= 0) {
+                $status = 'R';
+            }
+        } else if ($request->kategori == '2') {
             $status = 'R';
         }
 
@@ -477,47 +487,52 @@ class InstallationsController extends Controller
             'desa' => $request->desa,
             'alamat' => $request->jalan,
             'rw' => $request->rw,
+            'kategori' => $request->kategori,
             'rt' => $request->rt,
             'koordinate' => $request->koordinate,
-            'package_id' => $request->package_id,
+            'package_id' => ($request->kategori == 1 && is_numeric($request->package_id)) ? $request->package_id : null,
             'abodemen' => $abodemen,
-            'biaya_instalasi' => $pasangbaru,
+            'biaya_instalasi' => $pasangbaru ?? 0,
             'status' => $status,
         ]);
 
         // TRANSACTION = simpan database
-        $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $pasangbaru;
+        if ($request->kategori == 1) {
 
-        $perse = round(100 - ($jumlah / $pasangbaru * 100));
-        $persen = max(1, min($perse, 100));
+            $jumlah_instal = ($biaya_instal >= 0) ? $biaya_instalasi : $pasangbaru;
 
-        if ($jumlah_instal > 0) {
-            $business_id = Session::get('business_id');
-            $rekening_debit = Account::where([
-                ['kode_akun', '1.1.01.01'],
-                ['business_id', $business_id]
-            ])->first();
+            $perse = round(100 - ($jumlah / $pasangbaru * 100));
+            $persen = max(1, min($perse, 100));
 
-            $rekening_kredit = Account::where([
-                ['kode_akun', '4.1.01.01'],
-                ['business_id', $business_id]
-            ])->first();
+            if ($jumlah_instal > 0) {
+                $business_id = Session::get('business_id');
 
-            if ($rekening_debit && $rekening_kredit) {
-                $transaksi = Transaction::create([
-                    'business_id' => Session::get('business_id'),
-                    'rekening_debit' => $rekening_debit->id,
-                    'rekening_kredit' => $rekening_kredit->id,
-                    'tgl_transaksi' => Tanggal::tglNasional($request->order),
-                    'total' => $jumlah_instal,
-                    'installation_id' => $install->id,
-                    'keterangan' => 'Biaya instalasi ' . $persen . '%',
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'msg' => 'Rekening tidak ditemukan, transaksi gagal'
-                ], 400);
+                $rekening_debit = Account::where([
+                    ['kode_akun', '1.1.01.01'],
+                    ['business_id', $business_id]
+                ])->first();
+
+                $rekening_kredit = Account::where([
+                    ['kode_akun', '4.1.01.01'],
+                    ['business_id', $business_id]
+                ])->first();
+
+                if ($rekening_debit && $rekening_kredit) {
+                    $transaksi = Transaction::create([
+                        'business_id' => $business_id,
+                        'rekening_debit' => $rekening_debit->id,
+                        'rekening_kredit' => $rekening_kredit->id,
+                        'tgl_transaksi' => Tanggal::tglNasional($request->order),
+                        'total' => $jumlah_instal,
+                        'installation_id' => $install->id,
+                        'keterangan' => 'Biaya instalasi ' . $persen . '%',
+                    ]);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'msg' => 'Rekening tidak ditemukan, transaksi gagal'
+                    ], 400);
+                }
             }
         }
 

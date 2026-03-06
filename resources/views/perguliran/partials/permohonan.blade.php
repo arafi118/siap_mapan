@@ -52,7 +52,7 @@
                                             <span class="badge badge-success"
                                                 style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->kode_instalasi }}
-                                                {{ substr($installation->package->kelas, 0, 1) }}
+                                                {{ substr($installation->package->kelas ?? '-', 0, 1) }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
@@ -92,7 +92,7 @@
                                             <span style="float: left;">Paket Instalasi</span>
                                             <span class="badge badge-success"
                                                 style="float: right; width: 30%; padding: 5px; text-align: center;">
-                                                {{ $installation->package->kelas }}
+                                                {{ $installation->package->kelas ?? '-' }}
                                             </span>
                                         </td>
                                     </tr>
@@ -130,7 +130,8 @@
                                     <div class="position-relative mb-3">
                                         <label for="biaya_instalasi">Jumlah Pembayaran</label>
                                         <input type="text" class="form-control" name="biaya_instalasi"
-                                            id="biaya_instalasi" value="{{ number_format($trx, 2) }}" disabled>
+                                            id="biaya_instalasi"  value="{{ number_format($installation->kategori == 2 ? $installation->abodemen : $trx, 2) }}"
+                                        disabled>
                                         <small class="text-danger" id="msg_biaya_instalasi"></small>
                                     </div>
                                 </div>

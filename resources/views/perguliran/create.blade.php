@@ -7,6 +7,8 @@
 @section('content')
     <form action="/installations" method="post" id="FormRegisterPermohonan">
         @csrf
+        <input type="hidden" name="abodemen" id="abodemen">
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
@@ -101,7 +103,18 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-3">
+                                            <div class="position-relative mb-3">
+                                                <label for="luas">Kategori</label>
+                                                <select class="select2 form-control" name="kategori" id="kategori">
+                                                    <option value="">Pilih Kategori</option>
+                                                    <option value="1">1. Air Bersih</option>
+                                                    <option value="2">2. Sampah</option>
+                                                </select>
+                                                <small class="text-danger" id="msg_luas"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
                                             <div class="position-relative mb-3">
                                                 <label for="jalan">Jalan</label>
                                                 <input type="text" class="form-control" id="jalan" name="jalan"
@@ -109,7 +122,7 @@
                                                 <small class="text-danger" id="msg_jalan"></small>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="position-relative mb-3">
                                                 <label for="rw">RW</label>
                                                 <input type="number" class="form-control" id="rw" name="rw"
@@ -117,7 +130,7 @@
                                                 <small class="text-danger" id="msg_rw"></small>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="position-relative mb-3">
                                                 <label for="rt">RT</label>
                                                 <input type="number" class="form-control" id="rt" name="rt"
@@ -127,7 +140,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-8">
+                                        <div class="col-md-8" id="koordinateCol">
                                             <label for="koordinate">Koordinate</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control"
@@ -142,7 +155,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 kategoriPaket">
                                             <div class="position-relative mb-3">
                                                 <label for="jenis_paket">Paket/Kelas</label>
                                                 <select class="select2 form-control package" name="package_id"
@@ -210,6 +223,8 @@
 
 @section('script')
     <script>
+    let defaultTotal = $('#total').val();
+
         $("#abodemen").maskMoney({
             allowNegative: true
         });
@@ -222,6 +237,25 @@
             $('.select2').select2({
                 theme: 'bootstrap4',
             });
+        });
+        
+        $(document).on('change', '#kategori', function() {
+            let kategori = $(this).val();
+
+            if (kategori == 1) {
+                $('.kategoriPaket').show();
+                $('#koordinateCol').removeClass('col-md-12').addClass('col-md-8');
+
+                $('#total').prop('readonly', true).val(defaultTotal);
+                $('#abodemen').val('');
+
+            } else if (kategori == 2) {
+                $('.kategoriPaket').hide();
+                $('#koordinateCol').removeClass('col-md-8').addClass('col-md-12');
+
+                $('#total').prop('readonly', false).val('10,000.00');
+                $('#abodemen').val($('#total').val());
+            }
         });
 
         $(document).on('change', '#total', function() {

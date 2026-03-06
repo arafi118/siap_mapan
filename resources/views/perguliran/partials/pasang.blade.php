@@ -48,7 +48,7 @@
                                             <span class="badge badge-info"
                                                 style="float: right; width: 30%; padding: 5px; text-align: center;">
                                                 {{ $installation->kode_instalasi }}
-                                                {{ substr($installation->package->kelas, 0, 1) }}
+                                                {{ substr($installation->package->kelas ?? '-', 0, 1) }}
                                             </span>
                                         </td>
                                         <td style="width: 50%; font-size: 14px; padding: 8px; position: relative;">
@@ -71,7 +71,7 @@
                                             <span style="float: left;">Paket Instalasi</span>
                                             <span class="badge badge-info"
                                                 style="float: right; width: 30%; padding: 5px; text-align: center;">
-                                                {{ $installation->package->kelas }}
+                                                {{ $installation->package->kelas ?? '-' }}
                                             </span>
                                         </td>
                                     </tr>
@@ -120,7 +120,7 @@
                                         <label for="kode_instalasi">Biaya Pemasangan baru</label>
                                         <input type="text" class="form-control date" name="kode_instalasi"
                                             id="kode_instalasi"
-                                            value="{{ number_format($tampil_settings->pasang_baru, 2) }}" disabled>
+                                            value="{{ number_format($installation->kategori == 2 ? ($installation->abodemen ?? 0) : ($tampil_settings->pasang_baru ?? 0), 2) }}" disabled>
                                         <small class="text-info" id="msg_kode_instalasi"></small>
                                     </div>
                                 </div>

@@ -41,15 +41,19 @@
         var column = [{
             data: 'kode_instalasi',
             render: function(data, type, row) {
-                return data + '.' + row.package.inisial
+                return data + (row.package?.inisial ? '.' + row.package.inisial : '');
             }
         }, {
             data: 'customer.nama'
         }, {
             data: 'alamat'
-        }, {
-            data: 'package.kelas'
-        }, {
+        },{
+    data: 'package_kelas',
+    name: 'packages.kelas',
+    render: function(data){
+        return data ? data : '-';
+    }
+}, {
             data: 'order',
             render: function(data, type, row) {
                 return data ? moment(data).format('DD/MM/YYYY') : '-';
@@ -188,7 +192,9 @@
         });
 
         function initTable(target, status, replaceColumn = []) {
-            var tableColumn = column
+
+            var tableColumn = JSON.parse(JSON.stringify(column));
+
             if (replaceColumn.length > 0) {
                 tableColumn.forEach((col, index) => {
                     replaceColumn.forEach((replaceCol) => {
