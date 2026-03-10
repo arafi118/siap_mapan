@@ -36,10 +36,11 @@ class UsageController extends Controller
             $pengaturan = Settings::where('business_id', Session::get('business_id'));
             $trx_settings = $pengaturan->first();
 
-            $usages = Usage::where([
-                ['business_id', Session::get('business_id')],
-                ['tgl_pemakaian', 'LIKE', $tgl_pakai . '%'],
-            ]);
+            $usages = Usage::where('business_id', Session::get('business_id'))
+                ->where('tgl_pemakaian', 'LIKE', $tgl_pakai . '%')
+                ->whereHas('installation', function ($q) {
+                    $q->where('kategori', 1);
+                });
 
             if ($caterId != '') {
                 $usages->where('cater', $caterId);
@@ -112,6 +113,97 @@ class UsageController extends Controller
         return view('penggunaan.index')->with(compact('title', 'caters', 'user', 'cater_id'));
     }
 
+    public function sampah()
+    {
+        if (request()->ajax()) {
+            $tahun = request()->get('tahun') ?: date('m');
+            $bulan = request()->get('bulan') ?: date('m');
+            $caterId = request()->get('cater') ?: '';
+            $tgl_pakai = date('Y-m', strtotime($tahun . '-' . $bulan . '-01'));
+
+            $rekening_denda = Account::where([
+                ['kode_akun', '4.1.01.04'],
+                ['business_id', Session::get('business_id')],
+            ])->first();
+
+            $pengaturan = Settings::where('business_id', Session::get('business_id'));
+            $trx_settings = $pengaturan->first();
+
+            $usages = Usage::where('business_id', Session::get('business_id'))
+                ->where('tgl_pemakaian', 'LIKE', $tgl_pakai . '%')
+                ->whereHas('installation', function ($q) {
+                    $q->where('kategori', 2);
+                });
+
+            if ($caterId != '') {
+                $usages->where('cater', $caterId);
+            }
+
+            $usages = $usages->with([
+                'customers',
+                'installation',
+                'installation.transaction' => function ($query) use ($rekening_denda) {
+                    $query->where('rekening_kredit', $rekening_denda->id);
+                },
+                'installation.village',
+                'usersCater',
+                'installation.package',
+            ])->orderBy('created_at', 'DESC')->get();
+
+            Session::put('usages', $usages);
+
+            return DataTables::of($usages)
+                ->addColumn('kode_instalasi_dengan_inisial', function ($usage) {
+                    $kode = $usage->installation->kode_instalasi ?? '-';
+                    $inisial = $usage->installation->package->inisial ?? '';
+
+                    return $kode . ($inisial ? '-' . $inisial : '');
+                })
+                ->addColumn('aksi', function ($usage) {
+                    $delete = '<a href="#" data-id="' . $usage->id . '" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
+
+                    return '<div class="d-flex flex-column flex-md-row">' . $delete . '</div>';
+                })
+                ->addColumn('tgl_akhir', function ($usage) {
+                    return Tanggal::tglIndo($usage->tgl_akhir);
+                })
+                ->editColumn('nominal', function ($usage) use ($trx_settings) {
+                    $tgl_akhhir_lalu = date('Y-m', strtotime('-0 month', strtotime($usage->tgl_akhir)));
+
+                    $dendaPemakaianLalu = 0;
+                    if ($usage->installation) {
+                        foreach ($usage->installation->transaction as $trx_denda) {
+                            if (
+                                $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
+                                date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
+                            ) {
+                                $dendaPemakaianLalu = $trx_denda->total;
+                            }
+                        }
+                    }
+
+                    $nominal = $usage->nominal + $dendaPemakaianLalu + $trx_settings->abodemen;
+
+                    return number_format($nominal, 2);
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+        }
+        // Ambil data cater (jabatan 5) untuk dropdown / hidden input
+        $caters = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5'],
+        ])->get();
+
+        $user = auth()->user(); // atau Session::get('user') kalau pakai session manual
+
+        // Kirim cater_id default untuk user jabatan 5 supaya otomatis filter
+        $cater_id = ($user->jabatan == 5) ? $user->id : '';
+        $title = 'Data Pemakaian';
+
+        return view('sampah.index')->with(compact('title', 'caters', 'user', 'cater_id'));
+    }
+
     /**
      * Show cthe form for creating a new resource.
      */
@@ -127,6 +219,7 @@ class UsageController extends Controller
             ->when($cater_id, function ($query) use ($cater_id) {
                 $query->where('cater_id', $cater_id);
             })
+            ->where('kategori', 1)
             ->with(['customer', 'package', 'users', 'oneUsage'])
             ->orderBy('id', 'ASC')
             ->get();
@@ -137,6 +230,39 @@ class UsageController extends Controller
         $title = 'Register Pemakaian';
 
         return view('penggunaan.create')->with(compact(
+            'installasi',
+            'settings',
+            'pilih_customer',
+            'cater_id',
+            'title',
+            'usages',
+            'bulan'
+        ));
+    }
+
+    public function createSampah(Request $request)
+    {
+        $business_id = Session::get('business_id');
+        $cater_id = $request->get('cater_id');
+        $bulan = $request->get('bulan') ?: date('d/m/Y');
+
+        $settings = Settings::where('business_id', $business_id)->first();
+
+        $installasi = Installations::where('business_id', $business_id)
+            ->when($cater_id, function ($query) use ($cater_id) {
+                $query->where('cater_id', $cater_id);
+            })
+            ->where('kategori', 2)
+            ->with(['customer', 'package', 'users', 'oneUsage'])
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $usages = Usage::where('business_id', $business_id)->get();
+
+        $pilih_customer = $cater_id ?? 0;
+        $title = 'Register Pemakaian';
+
+        return view('sampah.create')->with(compact(
             'installasi',
             'settings',
             'pilih_customer',
@@ -193,6 +319,40 @@ class UsageController extends Controller
             'kode_instalasi' => $installation->kode_instalasi,
             'tgl_akhir' => $tglAkhir,
             'nominal' => $harga[$index_harga] * ($data['akhir'] - $data['awal']),
+            'cater' => $data['id_cater'],
+            'user_id' => auth()->user()->id,
+        ];
+
+        // Simpan data
+        $usage = Usage::create($insert);
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Input Pemakain Berhasil ',
+            'pemakaian' => $usage,
+        ]);
+    }
+
+    public function storeSampah(Request $request)
+    {
+        $data = $request->only('data')['data'];
+
+        $installation = Installations::where([
+            ['business_id', Session::get('business_id')],
+            ['id', $data['id_instalasi']],
+        ])->with('package', 'customer')->first();
+
+        $insert = [
+            'business_id' => Session::get('business_id'),
+            'tgl_pemakaian' => Tanggal::tglNasional($data['tgl_pemakaian']),
+            'customer' => $data['customer'],
+            'awal' => 0,
+            'akhir' => 0,
+            'jumlah' => 0,
+            'id_instalasi' => $data['id_instalasi'],
+            'kode_instalasi' => $installation->kode_instalasi,
+            'tgl_akhir' => Tanggal::tglNasional($data['tgl_pemakaian']),
+            'nominal' => 0,
             'cater' => $data['id_cater'],
             'user_id' => auth()->user()->id,
         ];
@@ -301,6 +461,56 @@ class UsageController extends Controller
         return $pdf->stream();
     }
 
+    public function cetakSampah(Request $request)
+    {
+        $keuangan = new Keuangan;
+        $id = $request->cetak;
+
+        $rekening_denda = Account::where([
+            ['kode_akun', '4.1.01.04'],
+            ['business_id', Session::get('business_id')],
+        ])->first();
+
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+        $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id);
+
+        if ($request->cater != '') {
+            $data['usage']->where('cater', $request->cater);
+        }
+
+        if ($request->bulan_tagihan != '') {
+            $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
+        }
+
+        $data['usage'] = $data['usage']->with([
+            'customers',
+            'installation.village',
+            'installation.transaction' => function ($query) use ($rekening_denda) {
+                $query->where('rekening_kredit', $rekening_denda->id);
+            },
+            'usersCater',
+            'installation.package',
+        ])->get();
+
+        $data['jabatan'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '3'],
+        ])->first();
+
+        $data['caters'] = User::where([
+            ['business_id', Session::get('business_id')],
+            ['jabatan', '5'],
+        ])->get();
+
+        $data['gambar'] = $data['bisnis']->logo;
+        $data['keuangan'] = $keuangan;
+
+        $view = view('Sampah.partials.cetak', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait');
+
+        return $pdf->stream();
+    }
+
     public function cetak_tagihan(Request $request)
     {
         $thn = $request->input('tahun');
@@ -371,6 +581,73 @@ class UsageController extends Controller
         return $pdf->stream();
     }
 
+    public function tagihan_sampah(Request $request)
+    {
+        $thn = $request->input('tahun');
+        $bln = $request->input('bulan');
+        $hari = $request->input('hari');
+
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+
+        $rekening_denda = Account::where([
+            ['kode_akun', '4.1.01.04'],
+            ['business_id', Session::get('business_id')],
+        ])->first();
+
+        $data = [
+            'tahun' => $thn,
+            'bulan' => $bln,
+            'hari' => $hari,
+            'judul' => 'Laporan Keuangan',
+            'tgl' => Tanggal::tahun($tgl),
+            'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
+            'cater' => $request->input('cater', null),
+        ];
+
+        $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
+
+        $usagesQuery = Usage::where([
+            ['business_id', Session::get('business_id')],
+            ['tgl_pemakaian', 'LIKE', $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%'],
+        ]);
+
+        if ($request->cater != '') {
+            $usagesQuery->where('cater', $request->cater);
+        }
+
+        $usages = $usagesQuery->with([
+            'customers',
+            'installation',
+            'installation.village',
+            'installation.transaction' => function ($query) use ($rekening_denda) {
+                $query->where('rekening_kredit', $rekening_denda->id);
+            },
+            'usersCater',
+            'installation.package',
+        ])->get();
+
+        $data['usages'] = $usages->sortBy([
+            fn($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
+            fn($a, $b) => $a->installation->rt <=> $b->installation->rt,
+            fn($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
+        ]);
+
+        $data['pemakaian_cater'] = $usages->first()?->usersCater?->nama ?? '-';
+
+        $data['title'] = 'Cetak Daftar Tagihan';
+
+        \Carbon\Carbon::setLocale('id');
+        $bulan_angka = $request->bulan_tagihan ?? '';
+        $data['bulan'] = $bulan_angka
+            ? \Carbon\Carbon::create($thn, $bulan_angka, 1)->translatedFormat('F Y')
+            : '-';
+
+        $view = view('sampah.partials.cetak1', $data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('F4', 'portrait');
+
+        return $pdf->stream();
+    }
+
     public function cetak_input(Request $request)
     {
         $bulan = $request->bulan_tagihan;
@@ -386,22 +663,22 @@ class UsageController extends Controller
         $bisnis = Business::find(Session::get('business_id'));
 
         $installations = Installations::where('business_id', Session::get('business_id'))
-        ->whereIn('status', ['A', 'B'])
-        ->when($cater, function ($query) use ($cater) {
-            return $query->where('cater_id', $cater);
-        })
-        ->with([
-            'customer',
-            'package',
-            'village',
-            'users',
-            'oneUsage' => function ($query) use ($bulanAwal) {
-                $query->where('tgl_pemakaian', 'like', $bulanAwal . '%');
-            },
-        ])
-        ->orderBy('desa', 'ASC')
-        ->orderBy('rt', 'ASC')   
-        ->get();
+            ->whereIn('status', ['A', 'B'])
+            ->when($cater, function ($query) use ($cater) {
+                return $query->where('cater_id', $cater);
+            })
+            ->with([
+                'customer',
+                'package',
+                'village',
+                'users',
+                'oneUsage' => function ($query) use ($bulanAwal) {
+                    $query->where('tgl_pemakaian', 'like', $bulanAwal . '%');
+                },
+            ])
+            ->orderBy('desa', 'ASC')
+            ->orderBy('rt', 'ASC')
+            ->get();
 
 
         $caterUser = $cater ? User::find($cater) : null;

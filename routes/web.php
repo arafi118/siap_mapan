@@ -180,11 +180,16 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/usages/detail_tagihan/', [UsageController::class, 'detailTagihan']);
     Route::get('/usages/barcode/', [UsageController::class, 'barcode']);
     Route::post('/usages/cetak', [UsageController::class, 'cetak']);
+    Route::post('/usages/sampah/cetak', [UsageController::class, 'cetakSampah']);
     Route::post('/usages/cetak_tagihan', [UsageController::class, 'cetak_tagihan']);
+    Route::post('/usages/sampah/cetak_tagihan', [UsageController::class, 'tagihan_sampah']);
     Route::post('/usages/cetak_input', [UsageController::class, 'cetak_input']);
 
 
     Route::get('/usages/cater', [UsageController::class, 'cater']);
+    Route::get('/usages/sampah', [UsageController::class, 'sampah']);
+    Route::get('/usages/create/sampah', [UsageController::class, 'createSampah']);
+    Route::post('/usages/storeSampah', [UsageController::class, 'storeSampah']);
 
     Route::resource('/usages', UsageController::class);
 

@@ -104,7 +104,11 @@
     <div class="container">
         <div class="header">
             <div style="font-size: 14px">BUMDES {{ strtoupper($bisnis->nama) }}</div>
-            <div>UNIT AIR</div>
+                @if ($trx->Installations->kategori == 1)
+                    <div>UNIT AIR</div>
+                @else
+                    <div>Retribusi Sampah</div>
+                @endif
             <div>{{ $bisnis->alamat }}</div>
             <div>Telp: {{ $bisnis->telpon }}</div>
         </div><br>
@@ -142,10 +146,12 @@
                         {{ date('Y', strtotime($trx->Usages->tgl_pemakaian)) }}
                     </td>
                 </tr>
-                <tr>
-                    <td>Pemakaian Air (m3)</td>
-                    <td class="text-right">{{ $trx->Usages->jumlah }}</td>
-                </tr>
+                @if ($trx->Installations->kategori == 1)
+                    <tr>
+                        <td>Pemakaian Air (m3)</td>
+                        <td class="text-right">{{ $trx->Usages->jumlah }}</td>
+                    </tr>
+                @endif
             </table>
 
             <div class="border">
@@ -153,11 +159,12 @@
                     <tr>
                         <td colspan="2">&nbsp;</td>
                     </tr>
-
+                @if ($trx->Installations->kategori == 1)
                     <tr>
                         <td>Tagihan Pemakaian Air</td>
                         <td class="text-right">Rp {{ number_format($totalTagihan, 2, ',', '.') }}</td>
                     </tr>
+                @endif
                     <tr>
                         <td>Abodemen</td>
                         <td class="text-right">Rp {{ number_format($totalAbodemen, 2, ',', '.') }}</td>

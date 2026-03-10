@@ -287,8 +287,6 @@
             $("#rek_kredit").val(rek_kredit);
 
         });
-
-
         //end cari customors
     </script>
 
@@ -319,18 +317,16 @@
                     success: function(result) {
                         var states = [];
                         result.map(function(item) {
-                            let inisial = item.package_inisial ? '-' + item
-                                .package_inisial : '';
-                            states.push({
-                                kode_instalasi: item.kode_instalasi,
-                                name: item.nama + ' - ' + item.kode_instalasi +
-                                    inisial + ' [' + item.nik + ']',
-                                value: item.kode_instalasi,
-                                item: item,
+                                let inisial = item.package_inisial ? '-' + item.package_inisial : '';
+                                let kategori = item.kategori == 1 ? 'Air' : 'Sampah';
+                                states.push({
+                                    kode_instalasi: item.kode_instalasi,
+                                    name: item.nama + ' - ' + item.kode_instalasi +
+                                        inisial + ' [' + item.nik + '] ' + '- ( ' + kategori + ' )',
+                                    value: item.kode_instalasi,
+                                    item: item,
+                                });
                             });
-                        });
-
-
                         process(states);
                     },
                     error: function(xhr, status, error) {
