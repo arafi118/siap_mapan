@@ -86,7 +86,8 @@
                                 </button>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-danger btn-block w-100" type="button" id="DetailCetakBuktiTagihanSampah">
+                                <button class="btn btn-danger btn-block w-100" type="button"
+                                    id="DetailCetakBuktiTagihanSampah">
                                     <i class="fas fa-info-circle"></i> Hasil Input
                                 </button>
                             </div>
@@ -201,7 +202,8 @@
                             </form>
                         </div>
                         <div class="d-none">
-                            <form action="/usages/sampah/cetak_tagihan" method="post" id="FormCetakTagihan" target="_blank">
+                            <form action="/usages/sampah/cetak_tagihan" method="post" id="FormCetakTagihan"
+                                target="_blank">
                                 @csrf
                                 <div id="form"></div>
                             </form>
@@ -331,7 +333,7 @@
                             "columns": columns
                         });
                     } else {
-                        table.ajax.url("/usages?bulan=" + bulan + "&tahun=" + tahun + "&cater=" + cater).load();
+                        table.ajax.url("/usages/sampah?bulan=" + bulan + "&tahun=" + tahun + "&cater=" + cater).load();
                     }
                 }
             });

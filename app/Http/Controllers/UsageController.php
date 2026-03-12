@@ -9,6 +9,7 @@ use App\Models\Installations;
 use App\Models\Settings;
 use App\Models\Usage;
 use App\Models\User;
+use App\Services\UsageServices;
 use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -26,7 +27,7 @@ class UsageController extends Controller
             $tahun = request()->get('tahun') ?: date('m');
             $bulan = request()->get('bulan') ?: date('m');
             $caterId = request()->get('cater') ?: '';
-            $tgl_pakai = date('Y-m', strtotime($tahun . '-' . $bulan . '-01'));
+            $tgl_pakai = date('Y-m', strtotime($tahun.'-'.$bulan.'-01'));
 
             $rekening_denda = Account::where([
                 ['kode_akun', '4.1.01.04'],
@@ -37,7 +38,7 @@ class UsageController extends Controller
             $trx_settings = $pengaturan->first();
 
             $usages = Usage::where('business_id', Session::get('business_id'))
-                ->where('tgl_pemakaian', 'LIKE', $tgl_pakai . '%')
+                ->where('tgl_pemakaian', 'LIKE', $tgl_pakai.'%')
                 ->whereHas('installation', function ($q) {
                     $q->where('kategori', 1);
                 });
@@ -64,13 +65,13 @@ class UsageController extends Controller
                     $kode = $usage->installation->kode_instalasi ?? '-';
                     $inisial = $usage->installation->package->inisial ?? '';
 
-                    return $kode . ($inisial ? '-' . $inisial : '');
+                    return $kode.($inisial ? '-'.$inisial : '');
                 })
                 ->addColumn('aksi', function ($usage) {
-                    $edit = '<a href="/usages/' . $usage->id . '/edit" class="btn btn-warning btn-sm mb-1 mb-md-0 me-md-1"><i class="fas fa-pencil-alt"></i></a>&nbsp;';
-                    $delete = '<a href="#" data-id="' . $usage->id . '" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
+                    $edit = '<a href="/usages/'.$usage->id.'/edit" class="btn btn-warning btn-sm mb-1 mb-md-0 me-md-1"><i class="fas fa-pencil-alt"></i></a>&nbsp;';
+                    $delete = '<a href="#" data-id="'.$usage->id.'" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
 
-                    return '<div class="d-flex flex-column flex-md-row">' . $edit . $delete . '</div>';
+                    return '<div class="d-flex flex-column flex-md-row">'.$edit.$delete.'</div>';
                 })
                 ->addColumn('tgl_akhir', function ($usage) {
                     return Tanggal::tglIndo($usage->tgl_akhir);
@@ -119,7 +120,7 @@ class UsageController extends Controller
             $tahun = request()->get('tahun') ?: date('m');
             $bulan = request()->get('bulan') ?: date('m');
             $caterId = request()->get('cater') ?: '';
-            $tgl_pakai = date('Y-m', strtotime($tahun . '-' . $bulan . '-01'));
+            $tgl_pakai = date('Y-m', strtotime($tahun.'-'.$bulan.'-01'));
 
             $rekening_denda = Account::where([
                 ['kode_akun', '4.1.01.04'],
@@ -130,7 +131,7 @@ class UsageController extends Controller
             $trx_settings = $pengaturan->first();
 
             $usages = Usage::where('business_id', Session::get('business_id'))
-                ->where('tgl_pemakaian', 'LIKE', $tgl_pakai . '%')
+                ->where('tgl_pemakaian', 'LIKE', $tgl_pakai.'%')
                 ->whereHas('installation', function ($q) {
                     $q->where('kategori', 2);
                 });
@@ -157,12 +158,12 @@ class UsageController extends Controller
                     $kode = $usage->installation->kode_instalasi ?? '-';
                     $inisial = $usage->installation->package->inisial ?? '';
 
-                    return $kode . ($inisial ? '-' . $inisial : '');
+                    return $kode.($inisial ? '-'.$inisial : '');
                 })
                 ->addColumn('aksi', function ($usage) {
-                    $delete = '<a href="#" data-id="' . $usage->id . '" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
+                    $delete = '<a href="#" data-id="'.$usage->id.'" class="btn btn-danger btn-sm Hapus_pemakaian"><i class="fas fa-trash-alt"></i></a>';
 
-                    return '<div class="d-flex flex-column flex-md-row">' . $delete . '</div>';
+                    return '<div class="d-flex flex-column flex-md-row">'.$delete.'</div>';
                 })
                 ->addColumn('tgl_akhir', function ($usage) {
                     return Tanggal::tglIndo($usage->tgl_akhir);
@@ -207,70 +208,14 @@ class UsageController extends Controller
     /**
      * Show cthe form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request, UsageServices $usageServices)
     {
-        $business_id = Session::get('business_id');
-        $cater_id = $request->get('cater_id');
-        $bulan = $request->get('bulan') ?: date('d/m/Y');
-
-        $settings = Settings::where('business_id', $business_id)->first();
-
-        $installasi = Installations::where('business_id', $business_id)
-            ->when($cater_id, function ($query) use ($cater_id) {
-                $query->where('cater_id', $cater_id);
-            })
-            ->where('kategori', 1)
-            ->with(['customer', 'package', 'users', 'oneUsage'])
-            ->orderBy('id', 'ASC')
-            ->get();
-
-        $usages = Usage::where('business_id', $business_id)->get();
-
-        $pilih_customer = $cater_id ?? 0;
-        $title = 'Register Pemakaian';
-
-        return view('penggunaan.create')->with(compact(
-            'installasi',
-            'settings',
-            'pilih_customer',
-            'cater_id',
-            'title',
-            'usages',
-            'bulan'
-        ));
+        return view('penggunaan.create', $usageServices->dataCreate($request->all()));
     }
 
-    public function createSampah(Request $request)
+    public function createSampah(Request $request, UsageServices $usageServices)
     {
-        $business_id = Session::get('business_id');
-        $cater_id = $request->get('cater_id');
-        $bulan = $request->get('bulan') ?: date('d/m/Y');
-
-        $settings = Settings::where('business_id', $business_id)->first();
-
-        $installasi = Installations::where('business_id', $business_id)
-            ->when($cater_id, function ($query) use ($cater_id) {
-                $query->where('cater_id', $cater_id);
-            })
-            ->where('kategori', 2)
-            ->with(['customer', 'package', 'users', 'oneUsage'])
-            ->orderBy('id', 'ASC')
-            ->get();
-
-        $usages = Usage::where('business_id', $business_id)->get();
-
-        $pilih_customer = $cater_id ?? 0;
-        $title = 'Register Pemakaian';
-
-        return view('sampah.create')->with(compact(
-            'installasi',
-            'settings',
-            'pilih_customer',
-            'cater_id',
-            'title',
-            'usages',
-            'bulan'
-        ));
+        return view('sampah.create', $usageServices->dataCreate($request->all(), 'Data Sampah'));
     }
 
     public function barcode(Usage $usage)
@@ -306,7 +251,7 @@ class UsageController extends Controller
 
         $tglPakai = Tanggal::tglNasional($data['tgl_pemakaian']);
         $index_harga = (isset($result[$data['jumlah']])) ? $result[$data['jumlah']] : end($result);
-        $tglAkhir = date('Y-m', strtotime('+1 month', strtotime($tglPakai))) . '-' . str_pad($data['toleransi'], 2, '0', STR_PAD_LEFT);
+        $tglAkhir = date('Y-m', strtotime('+1 month', strtotime($tglPakai))).'-'.str_pad($data['toleransi'], 2, '0', STR_PAD_LEFT);
 
         $insert = [
             'business_id' => Session::get('business_id'),
@@ -375,8 +320,8 @@ class UsageController extends Controller
         $query = $request->input('query');
 
         $customer = Customer::where('business_id', Session::get('business_id'))->join('installations', 'customers.id', 'installations.customer_id')
-            ->where('customers.nama', 'LIKE', '%' . $query . '%')
-            ->orwhere('installations.kode_instalasi', 'LIKE', '%' . $query . '%')->get();
+            ->where('customers.nama', 'LIKE', '%'.$query.'%')
+            ->orwhere('installations.kode_instalasi', 'LIKE', '%'.$query.'%')->get();
 
         $data_customer = [];
         foreach ($customer as $cus) {
@@ -404,7 +349,7 @@ class UsageController extends Controller
             ->get();
 
         return [
-            'label' => '<i class="fas fa-book"></i> ' . 'Detail Pemakaian Dengan Status <b>(UNPAID)</b>',
+            'label' => '<i class="fas fa-book"></i> '.'Detail Pemakaian Dengan Status <b>(UNPAID)</b>',
             'cetak' => view('penggunaan.partials.DetailTagihan', [
                 'usages' => $usages,
             ])->render(),
@@ -429,7 +374,7 @@ class UsageController extends Controller
         }
 
         if ($request->bulan_tagihan != '') {
-            $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
+            $data['usage']->where('tgl_pemakaian', 'LIKE', '%'.$request->tahun_tagihan.'-'.$request->bulan_tagihan.'%');
         }
 
         $data['usage'] = $data['usage']->with([
@@ -479,7 +424,7 @@ class UsageController extends Controller
         }
 
         if ($request->bulan_tagihan != '') {
-            $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
+            $data['usage']->where('tgl_pemakaian', 'LIKE', '%'.$request->tahun_tagihan.'-'.$request->bulan_tagihan.'%');
         }
 
         $data['usage'] = $data['usage']->with([
@@ -517,7 +462,7 @@ class UsageController extends Controller
         $bln = $request->input('bulan');
         $hari = $request->input('hari');
 
-        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $tgl = $thn.'-'.$bln.'-'.$hari;
 
         $rekening_denda = Account::where([
             ['kode_akun', '4.1.01.04'],
@@ -530,7 +475,7 @@ class UsageController extends Controller
             'hari' => $hari,
             'judul' => 'Laporan Keuangan',
             'tgl' => Tanggal::tahun($tgl),
-            'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
+            'sub_judul' => 'Tahun '.Tanggal::tahun($tgl),
             'cater' => $request->input('cater', null),
         ];
 
@@ -539,7 +484,7 @@ class UsageController extends Controller
         // Ambil data usage sesuai filter
         $usagesQuery = Usage::where([
             ['business_id', Session::get('business_id')],
-            ['tgl_pemakaian', 'LIKE', $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%'],
+            ['tgl_pemakaian', 'LIKE', $request->tahun_tagihan.'-'.$request->bulan_tagihan.'%'],
         ]);
 
         if ($request->cater != '') {
@@ -559,9 +504,9 @@ class UsageController extends Controller
 
         // Sort
         $data['usages'] = $usages->sortBy([
-            fn($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
-            fn($a, $b) => $a->installation->rt <=> $b->installation->rt,
-            fn($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
+            fn ($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
+            fn ($a, $b) => $a->installation->rt <=> $b->installation->rt,
+            fn ($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
         ]);
 
         // Ambil nama cater dari relasi Usage → usersCater (jika ada)
@@ -587,7 +532,7 @@ class UsageController extends Controller
         $bln = $request->input('bulan');
         $hari = $request->input('hari');
 
-        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $tgl = $thn.'-'.$bln.'-'.$hari;
 
         $rekening_denda = Account::where([
             ['kode_akun', '4.1.01.04'],
@@ -600,7 +545,7 @@ class UsageController extends Controller
             'hari' => $hari,
             'judul' => 'Laporan Keuangan',
             'tgl' => Tanggal::tahun($tgl),
-            'sub_judul' => 'Tahun ' . Tanggal::tahun($tgl),
+            'sub_judul' => 'Tahun '.Tanggal::tahun($tgl),
             'cater' => $request->input('cater', null),
         ];
 
@@ -608,7 +553,7 @@ class UsageController extends Controller
 
         $usagesQuery = Usage::where([
             ['business_id', Session::get('business_id')],
-            ['tgl_pemakaian', 'LIKE', $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%'],
+            ['tgl_pemakaian', 'LIKE', $request->tahun_tagihan.'-'.$request->bulan_tagihan.'%'],
         ]);
 
         if ($request->cater != '') {
@@ -627,9 +572,9 @@ class UsageController extends Controller
         ])->get();
 
         $data['usages'] = $usages->sortBy([
-            fn($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
-            fn($a, $b) => $a->installation->rt <=> $b->installation->rt,
-            fn($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
+            fn ($a, $b) => strcmp($a->installation->village->dusun, $b->installation->village->dusun),
+            fn ($a, $b) => $a->installation->rt <=> $b->installation->rt,
+            fn ($a, $b) => strcmp($a->tgl_akhir, $b->tgl_akhir),
         ]);
 
         $data['pemakaian_cater'] = $usages->first()?->usersCater?->nama ?? '-';
@@ -654,7 +599,7 @@ class UsageController extends Controller
         $cater = $request->cater;
 
         if (strlen($bulan) == 2) {
-            $bulan = date('Y') . '-' . $bulan . '-01';
+            $bulan = date('Y').'-'.$bulan.'-01';
         }
 
         $bulanCarbon = \Carbon\Carbon::parse($bulan);
@@ -673,13 +618,12 @@ class UsageController extends Controller
                 'village',
                 'users',
                 'oneUsage' => function ($query) use ($bulanAwal) {
-                    $query->where('tgl_pemakaian', 'like', $bulanAwal . '%');
+                    $query->where('tgl_pemakaian', 'like', $bulanAwal.'%');
                 },
             ])
             ->orderBy('desa', 'ASC')
             ->orderBy('rt', 'ASC')
             ->get();
-
 
         $caterUser = $cater ? User::find($cater) : null;
 

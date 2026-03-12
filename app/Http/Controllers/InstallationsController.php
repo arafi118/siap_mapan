@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
+use App\Models\Business;
 use App\Models\Customer;
 use App\Models\Installations;
 use App\Models\Package;
 use App\Models\Settings;
 use App\Models\Transaction;
-use App\Models\Account;
-use App\Models\Business;
-use App\Models\Cater;
 use App\Models\Usage;
 use App\Models\User;
 use App\Models\Village;
 use App\Utils\Keuangan;
+use App\Utils\Tanggal;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Utils\Tanggal;
-
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -67,11 +65,11 @@ class InstallationsController extends Controller
             return DataTables::eloquent($installations)
                 ->addColumn('aksi', function ($row) {
 
-                    $view = '<div class="btn-group"><a href="/installations/' . $row->id . '" class="btn btn-info btn-sm btn-data btn-detail"><i class="fas fa-info-circle"></i></a>';
+                    $view = '<div class="btn-group"><a href="/installations/'.$row->id.'" class="btn btn-info btn-sm btn-data btn-detail"><i class="fas fa-info-circle"></i></a>';
 
                     if ($row->status == 'R') {
-                        $view .= '<a href="/installations/' . $row->id . '/edit" class="btn btn-warning btn-sm btn-data btn-edit"><i class="fas fa-exclamation-triangle"></i></a>';
-                        $view .= '<a href="#" data-id="' . $row->id . '" class="btn btn-danger btn-sm btn-data btn-hapus Hapus_id"><i class="fas fa-trash"></i></a>';
+                        $view .= '<a href="/installations/'.$row->id.'/edit" class="btn btn-warning btn-sm btn-data btn-edit"><i class="fas fa-exclamation-triangle"></i></a>';
+                        $view .= '<a href="#" data-id="'.$row->id.'" class="btn btn-danger btn-sm btn-data btn-hapus Hapus_id"><i class="fas fa-trash"></i></a>';
                     }
 
                     $view .= '</div>';
@@ -83,6 +81,7 @@ class InstallationsController extends Controller
         }
 
         $title = 'Permohonan';
+
         return view('perguliran.index')->with(compact('title'));
     }
 
@@ -93,9 +92,10 @@ class InstallationsController extends Controller
                 'customer',
                 'package',
                 'village',
-                'users'
+                'users',
             ])->get();
         $title = 'Data Intalasi';
+
         return view('perguliran.partials.DaftarInstalasi')->with(compact('title', 'installations'));
     }
 
@@ -109,12 +109,12 @@ class InstallationsController extends Controller
         // Cari akun berdasarkan kode_akun
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', Session::get('business_id')]
+            ['business_id', Session::get('business_id')],
         ])->first();
 
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.01'],
-            ['business_id', Session::get('business_id')]
+            ['business_id', Session::get('business_id')],
         ])->first();
 
         $customers = Customer::where('business_id', Session::get('business_id'))
@@ -128,7 +128,7 @@ class InstallationsController extends Controller
                     if ($rekening_debit && $rekening_kredit) {
                         $q->where([
                             ['rekening_debit', $rekening_debit->id],
-                            ['rekening_kredit', $rekening_kredit->id]
+                            ['rekening_kredit', $rekening_kredit->id],
                         ]);
                     }
                 },
@@ -138,7 +138,6 @@ class InstallationsController extends Controller
 
         return response()->json($customers);
     }
-
 
     /**
      * cari custommers trx tagihan bulanan .
@@ -169,7 +168,6 @@ class InstallationsController extends Controller
             ->whereNotIn('installations.status', ['B', 'C'])
             ->get();
 
-
         return response()->json($installations);
     }
 
@@ -182,22 +180,22 @@ class InstallationsController extends Controller
 
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.03'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $rekening_denda = Account::where([
             ['kode_akun', '4.1.01.04'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $rekening_piutang = Account::where([
             ['kode_akun', '1.1.03.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $installations = Installations::where('kode_instalasi', $kode_instalasi)->where('business_id', Session::get('business_id'))
@@ -215,7 +213,7 @@ class InstallationsController extends Controller
                     if ($rekening_debit && $rekening_kredit) {
                         $query->where([
                             ['rekening_debit', $rekening_debit->id],
-                            ['rekening_kredit', $rekening_kredit->id]
+                            ['rekening_kredit', $rekening_kredit->id],
                         ]);
                     }
                 },
@@ -224,9 +222,9 @@ class InstallationsController extends Controller
                 'transaction' => function ($query) use ($rekening_denda, $rekening_piutang) {
                     $query->where([
                         ['rekening_kredit', $rekening_denda->id],
-                        ['rekening_debit', $rekening_piutang->id]
+                        ['rekening_debit', $rekening_piutang->id],
                     ]);
-                }
+                },
             ])
             ->first();
 
@@ -237,7 +235,7 @@ class InstallationsController extends Controller
             ->where([
                 ['usages.id_instalasi', $installations->id],
                 ['usages.status', '=', 'UNPAID'],
-                ['installations.package_id', '!=', '155']
+                ['installations.package_id', '!=', '155'],
             ])->orderBy('usages.tgl_pemakaian', 'DESC')->get();
 
         $jumlah_trx = $installations->transaction_sum_total;
@@ -245,18 +243,18 @@ class InstallationsController extends Controller
 
         $tagihan1 = Account::where('business_id', Session::get('business_id'))->where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', Session::get('business_id')]
+            ['business_id', Session::get('business_id')],
         ])->first();
         $tagihan2 = Account::where('business_id', Session::get('business_id'))->where([
             ['kode_akun', '4.2.01.04'],
-            ['business_id', Session::get('business_id')]
+            ['business_id', Session::get('business_id')],
         ])->first();
 
         $qr = QrCode::generate($installations->id);
 
         return response()->json([
             'success' => true,
-            'view' => view('transaksi.partials.usage')->with(compact('qr', 'installations',  'usages', 'trx_settings'))->render(),
+            'view' => view('transaksi.partials.usage')->with(compact('qr', 'installations', 'usages', 'trx_settings'))->render(),
             'rek_debit' => $tagihan1,
             'rek_kredit' => $tagihan2,
         ]);
@@ -265,11 +263,11 @@ class InstallationsController extends Controller
 
             $pasang1 = Account::where('business_id', Session::get('business_id'))->where([
                 ['kode_akun', '1.1.01.01'],
-                ['business_id', Session::get('business_id')]
+                ['business_id', Session::get('business_id')],
             ])->first();
             $pasang2 = Account::where('business_id', Session::get('business_id'))->where([
                 ['kode_akun', '5.1.01.04'],
-                ['business_id', Session::get('business_id')]
+                ['business_id', Session::get('business_id')],
             ])->first();
 
             return response()->json([
@@ -295,17 +293,17 @@ class InstallationsController extends Controller
         $desa = Village::where('id', $kd_desa)->first();
         $kd_bisnis = substr($desa->kode, 0, 3);
         $kd_desa = substr($desa->kode, 4, 4);
-        $kd_dusun = substr($desa->kode, 9,);
+        $kd_dusun = substr($desa->kode, 9);
 
-        $kode_instalasi = $bisnis . '.' . $kd_dusun  . '.' .  $rt;
+        $kode_instalasi = $bisnis.'.'.$kd_dusun.'.'.$rt;
 
         if ($jumlah_kode_instalasi_by_desa->count() > 0) {
-            $jumlah = str_pad(($jumlah_kode_instalasi_by_desa->count() + 1), 3, "0", STR_PAD_LEFT);
+            $jumlah = str_pad(($jumlah_kode_instalasi_by_desa->count() + 1), 3, '0', STR_PAD_LEFT);
         } else {
-            $jumlah = str_pad(Installations::where('business_id', Session::get('business_id'))->where('desa', $kd_desa)->count() + 1, 3, "0", STR_PAD_LEFT);
+            $jumlah = str_pad(Installations::where('business_id', Session::get('business_id'))->where('desa', $kd_desa)->count() + 1, 3, '0', STR_PAD_LEFT);
         }
 
-        $kode_instalasi .= '.' . $jumlah;
+        $kode_instalasi .= '.'.$jumlah;
 
         if (request()->get('kd_instalasi')) {
             $kd_ins = request()->get('kd_instalasi');
@@ -320,7 +318,7 @@ class InstallationsController extends Controller
         }
 
         return response()->json([
-            'kd_instalasi' => $kode_instalasi
+            'kd_instalasi' => $kode_instalasi,
         ], Response::HTTP_ACCEPTED);
     }
 
@@ -333,18 +331,17 @@ class InstallationsController extends Controller
         $pengaturan = Settings::where('business_id', $business_id);
         $package = Package::where('business_id', Session::get('business_id'))->where('id', $id)->first();
 
-
         $tampil_settings = $pengaturan->first();
+
         return response()->json([
             'success' => true,
-            'view' => view('perguliran.partials.jenis_paket')->with(compact('tampil_settings', 'package'))->render()
+            'view' => view('perguliran.partials.jenis_paket')->with(compact('tampil_settings', 'package'))->render(),
         ]);
     }
 
     /**
      * register instalasi.
      */
-
     public function create()
     {
         $paket = Package::where('business_id', Session::get('business_id'))->get();
@@ -354,13 +351,14 @@ class InstallationsController extends Controller
 
         $caters = User::where([
             ['business_id', Session::get('business_id')],
-            ['jabatan', '5']
+            ['jabatan', '5'],
         ])->get();
         $customer = Customer::where('business_id', Session::get('business_id'))->with('Village')->orderBy('id', 'ASC')->get();
         $desa = Village::all();
 
         $pilih_desa = 0;
         $title = 'Register Installlation';
+
         return view('perguliran.create')->with(compact('settings', 'paket', 'caters', 'customer', 'desa', 'pilih_desa', 'title'));
     }
 
@@ -372,7 +370,7 @@ class InstallationsController extends Controller
         $business_id = Session::get('business_id');
         $caters = User::where([
             ['business_id', Session::get('business_id')],
-            ['jabatan', '5']
+            ['jabatan', '5'],
         ])->get();
         $pengaturan = Settings::where('business_id', $business_id);
         $settings = $pengaturan->first();
@@ -393,7 +391,6 @@ class InstallationsController extends Controller
             'customer',
             'package'
         )->where('customer_id', $customer_id)->orderBy('created_at', 'DESC')->first();
-
 
         $customer = Customer::where('business_id', Session::get('business_id'))->with('Village')->orderBy('id', 'ASC')->get();
         $desa = Village::all();
@@ -416,20 +413,20 @@ class InstallationsController extends Controller
     public function store(Request $request)
     {
         $data = $request->only([
-            "customer_id",
-            "order",
-            "desa",
-            "cater",
-            "jalan",
-            "kategori",
-            "rw",
-            "rt",
-            "koordinate",
-            "package_id",
-            "pasang_baru",
-            "abodemen",
-            "kode_instalasi",
-            "total",
+            'customer_id',
+            'order',
+            'desa',
+            'cater',
+            'jalan',
+            'kategori',
+            'rw',
+            'rt',
+            'koordinate',
+            'package_id',
+            'pasang_baru',
+            'abodemen',
+            'kode_instalasi',
+            'total',
         ]);
 
         $rules = [
@@ -461,9 +458,9 @@ class InstallationsController extends Controller
         $data['total'] = str_replace('.00', '', $data['total']);
         $data['total'] = floatval($data['total']);
 
-        $pasangbaru        = $data['pasang_baru'] ?? 0;
-        $abodemen          = $data['abodemen'] ?? 0;
-        $biaya_instalasi   = $data['total'] ?? 0;
+        $pasangbaru = $data['pasang_baru'] ?? 0;
+        $abodemen = $data['abodemen'] ?? 0;
+        $biaya_instalasi = $data['total'] ?? 0;
 
         $biaya_instal = $pasangbaru - $biaya_instalasi;
 
@@ -473,11 +470,11 @@ class InstallationsController extends Controller
             if ($jumlah <= 0) {
                 $status = 'R';
             }
-        } else if ($request->kategori == '2') {
+        } elseif ($request->kategori == '2') {
             $status = 'R';
         }
 
-        // INSTALLATION = simpan database 
+        // INSTALLATION = simpan database
         $install = Installations::create([
             'business_id' => Session::get('business_id'),
             'kode_instalasi' => $request->kode_instalasi,
@@ -509,12 +506,12 @@ class InstallationsController extends Controller
 
                 $rekening_debit = Account::where([
                     ['kode_akun', '1.1.01.01'],
-                    ['business_id', $business_id]
+                    ['business_id', $business_id],
                 ])->first();
 
                 $rekening_kredit = Account::where([
                     ['kode_akun', '4.1.01.01'],
-                    ['business_id', $business_id]
+                    ['business_id', $business_id],
                 ])->first();
 
                 if ($rekening_debit && $rekening_kredit) {
@@ -525,12 +522,12 @@ class InstallationsController extends Controller
                         'tgl_transaksi' => Tanggal::tglNasional($request->order),
                         'total' => $jumlah_instal,
                         'installation_id' => $install->id,
-                        'keterangan' => 'Biaya instalasi ' . $persen . '%',
+                        'keterangan' => 'Biaya instalasi '.$persen.'%',
                     ]);
                 } else {
                     return response()->json([
                         'success' => false,
-                        'msg' => 'Rekening tidak ditemukan, transaksi gagal'
+                        'msg' => 'Rekening tidak ditemukan, transaksi gagal',
                     ], 400);
                 }
             }
@@ -539,7 +536,7 @@ class InstallationsController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Daftar & Instalasi berhasil disimpan',
-            'installation' => $install
+            'installation' => $install,
         ]);
     }
 
@@ -548,9 +545,11 @@ class InstallationsController extends Controller
      */
     public function show(Installations $installation)
     {
-        $func = 'detail' . $installation->status;
+        $func = 'detail'.$installation->status;
+
         return $this->$func($installation);
     }
+
     /**
      * Menampilkan Detail dengan status 0.
      */
@@ -561,23 +560,24 @@ class InstallationsController extends Controller
         $installation = $installation->with([
             'customer',
             'package',
-            'village'
+            'village',
         ])->where('id', $installation->id)->first();
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
-            ['rekening_kredit', $rekening_kredit->id]
+            ['rekening_kredit', $rekening_kredit->id],
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
+
         return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx', 'qr'));
     }
 
@@ -591,28 +591,29 @@ class InstallationsController extends Controller
         $installation = $installation->with([
             'customer',
             'package',
-            'village'
+            'village',
         ])->where('id', $installation->id)->first();
 
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
-            ['rekening_kredit', $rekening_kredit->id]
+            ['rekening_kredit', $rekening_kredit->id],
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
 
         return view('perguliran.partials.permohonan')->with(compact('settings', 'installation', 'trx', 'qr'));
     }
+
     /**
      * Menampilkan Detail dengan status I.
      */
@@ -624,29 +625,28 @@ class InstallationsController extends Controller
         $installation = $installation->with([
             'customer',
             'package',
-            'village'
+            'village',
         ])->where('id', $installation->id)->first();
 
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
-            ['rekening_kredit', $rekening_kredit->id]
+            ['rekening_kredit', $rekening_kredit->id],
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
 
         return view('perguliran.partials.pasang')->with(compact('installation', 'tampil_settings', 'trx', 'qr'));
     }
-
 
     /**
      * Menampilkan Detail dengan status A.
@@ -658,17 +658,17 @@ class InstallationsController extends Controller
 
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.03'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
-            ['rekening_kredit', $rekening_kredit->id]
+            ['rekening_kredit', $rekening_kredit->id],
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
 
@@ -685,21 +685,21 @@ class InstallationsController extends Controller
         $installation = $installation->with([
             'customer',
             'package',
-            'village'
+            'village',
         ])->where('id', $installation->id)->first();
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.03'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
-            ['rekening_kredit', $rekening_kredit->id]
+            ['rekening_kredit', $rekening_kredit->id],
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
 
@@ -717,25 +717,26 @@ class InstallationsController extends Controller
         $installation = $installation->with([
             'customer',
             'package',
-            'village'
+            'village',
         ])->where('id', $installation->id)->first();
 
         $rekening_debit = Account::where([
             ['kode_akun', '1.1.01.01'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $rekening_kredit = Account::where([
             ['kode_akun', '4.1.01.03'],
-            ['business_id', $business_id]
+            ['business_id', $business_id],
         ])->first();
 
         $trx = Transaction::where([
             ['installation_id', $installation->id],
             ['rekening_debit', $rekening_debit->id],
-            ['rekening_kredit', $rekening_kredit->id]
+            ['rekening_kredit', $rekening_kredit->id],
         ])->sum('total');
         $qr = QrCode::generate($installation->id);
+
         return view('perguliran.partials.copot')->with(compact('installation', 'tampil_settings', 'trx', 'qr'));
     }
 
@@ -746,9 +747,9 @@ class InstallationsController extends Controller
         $installation = $installation->with([
             'customer',
             'package',
-            'village'
+            'village',
         ])->where('id', $installation->id)->first();
-        // $logo = $bisnis->logo; 
+        // $logo = $bisnis->logo;
 
         // $data['gambar'] = $logo;
 
@@ -760,8 +761,6 @@ class InstallationsController extends Controller
 
         return view('perguliran.partials.cetak', $data);
     }
-
-
 
     /**
      * Show the form for editing the specified resource.
@@ -776,12 +775,12 @@ class InstallationsController extends Controller
         $installations = $installation->with([
             'customer',
             'package',
-            'village'
+            'village',
         ])->where('id', $installation->id)->first();
 
         $caters = User::where([
             ['business_id', Session::get('business_id')],
-            ['jabatan', '5']
+            ['jabatan', '5'],
         ])->get();
 
         $desa = Village::all();
@@ -790,6 +789,7 @@ class InstallationsController extends Controller
 
         $pilih_desa = 0;
         $title = 'Register Proposal';
+
         return view('perguliran.partials.edit_permohonan')->with(compact('settings', 'qr', 'caters', 'paket', 'installations', 'customer', 'desa', 'pilih_desa', 'title'));
     }
 
@@ -798,10 +798,11 @@ class InstallationsController extends Controller
      */
     public function update(Request $request, Installations $installation)
     {
-        //progres simpan detail| $request->status = 0
-        $func = 'update' . $request->status; // update0
+        // progres simpan detail| $request->status = 0
+        $func = 'update'.$request->status; // update0
+
         return $this->$func($request, $installation); // $this->update0()
-        //end progres simpan detail
+        // end progres simpan detail
     }
 
     /**
@@ -810,32 +811,33 @@ class InstallationsController extends Controller
     private function updateEditData($request, $installation)
     {
         $data = $request->only([
-            "order",
-            "alamat",
-            "koordinate"
+            'order',
+            'alamat',
+            'koordinate',
         ]);
 
         $rules = [
             'order' => 'required',
             'alamat' => 'sometimes',
-            'koordinate' => 'sometimes'
+            'koordinate' => 'sometimes',
         ];
         $validate = Validator::make($data, $rules);
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        // Update data 
+        // Update data
         $update = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'order' => Tanggal::tglNasional($request->order),
             'alamat' => $request->alamat,
-            'koordinate' => $request->koordinate
+            'koordinate' => $request->koordinate,
         ]);
+
         return response()->json([
             'success' => true,
             'msg' => 'Edit berhasil disimpan',
-            'Editpermohonan' => $update
+            'Editpermohonan' => $update,
         ]);
     }
 
@@ -845,7 +847,7 @@ class InstallationsController extends Controller
     private function update0($request, $installation)
     {
         $data = $request->only([
-            "pasang",
+            'pasang',
         ]);
 
         $rules = [
@@ -856,16 +858,17 @@ class InstallationsController extends Controller
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        // Update data 
+        // Update data
         $update = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'pasang' => Tanggal::tglNasional($request->pasang),
             'status' => 'I',
         ]);
+
         return response()->json([
             'success' => true,
             'msg' => 'Progres Pasang berhasil disimpan',
-            'Pasang' => $installation
+            'Pasang' => $installation,
         ]);
     }
 
@@ -875,7 +878,7 @@ class InstallationsController extends Controller
     private function updateR($request, $installation)
     {
         $data = $request->only([
-            "pasang",
+            'pasang',
         ]);
 
         $rules = [
@@ -886,16 +889,17 @@ class InstallationsController extends Controller
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        // Update data 
+        // Update data
         $update = Installations::where('business_id', Session::get('business_id'))->where('id', $installation->id)->update([
             'business_id' => Session::get('business_id'),
             'pasang' => Tanggal::tglNasional($request->pasang),
             'status' => 'I',
         ]);
+
         return response()->json([
             'success' => true,
             'msg' => 'Progres Pasang berhasil disimpan',
-            'Pasang' => $installation
+            'Pasang' => $installation,
         ]);
     }
 
@@ -905,7 +909,7 @@ class InstallationsController extends Controller
     private function updateI($request, $installation)
     {
         $data = $request->only([
-            "aktif",
+            'aktif',
         ]);
 
         $rules = [
@@ -927,7 +931,7 @@ class InstallationsController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Daftar & Pemakaian awal berhasil disimpan',
-            'aktif' => $installation
+            'aktif' => $installation,
         ]);
     }
 
@@ -937,9 +941,9 @@ class InstallationsController extends Controller
     private function updateA($request, $installation)
     {
         $data = $request->only([
-            "pasang_baru",
-            "aktif",
-            "total"
+            'pasang_baru',
+            'aktif',
+            'total',
         ]);
 
         $rules = [
@@ -958,7 +962,7 @@ class InstallationsController extends Controller
         $data['total'] = str_replace('.00', '', $data['total']);
         $data['total'] = floatval($data['total']);
 
-        $pasang_baru        = $data['pasang_baru'];
+        $pasang_baru = $data['pasang_baru'];
         $biaya_instalasi = $data['total'];
 
         $biaya_instal = $pasang_baru - $biaya_instalasi;
@@ -985,13 +989,13 @@ class InstallationsController extends Controller
             'tgl_transaksi' => Tanggal::tglNasional($request->aktif),
             'total' => $jumlah_instal,
             'installation_id' => $installation->id,
-            'keterangan' => 'Biaya Pemakaian 1 bulan kedepan ' . $persen . '%',
+            'keterangan' => 'Biaya Pemakaian 1 bulan kedepan '.$persen.'%',
         ]);
 
         return response()->json([
             'success' => true,
             'msg' => 'Daftar & Pemakaian awal berhasil disimpan',
-            'aktif' => $installation
+            'aktif' => $installation,
         ]);
     }
 
@@ -1001,7 +1005,7 @@ class InstallationsController extends Controller
     private function updateB($request, $installation)
     {
         $data = $request->only([
-            "cabut",
+            'cabut',
 
         ]);
 
@@ -1024,7 +1028,7 @@ class InstallationsController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Pencabutan Custommer Berhasil',
-            'cabut' => $installation
+            'cabut' => $installation,
         ]);
     }
 
@@ -1041,7 +1045,7 @@ class InstallationsController extends Controller
         return response()->json([
             'success' => true,
             'msg' => '"Data berhasil diaktifkan dan statusnya dikembalikan menjadi Aktif."',
-            'kembaliA' => $instal
+            'kembaliA' => $instal,
         ]);
     }
 
@@ -1059,9 +1063,10 @@ class InstallationsController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Permohonan berhasil dihapus',
-            'installation' => $installation
+            'installation' => $installation,
         ]);
     }
+
     public function list($cater_id = 0)
     {
         $tanggal = request()->get('tanggal') ?: date('d/m/Y');
@@ -1069,13 +1074,13 @@ class InstallationsController extends Controller
         if ($cater_id == '0') {
             return response()->json([
                 'success' => true,
-                'installations' => []
+                'installations' => [],
             ]);
         }
 
         $usedInstallationIds = Usage::where('business_id', Session::get('business_id'))
             ->where('cater', $cater_id)
-            ->where('tgl_pemakaian', 'like', $tgl_kondisi . '%')
+            ->where('tgl_pemakaian', 'like', $tgl_kondisi.'%')
             ->pluck('id_instalasi');
 
         $installasi = Installations::select('installations.*')->where('installations.business_id', Session::get('business_id'))
@@ -1088,10 +1093,17 @@ class InstallationsController extends Controller
             $installasi = $installasi->where('installations.id', $installation_id);
         }
 
+        if (request()->get('kategori')) {
+            $kategori = request()->get('kategori');
+            $installasi = $installasi->where('installations.kategori', $kategori);
+        } else {
+            $installasi = $installasi->where('installations.kategori', 1);
+        }
+
         return DataTables::eloquent($installasi)
             ->addColumn('akhir', function ($ins) use ($tgl_kondisi) {
-                $tgl_kondisi = $tgl_kondisi . '-01';
-                $tgl_akhir = $ins->oneUsage ? date('Y-m', strtotime($ins->oneUsage->tgl_akhir)) . '-01' : $tgl_kondisi;
+                $tgl_kondisi = $tgl_kondisi.'-01';
+                $tgl_akhir = $ins->oneUsage ? date('Y-m', strtotime($ins->oneUsage->tgl_akhir)).'-01' : $tgl_kondisi;
 
                 $allowInput = 'false';
                 $textColor = 'text-danger';
@@ -1105,7 +1117,7 @@ class InstallationsController extends Controller
                     $akhir = $ins->oneUsage->akhir;
                 }
 
-                return '<div class="' . $textColor . ' text-right" data-allow-input="' . $allowInput . '">' . $akhir . '</div>';
+                return '<div class="'.$textColor.' text-right" data-allow-input="'.$allowInput.'">'.$akhir.'</div>';
             })
             ->rawColumns(['akhir'])
             ->make(true);

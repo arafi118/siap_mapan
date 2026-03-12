@@ -8,29 +8,23 @@ use App\Models\Account;
 use App\Models\Business;
 use App\Models\Customer;
 use App\Models\Installations;
-use App\Models\User;
-use App\Models\Settings;
-use App\Models\Usage;
 use App\Models\Menu;
 use App\Models\Package;
-use App\Models\Tombol;
+use App\Models\Settings;
 use App\Models\Transaction;
+use App\Models\Usage;
+use App\Models\User;
 use App\Models\Village;
-use App\Utils\Migrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-use Excel;
-
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
-
     public function index()
     {
         $url = request()->getHost();
@@ -38,10 +32,10 @@ class AuthController extends Controller
             $url = 'siap_mapan.test';
         }
 
-        $business = Business::where('domain', 'LIKE', '%' . $url . '%')->first();
+        $business = Business::where('domain', 'LIKE', '%'.$url.'%')->first();
         $domain = json_decode($business->domain, true);
-        if ($domain[0] != $url && !str_contains($url, 'siap_mapan.test')) {
-            return redirect('https://' . $domain[0]);
+        if ($domain[0] != $url && ! str_contains($url, 'siap_mapan.test')) {
+            return redirect('https://'.$domain[0]);
         }
 
         return view('auth.login')->with(compact('business'));
@@ -70,7 +64,7 @@ class AuthController extends Controller
         }
 
         $user = User::where('username', $data['username'])->first();
-        if (!$user) {
+        if (! $user) {
             return redirect()->back()->with('error', 'Login Gagal. Username atau Password salah');
         }
 
@@ -87,11 +81,11 @@ class AuthController extends Controller
                 } else {
                     $query->whereNotIn('id', json_decode($user->akses_menu, true));
                 }
-            }
+            },
         ])->get();
 
         if (Auth::attempt($data)) {
-            $auth_token = md5(strtolower($data['username'] . '|' . $data['password']));
+            $auth_token = md5(strtolower($data['username'].'|'.$data['password']));
             User::where('id', $user->id)->update([
                 'auth_token' => $auth_token,
             ]);
@@ -105,14 +99,14 @@ class AuthController extends Controller
                 'business_id' => $business->id,
                 'is_auth' => true,
                 'auth_token' => $auth_token,
-                'menu' => $menu
+                'menu' => $menu,
             ]);
 
             if ($user->jabatan == '5') {
-                return redirect('/usages/?cater_id=' . $user->id)->with('success', 'Selamat Datang ' . $user->nama);
+                return redirect('/usages/?cater_id='.$user->id)->with('success', 'Selamat Datang '.$user->nama);
             }
 
-            return redirect('/')->with('success', 'Selamat Datang ' . $user->nama);
+            return redirect('/')->with('success', 'Selamat Datang '.$user->nama);
         }
 
         return redirect()->back()->with('error', 'Login Gagal. Username atau Password salah');
@@ -129,12 +123,12 @@ class AuthController extends Controller
         $file = $request->file('file');
 
         $business = Business::where('nama', $data['name'])->first();
-        if (!$business) {
+        if (! $business) {
             $businessBaru = Business::create([
                 'nama' => $data['name'],
                 'telpon' => $data['telpon'],
                 'email' => $data['email'],
-                'alamat' => $data['alamat']
+                'alamat' => $data['alamat'],
             ]);
 
             $setting = Settings::orderBy('id')->first()->toArray();
@@ -151,14 +145,14 @@ class AuthController extends Controller
         }
 
         $file->storeAs('migrasi', $file->getClientOriginalName());
-        $filename = 'migrasi/' . $file->getClientOriginalName();
+        $filename = 'migrasi/'.$file->getClientOriginalName();
 
         return $this->migrasi_file($businessBaru, $filename);
     }
 
     public function migrasi_file($business, $file)
     {
-        $excel = (new FileImport())->toArray($file);
+        $excel = (new FileImport)->toArray($file);
 
         $migrasiDesa = $excel['DESA'];
         $migrasiPaket = $excel['PAKET'];
@@ -181,20 +175,21 @@ class AuthController extends Controller
             $data_desa = [];
             $business_id_migrasi = Session::get('business_id_migrasi');
             foreach ($migrasiDesa as $desa) {
-                if ($header == 1 || !$desa[1]) {
+                if ($header == 1 || ! $desa[1]) {
                     $header = 0;
+
                     continue;
                 }
 
                 $kode_desa = str_pad($desa[0], 4, '0', STR_PAD_LEFT);
                 $business_id_migrasi = str_pad($business_id_migrasi, 3, '0', STR_PAD_LEFT);
 
-                $kd_desa =  $business_id_migrasi . '.' . $kode_desa;
+                $kd_desa = $business_id_migrasi.'.'.$kode_desa;
                 $data_desa[$desa[1]] = [
                     'kode' => $kd_desa,
                     'nama' => ucwords(strtolower($desa[1])),
                     'alamat' => '-',
-                    'hp' => '08'
+                    'hp' => '08',
                 ];
 
                 $data_kode[] = $kd_desa;
@@ -209,12 +204,12 @@ class AuthController extends Controller
                 'msg' => 'Migrasi data desa selesai',
                 'next' => '/migrasi/paket',
                 'open_tab' => false,
-                'finish' => false
+                'finish' => false,
             ]);
         }
 
         return response()->json([
-            'success' => false
+            'success' => false,
         ]);
     }
 
@@ -229,6 +224,7 @@ class AuthController extends Controller
             foreach ($migrasiPaket as $paket) {
                 if ($header == 1) {
                     $header = 0;
+
                     continue;
                 }
 
@@ -244,7 +240,7 @@ class AuthController extends Controller
                     'business_id' => Session::get('business_id_migrasi'),
                     'kelas' => ucwords(strtolower($paket[1])),
                     'harga' => $harga,
-                    'denda' => $businessSetting->denda
+                    'denda' => $businessSetting->denda,
                 ];
             }
 
@@ -257,12 +253,12 @@ class AuthController extends Controller
                 'msg' => 'Migrasi data paket selesai',
                 'next' => '/migrasi/customer',
                 'open_tab' => false,
-                'finish' => false
+                'finish' => false,
             ]);
         }
 
         return response()->json([
-            'success' => false
+            'success' => false,
         ]);
     }
 
@@ -272,7 +268,7 @@ class AuthController extends Controller
         if ($migrasiCustomer) {
             $data_desa = [];
             $business_id_migrasi = str_pad(Session::get('business_id_migrasi'), 3, '0', STR_PAD_LEFT);
-            $desa = Village::where('kode', 'LIKE', $business_id_migrasi . '%')->get();
+            $desa = Village::where('kode', 'LIKE', $business_id_migrasi.'%')->get();
             foreach ($desa as $d) {
                 $data_desa[$d->nama] = $d->id;
             }
@@ -300,6 +296,7 @@ class AuthController extends Controller
 
                 if ($header == 1) {
                     $header = 0;
+
                     continue;
                 }
 
@@ -307,12 +304,12 @@ class AuthController extends Controller
                 $data_customer[$customer[0]] = [
                     'business_id' => Session::get('business_id_migrasi'),
                     'nama' => ucwords(strtolower($customer[4])),
-                    'foto' => $customer[0]
+                    'foto' => $customer[0],
                 ];
 
                 $cater = strtolower($customer[5]);
-                if (!array_key_exists($cater, $data_cater)) {
-                    $username = $cater . Session::get('business_id_migrasi');
+                if (! array_key_exists($cater, $data_cater)) {
+                    $username = $cater.Session::get('business_id_migrasi');
                     $password = Hash::make($username);
 
                     $data_cater[$cater] = [
@@ -321,7 +318,7 @@ class AuthController extends Controller
                         'jabatan' => '5',
                         'username' => $username,
                         'password' => $password,
-                        'auth_token' => $cater
+                        'auth_token' => $cater,
                     ];
                 }
             }
@@ -331,7 +328,7 @@ class AuthController extends Controller
 
             User::where([
                 ['business_id', Session::get('business_id_migrasi')],
-                ['jabatan', '5']
+                ['jabatan', '5'],
             ])->delete();
             User::insert($data_cater);
 
@@ -341,12 +338,12 @@ class AuthController extends Controller
                 'msg' => 'Migrasi data customer selesai',
                 'next' => '/migrasi/instalasi',
                 'open_tab' => false,
-                'finish' => false
+                'finish' => false,
             ]);
         }
 
         return response()->json([
-            'success' => false
+            'success' => false,
         ]);
     }
 
@@ -356,11 +353,11 @@ class AuthController extends Controller
         if ($migrasiInstalasi) {
             $data_desa = [];
             $business_id_migrasi = str_pad(Session::get('business_id_migrasi'), 3, '0', STR_PAD_LEFT);
-            $desa = Village::where('kode', 'LIKE', $business_id_migrasi . '%')->get();
+            $desa = Village::where('kode', 'LIKE', $business_id_migrasi.'%')->get();
             foreach ($desa as $d) {
                 $data_desa[$d->nama] = [
                     'id' => $d->id,
-                    'kode' => $d->kode
+                    'kode' => $d->kode,
                 ];
             }
 
@@ -373,7 +370,7 @@ class AuthController extends Controller
             $data_cater = [];
             $cater = User::where([
                 ['business_id', Session::get('business_id_migrasi')],
-                ['jabatan', '5']
+                ['jabatan', '5'],
             ])->get();
             foreach ($cater as $c) {
                 $data_cater[$c->auth_token] = $c->id;
@@ -407,6 +404,7 @@ class AuthController extends Controller
 
                 if ($header == 1) {
                     $header = 0;
+
                     continue;
                 }
 
@@ -444,7 +442,7 @@ class AuthController extends Controller
                     'order' => Date::excelToDateTimeObject($instalasi[2])->format('Y-m-d'),
                     'pasang' => Date::excelToDateTimeObject($instalasi[2])->format('Y-m-d'),
                     'aktif' => Date::excelToDateTimeObject($instalasi[2])->format('Y-m-d'),
-                    'status' => 'A'
+                    'status' => 'A',
                 ];
             }
 
@@ -457,12 +455,12 @@ class AuthController extends Controller
                 'msg' => 'Migrasi data instalasi selesai',
                 'next' => '/migrasi/pemakaian',
                 'open_tab' => false,
-                'finish' => false
+                'finish' => false,
             ]);
         }
 
         return response()->json([
-            'success' => false
+            'success' => false,
         ]);
     }
 
@@ -487,7 +485,7 @@ class AuthController extends Controller
 
                 $data_block[$key] = [
                     'min' => $min,
-                    'max' => $max
+                    'max' => $max,
                 ];
             }
 
@@ -498,7 +496,7 @@ class AuthController extends Controller
                     'id' => $ins->id,
                     'customer_id' => $ins->customer_id,
                     'cater_id' => $ins->cater_id,
-                    'package_id' => $ins->package_id
+                    'package_id' => $ins->package_id,
                 ];
             }
 
@@ -507,7 +505,7 @@ class AuthController extends Controller
             foreach ($paket as $pkt) {
                 $data_paket[$pkt->id] = [
                     'harga' => $pkt->harga,
-                    'denda' => $pkt->denda
+                    'denda' => $pkt->denda,
                 ];
             }
 
@@ -540,6 +538,7 @@ class AuthController extends Controller
 
                 if ($header == 1) {
                     $header = 0;
+
                     continue;
                 }
 
@@ -577,10 +576,10 @@ class AuthController extends Controller
                             $harga = json_decode($paket_instalasi['harga'], true);
 
                             $nominal = $harga[$key] * $jumlah;
-                        };
+                        }
                     }
 
-                    $tgl_pemakaian = $thn . '-' . $bln . '-' . $hari;
+                    $tgl_pemakaian = $thn.'-'.$bln.'-'.$hari;
                     $data_pemakaian[] = [
                         'business_id' => $business_id_migrasi,
                         'id_instalasi' => $id_instalasi,
@@ -590,9 +589,9 @@ class AuthController extends Controller
                         'jumlah' => $akhir - $awal,
                         'nominal' => $nominal,
                         'tgl_pemakaian' => $tgl_pemakaian,
-                        'tgl_akhir' => date('Y-m', strtotime('+1 month', strtotime($tgl_pemakaian))) . '-27',
+                        'tgl_akhir' => date('Y-m', strtotime('+1 month', strtotime($tgl_pemakaian))).'-27',
                         'cater' => $cater_id,
-                        'status' => 'PAID'
+                        'status' => 'PAID',
                     ];
                 }
             }
@@ -608,12 +607,12 @@ class AuthController extends Controller
                 'msg' => 'Migrasi data pemakaian selesai',
                 'next' => '/migrasi/akun',
                 'open_tab' => false,
-                'finish' => false
+                'finish' => false,
             ]);
         }
 
         return response()->json([
-            'success' => false
+            'success' => false,
         ]);
     }
 
@@ -644,7 +643,7 @@ class AuthController extends Controller
             'msg' => 'Migrasi akun selesai',
             'next' => '/migrasi/transaksi',
             'open_tab' => false,
-            'finish' => false
+            'finish' => false,
         ]);
     }
 
@@ -676,9 +675,9 @@ class AuthController extends Controller
                 'total' => $usage->installation->abodemen,
                 'denda' => '0',
                 'relasi' => $usage->customers->nama,
-                'keterangan' => 'Pembayaran Abodemen Pemakaian Atas Nama ' . $usage->customers->nama . ' (' . $usage->installation->id . ')',
+                'keterangan' => 'Pembayaran Abodemen Pemakaian Atas Nama '.$usage->customers->nama.' ('.$usage->installation->id.')',
                 'urutan' => '0',
-                'created_at' => $created_at
+                'created_at' => $created_at,
             ];
 
             $data_transaksi[] = [
@@ -692,9 +691,9 @@ class AuthController extends Controller
                 'total' => $usage->nominal,
                 'denda' => '0',
                 'relasi' => $usage->customers->nama,
-                'keterangan' => 'Pembayaran Tagihan Bulanan Atas Nama ' . $usage->customers->nama . ' (' . $usage->installation->id . ')',
+                'keterangan' => 'Pembayaran Tagihan Bulanan Atas Nama '.$usage->customers->nama.' ('.$usage->installation->id.')',
                 'urutan' => '0',
-                'created_at' => $created_at
+                'created_at' => $created_at,
             ];
         }
 
@@ -711,7 +710,7 @@ class AuthController extends Controller
             'msg' => 'Migrasi transaksi instalasi selesai',
             'next' => '/migrasi/sync',
             'open_tab' => false,
-            'finish' => false
+            'finish' => false,
         ]);
     }
 
@@ -720,17 +719,18 @@ class AuthController extends Controller
         User::insert([
             'nama' => 'Direktur',
             'jabatan' => '1',
-            'username' => 'direktur' . Session::get('business_id_migrasi'),
-            'password' => Hash::make('direktur' . Session::get('business_id_migrasi')),
-            'business_id' => Session::get('business_id_migrasi')
+            'username' => 'direktur'.Session::get('business_id_migrasi'),
+            'password' => Hash::make('direktur'.Session::get('business_id_migrasi')),
+            'business_id' => Session::get('business_id_migrasi'),
         ]);
 
         Session::flush();
+
         return response()->json([
             'success' => true,
             'time' => date('Y-m-d H:i:s'),
             'msg' => 'Migrasi selesai',
-            'finish' => true
+            'finish' => true,
         ]);
     }
 
@@ -741,7 +741,7 @@ class AuthController extends Controller
         $denda = $business->setting->denda;
         $tgl_toleransi = $business->setting->tanggal_toleransi;
 
-        $excel = (new CustomImport())->toArray('migrasi/DataTunggakanMulo.xlsx');
+        $excel = (new CustomImport)->toArray('migrasi/DataTunggakanMulo.xlsx');
 
         $pemakaian = [];
         $bulanPemakaian = [];
@@ -753,7 +753,7 @@ class AuthController extends Controller
                         $bulanMenunggak = explode(' ', $value);
 
                         $bulan = str_pad($this->bulan($bulanMenunggak[0]), 2, '0', STR_PAD_LEFT);
-                        $bulanPemakaian[$key] = $bulanMenunggak[1] . '-' . $bulan . '-01';
+                        $bulanPemakaian[$key] = $bulanMenunggak[1].'-'.$bulan.'-01';
                     }
                 }
             } else {
@@ -803,7 +803,7 @@ class AuthController extends Controller
                 foreach ($data['bulan'] as $tanggal => $jumlah) {
                     if ($jumlah > 0) {
                         $tgl_pemakaian = date('Y-m-d', strtotime('-1 month', strtotime($tanggal)));
-                        $tgl_akhir = date('Y-m', strtotime($tanggal)) . '-' . $tgl_toleransi;
+                        $tgl_akhir = date('Y-m', strtotime($tanggal)).'-'.$tgl_toleransi;
 
                         $harga_paket = $harga[0];
                         $jumlah_menunggak = $jumlah - $denda - $abodemen;
@@ -829,15 +829,15 @@ class AuthController extends Controller
                             'cater' => 1,
                             'status' => 'UNPAID',
                             'created_at' => $today,
-                            'updated_at' => $today
+                            'updated_at' => $today,
                         ];
 
                         $values = array_values($usage);
                         $values = array_map(function ($value) {
-                            return is_string($value) ? "'" . $value . "'" : $value;
+                            return is_string($value) ? "'".$value."'" : $value;
                         }, $values);
 
-                        echo "INSERT INTO usages (business_id, id_instalasi, customer, awal, akhir, jumlah, nominal, tgl_pemakaian, tgl_akhir, cater, status, created_at, updated_at) VALUES (" . implode(',', $values) . "); <br>";
+                        echo 'INSERT INTO usages (business_id, id_instalasi, customer, awal, akhir, jumlah, nominal, tgl_pemakaian, tgl_akhir, cater, status, created_at, updated_at) VALUES ('.implode(',', $values).'); <br>';
                     }
                 }
             }
@@ -849,6 +849,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/auth')->with('success', 'Logout Berhasil');
     }
 
