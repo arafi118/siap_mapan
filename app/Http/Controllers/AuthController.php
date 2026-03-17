@@ -32,10 +32,10 @@ class AuthController extends Controller
             $url = 'siap_mapan.test';
         }
 
-        $business = Business::where('domain', 'LIKE', '%'.$url.'%')->first();
+        $business = Business::where('domain', 'LIKE', '%' . $url . '%')->first();
         $domain = json_decode($business->domain, true);
         if ($domain[0] != $url && ! str_contains($url, 'siap_mapan.test')) {
-            return redirect('https://'.$domain[0]);
+            return redirect('https://' . $domain[0]);
         }
 
         return view('auth.login')->with(compact('business'));
@@ -85,7 +85,7 @@ class AuthController extends Controller
         ])->get();
 
         if (Auth::attempt($data)) {
-            $auth_token = md5(strtolower($data['username'].'|'.$data['password']));
+            $auth_token = md5(strtolower($data['username'] . '|' . $data['password']));
             User::where('id', $user->id)->update([
                 'auth_token' => $auth_token,
             ]);
@@ -103,10 +103,10 @@ class AuthController extends Controller
             ]);
 
             if ($user->jabatan == '5') {
-                return redirect('/usages/?cater_id='.$user->id)->with('success', 'Selamat Datang '.$user->nama);
+                return redirect('/dashboard/usagesDashboard/?cater_id=' . $user->id)->with('success', 'Selamat Datang ' . $user->nama);
             }
 
-            return redirect('/')->with('success', 'Selamat Datang '.$user->nama);
+            return redirect('/')->with('success', 'Selamat Datang ' . $user->nama);
         }
 
         return redirect()->back()->with('error', 'Login Gagal. Username atau Password salah');
@@ -145,7 +145,7 @@ class AuthController extends Controller
         }
 
         $file->storeAs('migrasi', $file->getClientOriginalName());
-        $filename = 'migrasi/'.$file->getClientOriginalName();
+        $filename = 'migrasi/' . $file->getClientOriginalName();
 
         return $this->migrasi_file($businessBaru, $filename);
     }
@@ -184,7 +184,7 @@ class AuthController extends Controller
                 $kode_desa = str_pad($desa[0], 4, '0', STR_PAD_LEFT);
                 $business_id_migrasi = str_pad($business_id_migrasi, 3, '0', STR_PAD_LEFT);
 
-                $kd_desa = $business_id_migrasi.'.'.$kode_desa;
+                $kd_desa = $business_id_migrasi . '.' . $kode_desa;
                 $data_desa[$desa[1]] = [
                     'kode' => $kd_desa,
                     'nama' => ucwords(strtolower($desa[1])),
@@ -268,7 +268,7 @@ class AuthController extends Controller
         if ($migrasiCustomer) {
             $data_desa = [];
             $business_id_migrasi = str_pad(Session::get('business_id_migrasi'), 3, '0', STR_PAD_LEFT);
-            $desa = Village::where('kode', 'LIKE', $business_id_migrasi.'%')->get();
+            $desa = Village::where('kode', 'LIKE', $business_id_migrasi . '%')->get();
             foreach ($desa as $d) {
                 $data_desa[$d->nama] = $d->id;
             }
@@ -309,7 +309,7 @@ class AuthController extends Controller
 
                 $cater = strtolower($customer[5]);
                 if (! array_key_exists($cater, $data_cater)) {
-                    $username = $cater.Session::get('business_id_migrasi');
+                    $username = $cater . Session::get('business_id_migrasi');
                     $password = Hash::make($username);
 
                     $data_cater[$cater] = [
@@ -353,7 +353,7 @@ class AuthController extends Controller
         if ($migrasiInstalasi) {
             $data_desa = [];
             $business_id_migrasi = str_pad(Session::get('business_id_migrasi'), 3, '0', STR_PAD_LEFT);
-            $desa = Village::where('kode', 'LIKE', $business_id_migrasi.'%')->get();
+            $desa = Village::where('kode', 'LIKE', $business_id_migrasi . '%')->get();
             foreach ($desa as $d) {
                 $data_desa[$d->nama] = [
                     'id' => $d->id,
@@ -579,7 +579,7 @@ class AuthController extends Controller
                         }
                     }
 
-                    $tgl_pemakaian = $thn.'-'.$bln.'-'.$hari;
+                    $tgl_pemakaian = $thn . '-' . $bln . '-' . $hari;
                     $data_pemakaian[] = [
                         'business_id' => $business_id_migrasi,
                         'id_instalasi' => $id_instalasi,
@@ -589,7 +589,7 @@ class AuthController extends Controller
                         'jumlah' => $akhir - $awal,
                         'nominal' => $nominal,
                         'tgl_pemakaian' => $tgl_pemakaian,
-                        'tgl_akhir' => date('Y-m', strtotime('+1 month', strtotime($tgl_pemakaian))).'-27',
+                        'tgl_akhir' => date('Y-m', strtotime('+1 month', strtotime($tgl_pemakaian))) . '-27',
                         'cater' => $cater_id,
                         'status' => 'PAID',
                     ];
@@ -675,7 +675,7 @@ class AuthController extends Controller
                 'total' => $usage->installation->abodemen,
                 'denda' => '0',
                 'relasi' => $usage->customers->nama,
-                'keterangan' => 'Pembayaran Abodemen Pemakaian Atas Nama '.$usage->customers->nama.' ('.$usage->installation->id.')',
+                'keterangan' => 'Pembayaran Abodemen Pemakaian Atas Nama ' . $usage->customers->nama . ' (' . $usage->installation->id . ')',
                 'urutan' => '0',
                 'created_at' => $created_at,
             ];
@@ -691,7 +691,7 @@ class AuthController extends Controller
                 'total' => $usage->nominal,
                 'denda' => '0',
                 'relasi' => $usage->customers->nama,
-                'keterangan' => 'Pembayaran Tagihan Bulanan Atas Nama '.$usage->customers->nama.' ('.$usage->installation->id.')',
+                'keterangan' => 'Pembayaran Tagihan Bulanan Atas Nama ' . $usage->customers->nama . ' (' . $usage->installation->id . ')',
                 'urutan' => '0',
                 'created_at' => $created_at,
             ];
@@ -719,8 +719,8 @@ class AuthController extends Controller
         User::insert([
             'nama' => 'Direktur',
             'jabatan' => '1',
-            'username' => 'direktur'.Session::get('business_id_migrasi'),
-            'password' => Hash::make('direktur'.Session::get('business_id_migrasi')),
+            'username' => 'direktur' . Session::get('business_id_migrasi'),
+            'password' => Hash::make('direktur' . Session::get('business_id_migrasi')),
             'business_id' => Session::get('business_id_migrasi'),
         ]);
 
@@ -753,7 +753,7 @@ class AuthController extends Controller
                         $bulanMenunggak = explode(' ', $value);
 
                         $bulan = str_pad($this->bulan($bulanMenunggak[0]), 2, '0', STR_PAD_LEFT);
-                        $bulanPemakaian[$key] = $bulanMenunggak[1].'-'.$bulan.'-01';
+                        $bulanPemakaian[$key] = $bulanMenunggak[1] . '-' . $bulan . '-01';
                     }
                 }
             } else {
@@ -803,7 +803,7 @@ class AuthController extends Controller
                 foreach ($data['bulan'] as $tanggal => $jumlah) {
                     if ($jumlah > 0) {
                         $tgl_pemakaian = date('Y-m-d', strtotime('-1 month', strtotime($tanggal)));
-                        $tgl_akhir = date('Y-m', strtotime($tanggal)).'-'.$tgl_toleransi;
+                        $tgl_akhir = date('Y-m', strtotime($tanggal)) . '-' . $tgl_toleransi;
 
                         $harga_paket = $harga[0];
                         $jumlah_menunggak = $jumlah - $denda - $abodemen;
@@ -834,10 +834,10 @@ class AuthController extends Controller
 
                         $values = array_values($usage);
                         $values = array_map(function ($value) {
-                            return is_string($value) ? "'".$value."'" : $value;
+                            return is_string($value) ? "'" . $value . "'" : $value;
                         }, $values);
 
-                        echo 'INSERT INTO usages (business_id, id_instalasi, customer, awal, akhir, jumlah, nominal, tgl_pemakaian, tgl_akhir, cater, status, created_at, updated_at) VALUES ('.implode(',', $values).'); <br>';
+                        echo 'INSERT INTO usages (business_id, id_instalasi, customer, awal, akhir, jumlah, nominal, tgl_pemakaian, tgl_akhir, cater, status, created_at, updated_at) VALUES (' . implode(',', $values) . '); <br>';
                     }
                 }
             }

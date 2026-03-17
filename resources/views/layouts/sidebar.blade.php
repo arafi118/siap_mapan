@@ -4,6 +4,32 @@
     }
 </style>
 <!-- Sidebar -->
+@if (auth()->user()->jabatan == 5)
+    <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+            <div class="sidebar-brand-text mx-3">{{ Session::get('nama_usaha') }}</div>
+        </a>
+        <br>
+        <li class="nav-item active">
+            <a class="nav-link fw-normal" href="/dashboard/usagesDashboard/?cater_id={{ auth()->user()->id }}">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link fw-normal" href="/usages/?cater_id={{ auth()->user()->id }}">
+                <i class="fas fa-tint"></i>
+                <span>Pemakaian Air Bersih</span>
+            </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link fw-normal" href="/usages/sampah/?cater_id={{ auth()->user()->id }}">
+                <i class="fas fa-street-view"></i>
+                <span>Retribusi Sampah</span>
+            </a>
+        </li>
+    </ul>
+@else
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
         <div class="sidebar-brand-text mx-3">{{ Session::get('nama_usaha') }}</div>
@@ -40,4 +66,5 @@
         @endif
     @endforeach
 </ul>
+@endif
 <!-- Sidebar -->

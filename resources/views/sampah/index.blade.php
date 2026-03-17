@@ -100,9 +100,8 @@
                     </div>
                     {{-- <div class="alert alert-info mt-3" style="background-color: rgb(63, 63, 63); color: white;"> --}}
                     @if (Session::get('jabatan') == 5)
-                        <div class="alert alert-info mt-3">
-                            <div
-                                style="position: relative; background-color: #32bcfc; padding: 20px 10px 20px 10px; border-radius: 6px; color: white; text-align: left;">
+                        <div class="alert alert-secondary mt-3">
+                            <div>
                                 <p style="padding-left: 5px; font-weight: bold;">PERHATIAN!</p>
                                 <ol style="padding-left: 20px; margin-left: 0;">
                                     <li> Pastikan nama <b>Cater</b> yang tertera di atas adalah nama Anda pribadi. Apabila
@@ -121,9 +120,9 @@
                                 </ol>
 
                                 <!-- Gambar diletakkan mutlak di kanan bawah -->
-                                <img src="../../assets/img/air.png" class="mb-3 img-fluid d-none d-lg-block"
+                                {{-- <img src="../../assets/img/air.png" class="mb-3 img-fluid d-none d-lg-block"
                                     style="position: absolute; bottom: 20px; right: 40px; max-height:200px;"
-                                    alt="Maskot Air">
+                                    alt="Maskot Air"> --}}
                             </div>
                         </div>
                     @endif
