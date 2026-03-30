@@ -129,7 +129,7 @@
                         }
 
                         $abodemen = $trx_settings->abodemen ?? 0;
-                        $total = $use->nominal + $abodemen + $dendaPemakaianLalu;
+                        $total = $usage->nominal + $abodemen + $dendaPemakaianLalu;
                     @endphp
                     <tr>
                         <td align="center">{{ $i + 1 }}</td>
