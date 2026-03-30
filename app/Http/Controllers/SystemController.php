@@ -33,7 +33,7 @@ class SystemController extends Controller
             return;
         }
 
-        $installations = Installations::where('business_id', $businessId)->with([
+        $installations = Installations::where('status', 'A')->where('business_id', $businessId)->with([
             'customer',
             'package',
             'usage' => function ($query) use ($date) {
