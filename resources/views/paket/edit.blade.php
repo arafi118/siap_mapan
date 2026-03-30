@@ -10,8 +10,8 @@
         @csrf
         @method('PUT')
 
-        <input type="hidden" name="abodemen" id="abodemen" value="{{ $tampil_settings->abodemen }}">
-        <input type="hidden" name="denda" id="denda" value="{{ $tampil_settings->denda }}">
+        {{-- <input type="hidden" name="abodemen" id="abodemen" value="{{ $tampil_settings->abodemen }}">
+        <input type="hidden" name="denda" id="denda" value="{{ $tampil_settings->denda }}"> --}}
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
@@ -31,6 +31,26 @@
                                                 id="kelas" class="form-control form-control-sm"
                                                 value="{{ $package->kelas }}">
                                             <small class="text-danger" id="msg_kelas"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="position-relative mb-2">
+                                            <label for="abodemen" class="form-label">Abodemen</label>
+                                            <input autocomplete="off" maxlength="16" type="text" name="abodemen"
+                                                id="abodemen" class="form-control form-control-sm"
+                                                value="{{ number_format($package->abodemen, 2) }}">
+                                            <small class="text-danger" id="msg_abodemen"></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="position-relative mb-2">
+                                            <label for="denda" class="form-label">Denda</label>
+                                            <input autocomplete="off" maxlength="16" type="text" name="denda"
+                                                id="denda" class="form-control form-control-sm"
+                                                value="{{ number_format($package->denda, 2) }}">
+                                            <small class="text-danger" id="msg_denda"></small>
                                         </div>
                                     </div>
                                 </div>
@@ -91,6 +111,13 @@
         });
         // edit data
         $(".block").maskMoney({
+            allowNegative: true
+        });
+
+         $("#abodemen").maskMoney({
+            allowNegative: true
+        });
+         $("#denda").maskMoney({
             allowNegative: true
         });
 

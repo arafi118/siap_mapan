@@ -172,9 +172,11 @@ class PackageController extends Controller
             "abodemen",
             "denda"
         ]);
+
         $rules = [
             'kelas' => 'required'
         ];
+
         $validate = Validator::make($data, $rules);
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
@@ -195,8 +197,8 @@ class PackageController extends Controller
         $update = Package::where('id', $package->id)->update([
             'business_id'   => Session::get('business_id'),
             'kelas'         => $request->kelas,
-            'abodemen'      => $request->abodemen,
-            'denda'         => $request->denda,
+            'abodemen'      => str_replace(',', '', str_replace('.00', '', $request->abodemen)),
+            'denda'         => str_replace(',', '', str_replace('.00', '', $request->denda)),
             'harga'         => $blok
         ]);
         return response()->json([
