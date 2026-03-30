@@ -114,17 +114,17 @@
                 @foreach ($usagesGroup->sortBy([['installation.rt', 'asc'], ['tgl_akhir', 'asc']]) as $i => $usage)
                     @php
                         $dendaPemakaianLalu = 0;
+
+                        $tgl_akhhir_lalu = date('Y-m', strtotime($usage->tgl_akhir));
+
                         foreach ($usage->installation->transaction as $trx_denda) {
-                            if ($trx_denda->tgl_transaksi < $usage->tgl_akhir) {
+                            if (
+                                $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
+                                date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
+                            ) {
                                 $dendaPemakaianLalu = $trx_denda->total;
                             }
                         }
-
-                        // $abodemen = $usage->installation->abodemen ?? 0;
-                        // $total = $usage->nominal + $abodemen + $dendaPemakaianLalu;
-
-                        $abodemen = $trx_settings->abodemen ?? 0;
-                        $total = $usage->nominal + $abodemen + $dendaPemakaianLalu;
                     @endphp
                     <tr>
                         <td align="center">{{ $i + 1 }}</td>
