@@ -403,9 +403,9 @@ class UsageController extends Controller
 
         $data['gambar'] = $data['bisnis']->logo;
         $data['keuangan'] = $keuangan;
-
+            
         $view = view('penggunaan.partials.cetak', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait'); // ✅ perbaiki 'potrait' → 'portrait'
+        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait'); 
 
         return $pdf->stream();
     }
@@ -494,6 +494,7 @@ class UsageController extends Controller
         if ($request->cater != '') {
             $usagesQuery->where('cater', $request->cater);
         }
+        $data['trx_settings'] = Settings::where('business_id', Session::get('business_id'))->first();
 
         $usages = $usagesQuery->with([
             'customers',

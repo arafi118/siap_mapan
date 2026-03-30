@@ -56,7 +56,10 @@
                     }
                 }
 
-                $total = $use->nominal + $use->installation->abodemen + $dendaPemakaianLalu;
+                // $total = $use->nominal + $use->installation->abodemen + $dendaPemakaianLalu;
+
+                $abodemen = $trx_settings->abodemen ?? 0;
+                $total = $use->nominal + $abodemen + $dendaPemakaianLalu;
             @endphp
             <div class="box">
                 <table border="0" width="100%">
