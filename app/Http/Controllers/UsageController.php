@@ -494,6 +494,9 @@ class UsageController extends Controller
         if ($request->cater != '') {
             $usagesQuery->where('cater', $request->cater);
         }
+        if ($request->has('cetak')) {
+            $usagesQuery->whereIn('id', $request->cetak);
+        }
         $data['trx_settings'] = Settings::where('business_id', Session::get('business_id'))->first();
 
         $usages = $usagesQuery->with([

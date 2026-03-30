@@ -463,21 +463,36 @@
             $(document).on('click', '#BtnCetak1', function(e) {
                 e.preventDefault()
 
-                var data = table.data().toArray()
+                let checked = []
+
+                $('[data-input=checked]:checked').each(function() {
+                    checked.push($(this).val())
+                })
+
+                if (checked.length == 0) {
+                    Swal.fire('Error', 'Tidak ada data dipilih', 'error')
+                    return
+                }
+
                 var formTagihan = $('#form');
+                formTagihan.html('')
 
                 var tahun = $('#tahun_pakai').val()
                 var bulan = $('#bulan_pakai').val()
-                var caters = $('#caters').val()
+                var cater = $('#caters').val()
 
-                formTagihan.find('form').html('')
-                var row = formTagihan.append(`
-                <input type="hidden" name="tahun_tagihan" value="${tahun}">
-                <input type="hidden" name="bulan_tagihan" value="${bulan}">
-                <input type="hidden" name="cater" value="${cater}">
-            `);
+                // kirim ID yg dicentang
+                checked.forEach(id => {
+                    formTagihan.append(`<input type="hidden" name="cetak[]" value="${id}">`)
+                })
 
-                $('#FormCetakTagihan').submit();
+                formTagihan.append(`
+                    <input type="hidden" name="tahun_tagihan" value="${tahun}">
+                    <input type="hidden" name="bulan_tagihan" value="${bulan}">
+                    <input type="hidden" name="cater" value="${cater}">
+                `)
+
+                $('#FormCetakTagihan').submit()
             })
             $(document).on('click', '#BtnCetak2', function(e) {
                 e.preventDefault();
