@@ -47,7 +47,9 @@ class UsageController extends Controller
                 $usages->where('cater', $caterId);
             }
 
-            $usages = $usages->with([
+            $usages = $usages->whereHas('installation', function ($query) {
+                $query->whereNotIn('status', ['B', 'C']); // hanya ambil yang bukan B atau C
+            })->with([
                 'customers',
                 'installation',
                 'installation.transaction' => function ($query) use ($rekening_denda) {
@@ -56,7 +58,9 @@ class UsageController extends Controller
                 'installation.village',
                 'usersCater',
                 'installation.package',
-            ])->orderBy('created_at', 'DESC')->get();
+            ])
+                ->orderBy('created_at', 'DESC')
+                ->get();
 
             Session::put('usages', $usages);
 
