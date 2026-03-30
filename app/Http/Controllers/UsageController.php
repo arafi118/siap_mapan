@@ -607,24 +607,17 @@ class UsageController extends Controller
 
         $bisnis = Business::find(Session::get('business_id'));
 
-        $installations = Installations::where('business_id', Session::get('business_id'))
-            ->whereIn('status', ['A', 'B'])
-            ->when($cater, function ($query) use ($cater) {
-                return $query->where('cater_id', $cater);
-            })
-            ->with([
-                'customer',
-                'package',
-                'village',
-                'users',
-                'oneUsage' => function ($query) use ($bulanAwal) {
-                    $query->where('tgl_pemakaian', 'like', $bulanAwal . '%');
-                },
-            ])
-            ->orderBy('customers.nama', 'ASC')
+        $installations = Installations::select('installations.*')
+            ->join('customers', 'customers.id', '=', 'installations.customer_id')
+            ->where('installations.business_id', Session::get('business_id'))
+            ->whereIn('installations.status', ['A', 'B'])
+            ->when($cater, fn($q) => $q->where('cater_id', $cater))
+            ->with(['customer', 'package', 'village', 'users', 'oneUsage' => fn($q) => $q->where('tgl_pemakaian', 'like', $bulanAwal . '%')])
+            ->orderBy('customers.nama', 'ASC') // urut alfabet
             ->orderBy('desa', 'ASC')
             ->orderBy('rt', 'ASC')
             ->get();
+
 
         $caterUser = $cater ? User::find($cater) : null;
 
