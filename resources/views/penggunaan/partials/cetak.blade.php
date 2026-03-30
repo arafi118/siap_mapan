@@ -50,13 +50,15 @@
         @foreach ($usage as $use)
             @php
                 $dendaPemakaianLalu = 0;
-                foreach ($use->installation->transaction as $trx_denda) {
-                    if ($trx_denda->tgl_transaksi < $use->tgl_akhir) {
-                        $dendaPemakaianLalu = $trx_denda->total;
+
+                // cek apakah sudah lewat jatuh tempo
+                if (date('Y-m-d') > $use->tgl_akhir) {
+                    foreach ($use->installation->transaction as $trx_denda) {
+                        if ($trx_denda->tgl_transaksi < $use->tgl_akhir) {
+                            $dendaPemakaianLalu = $trx_denda->total;
+                        }
                     }
                 }
-
-                // $total = $use->nominal + $use->installation->abodemen + $dendaPemakaianLalu;
 
                 $abodemen = $trx_settings->abodemen ?? 0;
                 $total = $use->nominal + $abodemen + $dendaPemakaianLalu;
@@ -139,7 +141,7 @@
                     <tr>
                         <td width="15%" align="left" style="padding-left: 24px;">Beban Tetap</td>
                         <td width="2%" align="right">:</td>
-                        <td width="20%" align="left">Rp. {{ number_format($abodemen, 2) }}</td>
+                        <td width="20%" align="left">Rp. {{ number_format($use->installation->abodemen, 2) }}</td>
                         <td width="2%" align="center">&nbsp;</td>
                         <td width="12%" align="left">Bendahara</td>
                     </tr>
