@@ -115,12 +115,12 @@
                     @php
                         $dendaPemakaianLalu = 0;
 
-                        if (date('Y-m-d') > $use->tgl_akhir) {
-                            $bulanTagihan = date('Y-m', strtotime($use->tgl_akhir));
+                        if (date('Y-m-d') > $usage->tgl_akhir) {
+                            $bulanTagihan = date('Y-m', strtotime($usage->tgl_akhir));
 
-                            foreach ($use->installation->transaction as $trx_denda) {
+                            foreach ($usage->installation->transaction as $trx_denda) {
                                 if (
-                                    $trx_denda->tgl_transaksi < $use->tgl_akhir &&
+                                    $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
                                     date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $bulanTagihan
                                 ) {
                                     $dendaPemakaianLalu = $trx_denda->total;
