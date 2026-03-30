@@ -139,7 +139,7 @@
                     <tr>
                         <td width="15%" align="left" style="padding-left: 24px;">Beban Tetap</td>
                         <td width="2%" align="right">:</td>
-                        <td width="20%" align="left">Rp. {{ number_format($use->installation->abodemen, 2) }}</td>
+                        <td width="20%" align="left">Rp. {{ number_format($abodemen, 2) }}</td>
                         <td width="2%" align="center">&nbsp;</td>
                         <td width="12%" align="left">Bendahara</td>
                     </tr>
