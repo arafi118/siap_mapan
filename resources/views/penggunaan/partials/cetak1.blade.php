@@ -120,7 +120,10 @@
                             }
                         }
 
-                        $abodemen = $usage->installation->abodemen ?? 0;
+                        // $abodemen = $usage->installation->abodemen ?? 0;
+                        // $total = $usage->nominal + $abodemen + $dendaPemakaianLalu;
+
+                        $abodemen = $trx_settings->abodemen ?? 0;
                         $total = $usage->nominal + $abodemen + $dendaPemakaianLalu;
                     @endphp
                     <tr>

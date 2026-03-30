@@ -538,7 +538,7 @@ class UsageController extends Controller
             ['kode_akun', '4.1.01.04'],
             ['business_id', Session::get('business_id')],
         ])->first();
-
+        $data['trx_settings'] = Settings::where('business_id', Session::get('business_id'))->first();
         $data = [
             'tahun' => $thn,
             'bulan' => $bln,
