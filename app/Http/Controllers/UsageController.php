@@ -380,6 +380,7 @@ class UsageController extends Controller
         if ($request->bulan_tagihan != '') {
             $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
         }
+        $data['trx_settings'] = Settings::where('business_id', Session::get('business_id'))->first();
 
         $data['usage'] = $data['usage']->with([
             'customers',
