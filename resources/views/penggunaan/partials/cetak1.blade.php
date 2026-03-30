@@ -115,16 +115,21 @@
                     @php
                         $dendaPemakaianLalu = 0;
 
-                        $tgl_akhhir_lalu = date('Y-m', strtotime($usage->tgl_akhir));
+                        if (date('Y-m-d') > $use->tgl_akhir) {
+                            $bulanTagihan = date('Y-m', strtotime($use->tgl_akhir));
 
-                        foreach ($usage->installation->transaction as $trx_denda) {
-                            if (
-                                $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
-                                date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
-                            ) {
-                                $dendaPemakaianLalu = $trx_denda->total;
+                            foreach ($use->installation->transaction as $trx_denda) {
+                                if (
+                                    $trx_denda->tgl_transaksi < $use->tgl_akhir &&
+                                    date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $bulanTagihan
+                                ) {
+                                    $dendaPemakaianLalu = $trx_denda->total;
+                                }
                             }
                         }
+
+                        $abodemen = $trx_settings->abodemen ?? 0;
+                        $total = $use->nominal + $abodemen + $dendaPemakaianLalu;
                     @endphp
                     <tr>
                         <td align="center">{{ $i + 1 }}</td>
