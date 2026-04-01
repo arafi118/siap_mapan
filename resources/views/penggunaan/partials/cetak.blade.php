@@ -48,15 +48,20 @@
 <body>
     <div class="container">
         @foreach ($usage as $use)
-            @php
+          @php
                 $dendaPemakaianLalu = 0;
 
-                // cek apakah sudah lewat jatuh tempo
-                if (date('Y-m-d') > $use->tgl_akhir) {
-                    foreach ($use->installation->transaction as $trx_denda) {
-                        if ($trx_denda->tgl_transaksi < $use->tgl_akhir) {
-                            $dendaPemakaianLalu = $trx_denda->total;
-                        }
+                // ambil bulan sebelumnya dari pemakaian sekarang
+                $bulanLalu = date('Y-m', strtotime('-1 month', strtotime($use->tgl_pemakaian)));
+
+                $usageLalu = \App\Models\Usage::where('id_instalasi', $use->id_instalasi)
+                    ->where('tgl_pemakaian', 'LIKE', $bulanLalu . '%')
+                    ->first();
+
+                if ($usageLalu) {
+                    // jika bulan lalu belum bayar dan sudah lewat jatuh tempo
+                    if ($usageLalu->status == 'UNPAID' && date('Y-m-d') > $usageLalu->tgl_akhir) {
+                        $dendaPemakaianLalu = $trx_settings->denda ?? 0;
                     }
                 }
 

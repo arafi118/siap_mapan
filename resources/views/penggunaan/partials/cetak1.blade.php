@@ -115,16 +115,17 @@
                     @php
                         $dendaPemakaianLalu = 0;
 
-                        if (date('Y-m-d') > $usage->tgl_akhir) {
-                            $bulanTagihan = date('Y-m', strtotime($usage->tgl_akhir));
+                        // ambil bulan sebelumnya dari pemakaian sekarang
+                        $bulanLalu = date('Y-m', strtotime('-1 month', strtotime($usage->tgl_pemakaian)));
 
-                            foreach ($usage->installation->transaction as $trx_denda) {
-                                if (
-                                    $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
-                                    date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $bulanTagihan
-                                ) {
-                                    $dendaPemakaianLalu = $trx_denda->total;
-                                }
+                        $usageLalu = \App\Models\Usage::where('id_instalasi', $usage->id_instalasi)
+                            ->where('tgl_pemakaian', 'LIKE', $bulanLalu . '%')
+                            ->first();
+
+                        if ($usageLalu) {
+                            // jika bulan lalu belum bayar dan sudah lewat jatuh tempo
+                            if ($usageLalu->status == 'UNPAID' && date('Y-m-d') > $usageLalu->tgl_akhir) {
+                                $dendaPemakaianLalu = $trx_settings->denda ?? 0;
                             }
                         }
 

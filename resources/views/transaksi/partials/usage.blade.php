@@ -182,13 +182,22 @@
                             if (isset($usages[$index - 1])) {
                                 $isUnpaid = $usages[$index - 1]->status == 'UNPAID' ? true : false;
                             }
-                            $dendaPemakaianLalu = 0;
-                            foreach ($installations->transaction as $trx_denda) {
-                                if (
-                                    $trx_denda->tgl_transaksi < $usage->tgl_akhir &&
-                                    date('Y-m', strtotime($trx_denda->tgl_transaksi)) == $tgl_akhhir_lalu
-                                ) {
-                                    $dendaPemakaianLalu = $trx_denda->total;
+                           $dendaPemakaianLalu = 0;
+
+                            // ambil bulan sebelumnya dari pemakaian sekarang
+                            $bulanLalu = date('Y-m', strtotime('-1 month', strtotime($usage->tgl_pemakaian)));
+
+                            $usageLalu = \App\Models\Usage::where('id_instalasi', $usage->id_instalasi)
+                                ->where('tgl_pemakaian', 'LIKE', $bulanLalu . '%')
+                                ->first();
+
+                            if ($usageLalu) {
+                                // kalau bulan lalu belum bayar
+                                if ($usageLalu->status == 'UNPAID') {
+                                    // cek apakah sudah lewat jatuh tempo bulan lalu
+                                    if (date('Y-m-d') > $usageLalu->tgl_akhir) {
+                                        $dendaPemakaianLalu = $trx_settings->denda ?? 0;
+                                    }
                                 }
                             }
                         @endphp
