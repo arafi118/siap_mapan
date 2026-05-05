@@ -464,7 +464,7 @@ class InstallationsController extends Controller
 
         $biaya_instal = $pasangbaru - $biaya_instalasi;
 
-        $status = '0';
+        $status = 'R';
         if ($request->kategori == '1') {
             $jumlah = $biaya_instal;
             if ($jumlah <= 0) {
