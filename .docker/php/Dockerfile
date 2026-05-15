@@ -17,7 +17,6 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libfontconfig1 \
     libxrender1 \
-    wkhtmltopdf \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
