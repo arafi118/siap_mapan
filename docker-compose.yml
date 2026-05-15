@@ -10,6 +10,8 @@ services:
         working_dir: /var/www
         volumes:
             - ./:/var/www:z
+            - /usr/local/bin/wkhtmltopdf:/usr/local/bin/wkhtmltopdf:ro
+            - /usr/local/bin/wkhtmltoimage:/usr/local/bin/wkhtmltoimage:ro
         networks:
             - siap-mapan-network
             - web-network
