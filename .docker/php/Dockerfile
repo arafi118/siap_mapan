@@ -8,6 +8,7 @@ ARG uid=1000
 RUN apt-get update && apt-get install -y \
     git \
     curl \
+    wget \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
@@ -17,9 +18,18 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libfontconfig1 \
     libxrender1 \
+    fonts-75dpi \
+    fonts-100dpi \
+    xfonts-75dpi \
+    xfonts-100dpi \
+    libx11-6 \
+    libxcb1 \
+    libxext6 \
+    xfonts-base \
+    xfonts-utils \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl
-
+    
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb \
     && apt install -y ./wkhtmltox_0.12.6.1-2.bullseye_amd64.deb \
     && rm wkhtmltox_0.12.6.1-2.bullseye_amd64.deb
