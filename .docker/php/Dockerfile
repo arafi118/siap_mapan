@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     libfontconfig1 \
     libxrender1 \
     wkhtmltopdf \
+    wkhtmltoimage \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
