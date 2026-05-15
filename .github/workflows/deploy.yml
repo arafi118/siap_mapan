@@ -16,9 +16,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /var/www/pamsides.astamart.net
+            cd /home/enpii/apps/pamsides
             git pull origin master
-            composer install --no-dev --optimize-autoloader
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+            docker compose up -d --build
+            docker compose exec -T php composer install
