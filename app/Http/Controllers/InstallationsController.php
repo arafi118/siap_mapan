@@ -463,16 +463,9 @@ class InstallationsController extends Controller
         $biaya_instalasi = $data['total'] ?? 0;
 
         $biaya_instal = $pasangbaru - $biaya_instalasi;
+        $jumlah = $biaya_instal;
 
         $status = 'R';
-        if ($request->kategori == '1') {
-            $jumlah = $biaya_instal;
-            if ($jumlah <= 0) {
-                $status = 'R';
-            }
-        } elseif ($request->kategori == '2') {
-            $status = 'R';
-        }
 
         // INSTALLATION = simpan database
         $install = Installations::create([
