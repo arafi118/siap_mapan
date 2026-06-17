@@ -35,7 +35,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-0 pt-1">
                                 <div>
                                     <h4 class="mb-1 font-weight-bold">
-                                        {{ $installations->kode_instalasi ?? '-' }}-{{ $installations->package->inisial ?? '-' }}
+                                        {{ $installations->kode_instalasi ?? '-' }}{{ ($installations->package->inisial ?? null) ? '-' . $installations->package->inisial : '' }}
                                     </h4>
                                     <span class="badge badge-success">Aktif</span>
                                 </div>

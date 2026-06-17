@@ -132,7 +132,7 @@
                     <tr>
                         <td style="border: 1px solid #000; text-align:center;">{{ $loop->iteration }}</td>
                         <td style="border: 1px solid #000; text-align:left;">{{ $inst->customer->nama ?? '-' }}</td>
-                        <td style="border: 1px solid #000;">{{ $inst->kode_instalasi }}-{{ $inst->package->inisial }}
+                        <td style="border: 1px solid #000;">{{ $inst->kode_instalasi }}{{ $inst->package?->inisial ? '-' . $inst->package->inisial : '' }}
                         </td>
                         <td style="border: 1px solid #000; text-align:center;">{{ $inst->rt ?? '00' }}</td>
                         <td style="border: 1px solid #000; text-align:center;">{{ $awal }}</td>
