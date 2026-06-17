@@ -28,7 +28,7 @@
                             @foreach ($installations as $ins)
                                 <tr>
                                     <td>{{ $ins->id }}</td>
-                                    <td>{{ $ins->kode_instalasi }}-{{ $ins->package->inisial }}</td>
+                                    <td>{{ $ins->kode_instalasi }}{{ $ins->package?->inisial ? '-' . $ins->package->inisial : '' }}</td>
                                     <td>{{ $ins->customer->nama }}</td>
                                     <td>{{ $ins->village->nama ?? '-' }}</td>
                                     <td>{{ $ins->village->dusun ?? '-' }}</td>

@@ -143,7 +143,7 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
     Route::get('/dataset/{time}', [SystemController::class, 'dataset']);
 
     Route::get('/pengaturan/coa', [SopController::class, 'coa']);
-
+    /*  */
     // Profil
     Route::get('/profil', [ProfilController::class, 'index']);
     Route::post('/profil', [ProfilController::class, 'update']);
