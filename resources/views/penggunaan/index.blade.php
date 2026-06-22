@@ -449,39 +449,44 @@
                     return;
                 }
 
-                var formTagihan = $('#FormCetakBuktiTagihan');
-
                 var tahun = $('#tahun_pakai').val()
                 var bulan = $('#bulan_pakai').val()
                 var caters = $('#caters').val()
 
-                // Remove old hidden inputs first (prevent duplicates)
-                formTagihan.find('input[name="tahun_tagihan"], input[name="bulan_tagihan"], input[name="pemakaian_cater"]').remove();
+                var formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('tahun_tagihan', tahun);
+                formData.append('bulan_tagihan', bulan);
+                formData.append('pemakaian_cater', caters);
 
-                formTagihan.append(`
-                    <input type="hidden" name="tahun_tagihan" value="${tahun}">
-                    <input type="hidden" name="bulan_tagihan" value="${bulan}">
-                    <input type="hidden" name="pemakaian_cater" value="${caters}">
-                `);
+                $('[data-input=checked]:checked').each(function() {
+                    formData.append('cetak[]', $(this).val());
+                });
 
-                // Show loading
                 Swal.fire({
                     title: 'Mencetak Struk...',
-                    text: 'Mohon tunggu, sedang memproses ' + checkedCount + ' struk. PDF akan terbuka di tab baru.',
+                    text: 'Mohon tunggu, sedang memproses ' + checkedCount + ' struk.',
                     allowOutsideClick: false,
                     showConfirmButton: false,
                     didOpen: () => { Swal.showLoading() }
                 });
 
-                // Open new window first, then submit form into it
-                var newWindow = window.open('', '_blank');
-                formTagihan.attr('target', '_blank');
-                formTagihan.submit();
-
-                // Close loading after server likely responded
-                setTimeout(function() {
+                fetch('/usages/cetak', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Gagal mencetak');
+                    return response.blob();
+                })
+                .then(blob => {
                     Swal.close();
-                }, 5000);
+                    var url = URL.createObjectURL(blob);
+                    window.open(url, '_blank');
+                })
+                .catch(err => {
+                    Swal.fire('Error', 'Gagal mencetak struk. ' + err.message, 'error');
+                });
             })
             $(document).on('click', '#BtnCetak1', function(e) {
                 e.preventDefault()
