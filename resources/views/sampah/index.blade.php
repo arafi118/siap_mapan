@@ -445,19 +445,40 @@
                 }
 
                 var newTab = window.open('', '_blank');
-                newTab.document.write('<html><head><title>Mencetak Struk...</title></head><body style="display:flex;justify-content:center;align-items:center;height:100vh;margin:0;font-family:Arial,sans-serif;background:#f8f9fa"><div style="text-align:center"><div style="width:50px;height:50px;border:5px solid #e9ecef;border-top:5px solid #0d6efd;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div><p id="status" style="color:#333;font-size:16px">Menyiapkan ' + allIds.length + ' struk...</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style></body></html>');
+                newTab.document.write('<html><head><title>Mencetak Struk...</title></head><body style="margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center"><div style="text-align:center"><div style="width:56px;height:56px;border:5px solid rgba(255,255,255,0.3);border-top:5px solid #fff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div><p style="color:#fff;font-size:18px;font-weight:bold;margin:0 0 6px">Menyiapkan ' + allIds.length + ' struk...</p><p style="color:rgba(255,255,255,0.7);font-size:13px;margin:0">Proses ini mungkin membutuhkan beberapa saat</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style></body></html>');
                 newTab.document.close();
 
                 var results = [];
 
                 function processChunk(index) {
                     if (index >= chunks.length) {
-                        var html = '<html><head><title>Struk Selesai</title></head><body style="font-family:Arial,sans-serif;padding:40px;background:#f8f9fa">';
-                        html += '<h3 style="margin-bottom:20px">Struk berhasil dibuat (' + results.length + ' file)</h3>';
+                        if (results.length === 1) {
+                            newTab.location.href = results[0].url;
+                            return;
+                        }
+                        var html = '<html><head><title>Struk Selesai</title></head>';
+                        html += '<body style="margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px">';
+                        html += '<div style="background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.15);max-width:600px;width:100%;overflow:hidden">';
+                        html += '<div style="background:linear-gradient(135deg,#0d6efd,#6610f2);padding:30px;text-align:center">';
+                        html += '<div style="width:60px;height:60px;background:rgba(255,255,255,0.2);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><span style="font-size:30px;color:#fff">&#10003;</span></div>';
+                        html += '<h2 style="color:#fff;margin:0;font-size:22px">Struk Berhasil Dibuat!</h2>';
+                        html += '<p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:14px">' + allIds.length + ' struk retribusi sampah siap dicetak</p>';
+                        html += '</div>';
+                        html += '<div style="padding:24px 30px">';
+                        html += '<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:14px 16px;border-radius:8px;margin-bottom:20px">';
+                        html += '<p style="margin:0;color:#856404;font-size:13px;line-height:1.5"><strong>&#9888; Informasi:</strong> Dikarenakan jumlah data yang banyak (' + allIds.length + ' pelanggan), proses cetak dibagi menjadi <strong>' + results.length + ' bagian</strong> agar lebih cepat dan stabil. Silakan klik tombol di bawah untuk membuka dan mencetak setiap bagian.</p>';
+                        html += '</div>';
+                        html += '<p style="color:#6c757d;font-size:13px;margin:0 0 16px">Klik tombol di bawah ini untuk membuka struk:</p>';
                         results.forEach(function(r, i) {
-                            html += '<a href="' + r.url + '" target="_blank" style="display:inline-block;margin:5px;padding:10px 20px;background:#0d6efd;color:#fff;text-decoration:none;border-radius:5px">Buka Struk Bagian ' + (i + 1) + ' (' + r.count + ' data)</a>';
+                            html += '<a href="' + r.url + '" target="_blank" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:14px 18px;background:linear-gradient(135deg,#f8f9fa,#e9ecef);border:1px solid #dee2e6;border-radius:10px;text-decoration:none;color:#212529;transition:all 0.2s" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 4px 12px rgba(0,0,0,0.1)\'" onmouseout="this.style.transform=\'none\';this.style.boxShadow=\'none\'">';
+                            html += '<div><strong style="color:#0d6efd;font-size:14px">Bagian ' + (i + 1) + '</strong><br><span style="color:#6c757d;font-size:12px">' + r.count + ' data pelanggan</span></div>';
+                            html += '<span style="background:#0d6efd;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:bold;white-space:nowrap">Buka & Cetak</span>';
+                            html += '</a>';
                         });
-                        html += '</body></html>';
+                        html += '<div style="margin-top:20px;padding-top:16px;border-top:1px solid #e9ecef">';
+                        html += '<p style="color:#adb5bd;font-size:11px;margin:0;text-align:center">Tip: Setelah struk terbuka, tekan Ctrl+P untuk langsung mencetak.</p>';
+                        html += '</div>';
+                        html += '</div></div></body></html>';
                         newTab.document.write(html);
                         newTab.document.close();
                         return;
