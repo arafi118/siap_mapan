@@ -362,6 +362,9 @@ class UsageController extends Controller
 
     public function cetak(Request $request)
     {
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+
         $keuangan = new Keuangan;
         $id = $request->cetak;
 
@@ -371,18 +374,19 @@ class UsageController extends Controller
         ])->first();
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
-        $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id);
+        $data['trx_settings'] = Settings::where('business_id', Session::get('business_id'))->first();
+
+        $usageQuery = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id);
 
         if ($request->cater != '') {
-            $data['usage']->where('cater', $request->cater);
+            $usageQuery->where('cater', $request->cater);
         }
 
         if ($request->bulan_tagihan != '') {
-            $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
+            $usageQuery->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
         }
-        $data['trx_settings'] = Settings::where('business_id', Session::get('business_id'))->first();
 
-        $data['usage'] = $data['usage']->with([
+        $data['usage'] = $usageQuery->with([
             'customers',
             'installation.village',
             'installation.transaction' => function ($query) use ($rekening_denda) {
@@ -391,6 +395,38 @@ class UsageController extends Controller
             'usersCater',
             'installation.package',
         ])->get();
+
+        // Pre-fetch all previous month usages in 1 query (avoid N+1)
+        $instalasiIds = $data['usage']->pluck('id_instalasi')->unique();
+        $bulanMap = [];
+        foreach ($data['usage'] as $use) {
+            $bulanMap[$use->id_instalasi] = date('Y-m', strtotime('-1 month', strtotime($use->tgl_pemakaian)));
+        }
+
+        $prevUsages = collect();
+        if (!empty($bulanMap)) {
+            $prevUsages = Usage::whereIn('id_instalasi', $instalasiIds)
+                ->where(function ($q) use ($bulanMap) {
+                    foreach ($bulanMap as $instId => $bln) {
+                        $q->orWhere(function ($q2) use ($instId, $bln) {
+                            $q2->where('id_instalasi', $instId)->where('tgl_pemakaian', 'LIKE', $bln . '%');
+                        });
+                    }
+                })->get()->keyBy('id_instalasi');
+        }
+
+        // Pre-compute denda per usage
+        $dendaMap = [];
+        $dendaNominal = $data['trx_settings']->denda ?? 0;
+        foreach ($data['usage'] as $use) {
+            $prev = $prevUsages->get($use->id_instalasi);
+            $denda = 0;
+            if ($prev && $prev->status == 'UNPAID' && date('Y-m-d') > $prev->tgl_akhir) {
+                $denda = $dendaNominal;
+            }
+            $dendaMap[$use->id] = $denda;
+        }
+        $data['dendaMap'] = $dendaMap;
 
         $data['jabatan'] = User::where([
             ['business_id', Session::get('business_id')],
@@ -404,15 +440,28 @@ class UsageController extends Controller
 
         $data['gambar'] = $data['bisnis']->logo;
         $data['keuangan'] = $keuangan;
-            
+
+        // Pre-compute TTD base64 once (avoid re-reading file per iteration)
+        $data['ttdBase64'] = null;
+        if (!empty($data['jabatan']->tanda_tangan)) {
+            $ttdPath = storage_path('app/public/ttd/' . $data['jabatan']->tanda_tangan);
+            if (file_exists($ttdPath)) {
+                $ext = pathinfo($ttdPath, PATHINFO_EXTENSION);
+                $data['ttdBase64'] = 'data:image/' . $ext . ';base64,' . base64_encode(file_get_contents($ttdPath));
+            }
+        }
+
         $view = view('penggunaan.partials.cetak', $data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait'); 
+        $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait');
 
         return $pdf->stream();
     }
 
     public function cetakSampah(Request $request)
     {
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+
         $keuangan = new Keuangan;
         $id = $request->cetak;
 
@@ -422,17 +471,19 @@ class UsageController extends Controller
         ])->first();
 
         $data['bisnis'] = Business::where('id', Session::get('business_id'))->first();
-        $data['usage'] = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id);
+        $data['trx_settings'] = Settings::where('business_id', Session::get('business_id'))->first();
+
+        $usageQuery = Usage::where('business_id', Session::get('business_id'))->whereIn('id', $id);
 
         if ($request->cater != '') {
-            $data['usage']->where('cater', $request->cater);
+            $usageQuery->where('cater', $request->cater);
         }
 
         if ($request->bulan_tagihan != '') {
-            $data['usage']->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
+            $usageQuery->where('tgl_pemakaian', 'LIKE', '%' . $request->tahun_tagihan . '-' . $request->bulan_tagihan . '%');
         }
 
-        $data['usage'] = $data['usage']->with([
+        $data['usage'] = $usageQuery->with([
             'customers',
             'installation.village',
             'installation.transaction' => function ($query) use ($rekening_denda) {
@@ -454,6 +505,16 @@ class UsageController extends Controller
 
         $data['gambar'] = $data['bisnis']->logo;
         $data['keuangan'] = $keuangan;
+
+        // Pre-compute TTD base64 once
+        $data['ttdBase64'] = null;
+        if (!empty($data['jabatan']->tanda_tangan)) {
+            $ttdPath = storage_path('app/public/ttd/' . $data['jabatan']->tanda_tangan);
+            if (file_exists($ttdPath)) {
+                $ext = pathinfo($ttdPath, PATHINFO_EXTENSION);
+                $data['ttdBase64'] = 'data:image/' . $ext . ';base64,' . base64_encode(file_get_contents($ttdPath));
+            }
+        }
 
         $view = view('Sampah.partials.cetak', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait');

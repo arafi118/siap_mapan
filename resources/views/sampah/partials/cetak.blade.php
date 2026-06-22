@@ -131,11 +131,8 @@
                         <td width="2%" align="center">&nbsp;</td>
                         <td rowspan="2" width="14%" align="left">
                             <div style="position: absolute; height: 24px; transform: translateY(-12px);">
-                                @php
-                                    $ttdPath = storage_path('app/public/ttd/' . ($jabatan->tanda_tangan ?? ''));
-                                @endphp
-                                @if(!empty($jabatan->tanda_tangan) && file_exists($ttdPath))
-                                    <img src="data:image/{{ pathinfo($ttdPath, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents($ttdPath)) }}" style="height: 50px;">
+                                @if($ttdBase64)
+                                    <img src="{{ $ttdBase64 }}" style="height: 50px;">
                                 @endif
                             </div>
                         </td>

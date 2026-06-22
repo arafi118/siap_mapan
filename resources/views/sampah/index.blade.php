@@ -424,42 +424,79 @@
             $(document).on('click', '#BtnCetak', function(e) {
                 e.preventDefault()
 
-                if ($('#FormCetakBuktiTagihan').serializeArray().length > 1) {
-                    var formTagihan = $('#FormCetakBuktiTagihan');
+                var checkedCount = $('[data-input=checked]:checked').length;
 
-                    var tahun = $('#tahun_pakai').val()
-                    var bulan = $('#bulan_pakai').val()
-                    var caters = $('#caters').val()
-
-                    formTagihan.find('form').html('')
-                    var row = formTagihan.append(`
-                    <input type="hidden" name="tahun_tagihan" value="${tahun}">
-                    <input type="hidden" name="bulan_tagihan" value="${bulan}">
-                    <input type="hidden" name="pemakaian_cater" value="${cater}">
-                `);
-                    formTagihan.submit();
-                } else {
+                if (checkedCount === 0) {
                     Swal.fire('Error', "Tidak ada transaksi yang dipilih.", 'error')
+                    return;
                 }
-            })
-            $(document).on('click', '#BtnCetak1', function(e) {
-                e.preventDefault()
 
-                var data = table.data().toArray()
-                var formTagihan = $('#form');
+                var formTagihan = $('#FormCetakBuktiTagihan');
 
                 var tahun = $('#tahun_pakai').val()
                 var bulan = $('#bulan_pakai').val()
                 var caters = $('#caters').val()
 
-                formTagihan.find('form').html('')
-                var row = formTagihan.append(`
-                <input type="hidden" name="tahun_tagihan" value="${tahun}">
-                <input type="hidden" name="bulan_tagihan" value="${bulan}">
-                <input type="hidden" name="cater" value="${cater}">
-            `);
+                // Remove old hidden inputs first (prevent duplicates)
+                formTagihan.find('input[name="tahun_tagihan"], input[name="bulan_tagihan"], input[name="pemakaian_cater"]').remove();
 
-                $('#FormCetakTagihan').submit();
+                formTagihan.append(`
+                    <input type="hidden" name="tahun_tagihan" value="${tahun}">
+                    <input type="hidden" name="bulan_tagihan" value="${bulan}">
+                    <input type="hidden" name="pemakaian_cater" value="${caters}">
+                `);
+
+                // Show loading
+                Swal.fire({
+                    title: 'Mencetak Struk...',
+                    text: 'Mohon tunggu, sedang memproses ' + checkedCount + ' struk. PDF akan terbuka di tab baru.',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => { Swal.showLoading() }
+                });
+
+                // Open new window first, then submit form into it
+                var newWindow = window.open('', '_blank');
+                formTagihan.attr('target', '_blank');
+                formTagihan.submit();
+
+                // Close loading after server likely responded
+                setTimeout(function() {
+                    Swal.close();
+                }, 5000);
+            })
+            $(document).on('click', '#BtnCetak1', function(e) {
+                e.preventDefault()
+
+                let checked = []
+
+                $('[data-input=checked]:checked').each(function() {
+                    checked.push($(this).val())
+                })
+
+                if (checked.length == 0) {
+                    Swal.fire('Error', 'Tidak ada data dipilih', 'error')
+                    return
+                }
+
+                var formTagihan = $('#form');
+                formTagihan.html('')
+
+                var tahun = $('#tahun_pakai').val()
+                var bulan = $('#bulan_pakai').val()
+                var caters = $('#caters').val()
+
+                checked.forEach(id => {
+                    formTagihan.append(`<input type="hidden" name="cetak[]" value="${id}">`)
+                })
+
+                formTagihan.append(`
+                    <input type="hidden" name="tahun_tagihan" value="${tahun}">
+                    <input type="hidden" name="bulan_tagihan" value="${bulan}">
+                    <input type="hidden" name="cater" value="${caters}">
+                `)
+
+                $('#FormCetakTagihan').submit()
             })
             $(document).on('click', '#BtnCetak2', function(e) {
                 e.preventDefault();
