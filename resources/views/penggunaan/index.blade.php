@@ -463,7 +463,7 @@
                 }
 
                 var newTab = window.open('', '_blank');
-                newTab.document.write('<html><head><title>Mencetak Struk...</title></head><body style="margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center"><div style="text-align:center"><div style="width:56px;height:56px;border:5px solid rgba(255,255,255,0.3);border-top:5px solid #fff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div><p style="color:#fff;font-size:18px;font-weight:bold;margin:0 0 6px">Menyiapkan ' + allIds.length + ' struk...</p><p style="color:rgba(255,255,255,0.7);font-size:13px;margin:0">Proses ini mungkin membutuhkan beberapa saat</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style></body></html>');
+                newTab.document.write('<html><head><title>Mencetak Struk...</title></head><body style="margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0077b6,#00b4d8);min-height:100vh;display:flex;justify-content:center;align-items:center"><div style="text-align:center"><div style="width:56px;height:56px;border:5px solid rgba(255,255,255,0.3);border-top:5px solid #fff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div><p style="color:#fff;font-size:18px;font-weight:bold;margin:0 0 6px">Menyiapkan ' + allIds.length + ' struk...</p><p style="color:rgba(255,255,255,0.7);font-size:13px;margin:0">Proses ini mungkin membutuhkan beberapa saat</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style></body></html>');
                 newTab.document.close();
 
                 var results = [];
@@ -476,27 +476,25 @@
                             return;
                         }
                         var html = '<html><head><title>Struk Selesai</title></head>';
-                        html += '<body style="margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px">';
-                        html += '<div style="background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.15);max-width:600px;width:100%;overflow:hidden">';
-                        html += '<div style="background:linear-gradient(135deg,#0d6efd,#6610f2);padding:30px;text-align:center">';
-                        html += '<div style="width:60px;height:60px;background:rgba(255,255,255,0.2);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><span style="font-size:30px;color:#fff">&#10003;</span></div>';
-                        html += '<h2 style="color:#fff;margin:0;font-size:22px">Struk Berhasil Dibuat!</h2>';
-                        html += '<p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:14px">' + allIds.length + ' struk tagihan siap dicetak</p>';
+                        html += '<body style="margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0077b6,#00b4d8);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:30px">';
+                        html += '<div style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.1);max-width:700px;width:100%">';
+                        html += '<div style="background:#0d6efd;padding:28px 32px;border-radius:12px 12px 0 0;text-align:center">';
+                        html += '<div style="width:56px;height:56px;background:rgba(255,255,255,0.2);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px"><span style="font-size:28px;color:#fff">&#10003;</span></div>';
+                        html += '<h2 style="color:#fff;margin:0 0 6px;font-size:24px">Struk Berhasil Dibuat!</h2>';
+                        html += '<p style="color:rgba(255,255,255,0.85);margin:0;font-size:15px">' + allIds.length + ' struk tagihan siap dicetak</p>';
                         html += '</div>';
-                        html += '<div style="padding:24px 30px">';
-                        html += '<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:14px 16px;border-radius:8px;margin-bottom:20px">';
-                        html += '<p style="margin:0;color:#856404;font-size:13px;line-height:1.5"><strong>&#9888; Informasi:</strong> Dikarenakan jumlah data yang banyak (' + allIds.length + ' pelanggan), proses cetak dibagi menjadi <strong>' + results.length + ' bagian</strong> agar lebih cepat dan stabil. Silakan klik tombol di bawah untuk membuka dan mencetak setiap bagian.</p>';
+                        html += '<div style="padding:28px 32px">';
+                        html += '<div style="background:#fff3cd;border-left:5px solid #ffc107;padding:16px 20px;border-radius:6px;margin-bottom:24px">';
+                        html += '<p style="margin:0;color:#856404;font-size:14px;line-height:1.6"><strong>Informasi:</strong> Dikarenakan jumlah data yang banyak (' + allIds.length + ' pelanggan), proses cetak dibagi menjadi <strong>' + results.length + ' bagian</strong> agar lebih cepat dan stabil. Silakan klik tombol di bawah untuk membuka dan mencetak setiap bagian.</p>';
                         html += '</div>';
-                        html += '<p style="color:#6c757d;font-size:13px;margin:0 0 16px">Klik tombol di bawah ini untuk membuka struk:</p>';
+                        html += '<p style="color:#495057;font-size:14px;margin:0 0 18px;font-weight:bold">Pilih bagian yang ingin dibuka:</p>';
                         results.forEach(function(r, i) {
-                            html += '<a href="' + r.url + '" target="_blank" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:14px 18px;background:linear-gradient(135deg,#f8f9fa,#e9ecef);border:1px solid #dee2e6;border-radius:10px;text-decoration:none;color:#212529;transition:all 0.2s" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 4px 12px rgba(0,0,0,0.1)\'" onmouseout="this.style.transform=\'none\';this.style.boxShadow=\'none\'">';
-                            html += '<div><strong style="color:#0d6efd;font-size:14px">Bagian ' + (i + 1) + '</strong><br><span style="color:#6c757d;font-size:12px">' + r.count + ' data pelanggan</span></div>';
-                            html += '<span style="background:#0d6efd;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:bold;white-space:nowrap">Buka & Cetak</span>';
+                            html += '<a href="' + r.url + '" target="_blank" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:16px 20px;background:#f8f9fa;border:1px solid #dee2e6;border-radius:8px;text-decoration:none;color:#212529">';
+                            html += '<div><strong style="color:#0d6efd;font-size:16px">Bagian ' + (i + 1) + '</strong><br><span style="color:#6c757d;font-size:13px">' + r.count + ' data pelanggan</span></div>';
+                            html += '<span style="background:#0d6efd;color:#fff;padding:8px 20px;border-radius:6px;font-size:14px;font-weight:bold">Buka & Cetak</span>';
                             html += '</a>';
                         });
-                        html += '<div style="margin-top:20px;padding-top:16px;border-top:1px solid #e9ecef">';
-                        html += '<p style="color:#adb5bd;font-size:11px;margin:0;text-align:center">Tip: Setelah struk terbuka, tekan Ctrl+P untuk langsung mencetak.</p>';
-                        html += '</div>';
+                        html += '<p style="color:#adb5bd;font-size:12px;margin:20px 0 0;text-align:center;border-top:1px solid #e9ecef;padding-top:16px">Tip: Setelah struk terbuka, tekan Ctrl+P untuk langsung mencetak.</p>';
                         html += '</div></div></body></html>';
                         newTab.document.write(html);
                         newTab.document.close();
