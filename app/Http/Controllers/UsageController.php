@@ -441,7 +441,7 @@ class UsageController extends Controller
         $data['gambar'] = $data['bisnis']->logo;
         $data['keuangan'] = $keuangan;
 
-        // Pre-compute TTD base64 once (avoid re-reading file per iteration)
+        // Pre-compute TTD base64 once
         $data['ttdBase64'] = null;
         if (!empty($data['jabatan']->tanda_tangan)) {
             $ttdPath = storage_path('app/public/ttd/' . $data['jabatan']->tanda_tangan);
@@ -453,7 +453,6 @@ class UsageController extends Controller
 
         $view = view('penggunaan.partials.cetak', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait');
-
         return $pdf->stream();
     }
 
@@ -518,7 +517,6 @@ class UsageController extends Controller
 
         $view = view('Sampah.partials.cetak', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('Legal', 'portrait');
-
         return $pdf->stream();
     }
 

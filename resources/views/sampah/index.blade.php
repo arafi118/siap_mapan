@@ -424,9 +424,12 @@
             $(document).on('click', '#BtnCetak', function(e) {
                 e.preventDefault()
 
-                var checkedCount = $('[data-input=checked]:checked').length;
+                var allIds = [];
+                $('[data-input=checked]:checked').each(function() {
+                    allIds.push($(this).val());
+                });
 
-                if (checkedCount === 0) {
+                if (allIds.length === 0) {
                     Swal.fire('Error', "Tidak ada transaksi yang dipilih.", 'error')
                     return;
                 }
@@ -435,40 +438,54 @@
                 var bulan = $('#bulan_pakai').val()
                 var caters = $('#caters').val()
 
-                var formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('tahun_tagihan', tahun);
-                formData.append('bulan_tagihan', bulan);
-                formData.append('pemakaian_cater', caters);
+                var CHUNK = 50;
+                var chunks = [];
+                for (var i = 0; i < allIds.length; i += CHUNK) {
+                    chunks.push(allIds.slice(i, i + CHUNK));
+                }
 
-                $('[data-input=checked]:checked').each(function() {
-                    formData.append('cetak[]', $(this).val());
-                });
+                var newTab = window.open('', '_blank');
+                newTab.document.write('<html><head><title>Mencetak Struk...</title></head><body style="display:flex;justify-content:center;align-items:center;height:100vh;margin:0;font-family:Arial,sans-serif;background:#f8f9fa"><div style="text-align:center"><div style="width:50px;height:50px;border:5px solid #e9ecef;border-top:5px solid #0d6efd;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div><p id="status" style="color:#333;font-size:16px">Menyiapkan ' + allIds.length + ' struk...</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style></body></html>');
+                newTab.document.close();
 
-                Swal.fire({
-                    title: 'Mencetak Struk...',
-                    text: 'Mohon tunggu, sedang memproses ' + checkedCount + ' struk.',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    didOpen: () => { Swal.showLoading() }
-                });
+                var results = [];
 
-                fetch('/usages/sampah/cetak', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Gagal mencetak');
-                    return response.blob();
-                })
-                .then(blob => {
-                    Swal.close();
-                    var url = URL.createObjectURL(blob);
-                    window.open(url, '_blank');
-                })
-                .catch(err => {
-                    Swal.fire('Error', 'Gagal mencetak struk. ' + err.message, 'error');
-                });
+                function processChunk(index) {
+                    if (index >= chunks.length) {
+                        var html = '<html><head><title>Struk Selesai</title></head><body style="font-family:Arial,sans-serif;padding:40px;background:#f8f9fa">';
+                        html += '<h3 style="margin-bottom:20px">Struk berhasil dibuat (' + results.length + ' file)</h3>';
+                        results.forEach(function(r, i) {
+                            html += '<a href="' + r.url + '" target="_blank" style="display:inline-block;margin:5px;padding:10px 20px;background:#0d6efd;color:#fff;text-decoration:none;border-radius:5px">Buka Struk Bagian ' + (i + 1) + ' (' + r.count + ' data)</a>';
+                        });
+                        html += '</body></html>';
+                        newTab.document.write(html);
+                        newTab.document.close();
+                        return;
+                    }
+
+                    var fd = new FormData();
+                    fd.append('_token', '{{ csrf_token() }}');
+                    fd.append('tahun_tagihan', tahun);
+                    fd.append('bulan_tagihan', bulan);
+                    fd.append('pemakaian_cater', caters);
+                    chunks[index].forEach(function(id) { fd.append('cetak[]', id); });
+
+                    fetch('/usages/sampah/cetak', { method: 'POST', body: fd })
+                    .then(function(r) {
+                        if (!r.ok) throw new Error('Server error');
+                        return r.blob();
+                    })
+                    .then(function(blob) {
+                        results.push({ url: URL.createObjectURL(blob), count: chunks[index].length });
+                        processChunk(index + 1);
+                    })
+                    .catch(function(err) {
+                        newTab.document.write('<p style="color:red">Gagal bagian ' + (index + 1) + ': ' + err.message + '</p>');
+                        processChunk(index + 1);
+                    });
+                }
+
+                processChunk(0);
             })
             $(document).on('click', '#BtnCetak1', function(e) {
                 e.preventDefault()
