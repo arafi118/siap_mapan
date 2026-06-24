@@ -27,7 +27,7 @@
                     }
                 @endphp
                 <option value="{{ $com->id }}|{{ $com->transaction_id }}|{{ $sisaKomisi }}|{{ $kolektor }}">
-                    {{ $com->Installations->customer->nama }} [{{ $com->Installations->id }}] -
+                    {{ $com->Installations->customer->nama ?? '-' }} [{{ $com->Installations->id ?? '-' }}] -
                     Tagihan {{ $bulan_tagihan }} Rp. {{ number_format($sisaKomisi, 2) }}
                 </option>
             @endforeach

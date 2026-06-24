@@ -34,7 +34,7 @@
                                         $tgl_akhir = $com->Usage ? $com->Usage->tgl_akhir : null;
                                         $bulan_tagihan =
                                             $tgl_akhir ? Tanggal::namaBulan($tgl_akhir) . ' ' . Tanggal::tahun($tgl_akhir) : '-';
-                                        $kolektor = $com->Installations->village->kolektor ?? null;
+                                        $kolektor = optional($com->Installations->village)->kolektor;
 
                                         $komisiTerbayar = 0;
                                         foreach ($com->transaction as $trx) {
@@ -48,7 +48,7 @@
                                     @endphp
                                     <option
                                         value="{{ $com->id }}|{{ $com->transaction_id }}|{{ $sisaKomisi }}|{{ $kolektor }}|{{ $com->tgl_transaksi }}">
-                                        {{ $com->Installations->customer->nama }} [{{ $com->Installations->id }}] -
+                                        {{ $com->Installations->customer->nama ?? '-' }} [{{ $com->Installations->id ?? '-' }}] -
                                         Tagihan {{ $bulan_tagihan }} Rp. {{ number_format($sisaKomisi, 2) }}
                                     </option>
                                 @endforeach
