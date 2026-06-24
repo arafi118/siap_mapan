@@ -14,7 +14,7 @@
                     $tgl_akhir = $com->Usage ? $com->Usage->tgl_akhir : null;
                     $bulan_tagihan =
                         $tgl_akhir ? Tanggal::namaBulan($tgl_akhir) . ' ' . Tanggal::tahun($tgl_akhir) : '-';
-                    $kolektor = $com->Installations->village->kolektor ?? null;
+                    $kolektor = $com->Installations ? optional($com->Installations->village)->kolektor : null;
 
                     $komisiTerbayar = 0;
                     foreach ($com->transaction as $trx) {
