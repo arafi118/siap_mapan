@@ -93,7 +93,7 @@ class TransactionController extends Controller
                 'Installations',
                 'Installations.village',
                 'Installations.customer',
-                'Usages',
+                'Usage',
                 'transaction' => function ($query) use ($akunFeeKolektor) {
                     $query->where('rekening_debit', $akunFeeKolektor->id)->where('tgl_transaksi', '<=', date('Y-m-d'));
                 }
