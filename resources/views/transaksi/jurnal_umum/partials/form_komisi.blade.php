@@ -11,9 +11,11 @@
             <option value="">-- Pilih Utang Komisi --</option>
             @foreach ($commissionTransactions as $com)
                 @php
-                    $tgl_akhir = $com->Usages->tgl_akhir;
-                    $bulan_tagihan = Tanggal::namaBulan($tgl_akhir) . ' ' . Tanggal::tahun($tgl_akhir);
-                    $kolektor = $com->Installations->village->kolektor;
+                    $usage = $com->Usages->first();
+                    $tgl_akhir = $usage ? $usage->tgl_akhir : null;
+                    $bulan_tagihan =
+                        $tgl_akhir ? Tanggal::namaBulan($tgl_akhir) . ' ' . Tanggal::tahun($tgl_akhir) : '-';
+                    $kolektor = $com->Installations->village->kolektor ?? null;
 
                     $komisiTerbayar = 0;
                     foreach ($com->transaction as $trx) {
