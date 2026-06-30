@@ -19,7 +19,11 @@
         <table width="100%">
             <tr>
                 <td width="70">
-                    <img src="data:image/png;base64,{{ $logo }}" height="70" alt="{{ $logo }}">
+                    @if($logo)
+                        <img src="data:image/png;base64,{{ $logo }}" height="70" alt="Logo">
+                    @else
+                        <div style="width:70px;height:70px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;">Logo</div>
+                    @endif
                 </td>
                 <td align="center">
                     <div><b>{{ strtoupper($nama) }}</b></div>
@@ -42,7 +46,11 @@
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
             <tr>
                 <td width="50">
-                    <img src="data:image/png;base64,{{ $logo }}" height="50" alt="{{ $logo }}">
+                    @if($logo)
+                        <img src="data:image/png;base64,{{ $logo }}" height="50" alt="Logo">
+                    @else
+                        <div style="width:50px;height:50px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:9px;color:#999;">Logo</div>
+                    @endif
                 </td>
                 <td>
                     <div style="font-size: 12px;"><b>{{ strtoupper($nama) }}</b></div>

@@ -3,13 +3,22 @@
     <div class="col-md-8"><br>
         <div class="card mt-4 border" data-animation="true">
             <a class="d-block blur-shadzow-image">
-                <img src="{{ asset('storage/logo/' . Session::get('logo')) }}" alt="img-blur-shadow"
-                    class="img-fluid shadow border-radius-lg mt-3" id="previewLogo"
-                    style="width: 130px; height: auto; margin-left: 20px;">
+                @if(Session::get('logo'))
+                    <img src="{{ asset('storage/logo/' . Session::get('logo')) }}" alt="Logo"
+                        class="img-fluid shadow border-radius-lg mt-3" id="previewLogo"
+                        style="width: 130px; height: auto; margin-left: 20px;">
+                @else
+                    <div id="previewLogo" class="d-flex align-items-center justify-content-center bg-light border rounded mt-3"
+                        style="width: 130px; height: 130px; margin-left: 20px;">
+                        <span class="text-muted">No Logo</span>
+                    </div>
+                @endif
             </a>
-            <div class="colored-shadow"
-                style="background-image: url(&quot;{{ asset('storage/logo/' . Session::get('logo')) }}&quot;);">
-            </div>
+            @if(Session::get('logo'))
+                <div class="colored-shadow"
+                    style="background-image: url(&quot;{{ asset('storage/logo/' . Session::get('logo')) }}&quot;);">
+                </div>
+            @endif
             <div class="card-body text-center pb-0">
                 <div class="d-flex mt-n6 justify-content-end">
                     <button class="btn btn-info border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
@@ -51,9 +60,12 @@
                 success: function(response) {
                     if (response.success) {
                         Swal.fire('Berhasil!', response.msg, 'success');
-                        // Update logo preview
-                        $('#previewLogo').attr('src', '/storage/logo/' + response.msg + '?' + new Date()
-                            .getTime());
+                        var previewEl = $('#previewLogo');
+                        if (previewEl.is('img')) {
+                            previewEl.attr('src', '/storage/logo/' + response.msg + '?' + new Date().getTime());
+                        } else {
+                            previewEl.replaceWith('<img src="/storage/logo/' + response.msg + '?' + new Date().getTime() + '" alt="Logo" class="img-fluid shadow border-radius-lg mt-3" id="previewLogo" style="width: 130px; height: auto; margin-left: 20px;">');
+                        }
                     } else {
                         Swal.fire('Gagal!', response.msg, 'error');
                     }
