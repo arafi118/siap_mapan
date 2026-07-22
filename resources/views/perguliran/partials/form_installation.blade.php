@@ -44,7 +44,18 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-3">
+                    <div class="position-relative mb-3">
+                        <label for="kategori">Kategori</label>
+                        <select class="form-control" name="kategori" id="kategori">
+                            <option value="">Pilih Kategori</option>
+                            <option value="1">1. Air Bersih</option>
+                            <option value="2">2. Sampah</option>
+                        </select>
+                        <small class="text-danger" id="msg_kategori"></small>
+                    </div>
+                </div>
+                <div class="col-md-5">
                     <div class="position-relative mb-3">
                         <label for="jalan">Jalan</label>
                         <input type="text" class="form-control" id="jalan" name="jalan"
@@ -52,7 +63,7 @@
                         <small class="text-danger" id="msg_jalan"></small>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="position-relative mb-3">
                         <label for="rw">RW</label>
                         <input type="number" class="form-control" id="rw" name="rw" aria-describedby="rw"
@@ -60,7 +71,7 @@
                         <small class="text-danger" id="msg_rw"></small>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="position-relative mb-3">
                         <label for="rt">RT</label>
                         <input type="number" class="form-control" id="rt" name="rt" aria-describedby="rt"
