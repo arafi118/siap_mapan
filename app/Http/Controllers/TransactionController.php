@@ -44,10 +44,29 @@ class TransactionController extends Controller
     //tampil jurnal umum
     public function jurnal_umum()
     {
-        $transactions = Transaction::all();
-        $jenis_transaksi = JenisTransactions::all();
-        $rekening = Account::where('business_id', Session::get('business_id'));
-        $business = Business::where('id', Session::get('business_id'))->first();
+        $businessId = Session::get('business_id');
+
+        try {
+            $transactions = $businessId
+                ? Transaction::where('business_id', $businessId)->orderBy('id', 'desc')->limit(200)->get()
+                : collect();
+        } catch (\Throwable $e) {
+            $transactions = collect();
+        }
+
+        try {
+            $jenis_transaksi = JenisTransactions::all();
+        } catch (\Throwable $e) {
+            $jenis_transaksi = collect();
+        }
+
+        try {
+            $rekening = Account::where('business_id', $businessId);
+            $business = $businessId ? Business::where('id', $businessId)->first() : null;
+        } catch (\Throwable $e) {
+            $rekening = Account::where('business_id', 0);
+            $business = null;
+        }
 
         $title = ' Transaksi';
         return view('transaksi.jurnal_umum.index')->with(compact('title', 'business', 'rekening', 'transactions', 'jenis_transaksi'));
@@ -55,13 +74,32 @@ class TransactionController extends Controller
     //tampil pelunasan instalasi
     public function pelunasan_instalasi()
     {
-        $setting = Settings::where('business_id', Session::get('business_id'))->first();
-        $installations = Installations::where('business_id', Session::get('business_id'));
-        $status_0 = Installations::where('business_id', Session::get('business_id'))->where('status', '0')->with(
-            'customer',
-            'village',
-            'package'
-        )->get();
+        $businessId = Session::get('business_id');
+
+        try {
+            $setting = $businessId ? Settings::where('business_id', $businessId)->first() : null;
+        } catch (\Throwable $e) {
+            $setting = null;
+        }
+
+        try {
+            $installations = Installations::where('business_id', $businessId);
+        } catch (\Throwable $e) {
+            $installations = Installations::where('business_id', 0);
+        }
+
+        try {
+            $status_0 = $businessId
+                ? Installations::where('business_id', $businessId)->where('status', '0')->with(
+                    'customer',
+                    'village',
+                    'package'
+                )->get()
+                : collect();
+        } catch (\Throwable $e) {
+            $status_0 = collect();
+        }
+
         $title = 'Pelunasan Instalasi';
         return view('transaksi.pelunasan_instalasi')->with(compact('title', 'setting', 'status_0'));
     }
