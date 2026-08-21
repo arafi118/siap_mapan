@@ -68,14 +68,34 @@ class TransactionController extends Controller
     //tampil tagihan_bulanan
     public function tagihan_bulanan()
     {
-        $transactions = Transaction::all();
-        $installations = Installations::where('business_id', Session::get('business_id'));
-        $settings = Settings::where('business_id', Session::get('business_id'));
-        $status_0 = Installations::where('business_id', Session::get('business_id'))->where('status', '0')->with(
-            'customer',
-            'village',
-            'package'
-        )->get();
+        try {
+            $businessId = Session::get('business_id');
+            $transactions = collect();
+            $status_0 = collect();
+
+            if ($businessId) {
+                try {
+                    $transactions = Transaction::where('business_id', $businessId)
+                        ->orderBy('id', 'desc')
+                        ->limit(200)
+                        ->get();
+                } catch (\Throwable $e) {
+                    $transactions = collect();
+                }
+
+                try {
+                    $status_0 = Installations::where('business_id', $businessId)
+                        ->where('status', '0')
+                        ->with(['customer', 'village', 'package'])
+                        ->get();
+                } catch (\Throwable $e) {
+                    $status_0 = collect();
+                }
+            }
+        } catch (\Throwable $e) {
+            $transactions = collect();
+            $status_0 = collect();
+        }
 
         $title = 'Pelunasan Tagihan Bulanan';
         return view('transaksi.tagihan_bulanan')->with(compact('title', 'transactions', 'status_0'));
