@@ -59,28 +59,33 @@
         });
 
         function showModalInputPemakaian(installation) {
+            if (!installation) return;
 
             var abodemen = parseFloat(installation.abodemen) || 0;
-            var akhir = $(installation.akhir)
-            var allowInput = akhir.attr('data-allow-input') || false
+            var $akhir = installation.akhir ? $(installation.akhir) : $();
+            var allowInput = $akhir.attr('data-allow-input') || false;
 
-            if (installation.customer.jk == 'P') {
+            var customer = installation.customer || {};
+            var pkg = installation.package || {};
+            var users = installation.users || {};
+
+            if (customer.jk == 'P') {
                 $('.avatar-customer').attr('src', '{{ asset('assets/img/woman.png') }}')
             } else {
                 $('.avatar-customer').attr('src', '{{ asset('assets/img/man.png') }}')
             }
 
-            var inisialPaket = installation.package.kelas.charAt(0).toUpperCase()
+            var inisialPaket = pkg.kelas ? pkg.kelas.charAt(0).toUpperCase() : '-';
 
-            $('.namaCustomer').html(installation.customer.nama)
-            $('.customer').val(installation.customer_id)
-            $('.NikCustomer').html(installation.customer.nik ? installation.customer.nik : '-')
-            $('.id_instalasi').val(installation.id)
-            $('.AlamatCustomer').html(installation.customer.alamat + '.' + installation.customer.hp)
-            $('.KdInstallasi').html(installation.kode_instalasi + ' ' + inisialPaket)
-            $('.CaterInstallasi').html(installation.users.nama)
-            $('.PackageInstallasi').html(installation.package.kelas)
-            $('.AlamatInstallasi').html(installation.alamat)
+            $('.namaCustomer').html(customer.nama || '-')
+            $('.customer').val(installation.customer_id || '')
+            $('.NikCustomer').html(customer.nik ? customer.nik : '-')
+            $('.id_instalasi').val(installation.id || '')
+            $('.AlamatCustomer').html((customer.alamat || '') + '.' + (customer.hp || ''))
+            $('.KdInstallasi').html((installation.kode_instalasi || '') + ' ' + inisialPaket)
+            $('.CaterInstallasi').html(users.nama || '-')
+            $('.PackageInstallasi').html(pkg.kelas || '-')
+            $('.AlamatInstallasi').html(installation.alamat || '-')
 
             $('#jumlah_bayar').maskMoney('mask', abodemen)
             $('#jumlah_').val(abodemen)
@@ -120,24 +125,28 @@
                 }
             },
             columns: [{
-                    data: 'customer.nama'
+                    data: 'customer.nama',
+                    defaultContent: '-'
                 },
                 {
-                    data: 'village.dusun'
+                    data: 'village.dusun',
+                    defaultContent: '-'
                 },
                 {
-                    data: 'rt'
+                    data: 'rt',
+                    defaultContent: '-'
                 },
                 {
                     data: 'kode_instalasi',
                     render: function(data, type, row) {
-                        return `${data}.${row.package.kelas.charAt(0).toUpperCase()}`
+                        var inisial = (row.package && row.package.kelas) ? row.package.kelas.charAt(0).toUpperCase() : '-';
+                        return `${data || ''}.${inisial}`
                     }
                 },
                 {
                     data: 'abodemen',
                     render: function(data) {
-                        return Number(data).toLocaleString('de-DE', {
+                        return Number(data || 0).toLocaleString('de-DE', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                         })
