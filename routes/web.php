@@ -282,6 +282,18 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
 });
 
 
+Route::get('/link', function () {
+    $target = __DIR__ . '/../storage/app/public';
+    $shortcut = __DIR__ . '/../public/storage';
+
+    try {
+        symlink($target, $shortcut);
+        return response()->json("Symlink created successfully.");
+    } catch (\Exception $e) {
+        return response()->json("Failed to create symlink: " . $e->getMessage());
+    }
+});
+
 /**
  * 2025-03-24
  * + 1 bulan = 2025-04-24
@@ -290,8 +302,8 @@ Route::middleware(['auth', 'auth.token'])->group(function () {
  * tgl pakai = 2025-02-24
  * tgl akhir = 2025-03-27
  * tgl hari ini = 2025-03-26
- * 
+ *
  * (tgl_akhir <= tgl hari ini)
  * tgl akhir <= hari ini : bulan llalu
- * 
+ *
  */
