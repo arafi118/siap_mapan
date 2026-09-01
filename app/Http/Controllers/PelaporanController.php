@@ -1314,7 +1314,6 @@ class PelaporanController extends Controller
 
         $data['e_budgeting'] = $data_e_budgeting;
         $data['title'] = 'E - Budgeting';
-
         $view = view('pelaporan.partials.views.e_budgeting', $data)->render();
         $pdf = PDF::loadHTML($view)->setOptions([
             'header-html' => view('pelaporan.layouts.header', $data)->render(),

@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libfontconfig1 \
     libxrender1 \
+    libxext6 \
+    libjpeg62-turbo \
+    libssl3 \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl
 

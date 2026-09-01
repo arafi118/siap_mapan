@@ -24,6 +24,7 @@ use App\Models\Transaction;
 use App\Models\Usage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -286,11 +287,43 @@ Route::get('/link', function () {
     $target = __DIR__ . '/../storage/app/public';
     $shortcut = __DIR__ . '/../public/storage';
 
+    if (is_link($shortcut)) {
+        return response()->json("Symlink already exists.");
+    }
+
+    if (file_exists($shortcut)) {
+        if (is_dir($shortcut)) {
+            rmdir($shortcut);
+        } else {
+            unlink($shortcut);
+        }
+    }
+
+    if (PHP_OS_FAMILY === 'Windows') {
+        try {
+            $targetWin = str_replace('/', '\\', $target);
+            $shortcutWin = str_replace('/', '\\', $shortcut);
+            exec('mklink /D "' . $shortcutWin . '" "' . $targetWin . '"', $out, $rc);
+            if ($rc === 0) {
+                return response()->json("Symlink (mklink) created successfully.");
+            }
+            Artisan::call('storage:link');
+            return response()->json("Fallback to artisan storage:link: " . Artisan::output());
+        } catch (\Exception $e) {
+            return response()->json("Failed: " . $e->getMessage());
+        }
+    }
+
     try {
         symlink($target, $shortcut);
         return response()->json("Symlink created successfully.");
     } catch (\Exception $e) {
-        return response()->json("Failed to create symlink: " . $e->getMessage());
+        try {
+            Artisan::call('storage:link');
+            return response()->json("Failed, fallback artisan: " . Artisan::output() . " | " . $e->getMessage());
+        } catch (\Exception $e2) {
+            return response()->json("Failed: " . $e->getMessage());
+        }
     }
 });
 

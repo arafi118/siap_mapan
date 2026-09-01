@@ -35,7 +35,7 @@ return [
 
     'pdf' => [
         'enabled' => true,
-        'binary'  => '"' . env('WKHTMLTOPDF_BINARY', base_path('vendor/silvertipsoftware/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64')) . '"',
+        'binary'  => '"' . env('WKHTMLTOPDF_BINARY', PHP_OS_FAMILY === 'Windows' ? 'C:\laragon\bin\wkhtmltopdf\wkhtmltopdf.exe' : '/usr/local/bin/wkhtmltopdf') . '"',
         'timeout' => false,
         'options' => [
             'dpi' => 300,
@@ -46,7 +46,7 @@ return [
 
     'image' => [
         'enabled' => true,
-        'binary'  => '"' . env('WKHTMLTOIMAGE_BINARY', base_path('vendor/silvertipsoftware/wkhtmltoimage-amd64/bin/wkhtmltoimage-amd64')) . '"',
+        'binary'  => '"' . env('WKHTMLTOIMAGE_BINARY', PHP_OS_FAMILY === 'Windows' ? 'C:\laragon\bin\wkhtmltopdf\wkhtmltoimage.exe' : '/usr/local/bin/wkhtmltoimage') . '"',
         'timeout' => false,
         'options' => [],
         'env'     => [],
